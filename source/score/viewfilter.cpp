@@ -18,20 +18,31 @@
 #include "viewfilter.h"
 
 #include <score/score.h>
+#include <regex>
+#include <ostream>
+
+struct FilterRule::RegexImpl
+{
+    RegexImpl(const std::string &s) : myRegex(s)
+    {
+    }
+
+    std::regex myRegex;
+};
 
 FilterRule::FilterRule()
-    : mySubject(Subject::PLAYER_NAME),
-      myOperation(Operation::EQUAL),
+    : mySubject(Subject::PlayerName),
+      myOperation(Operation::Equal),
       myIntValue(0)
 {
 }
 
 FilterRule::FilterRule(Subject subject, std::string value)
     : mySubject(subject),
-      myOperation(Operation::EQUAL),
+      myOperation(Operation::Equal),
       myIntValue(0),
       myStrValue(std::move(value)),
-      myRegex(myStrValue)
+      myRegexImpl(std::make_unique<RegexImpl>(myStrValue))
 {
 }
 
@@ -40,76 +51,64 @@ FilterRule::FilterRule(Subject subject, Operation op, int value)
 {
 }
 
+FilterRule::~FilterRule() = default;
+
+FilterRule::FilterRule(const FilterRule &other)
+{
+    *this = other;
+}
+
+FilterRule &
+FilterRule::operator=(const FilterRule &other)
+{
+    mySubject = other.mySubject;
+    myOperation = other.myOperation;
+    myIntValue = other.myIntValue;
+    myStrValue = other.myStrValue;
+    myRegexImpl = std::make_unique<RegexImpl>(myStrValue);
+    return *this;
+}
+
+FilterRule::FilterRule(FilterRule &&) = default;
+FilterRule &FilterRule::operator=(FilterRule &&) = default;
+
 bool FilterRule::operator==(const FilterRule &other) const
 {
     return mySubject == other.mySubject && myOperation == other.myOperation &&
            myIntValue == other.myIntValue && myStrValue == other.myStrValue;
 }
 
-bool FilterRule::accept(const Score &score, int system_index,
-                        int staff_index) const
+bool FilterRule::accept(const Player &player) const
 {
-    std::vector<const PlayerChange *> player_changes;
-
-    const PlayerChange *current_players =
-        ScoreUtils::getCurrentPlayers(score, system_index, 0);
-    if (current_players)
-        player_changes.push_back(current_players);
-
-    for (const PlayerChange &change :
-         score.getSystems()[system_index].getPlayerChanges())
-    {
-        player_changes.push_back(&change);
-    }
-
-    bool has_active_players = false;
-    for (const PlayerChange *change : player_changes)
-    {
-        for (const ActivePlayer &player : change->getActivePlayers(staff_index))
-        {
-            has_active_players = true;
-
-            if (accept(score, player))
-                return true;
-        }
-    }
-
-    // The filter should always accept empty staves.
-    return !has_active_players;
-}
-
-bool FilterRule::accept(const Score &score, const ActivePlayer &p) const
-{
-    const Player &player = score.getPlayers()[p.getPlayerNumber()];
-
     switch (mySubject)
     {
-    case PLAYER_NAME:
-        return std::regex_match(player.getDescription(), myRegex);
-    case NUM_STRINGS:
-    {
-        const int value = player.getTuning().getStringCount();
-
-        switch (myOperation)
+        case Subject::PlayerName:
+            return std::regex_match(player.getDescription(),
+                                    myRegexImpl->myRegex);
+        case Subject::NumStrings:
         {
-        case LESS_THAN:
-            return value < myIntValue;
-        case LESS_THAN_EQUAL:
-            return value <= myIntValue;
-        case EQUAL:
-            return value == myIntValue;
-        case GREATER_THAN:
-            return value > myIntValue;
-        case GREATER_THAN_EQUAL:
-            return value >= myIntValue;
-        }
+            const int value = player.getTuning().getStringCount();
 
-        assert(false);
-        return false;
-    }
-    default:
-        assert(!"Unexpected subject for filter.");
-        return false;
+            switch (myOperation)
+            {
+                case Operation::LessThan:
+                    return value < myIntValue;
+                case Operation::LessThanEqual:
+                    return value <= myIntValue;
+                case Operation::Equal:
+                    return value == myIntValue;
+                case Operation::GreaterThan:
+                    return value > myIntValue;
+                case Operation::GreaterThanEqual:
+                    return value >= myIntValue;
+            }
+
+            assert(false);
+            return false;
+        }
+        default:
+            assert(!"Unexpected subject for filter.");
+            return false;
     }
 }
 
@@ -159,9 +158,49 @@ bool ViewFilter::accept(const Score &score, int system_index,
     if (myRules.empty())
         return true;
 
+    std::vector<const PlayerChange *> player_changes;
+
+    const PlayerChange *current_players =
+        ScoreUtils::getCurrentPlayers(score, system_index, 0);
+    if (current_players)
+        player_changes.push_back(current_players);
+
+    for (const PlayerChange &change :
+         score.getSystems()[system_index].getPlayerChanges())
+    {
+        player_changes.push_back(&change);
+    }
+
+    bool has_active_players = false;
+    for (const PlayerChange *change : player_changes)
+    {
+        for (const ActivePlayer &active_player :
+             change->getActivePlayers(staff_index))
+        {
+            has_active_players = true;
+
+            const Player &player =
+                score.getPlayers()[active_player.getPlayerNumber()];
+            for (const FilterRule &rule : myRules)
+            {
+                if (rule.accept(player))
+                    return true;
+            }
+        }
+    }
+
+    // The filter should always accept empty staves.
+    return !has_active_players;
+}
+
+bool ViewFilter::accept(const Player &player) const
+{
+    if (myRules.empty())
+        return true;
+
     for (const FilterRule &rule : myRules)
     {
-        if (rule.accept(score, system_index, staff_index))
+        if (rule.accept(player))
             return true;
     }
 

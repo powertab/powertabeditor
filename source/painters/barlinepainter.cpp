@@ -28,13 +28,15 @@ const double BarlinePainter::DOUBLE_BAR_WIDTH = 4;
 BarlinePainter::BarlinePainter(const LayoutConstPtr &layout,
                                const Barline &barline,
                                const ScoreLocation &location,
-                               const std::shared_ptr<ClickPubSub> &pubsub)
+                               const std::shared_ptr<ClickPubSub> &pubsub,
+                               const QColor &barlineColor)
     : myLayout(layout),
       myBarline(barline),
       myLocation(location),
       myPubSub(pubsub),
       myX(0),
-      myWidth(0)
+      myWidth(0),
+      myBarlineColor(barlineColor)
 {
     setAcceptHoverEvents(true);
     setToolTip(QObject::tr("Click to edit barline."));
@@ -106,8 +108,8 @@ bool BarlinePainter::isInStdNotationStaff(double y)
 void BarlinePainter::paint(QPainter *painter, const QStyleOptionGraphicsItem *,
                            QWidget *)
 {
-    painter->setPen(QPen(Qt::black, 0.75));
-    painter->setBrush(Qt::black);
+    painter->setPen(QPen(myBarlineColor, 0.75));
+    painter->setBrush(myBarlineColor);
 
     const Barline::BarType barType = myBarline.getBarType();
 
@@ -135,7 +137,7 @@ void BarlinePainter::paint(QPainter *painter, const QStyleOptionGraphicsItem *,
     {
         // Make the line thicker for certain bar types.
         if (barType != Barline::DoubleBar)
-            painter->setPen(QPen(Qt::black, 2));
+            painter->setPen(QPen(myBarlineColor, 2));
 
         // Draw the second barline with an offset of the specified width.
         drawVerticalLines(painter, myX + myWidth);
@@ -144,7 +146,7 @@ void BarlinePainter::paint(QPainter *painter, const QStyleOptionGraphicsItem *,
     // Draw the dots for repeats.
     if (barType == Barline::RepeatEnd || barType == Barline::RepeatStart)
     {
-        painter->setPen(QPen(Qt::black, 0.75));
+        painter->setPen(QPen(myBarlineColor, 0.75));
         const double radius = 1.0;
         // x-coordinate for the location of the dots.
         const double dotLocation = myX - 1.5 * myWidth;

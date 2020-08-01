@@ -24,6 +24,7 @@
 #include <vector>
 
 class Barline;
+class RepeatController;
 class Score;
 class Staff;
 class System;
@@ -70,13 +71,15 @@ private:
                           const SystemLocation &location,
                           const LoadOptions &options);
 
-    int addTempoEvent(MidiEventList &event_list, int current_tick,
-                      int current_tempo, const System &system, int bar_start,
-                      int bar_end);
+    Midi::Tempo addTempoEvent(MidiEventList &event_list, int current_tick,
+                              Midi::Tempo current_tempo, const Score &score,
+                              const SystemLocation &location,
+                              const RepeatController &repeat_controller,
+                              int bar_start, int bar_end);
 
     int addEventsForBar(std::vector<MidiEventList> &tracks,
                         uint8_t &active_bend, int current_tick,
-                        int current_tempo, const Score &score,
+                        Midi::Tempo current_tempo, const Score &score,
                         const System &system, int system_index,
                         const Staff &staff, int staff_index, const Voice &voice,
                         int voice_index, int bar_start, int bar_end,

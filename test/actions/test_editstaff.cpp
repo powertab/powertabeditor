@@ -15,14 +15,14 @@
   * along with this program.  If not, see <http://www.gnu.org/licenses/>.
 */
   
-#include <catch2/catch.hpp>
+#include <doctest/doctest.h>
 
 #include <actions/editstaff.h>
 #include <app/appinfo.h>
 #include <formats/powertab/powertabimporter.h>
 #include <score/score.h>
 
-TEST_CASE("Actions/EditStaff", "")
+TEST_CASE("Actions/EditStaff")
 {
     Score score;
 

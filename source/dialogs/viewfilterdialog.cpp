@@ -43,8 +43,11 @@ void ViewFilterDialog::setPresenter(ViewFilterPresenter *presenter)
     connect(ui->removeFilterButton, &QToolButton::clicked, [&]() {
         myPresenter->removeSelectedFilter();
     });
-    connect(ui->filterList, &QListWidget::itemClicked, [&](QListWidgetItem *) {
-        myPresenter->selectFilter(ui->filterList->currentRow());
+    connect(ui->filterList, &QListWidget::currentRowChanged, [&](int row) {
+        // Don't send selection events when the filter list is cleared during
+        // update().
+        if (row >= 0)
+            myPresenter->selectFilter(row);
     });
 
     connect(ui->nameLineEdit, &QLineEdit::textEdited, [&](const QString &s) {
@@ -62,7 +65,8 @@ bool ViewFilterDialog::launch()
 
 void ViewFilterDialog::update(const std::vector<std::string> &names,
                               const std::optional<int> &selection,
-                              const std::vector<FilterRule> &rules)
+                              const std::vector<FilterRule> &rules,
+                              const std::vector<std::string> &matches)
 {
     ui->filterList->clear();
 
@@ -73,6 +77,13 @@ void ViewFilterDialog::update(const std::vector<std::string> &names,
     ui->filterList->addItems(q_names);
     ui->filterList->setCurrentRow(selection ? *selection : -1);
     ui->removeFilterButton->setEnabled(!names.empty());
+
+    QStringList q_matches;
+    for (auto &&match : matches)
+        q_matches.append(QString::fromStdString(match));
+
+    ui->matchesList->clear();
+    ui->matchesList->addItems(q_matches);
 
     ui->nameLineEdit->setEnabled((bool)selection);
     ui->addRuleButton->setEnabled((bool)selection);
@@ -91,8 +102,9 @@ void ViewFilterDialog::update(const std::vector<std::string> &names,
         ui->nameLineEdit->setText(QString::fromStdString(names[*selection]));
 
         // Add new widgets if necessary.
-        for (size_t i = ui->filterRuleLayout->count(), n = rules.size(); i < n;
-             ++i)
+        for (int i = ui->filterRuleLayout->count(),
+                 n = static_cast<int>(rules.size());
+             i < n; ++i)
         {
             auto widget = new FilterRuleWidget(this);
             ui->filterRuleLayout->addWidget(widget);
@@ -107,7 +119,7 @@ void ViewFilterDialog::update(const std::vector<std::string> &names,
         }
 
         // Update widgets.
-        for (size_t i = 0, n = rules.size(); i < n; ++i)
+        for (int i = 0, n = static_cast<int>(rules.size()); i < n; ++i)
         {
             auto widget = dynamic_cast<FilterRuleWidget *>(
                 ui->filterRuleLayout->itemAt(i)->widget());

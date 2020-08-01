@@ -11,8 +11,8 @@ set( CPACK_PACKAGE_VERSION_MINOR "98" )
 set( CPACK_PACKAGE_VERSION_PATCH "12" )
 set( CPACK_RESOURCE_FILE_LICENSE "${CMAKE_CURRENT_SOURCE_DIR}/license.txt" )
 
-set( system_name "-osx" )
-set( CPACK_PACKAGE_FILE_NAME powertabeditor-${PTE_VERSION}${system_name} )
+set( system_name "osx" )
+set( CPACK_PACKAGE_FILE_NAME powertabeditor-${system_name} )
 
 set( CPACK_GENERATOR DragNDrop )
 

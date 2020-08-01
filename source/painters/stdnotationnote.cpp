@@ -173,9 +173,10 @@ void StdNotationNote::getNotesInStaff(
 
                     noteLocations.push_back(y);
 
+                    // A note can be tied to a note in the previous system.
                     std::optional<int> tiedPos;
-                    if (note.hasProperty(Note::Tied) && prevPos)
-                        tiedPos = prevPos->getPosition();
+                    if (note.hasProperty(Note::Tied))
+                        tiedPos = prevPos ? prevPos->getPosition() : -1;
 
                     notes.push_back(StdNotationNote(voice, pos, note,
                                                     bar.getKeySignature(),

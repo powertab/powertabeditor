@@ -103,6 +103,7 @@
 			<Component Id="bz2" Guid="2BB253EA-2BEA-42B3-9C39-EAFB05D8FB41">
 				<File Source="$(var.BinDir)/bz2.dll" KeyPath="yes" Checksum="yes" />
 			</Component>
+			<!-- Not needed (depending on how Qt was built). These are disabled to match the CI build.
 			<Component Id="freetype" Guid="BDE86051-A941-42E4-BBC3-7AEFD1090595">
 				<File Source="$(var.BinDir)/freetype.dll" KeyPath="yes" Checksum="yes" />
 			</Component>
@@ -110,23 +111,26 @@
 				<File Source="$(var.BinDir)/harfbuzz.dll" KeyPath="yes" Checksum="yes" />
 			</Component>
 			<Component Id="icudt" Guid="CDAECCA1-B9B8-4177-B89F-A7E5785AB08A">
-				<File Source="$(var.BinDir)/icudt65.dll" KeyPath="yes" Checksum="yes" />
+				<File Source="$(var.BinDir)/icudt67.dll" KeyPath="yes" Checksum="yes" />
 			</Component>
 			<Component Id="icuin" Guid="2AA98EE6-DCCC-4B5A-82BE-26B15219099B">
-				<File Source="$(var.BinDir)/icuin65.dll" KeyPath="yes" Checksum="yes" />
+				<File Source="$(var.BinDir)/icuin67.dll" KeyPath="yes" Checksum="yes" />
 			</Component>
 			<Component Id="icuuc" Guid="A2615534-FA3D-46AF-9C94-3A26A948B7F3">
-				<File Source="$(var.BinDir)/icuuc65.dll" KeyPath="yes" Checksum="yes" />
+				<File Source="$(var.BinDir)/icuuc67.dll" KeyPath="yes" Checksum="yes" />
 			</Component>
 			<Component Id="libpng" Guid="5681F57B-38A1-4766-9CF4-F4F6409B70EF">
 				<File Source="$(var.BinDir)/libpng16.dll" KeyPath="yes" Checksum="yes" />
 			</Component>
+			-->
 			<Component Id="lzma" Guid="BC3EB35D-4C5C-464D-82FF-7C226AC47053">
 				<File Source="$(var.BinDir)/lzma.dll" KeyPath="yes" Checksum="yes" />
 			</Component>
+			<!-- Not needed (depending on how Qt was built). These are disabled to match the CI build.
 			<Component Id="pcre2" Guid="902A7226-29B5-4F35-B284-3283AEBD6205">
 				<File Source="$(var.BinDir)/pcre2-16.dll" KeyPath="yes" Checksum="yes" />
 			</Component>
+			-->
 			<Component Id="pugixml" Guid="8D2E3DBB-8C66-43F0-A55A-F5E58C48D675">
 				<File Source="$(var.BinDir)/pugixml.dll" KeyPath="yes" Checksum="yes" />
 			</Component>
@@ -144,12 +148,14 @@
 		<!-- Qt Plugins. -->
 		<ComponentGroup Id="PlatformPlugins" Directory="PlatformPluginsDir">
 			<Component Guid="8DB2373E-9319-475E-897E-47F2BE4CCA30">
-				<File Source="$(var.BinDir)/plugins/platforms/qwindows.dll" KeyPath="yes" Checksum="yes" />
+                <!-- Note: seems like this might be under the plugins/platforms folder instead, depending on Qt's version / build configuration -->
+				<File Source="$(var.BinDir)/platforms/qwindows.dll" KeyPath="yes" Checksum="yes" />
 			</Component>
 		</ComponentGroup>
+            <!-- Note: seems this might be under the plugins/styles folder instead, depending on Qt's build configuration / version -->
 		<ComponentGroup Id="StylePlugins" Directory="StylePluginsDir">
 			<Component Guid="8D2DAA6F-C37B-486C-B86E-CE6D0017C796">
-				<File Source="$(var.BinDir)/plugins/styles/qwindowsvistastyle.dll" KeyPath="yes" Checksum="yes" />
+				<File Source="$(var.BinDir)/styles/qwindowsvistastyle.dll" KeyPath="yes" Checksum="yes" />
 			</Component>
 		</ComponentGroup>
 

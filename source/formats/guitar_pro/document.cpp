@@ -18,20 +18,23 @@
 #include "document.h"
 
 #include <algorithm>
-#include <cmath>
+#include <bitset>
 #include <iostream>
+#include <unordered_map>
 
 #include <formats/guitar_pro/inputstream.h>
 #include <formats/fileformat.h>
 #include <score/generalmidi.h>
 
-static const int NUM_LYRIC_LINES = 5;
-static const int NUM_MIDI_CHANNELS = 64;
-static const int TRACK_DESCRIPTION_LENGTH = 40;
-static const int DIAGRAM_DESCRIPTION_LENGTH = 20;
-static const int NUMBER_OF_STRINGS = 7;
-static const int GP3_NUMBER_OF_STRINGS = 6;
-static const int NUMBER_OF_BARRES = 5;
+static constexpr int NUM_LYRIC_LINES = 5;
+static constexpr int NUM_MIDI_CHANNELS = 64;
+static constexpr int TRACK_DESCRIPTION_LENGTH = 40;
+static constexpr int DIAGRAM_DESCRIPTION_LENGTH = 20;
+static constexpr int NUMBER_OF_STRINGS = 7;
+static constexpr int GP3_NUMBER_OF_STRINGS = 6;
+static constexpr int NUMBER_OF_BARRES = 5;
+
+using Flags = std::bitset<8>;
 
 namespace MeasureHeader
 {
@@ -85,9 +88,9 @@ namespace BeatEffects
 {
 enum BeatEffects
 {
-    VibratoGp3_1 = 0,
+    Vibrato = 0,
     HasRasguedo = 0,
-    VibratoGp3_2 = 1,
+    WideVibrato = 1,
     Pickstroke = 1,
     NaturalHarmonicGp3 = 2,
     HasTremoloBarEvent = 2,
@@ -185,10 +188,6 @@ enum HarmonicType
 
 namespace Gp
 {
-Header::Header() : myTripletFeel(false), myLyricTrack(0)
-{
-}
-
 Header::LyricLine::LyricLine(int measure, const std::string &contents)
     : myMeasure(measure), myContents(contents)
 {
@@ -202,7 +201,7 @@ void Header::load(InputStream &stream)
     myAlbum = stream.readString();
 
     myLyricist = stream.readString();
-    if (stream.version > Version4)
+    if (stream.version() > Version4)
         myComposer = stream.readString();
     else
         myComposer = myLyricist;
@@ -216,46 +215,31 @@ void Header::load(InputStream &stream)
     for (uint32_t i = 0; i < n; ++i)
         myNotices.push_back(stream.readString());
 
-    if (stream.getVersion() <= Version4)
-        myTripletFeel = (stream.read<uint8_t>() > 0);
+    if (stream.version() <= Version4)
+        myTripletFeel = stream.readBool();
 
-    if (stream.version >= Version4)
+    if (stream.version() >= Version4)
     {
-        myLyricTrack = stream.read<uint32_t>();
+        myLyricTrack = stream.read<int32_t>();
 
         for (int i = 0; i < NUM_LYRIC_LINES; ++i)
         {
-            const int32_t n = stream.read<int32_t>();
+            const int n = stream.read<int32_t>();
             myLyrics.emplace_back(n, stream.readIntString());
         }
     }
 
-    // Ignore page setup information.
-    // TODO - figure out if there is any useful information in here.
-    if (stream.version > Version4)
+    if (stream.version() > Version4)
     {
-        if (stream.version == Version5_0)
-            stream.skip(30);
-        else if (stream.version == Version5_1)
-            stream.skip(49);
+        // RSE master effect.
+        if (stream.version() == Version5_1)
+            stream.skip(19);
 
-        for (int i = 0; i < 11; ++i)
-        {
-            stream.skip(4);
-            stream.readFixedLengthString(0);
-        }
+        // Page setup information.
+        stream.skip(30);
+        for (int i = 0; i < 10; ++i)
+            stream.readString();
     }
-}
-
-Channel::Channel()
-    : myInstrument(0),
-      myVolume(0),
-      myBalance(0),
-      myChorus(0),
-      myReverb(0),
-      myPhaser(0),
-      myTremolo(0)
-{
 }
 
 void Channel::load(InputStream &stream)
@@ -269,7 +253,7 @@ void Channel::load(InputStream &stream)
     myPhaser = readChannelProperty(stream);
     myTremolo = readChannelProperty(stream);
 
-    // TODO - figure out what these bytes are used for.
+    // Unused bytes, possibly for backwards compatibility with older versions?
     stream.skip(2);
 }
 
@@ -308,8 +292,8 @@ void GraceNote::load(InputStream &stream)
         break;
     }
 
-    // TODO - figure out the meaning of this byte.
-    if (stream.version > Version4)
+    // Extra flags in GP5 - dead / onBeat.
+    if (stream.version() > Version4)
         stream.skip(1);
 }
 
@@ -338,13 +322,13 @@ Note::Note(int string)
 {
 }
 
-void Note::load(InputStream &stream)
+void Note::load(InputStream &stream, const Track &track)
 {
     const Flags flags = stream.read<uint8_t>();
 
     myHasAccent = flags.test(NoteHeader::Accented);
 
-    if (stream.version > Version4)
+    if (stream.version() > Version4)
         myHasHeavyAccent = flags.test(NoteHeader::HeavyAccent);
 
     myIsGhostNote = flags.test(NoteHeader::GhostNote);
@@ -358,7 +342,7 @@ void Note::load(InputStream &stream)
             myIsMuted = true;
     }
 
-    if (stream.version <= Version4 &&
+    if (stream.version() <= Version4 &&
         flags.test(NoteHeader::TimeIndependentDuration))
     {
         // Ignore - I think this repeats the Beat duration?
@@ -375,36 +359,38 @@ void Note::load(InputStream &stream)
 
     if (flags.test(NoteHeader::FingeringType))
     {
-        // Left and right hand fingerings - ignore.
-        stream.skip(1);
+        myLeftFinger = stream.read<int8_t>();
+
+        // TODO - support right hand fingering (#291).
         stream.skip(1);
     }
 
-    if (stream.version > Version4)
+    if (stream.version() > Version4)
     {
-        // TODO - figure out what this data is used for in GP5.
+        // This is a double with the duration represented as a percenta.
         if (flags.test(NoteHeader::TimeIndependentDuration))
             stream.skip(8);
 
+        // Extra set of flags ('swap accidentals'?).
         stream.skip(1);
     }
 
     if (flags.test(NoteHeader::HasNoteEffects))
     {
-        if (stream.version >= Version4)
-            loadNoteEffects(stream);
-        else if (stream.version == Version3)
+        if (stream.version() >= Version4)
+            loadNoteEffects(stream, track);
+        else if (stream.version() == Version3)
             loadNoteEffectsGp3(stream);
     }
 }
 
-void Note::loadNoteEffects(InputStream &stream)
+void Note::loadNoteEffects(InputStream &stream, const Track &track)
 {
     const Flags header1 = stream.read<uint8_t>();
     const Flags header2 = stream.read<uint8_t>();
 
     if (header1.test(NoteEffects::HasBend))
-        loadBend(stream);
+        myBend = loadBend(stream);
 
     if (header1.test(NoteEffects::HasGraceNote))
     {
@@ -425,7 +411,7 @@ void Note::loadNoteEffects(InputStream &stream)
         loadSlide(stream);
 
     if (header2.test(NoteEffects::HasHarmonic))
-        loadHarmonic(stream);
+        loadHarmonic(stream, track);
 
     if (header2.test(NoteEffects::HasTrill))
     {
@@ -457,40 +443,44 @@ void Note::loadNoteEffectsGp3(InputStream &stream)
         myIsSlideOutDown = true;
 
     if (flags.test(NoteEffects::HasBend))
-        loadBend(stream);
+        myBend = loadBend(stream);
 
     if (flags.test(NoteEffects::HasGraceNote))
     {
-        // TODO - implement.
-        stream.read<uint8_t>(); // fret number grace note is made from
-        stream.read<uint8_t>(); // grace note dynamic
-        stream.read<uint8_t>(); // transition type
-        stream.read<uint8_t>(); // duration
+        GraceNote note;
+        note.load(stream);
+        myGraceNote = note;
     }
 }
 
-void Note::loadBend(InputStream &stream)
+Bend
+Note::loadBend(InputStream &stream)
 {
-    // TODO - perform conversion for bends
+    Bend bend;
+    bend.myBendType = stream.read<int8_t>();
+    bend.myBendValue = stream.read<int32_t>();
 
-    stream.read<uint8_t>(); // bend type
-    stream.read<uint32_t>(); // bend height
-
-    const uint32_t numPoints = stream.read<uint32_t>(); // number of bend points
-
-    for (uint32_t i = 0; i < numPoints; i++)
+    const int num_points = stream.read<int32_t>();
+    for (int i = 0; i < num_points; ++i)
     {
-        stream.skip(4); // time relative to the previous point
-        stream.skip(4); // bend position
-        stream.skip(1); // bend vibrato
+        Bend::Point point;
+        // Convert from 0-60 to a percentage.
+        point.myOffset = (stream.read<int32_t>() * 100.0) / 60.0;
+        point.myValue = stream.read<int32_t>();
+        bend.myPoints.push_back(point);
+
+        // Bend vibrato - ignore.
+        stream.skip(1);
     }
+
+    return bend;
 }
 
 void Note::loadSlide(InputStream &stream)
 {
     const int slideValue = stream.read<int8_t>();
 
-    if (stream.version <= Gp::Version4)
+    if (stream.version() <= Gp::Version4)
     {
         /* Slide values are as follows:
             -2 : slide into from above
@@ -536,7 +526,7 @@ void Note::loadSlide(InputStream &stream)
     }
 }
 
-void Note::loadHarmonic(InputStream &stream)
+void Note::loadHarmonic(InputStream &stream, const Track &track)
 {
     const uint8_t harmonic = stream.read<uint8_t>();
 
@@ -544,13 +534,45 @@ void Note::loadHarmonic(InputStream &stream)
         myIsNaturalHarmonic = true;
     else if (harmonic == HarmonicType::TappedHarmonic)
     {
-        // TODO - implement this.
-        stream.read<uint8_t>();
+        myIsTappedHarmonic = true;
+        myHarmonicFret = stream.read<int8_t>();
+    }
+    else if (harmonic == HarmonicType::Artificial5)
+    {
+        myIsArtificialHarmonic = true;
+        myHarmonicFret = 5;
+    }
+    else if (harmonic == HarmonicType::Artificial7)
+    {
+        myIsArtificialHarmonic = true;
+        myHarmonicFret = 7;
+    }
+    else if (harmonic == HarmonicType::Artificial12)
+    {
+        myIsArtificialHarmonic = true;
+        myHarmonicFret = 12;
     }
     else if (harmonic == HarmonicType::ArtificalHarmonicGp5)
     {
-        // TODO - implement this.
-        stream.skip(3);
+        int harmonic_base_pitch = stream.read<int8_t>();
+        const int accidental = stream.read<int8_t>();
+        harmonic_base_pitch += accidental;
+        int octave = stream.read<int8_t>();
+
+        const int base_pitch =
+            Midi::getMidiNotePitch(track.myTuning[myString] + myFret);
+        if (base_pitch > harmonic_base_pitch)
+            ++octave;
+
+        const int pitch_offset = octave * 12 + (harmonic_base_pitch - base_pitch);
+
+        const std::unordered_map<int, double> theHarmonicFrets = {
+            { 12, 12 },  { 19, 7 },   { 24, 5 },  { 28, 4 },
+            { 31, 3.2 }, { 34, 2.7 }, { 36, 2.4 }
+        };
+        auto it = theHarmonicFrets.find(pitch_offset);
+        myHarmonicFret = (it != theHarmonicFrets.end()) ? it->second : 0;
+        myIsArtificialHarmonic = true;
     }
 }
 
@@ -560,6 +582,7 @@ Beat::Beat()
       myIsRest(false),
       myDuration(1),
       myIsVibrato(false),
+      myIsWideVibrato(false),
       myIsNaturalHarmonic(false),
       myIsArtificialHarmonic(false),
       myIsTremoloPicked(false),
@@ -573,7 +596,7 @@ Beat::Beat()
 {
 }
 
-void Beat::load(InputStream &stream)
+void Beat::load(InputStream &stream, const Track &track)
 {
     const Flags flags = stream.read<uint8_t>();
 
@@ -596,7 +619,7 @@ void Beat::load(InputStream &stream)
         // Durations are stored as 0 -> quarter note, -1 -> half note, 1 ->
         // eight note, etc. We need to convert to 1 = whole note, 2 = half note,
         // 4 = quarter note, etc.
-        myDuration = static_cast<int>(std::pow(2.0, duration + 2));
+        myDuration = (1 << (duration + 2));
     }
 
     if (flags.test(BeatHeader::IrregularGrouping))
@@ -614,11 +637,10 @@ void Beat::load(InputStream &stream)
     if (flags.test(BeatHeader::MixTableChangeEvent))
         loadMixTableChangeEvent(stream);
 
-    loadNotes(stream);
+    loadNotes(stream, track);
 
     // Handle octave symbols.
-    // TODO - figure out what the other bits are used for.
-    if (stream.version > Version4)
+    if (stream.version() > Version4)
     {
         std::bitset<16> flags = stream.read<uint16_t>();
         myOctave8va = flags.test(BeatEffects::Octave8va);
@@ -626,6 +648,8 @@ void Beat::load(InputStream &stream)
         myOctave15ma = flags.test(BeatEffects::Octave15ma);
         myOctave15mb = flags.test(BeatEffects::Octave15mb);
 
+        // The other bits are mostly used for beaming.
+        // The 'breakSecondary' flag requires reading an extra byte.
         if (flags.test(11) != 0)
             stream.skip(1);
     }
@@ -633,62 +657,63 @@ void Beat::load(InputStream &stream)
 
 void Beat::loadChordDiagram(InputStream &stream)
 {
-    if (stream.read<uint8_t>() == 0)
+    const bool new_format = stream.readBool();
+    if (!new_format)
     {
         loadOldChordDiagram(stream);
         return;
     }
 
-    if (stream.version == Version3)
+    if (stream.version() == Version3)
     {
         stream.skip(25);
         stream.readFixedLengthString(34); // Chord name.
-        stream.read<uint32_t>(); // Top fret of chord.
+        stream.skip(4); // Top fret of chord.
 
         // Strings that are used.
         for (int i = 0; i < GP3_NUMBER_OF_STRINGS; ++i)
-            stream.read<uint32_t>();
+            stream.skip(4);
         stream.skip(36);
         return;
     }
 
-    stream.read<bool>(); // Sharps/flats.
+    stream.skip(1); // Sharps/flats.
 
     // Blank bytes for backwards compatibility with gp3.
     stream.skip(3);
 
-    stream.read<uint8_t>(); // root of chord
-    stream.read<uint8_t>(); // chord type
-    stream.read<uint8_t>(); // extension (9, 11, 13)
-    stream.read<uint32_t>(); // bass note of chord
-    stream.read<uint32_t>(); // diminished/augmented
-    stream.read<uint8_t>(); // "add" chord
+    stream.skip(1); // root of chord
+    stream.skip(1); // chord type
+    stream.skip(1); // extension (9, 11, 13)
+    stream.skip(4); // bass note of chord
+    stream.skip(4); // diminished/augmented
+    stream.skip(1); // "add" chord
 
     stream.readFixedLengthString(DIAGRAM_DESCRIPTION_LENGTH);
 
     // more blank bytes for backwards compatibility
     stream.skip(2);
 
-    stream.read<uint8_t>(); // tonality of the 5th
-    stream.read<uint8_t>(); // tonality of the 9th
-    stream.read<uint8_t>(); // tonality of the 11th
+    stream.skip(1); // tonality of the 5th
+    stream.skip(1); // tonality of the 9th
+    stream.skip(1); // tonality of the 11th
 
-    stream.read<int32_t>(); // base fret of the chord
+    stream.skip(4); // base fret of the chord
 
     // fret numbers for each string
     for (int i = 0; i < NUMBER_OF_STRINGS; ++i)
-        stream.read<int32_t>();
+        stream.skip(4);
 
-    stream.read<uint8_t>(); // number of barres in the chord
-
-    for (int i = 0; i < NUMBER_OF_BARRES; ++i)
-        stream.read<uint8_t>(); // fret of the barre
+    stream.skip(1); // number of barres in the chord
 
     for (int i = 0; i < NUMBER_OF_BARRES; ++i)
-        stream.read<uint8_t>(); // barre start
+        stream.skip(1); // fret of the barre
 
     for (int i = 0; i < NUMBER_OF_BARRES; ++i)
-        stream.read<uint8_t>(); // barre end
+        stream.skip(1); // barre start
+
+    for (int i = 0; i < NUMBER_OF_BARRES; ++i)
+        stream.skip(1); // barre end
 
     // Omission1, Omission3, Omission5, Omission7, Omission9,
     // Omission11, Omission13, and another blank byte
@@ -696,9 +721,9 @@ void Beat::loadChordDiagram(InputStream &stream)
 
     // fingering of chord
     for (int i = 0; i < NUMBER_OF_STRINGS; ++i)
-        stream.read<int8_t>();
+        stream.skip(1);
 
-    stream.read<bool>(); // show fingering
+    stream.skip(1); // show fingering
 }
 
 void Beat::loadOldChordDiagram(InputStream &stream)
@@ -710,7 +735,7 @@ void Beat::loadOldChordDiagram(InputStream &stream)
     if (baseFret != 0)
     {
         for (int i = 0; i < GP3_NUMBER_OF_STRINGS; ++i)
-            stream.read<uint32_t>(); // fret number
+            stream.skip(4); // fret number
     }
 }
 
@@ -719,11 +744,12 @@ void Beat::loadBeatEffects(InputStream &stream)
     const Flags flags1 = stream.read<uint8_t>();
     Flags flags2;
 
+    myIsVibrato = flags1.test(BeatEffects::Vibrato);
+    myIsWideVibrato = flags1.test(BeatEffects::WideVibrato);
+
     // GP3 effect decoding.
-    if (stream.version == Version3)
+    if (stream.version() == Version3)
     {
-        myIsVibrato = flags1.test(BeatEffects::VibratoGp3_1) ||
-                      flags1.test(BeatEffects::VibratoGp3_2);
         myIsNaturalHarmonic = flags1.test(BeatEffects::NaturalHarmonicGp3);
         myIsArtificialHarmonic =
             flags1.test(BeatEffects::ArtificialHarmonicGp3);
@@ -736,7 +762,7 @@ void Beat::loadBeatEffects(InputStream &stream)
         const uint8_t type = stream.read<uint8_t>();
 
         // In GP3, a value of 0 indicates a tremolo bar.
-        if (type == TapType::TremoloBarGp3 && stream.version == Version3)
+        if (type == TapType::TremoloBarGp3 && stream.version() == Version3)
             loadTremoloBar(stream);
         else
         {
@@ -745,12 +771,12 @@ void Beat::loadBeatEffects(InputStream &stream)
                 myIsTapped = true;
 
             // TODO - figure out the meaning of this data.
-            if (stream.version == Version3)
-                stream.read<uint32_t>();
+            if (stream.version() == Version3)
+                stream.skip(4);
         }
     }
 
-    if (stream.version >= Version4 &&
+    if (stream.version() >= Version4 &&
         flags2.test(BeatEffects::HasTremoloBarEvent))
     {
         loadTremoloBar(stream);
@@ -760,16 +786,14 @@ void Beat::loadBeatEffects(InputStream &stream)
     {
         // Upstroke and downstroke duration values - we will just use these for
         // toggling pickstroke up/down.
-        if (stream.read<uint8_t>() > 0)
-            myPickstrokeDown = true;
-        if (stream.read<uint8_t>() > 0)
-            myPickstrokeUp = true;
+        myPickstrokeDown = stream.readBool();
+        myPickstrokeUp = stream.readBool();
     }
 
-    if (stream.version >= Version4)
+    if (stream.version() >= Version4)
         myIsTremoloPicked = flags2.test(BeatEffects::HasRasguedo);
 
-    if (stream.version >= Version4 && flags2.test(BeatEffects::Pickstroke))
+    if (stream.version() >= Version4 && flags2.test(BeatEffects::Pickstroke))
     {
         const uint8_t pickstrokeType = stream.read<uint8_t>();
 
@@ -783,12 +807,12 @@ void Beat::loadBeatEffects(InputStream &stream)
 void Beat::loadTremoloBar(InputStream &stream)
 {
     // TODO - implement tremolo bar support.
-    if (stream.version != Version3)
-        stream.read<uint8_t>();
+    if (stream.version() != Version3)
+        stream.skip(1);
 
-    stream.read<int32_t>();
+    stream.skip(4);
 
-    if (stream.version >= Version4)
+    if (stream.version() >= Version4)
     {
         const int numPoints = stream.read<int32_t>();
         for (int i = 0; i < numPoints; i++)
@@ -803,9 +827,9 @@ void Beat::loadTremoloBar(InputStream &stream)
 void Beat::loadMixTableChangeEvent(InputStream &stream)
 {
     // TODO - implement conversions for this.
-    stream.read<int8_t>(); // instrument
+    stream.skip(1); // instrument
 
-    if (stream.version > Version4)
+    if (stream.version() > Version4)
         stream.skip(16); // RSE Info???
 
     int8_t volume = stream.read<int8_t>(); // volume
@@ -815,8 +839,8 @@ void Beat::loadMixTableChangeEvent(InputStream &stream)
     int8_t phaser = stream.read<uint8_t>(); // phaser
     int8_t tremolo = stream.read<uint8_t>(); // tremolo
 
-    if (stream.version > Version4)
-        stream.readString(); // TODO - tempo name?
+    if (stream.version() > Version4)
+        myTempoChangeName = stream.readString();
 
     // New tempo.
     int32_t tempo = stream.read<int32_t>();
@@ -824,50 +848,50 @@ void Beat::loadMixTableChangeEvent(InputStream &stream)
         myTempoChange = tempo;
 
     if (volume >= 0)
-        stream.read<uint8_t>(); // volume change duration
+        stream.skip(1); // volume change duration
 
     if (pan >= 0)
-        stream.read<uint8_t>(); // pan change duration
+        stream.skip(1); // pan change duration
 
     if (chorus >= 0)
-        stream.read<uint8_t>(); // chorus change duration
+        stream.skip(1); // chorus change duration
 
     if (reverb >= 0)
-        stream.read<uint8_t>(); // reverb change duration
+        stream.skip(1); // reverb change duration
 
     if (phaser >= 0)
-        stream.read<uint8_t>(); // phaser change duration
+        stream.skip(1); // phaser change duration
 
     if (tremolo >= 0)
-        stream.read<uint8_t>(); // tremolo change duration
+        stream.skip(1); // tremolo change duration
 
     if (tempo >= 0)
     {
         stream.skip(1); // tempo change duration
 
-        if (stream.version == Version5_1)
+        if (stream.version() == Version5_1)
             stream.skip(1);
     }
 
-    if (stream.version >= Version4)
+    if (stream.version() >= Version4)
     {
         // Details of score-wide or track-specific changes.
-        stream.read<uint8_t>();
+        stream.skip(1);
     }
 
-    if (stream.version > Version4)
+    if (stream.version() > Version4)
     {
         stream.skip(1);
-        if (stream.version == Version5_1)
+        if (stream.version() == Version5_1)
         {
-            // TODO - determine what these strings represent.
+            // RSE instrument effect & category.
             stream.readString();
             stream.readString();
         }
     }
 }
 
-void Beat::loadNotes(InputStream &stream)
+void Beat::loadNotes(InputStream &stream, const Track &track)
 {
     const Flags stringsPlayed = stream.read<uint8_t>();
 
@@ -876,7 +900,7 @@ void Beat::loadNotes(InputStream &stream)
         if (stringsPlayed.test(i))
         {
             Note note(NUMBER_OF_STRINGS - i - 1);
-            note.load(stream);
+            note.load(stream, track);
             myNotes.push_back(note);
         }
     }
@@ -886,29 +910,29 @@ Staff::Staff()
 {
 }
 
-void Staff::load(InputStream &stream)
+void Staff::load(InputStream &stream, const Track &track)
 {
     int numBeats = stream.read<int32_t>();
     for (int i = 0; i < numBeats; ++i)
     {
         Beat beat;
-        beat.load(stream);
+        beat.load(stream, track);
         myVoices[0].push_back(beat);
     }
 
-    if (stream.version > Version4)
+    if (stream.version() > Version4)
     {
         numBeats = stream.read<int32_t>();
         for (int i = 0; i < numBeats; ++i)
         {
             Beat beat;
-            beat.load(stream);
+            beat.load(stream, track);
             myVoices[1].push_back(beat);
         }
     }
 
-    // TODO - figure out what this byte means.
-    if (stream.version > Version4)
+    // Info about line breaks.
+    if (stream.version() > Version4)
         stream.skip(1);
 }
 
@@ -923,12 +947,12 @@ void Measure::load(InputStream &stream)
     if (flags.test(MeasureHeader::Numerator) ||
         flags.test(MeasureHeader::Denominator))
     {
-        auto time = std::make_pair(4, 4);
+        TimeSignatureChange time;
         if (flags.test(MeasureHeader::Numerator))
-            time.first = stream.read<int8_t>();
+            time.myNumerator = stream.read<int8_t>();
 
         if (flags.test(MeasureHeader::Denominator))
-            time.second = stream.read<int8_t>();
+            time.myDenominator = stream.read<int8_t>();
 
         myTimeSignatureChange = time;
     }
@@ -938,34 +962,34 @@ void Measure::load(InputStream &stream)
     if (flags.test(MeasureHeader::RepeatEnd))
         myRepeatEnd = stream.read<int8_t>();
 
-    if (flags.test(MeasureHeader::Marker) && stream.version == Version5_1)
-        loadMarker(stream);
-
     if (flags.test(MeasureHeader::AltEnding))
         myAlternateEnding = stream.read<int8_t>();
 
-    if (flags.test(MeasureHeader::Marker) && stream.version != Version5_1)
+    if (flags.test(MeasureHeader::Marker))
         loadMarker(stream);
 
     if (flags.test(MeasureHeader::KeySignatureChange))
     {
-        const int accidentals = stream.read<int8_t>();
-        const bool isMinor = (stream.read<int8_t>() > 0);
-        myKeyChange = std::make_pair(accidentals, isMinor);
+        KeySignatureChange key;
+        key.myAccidentals = stream.read<int8_t>();
+        key.myIsMinor = stream.readBool();
+        myKeyChange = key;
     }
 
-    // TODO - more unknown GP5 data ...
-    if (stream.version > Version4)
+    if (stream.version() > Version4)
     {
+        // Time signature beams.
         if (flags.test(MeasureHeader::Numerator) ||
             flags.test(MeasureHeader::Denominator))
         {
             stream.skip(4);
         }
 
+        // Unknown blank byte.
         if (!flags.test(MeasureHeader::AltEnding))
             stream.skip(1);
 
+        // Triplet feel.
         stream.skip(1);
     }
 }
@@ -977,19 +1001,14 @@ void Measure::loadMarker(InputStream &stream)
     stream.skip(4);
 }
 
-void Measure::loadStaves(InputStream &stream, int numTracks)
+void Measure::loadStaves(InputStream &stream, const std::vector<Track> &tracks)
 {
-    for (int i = 0; i < numTracks; ++i)
+    for (const Track &track : tracks)
     {
         Staff staff;
-        staff.load(stream);
+        staff.load(stream, track);
         myStaves.push_back(staff);
     }
-}
-
-Track::Track()
-    : myIsDrumTrack(false), myNumStrings(0), myChannelIndex(0), myCapo(0)
-{
 }
 
 void Track::load(InputStream &stream)
@@ -1025,34 +1044,61 @@ void Track::load(InputStream &stream)
     // Track color.
     stream.skip(4);
 
-    // TODO - is this RSE data???
-    if (stream.version == Version5_0)
-        stream.skip(44);
-    else if (stream.version == Version5_1)
+    if (stream.version() > Version4)
     {
-        stream.skip(49);
-        stream.readString();
-        stream.readString();
+        // Track settings.
+        stream.skip(2);
+        // RSE auto-accentuate.
+        stream.skip(1);
+        // Channel bank.
+        stream.skip(1);
+        // RSE humanize.
+        stream.skip(1);
+        // Unknown RSE data.
+        stream.skip(24);
+        // RSE midi instrument.
+        stream.skip(4);
+        // Unknown.
+        stream.skip(4);
+        // RSE sound bank.
+        stream.skip(4);
+        if (stream.version() == Version5_0)
+        {
+            // RSE effect number.
+            stream.skip(2);
+            // Unknown.
+            stream.skip(1);
+        }
+        else if (stream.version() == Version5_1)
+        {
+            // RSE effect number.
+            stream.skip(4);
+            // RSE equalizer.
+            stream.skip(4);
+            // RSE effect name.
+            stream.readString();
+            // RSE effect category.
+            stream.readString();
+        }
     }
-}
-
-Document::Document() : myStartTempo(0), myInitialKey(0), myOctave8va(false)
-{
 }
 
 void Document::load(InputStream &stream)
 {
     myHeader.load(stream);
+
+    if (stream.version() > Version4)
+        myStartTempoName = stream.readString();
+
     myStartTempo = stream.read<int32_t>();
 
-    // TODO - figure out the meaning of this byte.
-    if (stream.version == Version5_1)
-        stream.skip(1);
+    if (stream.version() == Version5_1)
+        myStartTempoVisible = stream.readBool();
 
     myInitialKey = stream.read<int32_t>();
 
-    if (stream.version >= Version4)
-        myOctave8va = (stream.read<int8_t>() > 0);
+    if (stream.version() >= Version4)
+        myOctave8va = stream.readBool();
 
     for (int i = 0; i < NUM_MIDI_CHANNELS; ++i)
     {
@@ -1061,17 +1107,45 @@ void Document::load(InputStream &stream)
         myChannels.push_back(channel);
     }
 
-    // TODO - is this RSE data?
-    if (stream.version > Version4)
-        stream.skip(42);
+    if (stream.version() > Version4)
+    {
+        // The direction indices aren't zero-based.
+        auto readDirectionIndex = [&stream]() {
+            return stream.read<int16_t>() - 1;
+        };
+
+        myDirections.myCoda = readDirectionIndex();
+        myDirections.myDoubleCoda = readDirectionIndex();
+        myDirections.mySegno = readDirectionIndex();
+        myDirections.mySegnoSegno = readDirectionIndex();
+        myDirections.myFine = readDirectionIndex();
+
+        myDirections.myDaCapo = readDirectionIndex();
+        myDirections.myDaCapoAlCoda = readDirectionIndex();
+        myDirections.myDaCapoAlDoubleCoda = readDirectionIndex();
+        myDirections.myDaCapoAlFine = readDirectionIndex();
+        myDirections.myDaSegno = readDirectionIndex();
+        myDirections.myDaSegnoAlCoda = readDirectionIndex();
+        myDirections.myDaSegnoAlDoubleCoda = readDirectionIndex();
+        myDirections.myDaSegnoAlFine = readDirectionIndex();
+        myDirections.myDaSegnoSegno = readDirectionIndex();
+        myDirections.myDaSegnoSegnoAlCoda = readDirectionIndex();
+        myDirections.myDaSegnoSegnoAlDoubleCoda = readDirectionIndex();
+        myDirections.myDaSegnoSegnoAlFine = readDirectionIndex();
+        myDirections.myDaCoda = readDirectionIndex();
+        myDirections.myDaDoubleCoda = readDirectionIndex();
+
+        // Master reverb.
+        stream.skip(4);
+    }
 
     const int numMeasures = stream.read<int32_t>();
     const int numTracks = stream.read<int32_t>();
 
     for (int i = 0; i < numMeasures; ++i)
     {
-        // TODO - figure out what this byte is used for.
-        if (stream.version > Version4 && i > 0)
+        // Seems to be a blank byte here in GP5 files.
+        if (stream.version() > Version4 && i > 0)
             stream.skip(1);
 
         Measure measure;
@@ -1081,10 +1155,10 @@ void Document::load(InputStream &stream)
 
     for (int i = 0; i < numTracks; ++i)
     {
-        // TODO - figure out what this byte is used for.
-        if (stream.version > Version4)
+        // Seems to be a blank byte.
+        if (stream.version() > Version4)
         {
-            if (i == 0 || stream.version == Version5_0)
+            if (i == 0 || stream.version() == Version5_0)
                 stream.skip(1);
         }
 
@@ -1093,14 +1167,14 @@ void Document::load(InputStream &stream)
         myTracks.push_back(track);
     }
 
-    // TODO - figure out what these bytes are used for.
-    if (stream.version == Version5_0)
+    // Seems to be blank bytes.
+    if (stream.version() == Version5_0)
         stream.skip(2);
-    else if (stream.version == Version5_1)
+    else if (stream.version() == Version5_1)
         stream.skip(1);
 
     for (int i = 0; i < numMeasures; ++i)
-        myMeasures[i].loadStaves(stream, numTracks);
+        myMeasures[i].loadStaves(stream, myTracks);
 }
 
 }

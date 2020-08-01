@@ -15,14 +15,14 @@
   * along with this program.  If not, see <http://www.gnu.org/licenses/>.
 */
   
-#include <catch2/catch.hpp>
+#include <doctest/doctest.h>
 
 #include <score/staff.h>
 #include <score/utils.h>
 #include <score/voiceutils.h>
 #include "test_serialization.h"
 
-TEST_CASE("Score/Staff/Clef", "")
+TEST_CASE("Score/Staff/Clef")
 {
     Staff staff;
 
@@ -31,7 +31,7 @@ TEST_CASE("Score/Staff/Clef", "")
     REQUIRE(staff.getClefType() == Staff::BassClef);
 }
 
-TEST_CASE("Score/Staff/Positions", "")
+TEST_CASE("Score/Staff/Positions")
 {
     Staff staff;
     Voice &voice0 = staff.getVoices()[0];
@@ -54,15 +54,15 @@ TEST_CASE("Score/Staff/Positions", "")
     REQUIRE(voice1.getPositions()[1] == pos2);
 }
 
-TEST_CASE("Score/Staff/Dynamics", "")
+TEST_CASE("Score/Staff/Dynamics")
 {
     Staff staff;
 
     REQUIRE(staff.getDynamics().size() == 0);
 
-    Dynamic dynamic(3, Dynamic::mf);
+    Dynamic dynamic(3, VolumeLevel::mf);
     staff.insertDynamic(dynamic);
-    staff.insertDynamic(Dynamic(1, Dynamic::pp));
+    staff.insertDynamic(Dynamic(1, VolumeLevel::pp));
     REQUIRE(staff.getDynamics().size() == 2);
     REQUIRE(staff.getDynamics()[1] == dynamic);
 
@@ -70,18 +70,18 @@ TEST_CASE("Score/Staff/Dynamics", "")
     REQUIRE(staff.getDynamics().size() == 1);
 }
 
-TEST_CASE("Score/Staff/Serialization", "")
+TEST_CASE("Score/Staff/Serialization")
 {
     Staff staff;
     staff.setClefType(Staff::BassClef);
     staff.getVoices()[1].insertPosition(Position(42));
-    staff.insertDynamic(Dynamic(11, Dynamic::pp));
+    staff.insertDynamic(Dynamic(11, VolumeLevel::pp));
     staff.setStringCount(7);
 
     Serialization::test("staff", staff);
 }
 
-TEST_CASE("Score/Staff/GetPositionsInRange", "")
+TEST_CASE("Score/Staff/GetPositionsInRange")
 {
     Staff staff;
     Position pos1(1), pos4(4), pos6(6), pos7(7), pos8(8);
@@ -106,7 +106,7 @@ TEST_CASE("Score/Staff/GetPositionsInRange", "")
             3);
 }
 
-TEST_CASE("Score/Staff/GetNextNote", "")
+TEST_CASE("Score/Staff/GetNextNote")
 {
     Staff staff;
     Position pos1(1), pos4(4), pos6(6), pos7(7), pos8(8);
@@ -123,10 +123,10 @@ TEST_CASE("Score/Staff/GetNextNote", "")
     voice.insertPosition(pos7);
     voice.insertPosition(pos8);
 
-    REQUIRE(!VoiceUtils::getNextNote(voice, 6, 5));
-    REQUIRE(VoiceUtils::getNextNote(voice, 6, 4));
-    REQUIRE(!VoiceUtils::getNextNote(voice, 6, 3));
+    REQUIRE(!VoiceUtils::getNextNote(voice, 6, 5, nullptr));
+    REQUIRE(VoiceUtils::getNextNote(voice, 6, 4, nullptr));
+    REQUIRE(!VoiceUtils::getNextNote(voice, 6, 3, nullptr));
 
-    REQUIRE(!VoiceUtils::getPreviousNote(voice, 6, 2));
-    REQUIRE(VoiceUtils::getPreviousNote(voice, 6, 3));
+    REQUIRE(!VoiceUtils::getPreviousNote(voice, 6, 2, nullptr));
+    REQUIRE(VoiceUtils::getPreviousNote(voice, 6, 3, nullptr));
 }

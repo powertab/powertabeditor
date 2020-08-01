@@ -15,19 +15,19 @@
   * along with this program.  If not, see <http://www.gnu.org/licenses/>.
 */
 
-#include <catch2/catch.hpp>
+#include <doctest/doctest.h>
 
 #include <actions/removenote.h>
 #include <score/note.h>
 #include "actionfixture.h"
 
-TEST_CASE_METHOD(ActionFixture, "Actions/RemoveNote", "")
+TEST_CASE_FIXTURE(ActionFixture, "Actions/RemoveNote")
 {
     RemoveNote action(myLocation);
 
     action.redo();
-    REQUIRE(myLocation.getPosition() != NULL);
-    REQUIRE(myLocation.getNote() == NULL);
+    REQUIRE(myLocation.getPosition() != nullptr);
+    REQUIRE(myLocation.getNote() == nullptr);
     REQUIRE(myLocation.getPosition()->getNotes().size() == 1);
 
     {
@@ -35,11 +35,11 @@ TEST_CASE_METHOD(ActionFixture, "Actions/RemoveNote", "")
 
         RemoveNote action2(myLocation);
         action2.redo();
-        REQUIRE(myLocation.getPosition() == NULL);
+        REQUIRE(myLocation.getPosition() == nullptr);
 
         action2.undo();
-        REQUIRE(myLocation.getPosition() != NULL);
-        REQUIRE(myLocation.getNote() != NULL);
+        REQUIRE(myLocation.getPosition() != nullptr);
+        REQUIRE(myLocation.getNote() != nullptr);
         REQUIRE(myLocation.getPosition()->getNotes().size() == 1);
 
         myLocation.setString(2);
@@ -47,5 +47,5 @@ TEST_CASE_METHOD(ActionFixture, "Actions/RemoveNote", "")
 
     action.undo();
     REQUIRE(myLocation.getPosition()->getNotes().size() == 2);
-    REQUIRE(myLocation.getNote() != NULL);
+    REQUIRE(myLocation.getNote() != nullptr);
 }

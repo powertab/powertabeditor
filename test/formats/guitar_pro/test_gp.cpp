@@ -15,7 +15,7 @@
   * along with this program.  If not, see <http://www.gnu.org/licenses/>.
 */
 
-#include <catch2/catch.hpp>
+#include <doctest/doctest.h>
 
 #include <app/appinfo.h>
 #include <formats/guitar_pro/guitarproimporter.h>
@@ -27,7 +27,7 @@ static void loadTest(GuitarProImporter &importer, const char *filename,
     importer.load(AppInfo::getAbsolutePath(filename), score);
 }
 
-TEST_CASE("Formats/GuitarPro/Barlines", "")
+TEST_CASE("Formats/GuitarPro/Barlines")
 {
     Score score;
     GuitarProImporter importer;
@@ -36,68 +36,81 @@ TEST_CASE("Formats/GuitarPro/Barlines", "")
     const System &system = score.getSystems()[0];
     auto barlines = system.getBarlines();
 
-    REQUIRE(barlines.size() == 6);
+    REQUIRE(barlines.size() == 5);
     REQUIRE(barlines[1].getBarType() == Barline::RepeatStart);
     REQUIRE(barlines[2].getBarType() == Barline::RepeatEnd);
     REQUIRE(barlines[2].getRepeatCount() == 2);
     REQUIRE(barlines[3].getBarType() == Barline::RepeatStart);
     REQUIRE(barlines[4].getBarType() == Barline::DoubleBar);
-    REQUIRE(barlines[5].getBarType() == Barline::RepeatEnd);
-    REQUIRE(barlines[5].getRepeatCount() == 4);
+
+    const System &system2 = score.getSystems()[1];
+    auto barlines2 = system2.getBarlines();
+    REQUIRE(barlines2[1].getBarType() == Barline::RepeatEnd);
+    REQUIRE(barlines2[1].getRepeatCount() == 4);
 }
 
-TEST_CASE("Formats/GuitarPro/RehearsalSigns", "")
+TEST_CASE("Formats/GuitarPro/RehearsalSigns")
 {
     Score score;
     GuitarProImporter importer;
     loadTest(importer, "data/rehearsal_signs.gp5", score);
 
-    const System &system = score.getSystems()[0];
-    auto barlines = system.getBarlines();
+    {
+        const Barline &barline = score.getSystems()[0].getBarlines()[2];
+        REQUIRE(barline.hasRehearsalSign());
+        REQUIRE(barline.getRehearsalSign().getDescription() == "Chorus");
+        REQUIRE(barline.getRehearsalSign().getLetters() == "A");
+    }
 
-    const Barline &barline1 = barlines[2];
-    const Barline &barline2 = barlines[3];
-
-    REQUIRE(barline1.hasRehearsalSign());
-    REQUIRE(barline1.getRehearsalSign().getDescription() == "Chorus");
-    REQUIRE(barline1.getRehearsalSign().getLetters() == "A");
-    REQUIRE(barline2.hasRehearsalSign());
-    REQUIRE(barline2.getRehearsalSign().getDescription() == "Solo");
-    REQUIRE(barline2.getRehearsalSign().getLetters() == "B");
+    {
+        const Barline &barline = score.getSystems()[1].getBarlines()[0];
+        REQUIRE(barline.hasRehearsalSign());
+        REQUIRE(barline.getRehearsalSign().getDescription() == "Solo");
+        REQUIRE(barline.getRehearsalSign().getLetters() == "B");
+    }
 }
 
-TEST_CASE("Formats/GuitarPro/KeySignatures", "")
+TEST_CASE("Formats/GuitarPro/KeySignatures")
 {
     Score score;
     GuitarProImporter importer;
     loadTest(importer, "data/keys.gp5", score);
 
-    const System &system = score.getSystems()[0];
-    auto barlines = system.getBarlines();
+    {
+        const System &system = score.getSystems()[0];
+        auto barlines = system.getBarlines();
 
-    REQUIRE(barlines[0].getKeySignature().getKeyType() == KeySignature::Major);
-    REQUIRE(barlines[0].getKeySignature().getNumAccidentals() == 1);
-    REQUIRE(barlines[0].getKeySignature().isVisible());
-    REQUIRE(barlines[0].getKeySignature().usesSharps());
+        REQUIRE(barlines[0].getKeySignature().getKeyType() ==
+                KeySignature::Major);
+        REQUIRE(barlines[0].getKeySignature().getNumAccidentals() == 1);
+        REQUIRE(barlines[0].getKeySignature().isVisible());
+        REQUIRE(barlines[0].getKeySignature().usesSharps());
 
-    REQUIRE(barlines[1].getKeySignature().getKeyType() == KeySignature::Major);
-    REQUIRE(barlines[1].getKeySignature().getNumAccidentals() == 1);
-    REQUIRE(barlines[1].getKeySignature().isVisible());
-    REQUIRE(barlines[1].getKeySignature().usesSharps() == false);
+        REQUIRE(barlines[1].getKeySignature().getKeyType() ==
+                KeySignature::Major);
+        REQUIRE(barlines[1].getKeySignature().getNumAccidentals() == 1);
+        REQUIRE(barlines[1].getKeySignature().isVisible());
+        REQUIRE(barlines[1].getKeySignature().usesSharps() == false);
 
-    REQUIRE(barlines[1].getKeySignature().getNumAccidentals() ==
-            barlines[2].getKeySignature().getNumAccidentals());
-    REQUIRE(!barlines[2].getKeySignature().isVisible());
+        REQUIRE(barlines[1].getKeySignature().getNumAccidentals() ==
+                barlines[2].getKeySignature().getNumAccidentals());
+        REQUIRE(!barlines[2].getKeySignature().isVisible());
+    }
 
-    REQUIRE(barlines[3].getKeySignature().getKeyType() == KeySignature::Minor);
-    REQUIRE(barlines[3].getKeySignature().getNumAccidentals() == 0);
-    REQUIRE(barlines[3].getKeySignature().isVisible());
-    REQUIRE(barlines[3].getKeySignature().isCancellation());
+    {
+        const System &system = score.getSystems()[1];
+        auto barlines = system.getBarlines();
+        REQUIRE(barlines[0].getKeySignature().getKeyType() ==
+                KeySignature::Minor);
+        REQUIRE(barlines[0].getKeySignature().getNumAccidentals() == 0);
+        REQUIRE(barlines[0].getKeySignature().isVisible());
+        REQUIRE(barlines[0].getKeySignature().isCancellation());
 
-    REQUIRE(!barlines[4].getKeySignature().isVisible());
+        REQUIRE(!barlines[1].getKeySignature().isVisible());
+    }
 }
 
-TEST_CASE("Formats/GuitarPro/TimeSignatures", "")
+TEST_CASE("Formats/GuitarPro/TimeSignatures")
 {
     Score score;
     GuitarProImporter importer;
@@ -129,7 +142,7 @@ TEST_CASE("Formats/GuitarPro/TimeSignatures", "")
     REQUIRE(barlines[3].getTimeSignature().isVisible() == false);
 }
 
-TEST_CASE("Formats/GuitarPro/AlternateEndings", "")
+TEST_CASE("Formats/GuitarPro/AlternateEndings")
 {
     Score score;
     GuitarProImporter importer;
@@ -146,7 +159,7 @@ TEST_CASE("Formats/GuitarPro/AlternateEndings", "")
     REQUIRE(endings[1].getNumbers()[0] == 3);
 }
 
-TEST_CASE("Formats/GuitarPro/Text", "")
+TEST_CASE("Formats/GuitarPro/Text")
 {
     Score score;
     GuitarProImporter importer;
@@ -160,7 +173,7 @@ TEST_CASE("Formats/GuitarPro/Text", "")
     REQUIRE(texts[1].getContents() == "bar");
 }
 
-TEST_CASE("Formats/GuitarPro/Positions", "")
+TEST_CASE("Formats/GuitarPro/Positions")
 {
     Score score;
     GuitarProImporter importer;
@@ -168,7 +181,7 @@ TEST_CASE("Formats/GuitarPro/Positions", "")
 
     const System &system = score.getSystems()[0];
     auto positions = system.getStaves()[0].getVoices()[0].getPositions();
-    REQUIRE(positions.size() == 11);
+    REQUIRE(positions.size() == 10);
 
     REQUIRE(positions[0].getDurationType() == Position::QuarterNote);
     REQUIRE(positions[0].hasProperty(Position::LetRing));
@@ -199,11 +212,14 @@ TEST_CASE("Formats/GuitarPro/Positions", "")
     REQUIRE(positions[8].getDurationType() == Position::EighthNote);
     REQUIRE(positions[8].hasProperty(Position::Sforzando));
 
-    REQUIRE(positions[10].getDurationType() == Position::WholeNote);
-    REQUIRE(positions[10].hasProperty(Position::TremoloPicking));
+    const System &system2 = score.getSystems()[1];
+    auto positions2 = system2.getStaves()[0].getVoices()[0].getPositions();
+
+    REQUIRE(positions2[0].getDurationType() == Position::WholeNote);
+    REQUIRE(positions2[0].hasProperty(Position::TremoloPicking));
 }
 
-TEST_CASE("Formats/GuitarPro/Notes", "")
+TEST_CASE("Formats/GuitarPro/Notes")
 {
     Score score;
     GuitarProImporter importer;
@@ -214,6 +230,7 @@ TEST_CASE("Formats/GuitarPro/Notes", "")
     REQUIRE(positions.size() == 16);
 
     REQUIRE(positions[1].getNotes()[0].hasProperty(Note::Tied));
+    REQUIRE(positions[1].getNotes()[0].getFretNumber() == 5);
     REQUIRE(positions[2].getNotes()[0].hasProperty(Note::Muted));
     REQUIRE(positions[3].getNotes()[0].hasProperty(Note::HammerOnOrPullOff));
     REQUIRE(positions[5].getNotes()[0].hasProperty(Note::NaturalHarmonic));
@@ -231,7 +248,7 @@ TEST_CASE("Formats/GuitarPro/Notes", "")
     REQUIRE(positions[12].getNotes()[0].hasProperty(Note::ShiftSlide));
 }
 
-TEST_CASE("Formats/GuitarPro/Tempos", "")
+TEST_CASE("Formats/GuitarPro/Tempos")
 {
     Score score;
     GuitarProImporter importer;
@@ -239,11 +256,16 @@ TEST_CASE("Formats/GuitarPro/Tempos", "")
 
     const System &system = score.getSystems()[0];
 
+#if 0
     REQUIRE(system.getTempoMarkers().size() == 2);
-    REQUIRE(system.getTempoMarkers()[1].getBeatsPerMinute() == 110);
+#else
+    // Currently, multiple tempo markers in bars aren't imported.
+    REQUIRE(system.getTempoMarkers().size() == 1);
+#endif
+    REQUIRE(system.getTempoMarkers()[0].getBeatsPerMinute() == 120);
 }
 
-TEST_CASE("Formats/GuitarPro/GraceNotes", "")
+TEST_CASE("Formats/GuitarPro/GraceNotes")
 {
     Score score;
     GuitarProImporter importer;
@@ -269,7 +291,7 @@ TEST_CASE("Formats/GuitarPro/GraceNotes", "")
     REQUIRE(positions[5].getDurationType() == Position::SixteenthNote);
 }
 
-TEST_CASE("Formats/GuitarPro/IrregularGroups", "")
+TEST_CASE("Formats/GuitarPro/IrregularGroups")
 {
     Score score;
     GuitarProImporter importer;
@@ -288,4 +310,195 @@ TEST_CASE("Formats/GuitarPro/IrregularGroups", "")
     REQUIRE(groups[2].getLength() == 6);
     REQUIRE(groups[2].getNotesPlayed() == 6);
     REQUIRE(groups[2].getNotesPlayedOver() == 4);
+}
+
+static void
+checkArtificialHarmonic(const Voice &voice, int start, int end,
+                        ChordName::Key key, ChordName::Variation variation,
+                        ArtificialHarmonic::Octave octave)
+{
+    for (int i = start; i <= end; ++i)
+    {
+        const Note &note = voice.getPositions()[i].getNotes()[0];
+        REQUIRE(note.hasArtificialHarmonic());
+
+        const ArtificialHarmonic &harmonic = note.getArtificialHarmonic();
+        REQUIRE(harmonic.getKey() == key);
+        REQUIRE(harmonic.getVariation() == variation);
+        REQUIRE(harmonic.getOctave() == octave);
+    }
+}
+
+TEST_CASE("Formats/GuitarPro/Harmonics")
+{
+    Score score;
+    GuitarProImporter importer;
+    importer.load(AppInfo::getAbsolutePath("data/harmonics.gp5"), score);
+
+    using Octave = ArtificialHarmonic::Octave;
+
+    {
+        const Voice &voice =
+            score.getSystems()[0].getStaves()[0].getVoices()[0];
+
+        checkArtificialHarmonic(voice, 1, 1, ChordName::F, ChordName::NoVariation,
+                       Octave::Loco);
+        checkArtificialHarmonic(voice, 2, 3, ChordName::C, ChordName::NoVariation,
+                       Octave::Octave8va);
+        checkArtificialHarmonic(voice, 4, 5, ChordName::F, ChordName::NoVariation,
+                       Octave::Octave8va);
+        checkArtificialHarmonic(voice, 6, 8, ChordName::A, ChordName::NoVariation,
+                       Octave::Octave8va);
+        checkArtificialHarmonic(voice, 9, 9, ChordName::C, ChordName::NoVariation,
+                       Octave::Octave15ma);
+        checkArtificialHarmonic(voice, 10, 11, ChordName::D, ChordName::Sharp,
+                       Octave::Octave15ma);
+    }
+
+    {
+        const Voice &voice =
+            score.getSystems()[1].getStaves()[0].getVoices()[0];
+
+        checkArtificialHarmonic(voice, 0, 2, ChordName::D, ChordName::Sharp,
+                       Octave::Octave15ma);
+        checkArtificialHarmonic(voice, 3, 5, ChordName::F, ChordName::NoVariation,
+                       Octave::Octave15ma);
+
+        REQUIRE(voice.getPositions()[6].getNotes()[0].hasProperty(
+            Note::NaturalHarmonic));
+        REQUIRE(voice.getPositions()[7].getNotes()[0].hasTappedHarmonic());
+        REQUIRE(voice.getPositions()[7].getNotes()[0].getTappedHarmonicFret() ==
+                9);
+    }
+}
+
+TEST_CASE("Formats/GuitarPro/Directions")
+{
+    Score score;
+    GuitarProImporter importer;
+    importer.load(AppInfo::getAbsolutePath("data/directions.gp5"), score);
+
+    {
+        const System &system = score.getSystems()[0];
+        REQUIRE(system.getDirections().size() == 5);
+
+        {
+            const Direction &dir = system.getDirections()[0];
+            REQUIRE(dir.getSymbols().size() == 1);
+            REQUIRE(dir.getSymbols()[0].getSymbolType() ==
+                    DirectionSymbol::SegnoSegno);
+        }
+        {
+            const Direction &dir = system.getDirections()[1];
+            REQUIRE(dir.getSymbols().size() == 2);
+            REQUIRE(dir.getSymbols()[0].getSymbolType() ==
+                    DirectionSymbol::DaCapo);
+            REQUIRE(dir.getSymbols()[1].getSymbolType() ==
+                    DirectionSymbol::DalSegnoAlCoda);
+        }
+        {
+            const Direction &dir = system.getDirections()[2];
+            REQUIRE(dir.getSymbols().size() == 1);
+            REQUIRE(dir.getSymbols()[0].getSymbolType() ==
+                    DirectionSymbol::Segno);
+        }
+        {
+            const Direction &dir = system.getDirections()[3];
+            REQUIRE(dir.getSymbols().size() == 3);
+            REQUIRE(dir.getSymbols()[0].getSymbolType() ==
+                    DirectionSymbol::DalSegno);
+            REQUIRE(dir.getSymbols()[1].getSymbolType() ==
+                    DirectionSymbol::DalSegnoSegnoAlFine);
+            REQUIRE(dir.getSymbols()[2].getSymbolType() ==
+                    DirectionSymbol::ToCoda);
+        }
+        {
+            const Direction &dir = system.getDirections()[4];
+            REQUIRE(dir.getSymbols().size() == 2);
+            REQUIRE(dir.getSymbols()[0].getSymbolType() ==
+                    DirectionSymbol::Fine);
+            REQUIRE(dir.getSymbols()[1].getSymbolType() ==
+                    DirectionSymbol::ToDoubleCoda);
+        }
+    }
+
+    {
+        const System &system = score.getSystems()[1];
+        REQUIRE(system.getDirections().size() == 1);
+
+        const Direction &dir = system.getDirections()[0];
+        REQUIRE(dir.getSymbols().size() == 2);
+        REQUIRE(dir.getSymbols()[0].getSymbolType() == DirectionSymbol::Coda);
+        REQUIRE(dir.getSymbols()[1].getSymbolType() ==
+                DirectionSymbol::DoubleCoda);
+    }
+}
+
+TEST_CASE("Formats/GuitarPro/Bends")
+{
+    Score score;
+    GuitarProImporter importer;
+    importer.load(AppInfo::getAbsolutePath("data/bends.gp5"), score);
+
+    const Voice &voice = score.getSystems()[0].getStaves()[0].getVoices()[0];
+    {
+        const Note &note = voice.getPositions()[0].getNotes()[0];
+        REQUIRE(note.hasBend());
+        REQUIRE(note.getBend().getType() == Bend::NormalBend);
+        REQUIRE(note.getBend().getBentPitch() == 2);
+    }
+    {
+        const Note &note = voice.getPositions()[1].getNotes()[0];
+        REQUIRE(note.hasBend());
+        REQUIRE(note.getBend().getType() == Bend::NormalBend);
+        REQUIRE(note.getBend().getBentPitch() == 2);
+    }
+    {
+        const Note &note = voice.getPositions()[2].getNotes()[0];
+        REQUIRE(note.hasBend());
+        REQUIRE(note.getBend().getType() == Bend::BendAndHold);
+        REQUIRE(note.getBend().getBentPitch() == 4);
+    }
+    {
+        const Note &note = voice.getPositions()[3].getNotes()[0];
+        REQUIRE(note.hasBend());
+        REQUIRE(note.getBend().getType() == Bend::GradualRelease);
+        REQUIRE(note.getBend().getBentPitch() == 4);
+        REQUIRE(note.getBend().getReleasePitch() == 2);
+    }
+    {
+        const Note &note = voice.getPositions()[4].getNotes()[0];
+        REQUIRE(note.hasBend());
+        REQUIRE(note.getBend().getType() == Bend::PreBendAndHold);
+        REQUIRE(note.getBend().getBentPitch() == 4);
+        REQUIRE(note.getBend().getReleasePitch() == 6);
+    }
+    {
+        const Note &note = voice.getPositions()[5].getNotes()[0];
+        REQUIRE(note.hasBend());
+        REQUIRE(note.getBend().getType() == Bend::PreBendAndHold);
+        REQUIRE(note.getBend().getBentPitch() == 6);
+        REQUIRE(note.getBend().getReleasePitch() == 6);
+    }
+    {
+        const Note &note = voice.getPositions()[6].getNotes()[0];
+        REQUIRE(note.hasBend());
+        // This one doesn't translate perfectly from how GP's bends work.
+        REQUIRE(note.getBend().getType() == Bend::BendAndRelease);
+        REQUIRE(note.getBend().getBentPitch() == 10);
+        REQUIRE(note.getBend().getReleasePitch() == 0);
+    }
+    {
+        const Note &note = voice.getPositions()[7].getNotes()[0];
+        REQUIRE(note.hasBend());
+        REQUIRE(note.getBend().getType() == Bend::PreBendAndRelease);
+        REQUIRE(note.getBend().getBentPitch() == 4);
+        REQUIRE(note.getBend().getReleasePitch() == 0);
+    }
+    {
+        const Note &note = voice.getPositions()[8].getNotes()[0];
+        REQUIRE(note.hasBend());
+        REQUIRE(note.getBend().getType() == Bend::PreBend);
+        REQUIRE(note.getBend().getBentPitch() == 4);
+    }
 }

@@ -35,6 +35,7 @@
 #include <score/tempomarker.h>
 #include <score/timesignature.h>
 #include <score/utils.h>
+#include <score/utils/scorepolisher.h>
 #include <score/voiceutils.h>
 
 #include <iostream>
@@ -46,9 +47,8 @@ convertScoreInfo(const Gp7::ScoreInfo &gp_info, Score &score)
     ScoreInfo info;
     SongData data;
 
-    // No support for subtitle.
-    // TODO - consider adding this to SongData.
     data.setTitle(gp_info.myTitle);
+    data.setSubtitle(gp_info.mySubtitle);
     data.setArtist(gp_info.myArtist);
 
     data.setAudioReleaseInfo(SongData::AudioReleaseInfo(
@@ -75,7 +75,7 @@ convertPlayers(const std::vector<Gp7::Track> &tracks, Score &score,
     for (const Gp7::Track &track : tracks)
     {
         assert(!track.mySounds.empty());
-        const int instrument_idx = score.getInstruments().size();
+        const int instrument_idx = static_cast<int>(score.getInstruments().size());
 
         for (const Gp7::Sound &sound : track.mySounds)
         {
@@ -103,7 +103,7 @@ convertPlayers(const std::vector<Gp7::Track> &tracks, Score &score,
             tuning.setCapo(staff.myCapo);
             player.setTuning(tuning);
 
-            const int player_idx = score.getPlayers().size();
+            const int player_idx = static_cast<int>(score.getPlayers().size());
             score.insertPlayer(player);
 
             // Each player will be assigned its own staff, and is initially
@@ -241,9 +241,9 @@ convertNote(Position &position, const Gp7::Beat &gp_beat,
     using GpAccentType = Gp7::Note::AccentType;
     if (gp_note.myAccentTypes.test(int(GpAccentType::Staccato)))
         position.setProperty(Position::Staccato);
-    if (gp_note.myAccentTypes.test(int(GpAccentType::Accent)))
-        position.setProperty(Position::Sforzando);
     if (gp_note.myAccentTypes.test(int(GpAccentType::HeavyAccent)))
+        position.setProperty(Position::Sforzando);
+    if (gp_note.myAccentTypes.test(int(GpAccentType::Accent)))
         position.setProperty(Position::Marcato);
 
     using GpSlideType = Gp7::Note::SlideType;
@@ -326,31 +326,27 @@ convertNote(Position &position, const Gp7::Beat &gp_beat,
 
     if (gp_note.myLeftFinger)
     {
+        using Finger = LeftHandFingering::Finger;
         using FingerType = Gp7::Note::FingerType;
         switch (*gp_note.myLeftFinger)
         {
             case FingerType::Open:
-                note.setLeftHandFingering(
-                    LeftHandFingering(LeftHandFingering::None));
+                note.setLeftHandFingering(LeftHandFingering(Finger::None));
                 break;
             case FingerType::C:
-                note.setLeftHandFingering(
-                    LeftHandFingering(LeftHandFingering::Little));
+                note.setLeftHandFingering(LeftHandFingering(Finger::Little));
                 break;
             case FingerType::A:
-                note.setLeftHandFingering(
-                    LeftHandFingering(LeftHandFingering::Ring));
+                note.setLeftHandFingering(LeftHandFingering(Finger::Ring));
                 break;
             case FingerType::M:
-                note.setLeftHandFingering(
-                    LeftHandFingering(LeftHandFingering::Middle));
+                note.setLeftHandFingering(LeftHandFingering(Finger::Middle));
                 break;
             case FingerType::I:
-                note.setLeftHandFingering(
-                    LeftHandFingering(LeftHandFingering::Index));
+                note.setLeftHandFingering(LeftHandFingering(Finger::Index));
                 break;
             case FingerType::P:
-                // TODO - thumb is not currently support for fingerings.
+                note.setLeftHandFingering(LeftHandFingering(Finger::Thumb));
                 break;
         }
     }
@@ -950,7 +946,7 @@ convertSystem(const Gp7::Document &doc, Score &score, int bar_begin,
     int system_bar_idx = 0;
     for (int bar_idx = bar_begin; bar_idx < bar_end; ++bar_idx)
     {
-        const int num_staves = score.getPlayers().size();
+        const int num_staves = static_cast<int>(score.getPlayers().size());
         const Gp7::MasterBar &master_bar = doc.myMasterBars.at(bar_idx);
 
         // If the previous bar was a repeat end, and this master bar is a
@@ -1112,11 +1108,11 @@ Gp7::convert(const Gp7::Document &doc, Score &score)
     // The multi-track layout is sometimes invalid (particularly for .gpx
     // files). So, fall back to the first track's layout if we need to.
     std::vector<int> layout = doc.myScoreInfo.myScoreSystemsLayout;
-    if (!isValidLayout(layout, doc.myMasterBars.size()) &&
+    if (!isValidLayout(layout, static_cast<int>(doc.myMasterBars.size())) &&
         !doc.myTracks.empty())
     {
         layout = doc.myTracks[0].mySystemsLayout;
-        assert(isValidLayout(layout, doc.myMasterBars.size()));
+        assert(isValidLayout(layout, static_cast<int>(doc.myMasterBars.size())));
     }
 
     int bar_idx = 0;
@@ -1129,4 +1125,6 @@ Gp7::convert(const Gp7::Document &doc, Score &score)
     }
 
     ScoreUtils::adjustRehearsalSigns(score);
+    ScoreUtils::polishScore(score);
+    ScoreUtils::addStandardFilters(score);
 }

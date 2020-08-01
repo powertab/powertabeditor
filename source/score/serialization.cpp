@@ -17,6 +17,9 @@
 
 #include "serialization.h"
 
+#include <boost/date_time/gregorian/greg_date.hpp>
+#include <boost/date_time/gregorian/formatters_limited.hpp>
+#include <boost/date_time/gregorian/parsers.hpp>
 #include <iostream>
 #include <rapidjson/error/en.h>
 
@@ -63,6 +66,15 @@ FileVersion InputArchive::version() const
     return myVersion;
 }
 
+void
+InputArchive::read(Util::Date &date)
+{
+    std::string date_str;
+    read(date_str);
+    auto greg_date = boost::gregorian::from_undelimited_string(date_str);
+    date = Util::Date(greg_date.year(), greg_date.month(), greg_date.day());
+}
+
 OutputArchive::OutputArchive(std::ostream &os, FileVersion version)
     : myWriteStream(os), myStream(myWriteStream), myVersion(version)
 {
@@ -74,5 +86,12 @@ OutputArchive::OutputArchive(std::ostream &os, FileVersion version)
 OutputArchive::~OutputArchive()
 {
     myStream.EndObject();
+}
+
+void
+OutputArchive::write(const Util::Date &date)
+{
+    write(boost::gregorian::to_iso_string(
+        boost::gregorian::date(date.year(), date.month(), date.day())));
 }
 }

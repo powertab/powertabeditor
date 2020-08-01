@@ -15,13 +15,13 @@
   * along with this program.  If not, see <http://www.gnu.org/licenses/>.
 */
   
-#include <catch2/catch.hpp>
+#include <doctest/doctest.h>
 
 #include <app/appinfo.h>
 #include <formats/powertab/powertabimporter.h>
 #include <score/score.h>
 
-TEST_CASE("Score/Score/Systems", "")
+TEST_CASE("Score/Score/Systems")
 {
     Score score;
 
@@ -34,7 +34,7 @@ TEST_CASE("Score/Score/Systems", "")
     REQUIRE(score.getSystems().size() == 0);
 }
 
-TEST_CASE("Score/Score/Players", "")
+TEST_CASE("Score/Score/Players")
 {
     Score score;
 
@@ -47,7 +47,7 @@ TEST_CASE("Score/Score/Players", "")
     REQUIRE(score.getPlayers().size() == 0);
 }
 
-TEST_CASE("Score/Score/Instruments", "")
+TEST_CASE("Score/Score/Instruments")
 {
     Score score;
 
@@ -60,18 +60,18 @@ TEST_CASE("Score/Score/Instruments", "")
     REQUIRE(score.getInstruments().size() == 0);
 }
 
-TEST_CASE("Score/Score/ViewFilters", "")
+TEST_CASE("Score/Score/ViewFilters")
 {
     Score score;
 
     REQUIRE(score.getViewFilters().size() == 0);
 
     ViewFilter filter1;
-    filter1.addRule(FilterRule(FilterRule::PLAYER_NAME, "foo"));
+    filter1.addRule(FilterRule(FilterRule::Subject::PlayerName, "foo"));
     score.insertViewFilter(filter1);
 
     ViewFilter filter2;
-    filter2.addRule(FilterRule(FilterRule::PLAYER_NAME, "bar"));
+    filter2.addRule(FilterRule(FilterRule::Subject::PlayerName, "bar"));
     score.insertViewFilter(filter2);
 
     REQUIRE(score.getViewFilters().size() == 2);
@@ -81,7 +81,7 @@ TEST_CASE("Score/Score/ViewFilters", "")
 }
 
 // Verify that we don't rely on the order of JSON keys (see bug #294).
-TEST_CASE("Score/Score/Deserialization", "")
+TEST_CASE("Score/Score/Deserialization")
 {
     Score score;
     PowerTabImporter importer;

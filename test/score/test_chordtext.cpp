@@ -15,12 +15,12 @@
   * along with this program.  If not, see <http://www.gnu.org/licenses/>.
 */
   
-#include <catch2/catch.hpp>
+#include <doctest/doctest.h>
 
 #include <score/chordtext.h>
 #include "test_serialization.h"
 
-TEST_CASE("Score/ChordText/Serialization", "")
+TEST_CASE("Score/ChordText/Serialization")
 {
     ChordName name;
     name.setNoChord(true);

@@ -15,12 +15,12 @@
   * along with this program.  If not, see <http://www.gnu.org/licenses/>.
 */
   
-#include <catch2/catch.hpp>
+#include <doctest/doctest.h>
 
 #include <actions/editinstrument.h>
 #include <score/score.h>
 
-TEST_CASE("Actions/EditInstrument", "")
+TEST_CASE("Actions/EditInstrument")
 {
     Score score;
     Instrument oldInstrument;

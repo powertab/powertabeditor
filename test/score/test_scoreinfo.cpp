@@ -15,12 +15,12 @@
   * along with this program.  If not, see <http://www.gnu.org/licenses/>.
 */
   
-#include <catch2/catch.hpp>
+#include <doctest/doctest.h>
 
 #include <score/scoreinfo.h>
 #include "test_serialization.h"
 
-TEST_CASE("Score/ScoreInfo/ChangeType", "")
+TEST_CASE("Score/ScoreInfo/ChangeType")
 {
     ScoreInfo info;
 
@@ -34,7 +34,7 @@ TEST_CASE("Score/ScoreInfo/ChangeType", "")
     REQUIRE_NOTHROW(info.getLessonData());
 }
 
-TEST_CASE("Score/ScoreInfo/Serialization", "")
+TEST_CASE("Score/ScoreInfo/Serialization")
 {
     ScoreInfo info;
 	SongData data;

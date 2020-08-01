@@ -15,13 +15,13 @@
   * along with this program.  If not, see <http://www.gnu.org/licenses/>.
 */
   
-#include <catch2/catch.hpp>
+#include <doctest/doctest.h>
 
 #include <score/generalmidi.h>
 #include <score/player.h>
 #include "test_serialization.h"
 
-TEST_CASE("Score/Player/Serialization", "")
+TEST_CASE("Score/Player/Serialization")
 {
     Tuning tuning;
     std::vector<uint8_t> notes;

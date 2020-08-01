@@ -11,8 +11,6 @@
 
 #include "powertabfileheader.h"
 
-#include <boost/date_time/gregorian/gregorian_types.hpp> // for day_clock
-
 #include "powertabinputstream.h"
 #include "powertaboutputstream.h"
 
@@ -588,10 +586,8 @@ std::string PowerTabFileHeader::GetSongReleaseTitle() const
 /// Sets the song bootleg date.
 /// @param date Date to set.
 /// @return True if the bootleg date was set, false if not
-bool PowerTabFileHeader::SetSongBootlegDate(boost::gregorian::date date)
+bool PowerTabFileHeader::SetSongBootlegDate(Util::Date date)
 {
-    PTB_CHECK_THAT(!date.is_not_a_date(), false);
-
     m_songData.bootlegData.month = date.month();
     m_songData.bootlegData.day = date.day();
     m_songData.bootlegData.year = date.year();
@@ -601,21 +597,16 @@ bool PowerTabFileHeader::SetSongBootlegDate(boost::gregorian::date date)
 
 /// Gets the song bootleg date
 /// @return The song bootleg date
-boost::gregorian::date PowerTabFileHeader::GetSongBootlegDate() const
+Util::Date PowerTabFileHeader::GetSongBootlegDate() const
 {
-    return boost::gregorian::date(m_songData.bootlegData.year,
-                                  m_songData.bootlegData.month,
-                                  m_songData.bootlegData.day);
+    return Util::Date(m_songData.bootlegData.year, m_songData.bootlegData.month,
+                      m_songData.bootlegData.day);
 }
 
 // Operations
 /// Loads the default settings for the header
 void PowerTabFileHeader::LoadDefaults()
 {
-    // Fetch today's date, which is used for initializing year/month/day fields.
-    using namespace boost::gregorian;
-    const date today = day_clock::local_day();
-
     m_version = FILEVERSION_CURRENT;
     m_fileType = FILETYPE_SONG;
 
@@ -627,16 +618,16 @@ void PowerTabFileHeader::LoadDefaults()
 
     m_songData.audioData.type = AUDIORELEASETYPE_ALBUM;
     m_songData.audioData.title.clear();
-    m_songData.audioData.year = today.year();
+    m_songData.audioData.year = -1;
     m_songData.audioData.live = 0;
 
     m_songData.videoData.title.clear();
     m_songData.videoData.live = 0;
 
     m_songData.bootlegData.title.clear();
-    m_songData.bootlegData.month = today.month();
-    m_songData.bootlegData.day = today.day();
-    m_songData.bootlegData.year = today.year();
+    m_songData.bootlegData.month = -1;
+    m_songData.bootlegData.day = -1;
+    m_songData.bootlegData.year = -1;
 
     m_songData.authorType = AUTHORTYPE_AUTHORKNOWN;
 

@@ -22,7 +22,6 @@
 #include <formats/gp7/parser.h>
 #include <formats/gp7/converter.h>
 #include <score/score.h>
-#include <score/utils/scorepolisher.h>
 
 #include <boost/filesystem/fstream.hpp>
 #include <pugixml.hpp>
@@ -52,7 +51,4 @@ GpxImporter::load(const boost::filesystem::path &filename, Score &score)
 
     Gp7::Document doc = Gp7::parse(xml_doc, Gp7::Version::V6);
     Gp7::convert(doc, score);
-
-    ScoreUtils::polishScore(score);
-    ScoreUtils::addStandardFilters(score);
 }

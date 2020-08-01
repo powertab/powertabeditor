@@ -15,20 +15,21 @@
   * along with this program.  If not, see <http://www.gnu.org/licenses/>.
 */
   
-#include <catch2/catch.hpp>
+#include <doctest/doctest.h>
 
 #include <actions/editviewfilters.h>
 #include <score/score.h>
 
-TEST_CASE("Actions/EditViewFilters", "")
+TEST_CASE("Actions/EditViewFilters")
 {
     Score score;
 
     ViewFilter filter1;
-    filter1.addRule(FilterRule(FilterRule::NUM_STRINGS, FilterRule::EQUAL, 7));
+    filter1.addRule(FilterRule(FilterRule::Subject::NumStrings,
+                               FilterRule::Operation::Equal, 7));
     ViewFilter filter2;
-    filter2.addRule(
-        FilterRule(FilterRule::NUM_STRINGS, FilterRule::LESS_THAN_EQUAL, 5));
+    filter2.addRule(FilterRule(FilterRule::Subject::NumStrings,
+                               FilterRule::Operation::LessThanEqual, 5));
 
     score.insertViewFilter(filter2);
 

@@ -18,7 +18,7 @@
 #ifndef TEST_SCORE_SERIALIZATION_H
 #define TEST_SCORE_SERIALIZATION_H
 
-#include <catch2/catch.hpp>
+#include <doctest/doctest.h>
 
 #include <score/serialization.h>
 #include <sstream>

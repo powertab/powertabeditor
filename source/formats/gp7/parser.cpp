@@ -751,6 +751,47 @@ parseRhythms(const pugi::xml_node &rhythms_node)
     return rhythms;
 }
 
+void
+Gp7::Document::addBar(MasterBar &master_bar, Bar bar)
+{
+    const int bar_id = static_cast<int>(myBars.size());
+    myBars[bar_id] = std::move(bar);
+    master_bar.myBarIds.push_back(bar_id);
+}
+
+void
+Gp7::Document::addVoice(Bar &bar, Voice voice)
+{
+    const int voice_id = static_cast<int>(myVoices.size());
+    myVoices[voice_id] = std::move(voice);
+    bar.myVoiceIds.push_back(voice_id);
+}
+
+void
+Gp7::Document::addBeat(Voice &voice, Beat beat)
+{
+    const int beat_id = static_cast<int>(myBeats.size());
+    myBeats[beat_id] = std::move(beat);
+    voice.myBeatIds.push_back(beat_id);
+}
+
+void
+Gp7::Document::addNote(Beat &beat, Note note)
+{
+    const int note_id = static_cast<int>(myNotes.size());
+    myNotes[note_id] = std::move(note);
+    beat.myNoteIds.push_back(note_id);
+}
+
+void
+Gp7::Document::addRhythm(Beat &beat, Rhythm rhythm)
+{
+    // TODO - consolidate identical rhythms?
+    const int rhythm_id = static_cast<int>(myRhythms.size());
+    myRhythms[rhythm_id] = std::move(rhythm);
+    beat.myRhythmId = rhythm_id;
+}
+
 Gp7::Document
 Gp7::parse(const pugi::xml_document &root, Version version)
 {

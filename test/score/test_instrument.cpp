@@ -15,13 +15,13 @@
   * along with this program.  If not, see <http://www.gnu.org/licenses/>.
 */
   
-#include <catch2/catch.hpp>
+#include <doctest/doctest.h>
 
 #include <score/generalmidi.h>
 #include <score/instrument.h>
 #include "test_serialization.h"
 
-TEST_CASE("Score/Instrument/Serialization", "")
+TEST_CASE("Score/Instrument/Serialization")
 {
     Instrument instrument;
     instrument.setDescription("Clean Guitar");

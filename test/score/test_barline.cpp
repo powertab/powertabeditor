@@ -16,12 +16,12 @@
   * along with this program.  If not, see <http://www.gnu.org/licenses/>.
 */
   
-#include <catch2/catch.hpp>
+#include <doctest/doctest.h>
 
 #include <score/barline.h>
 #include "test_serialization.h"
 
-TEST_CASE("Score/Barline/RehearsalSign", "")
+TEST_CASE("Score/Barline/RehearsalSign")
 {
     Barline barline;
 
@@ -32,7 +32,7 @@ TEST_CASE("Score/Barline/RehearsalSign", "")
     REQUIRE(barline.getRehearsalSign().getDescription() == "Solo");
 }
 
-TEST_CASE("Score/Barline/Serialization", "")
+TEST_CASE("Score/Barline/Serialization")
 {
     Barline barline;
     barline.setBarType(Barline::RepeatEnd);

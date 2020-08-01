@@ -1,3 +1,3 @@
 #include <score/precompiled.h>
 
-#include <catch.hpp>
+#include <doctest/doctest.h>

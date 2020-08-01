@@ -15,11 +15,11 @@
   * along with this program.  If not, see <http://www.gnu.org/licenses/>.
 */
   
-#include <catch2/catch.hpp>
+#include <doctest/doctest.h>
 
 #include <app/documentmanager.h>
 
-TEST_CASE("App/DocumentManager", "")
+TEST_CASE("App/DocumentManager")
 {
     DocumentManager manager;
 
@@ -42,7 +42,7 @@ TEST_CASE("App/DocumentManager", "")
     REQUIRE(!manager.hasOpenDocuments());
 }
 
-TEST_CASE("App/Document", "")
+TEST_CASE("App/Document")
 {
     Document document;
 

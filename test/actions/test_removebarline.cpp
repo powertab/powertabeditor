@@ -15,13 +15,13 @@
   * along with this program.  If not, see <http://www.gnu.org/licenses/>.
 */
 
-#include <catch2/catch.hpp>
+#include <doctest/doctest.h>
 
 #include <actions/removebarline.h>
 #include <score/score.h>
 #include <score/system.h>
 
-TEST_CASE("Actions/RemoveBarline", "")
+TEST_CASE("Actions/RemoveBarline")
 {
     Score score;
     System system;

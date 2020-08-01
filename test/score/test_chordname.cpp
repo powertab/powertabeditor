@@ -15,13 +15,13 @@
   * along with this program.  If not, see <http://www.gnu.org/licenses/>.
 */
   
-#include <catch2/catch.hpp>
+#include <doctest/doctest.h>
 
 #include <score/chordname.h>
 #include <util/tostring.h>
 #include "test_serialization.h"
 
-TEST_CASE("Score/ChordName/Serialization", "")
+TEST_CASE("Score/ChordName/Serialization")
 {
     ChordName name;
     name.setNoChord(true);
@@ -32,7 +32,7 @@ TEST_CASE("Score/ChordName/Serialization", "")
     Serialization::test("chord_name", name);
 }
 
-TEST_CASE("Score/ChordName/ToString", "")
+TEST_CASE("Score/ChordName/ToString")
 {
     ChordName chord;
 

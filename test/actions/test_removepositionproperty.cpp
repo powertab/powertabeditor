@@ -15,13 +15,13 @@
   * along with this program.  If not, see <http://www.gnu.org/licenses/>.
 */
   
-#include <catch2/catch.hpp>
+#include <doctest/doctest.h>
 
 #include <actions/removepositionproperty.h>
 #include <score/position.h>
 #include "actionfixture.h"
 
-TEST_CASE_METHOD(ActionFixture, "Actions/RemovePositionProperty", "")
+TEST_CASE_FIXTURE(ActionFixture, "Actions/RemovePositionProperty")
 {
     myLocation.getPosition()->setProperty(Position::Tap);
     RemovePositionProperty action(myLocation, Position::Tap, "Tap");

@@ -2,12 +2,15 @@
 <ui version="4.0">
  <class>VolumeSwellDialog</class>
  <widget class="QDialog" name="VolumeSwellDialog">
+  <property name="windowModality">
+   <enum>Qt::WindowModal</enum>
+  </property>
   <property name="geometry">
    <rect>
     <x>0</x>
     <y>0</y>
-    <width>542</width>
-    <height>206</height>
+    <width>513</width>
+    <height>229</height>
    </rect>
   </property>
   <property name="windowTitle">
@@ -22,6 +25,9 @@
      <property name="fieldGrowthPolicy">
       <enum>QFormLayout::FieldsStayAtSizeHint</enum>
      </property>
+     <property name="labelAlignment">
+      <set>Qt::AlignRight|Qt::AlignTrailing|Qt::AlignVCenter</set>
+     </property>
      <item row="0" column="0">
       <widget class="QLabel" name="startVolumeLabel">
        <property name="text">
@@ -32,7 +38,7 @@
      <item row="0" column="1">
       <layout class="QHBoxLayout" name="startVolumeLayout">
        <property name="spacing">
-        <number>5</number>
+        <number>0</number>
        </property>
        <item>
         <widget class="QToolButton" name="volumeOffButtonStart">
@@ -41,6 +47,12 @@
            <horstretch>0</horstretch>
            <verstretch>0</verstretch>
           </sizepolicy>
+         </property>
+         <property name="maximumSize">
+          <size>
+           <width>32</width>
+           <height>32</height>
+          </size>
          </property>
          <property name="autoFillBackground">
           <bool>false</bool>
@@ -67,6 +79,12 @@
        </item>
        <item>
         <widget class="QToolButton" name="pppButtonStart">
+         <property name="maximumSize">
+          <size>
+           <width>32</width>
+           <height>32</height>
+          </size>
+         </property>
          <property name="text">
           <string/>
          </property>
@@ -90,6 +108,12 @@
        </item>
        <item>
         <widget class="QToolButton" name="ppButtonStart">
+         <property name="maximumSize">
+          <size>
+           <width>32</width>
+           <height>32</height>
+          </size>
+         </property>
          <property name="text">
           <string/>
          </property>
@@ -113,6 +137,12 @@
        </item>
        <item>
         <widget class="QToolButton" name="pButtonStart">
+         <property name="maximumSize">
+          <size>
+           <width>32</width>
+           <height>32</height>
+          </size>
+         </property>
          <property name="text">
           <string/>
          </property>
@@ -136,6 +166,12 @@
        </item>
        <item>
         <widget class="QToolButton" name="mpButtonStart">
+         <property name="maximumSize">
+          <size>
+           <width>32</width>
+           <height>32</height>
+          </size>
+         </property>
          <property name="text">
           <string/>
          </property>
@@ -159,6 +195,12 @@
        </item>
        <item>
         <widget class="QToolButton" name="mfButtonStart">
+         <property name="maximumSize">
+          <size>
+           <width>32</width>
+           <height>32</height>
+          </size>
+         </property>
          <property name="text">
           <string/>
          </property>
@@ -182,6 +224,12 @@
        </item>
        <item>
         <widget class="QToolButton" name="fButtonStart">
+         <property name="maximumSize">
+          <size>
+           <width>32</width>
+           <height>32</height>
+          </size>
+         </property>
          <property name="text">
           <string/>
          </property>
@@ -205,6 +253,12 @@
        </item>
        <item>
         <widget class="QToolButton" name="ffButtonStart">
+         <property name="maximumSize">
+          <size>
+           <width>32</width>
+           <height>32</height>
+          </size>
+         </property>
          <property name="text">
           <string/>
          </property>
@@ -228,6 +282,12 @@
        </item>
        <item>
         <widget class="QToolButton" name="fffButtonStart">
+         <property name="maximumSize">
+          <size>
+           <width>32</width>
+           <height>32</height>
+          </size>
+         </property>
          <property name="text">
           <string/>
          </property>
@@ -261,7 +321,7 @@
      <item row="1" column="1">
       <layout class="QHBoxLayout" name="endVolumeLayout">
        <property name="spacing">
-        <number>5</number>
+        <number>0</number>
        </property>
        <item>
         <widget class="QToolButton" name="volumeOffButtonEnd">
@@ -270,6 +330,12 @@
            <horstretch>0</horstretch>
            <verstretch>0</verstretch>
           </sizepolicy>
+         </property>
+         <property name="maximumSize">
+          <size>
+           <width>32</width>
+           <height>32</height>
+          </size>
          </property>
          <property name="autoFillBackground">
           <bool>false</bool>
@@ -296,6 +362,12 @@
        </item>
        <item>
         <widget class="QToolButton" name="pppButtonEnd">
+         <property name="maximumSize">
+          <size>
+           <width>32</width>
+           <height>32</height>
+          </size>
+         </property>
          <property name="text">
           <string/>
          </property>
@@ -319,6 +391,12 @@
        </item>
        <item>
         <widget class="QToolButton" name="ppButtonEnd">
+         <property name="maximumSize">
+          <size>
+           <width>32</width>
+           <height>32</height>
+          </size>
+         </property>
          <property name="text">
           <string/>
          </property>
@@ -342,6 +420,12 @@
        </item>
        <item>
         <widget class="QToolButton" name="pButtonEnd">
+         <property name="maximumSize">
+          <size>
+           <width>32</width>
+           <height>32</height>
+          </size>
+         </property>
          <property name="text">
           <string/>
          </property>
@@ -365,6 +449,12 @@
        </item>
        <item>
         <widget class="QToolButton" name="mpButtonEnd">
+         <property name="maximumSize">
+          <size>
+           <width>32</width>
+           <height>32</height>
+          </size>
+         </property>
          <property name="text">
           <string/>
          </property>
@@ -388,6 +478,12 @@
        </item>
        <item>
         <widget class="QToolButton" name="mfButtonEnd">
+         <property name="maximumSize">
+          <size>
+           <width>32</width>
+           <height>32</height>
+          </size>
+         </property>
          <property name="text">
           <string/>
          </property>
@@ -411,6 +507,12 @@
        </item>
        <item>
         <widget class="QToolButton" name="fButtonEnd">
+         <property name="maximumSize">
+          <size>
+           <width>32</width>
+           <height>32</height>
+          </size>
+         </property>
          <property name="text">
           <string/>
          </property>
@@ -434,6 +536,12 @@
        </item>
        <item>
         <widget class="QToolButton" name="ffButtonEnd">
+         <property name="maximumSize">
+          <size>
+           <width>32</width>
+           <height>32</height>
+          </size>
+         </property>
          <property name="text">
           <string/>
          </property>
@@ -457,6 +565,12 @@
        </item>
        <item>
         <widget class="QToolButton" name="fffButtonEnd">
+         <property name="maximumSize">
+          <size>
+           <width>32</width>
+           <height>32</height>
+          </size>
+         </property>
          <property name="text">
           <string/>
          </property>
@@ -488,7 +602,7 @@
       </widget>
      </item>
      <item row="2" column="1">
-      <layout class="QHBoxLayout" name="horizontalLayout">
+      <layout class="QVBoxLayout" name="verticalLayout_2">
        <item>
         <widget class="QRadioButton" name="overCurNoteOpt">
          <property name="text">
@@ -532,38 +646,5 @@
  <resources>
   <include location="../build/resources.qrc"/>
  </resources>
- <connections>
-  <connection>
-   <sender>buttonBox</sender>
-   <signal>accepted()</signal>
-   <receiver>VolumeSwellDialog</receiver>
-   <slot>accept()</slot>
-   <hints>
-    <hint type="sourcelabel">
-     <x>248</x>
-     <y>254</y>
-    </hint>
-    <hint type="destinationlabel">
-     <x>157</x>
-     <y>274</y>
-    </hint>
-   </hints>
-  </connection>
-  <connection>
-   <sender>buttonBox</sender>
-   <signal>rejected()</signal>
-   <receiver>VolumeSwellDialog</receiver>
-   <slot>reject()</slot>
-   <hints>
-    <hint type="sourcelabel">
-     <x>316</x>
-     <y>260</y>
-    </hint>
-    <hint type="destinationlabel">
-     <x>286</x>
-     <y>274</y>
-    </hint>
-   </hints>
-  </connection>
- </connections>
+ <connections/>
 </ui>

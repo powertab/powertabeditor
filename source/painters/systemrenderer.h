@@ -23,6 +23,7 @@
 #include <painters/musicfont.h>
 #include <QFontMetricsF>
 #include <score/staff.h>
+#include <QPalette>
 
 class QGraphicsItem;
 class QGraphicsItemGroup;
@@ -148,6 +149,10 @@ private:
     /// Creates a dynamic symbol.
     QGraphicsItem *createDynamic(const Dynamic &dynamic);
 
+    /// Creates a volume swell.
+    QGraphicsItem *createVolumeSwell(const SymbolGroup &group,
+                                     const LayoutInfo &layout);
+
     /// Draws a group of bends.
     QGraphicsItem *createBendGroup(const SymbolGroup &group,
                                    const LayoutInfo &layout);
@@ -182,7 +187,8 @@ private:
                          const std::map<int, double> &noteHeadWidths);
 
     /// Draws all slides in a staff.
-    void drawSlides(const Staff &staff, const LayoutInfo &layout);
+    void drawSlides(const Staff &staff, const LayoutInfo &layout,
+                    ScoreLocation location);
 
     /// Draws a single slide between the given positions.
     void drawSlide(const LayoutInfo &layout, int string, bool slideUp,
@@ -200,6 +206,9 @@ private:
     QFont myPlainTextFont;
     QFont mySymbolTextFont;
     QFont myRehearsalSignFont;
+
+    QPalette myPalette;
+
 };
 
 #endif

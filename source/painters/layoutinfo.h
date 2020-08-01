@@ -23,6 +23,7 @@
 #include <painters/beamgroup.h>
 #include <painters/stdnotationnote.h>
 #include <score/staff.h>
+#include <score/scorelocation.h>
 #include <vector>
 
 class Barline;
@@ -57,6 +58,7 @@ public:
 
         // Above tab staff.
         Bend,
+        VolumeSwell,
         LetRing,
         Vibrato,
         WideVibrato,
@@ -95,8 +97,7 @@ private:
 
 struct LayoutInfo
 {
-    LayoutInfo(const Score &score, const System& system, int systemIndex,
-               const Staff &staff, int staffIndex);
+    LayoutInfo(const ScoreLocation &location);
 
     int getStringCount() const;
 
@@ -203,11 +204,14 @@ private:
     /// Computes the layout for bends in the staff.
     void calculateBendLayout(VerticalLayout &layout);
 
+    /// Computes the layout for volume swells in the staff.
+    void calculateVolumeSwellLayout(VerticalLayout &layout);
+
     /// Returns the largest height of any symbol group.
     static int getMaxHeight(const std::vector<SymbolGroup> &groups);
 
-    const System &mySystem;
-    const Staff &myStaff;
+    /// Stores the system / staff indices.
+    const ScoreLocation myLocation;
     int myLineSpacing;
     double myPositionSpacing;
     int myNumPositions;

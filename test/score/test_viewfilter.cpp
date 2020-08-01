@@ -15,7 +15,7 @@
   * along with this program.  If not, see <http://www.gnu.org/licenses/>.
 */
   
-#include <catch2/catch.hpp>
+#include <doctest/doctest.h>
 
 #include <app/appinfo.h>
 #include <formats/powertab/powertabimporter.h>
@@ -23,25 +23,26 @@
 #include <score/viewfilter.h>
 #include "test_serialization.h"
 
-TEST_CASE("Score/ViewFilter/FilterRule", "")
+TEST_CASE("Score/ViewFilter/FilterRule")
 {
     Score score;
 
     PowerTabImporter importer;
     importer.load(AppInfo::getAbsolutePath("data/test_viewfilter.pt2"), score);
 
-    FilterRule rule(FilterRule::NUM_STRINGS, FilterRule::EQUAL, 7);
-    REQUIRE(!rule.accept(score, 0, 0));
-    REQUIRE(rule.accept(score, 0, 1));
-    REQUIRE(!rule.accept(score, 0, 2));
+    FilterRule rule(FilterRule::Subject::NumStrings,
+                    FilterRule::Operation::Equal, 7);
+    REQUIRE(!rule.accept(score.getPlayers()[0]));
+    REQUIRE(rule.accept(score.getPlayers()[1]));
+    REQUIRE(!rule.accept(score.getPlayers()[2]));
 
-    rule = FilterRule(FilterRule::PLAYER_NAME, "Player [12]");
-    REQUIRE(rule.accept(score, 0, 0));
-    REQUIRE(rule.accept(score, 0, 1));
-    REQUIRE(!rule.accept(score, 0, 2));
+    rule = FilterRule(FilterRule::Subject::PlayerName, "Player [12]");
+    REQUIRE(rule.accept(score.getPlayers()[0]));
+    REQUIRE(rule.accept(score.getPlayers()[1]));
+    REQUIRE(!rule.accept(score.getPlayers()[2]));
 }
 
-TEST_CASE("Score/ViewFilter/ViewFilter", "")
+TEST_CASE("Score/ViewFilter/ViewFilter")
 {
     Score score;
 
@@ -49,21 +50,22 @@ TEST_CASE("Score/ViewFilter/ViewFilter", "")
     importer.load(AppInfo::getAbsolutePath("data/test_viewfilter.pt2"), score);
 
     ViewFilter filter;
-    filter.addRule(FilterRule(FilterRule::NUM_STRINGS, FilterRule::EQUAL, 7));
-    filter.addRule(
-        FilterRule(FilterRule::NUM_STRINGS, FilterRule::LESS_THAN_EQUAL, 5));
+    filter.addRule(FilterRule(FilterRule::Subject::NumStrings,
+                              FilterRule::Operation::Equal, 7));
+    filter.addRule(FilterRule(FilterRule::Subject::NumStrings,
+                              FilterRule::Operation::LessThanEqual, 5));
 
     REQUIRE(!filter.accept(score, 0, 0));
     REQUIRE(filter.accept(score, 0, 1));
     REQUIRE(filter.accept(score, 0, 2));
 }
 
-TEST_CASE("Score/ViewFilter/Serialization", "")
+TEST_CASE("Score/ViewFilter/Serialization")
 {
     ViewFilter filter;
-    filter.addRule(
-        FilterRule(FilterRule::NUM_STRINGS, FilterRule::LESS_THAN, 5));
-    filter.addRule(FilterRule(FilterRule::PLAYER_NAME, "foo"));
+    filter.addRule(FilterRule(FilterRule::Subject::NumStrings,
+                              FilterRule::Operation::LessThan, 5));
+    filter.addRule(FilterRule(FilterRule::Subject::PlayerName, "foo"));
 
     Serialization::test("filter", filter);
 }

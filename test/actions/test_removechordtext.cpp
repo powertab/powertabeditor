@@ -15,12 +15,12 @@
   * along with this program.  If not, see <http://www.gnu.org/licenses/>.
 */
   
-#include <catch2/catch.hpp>
+#include <doctest/doctest.h>
 
 #include <actions/removechordtext.h>
 #include <score/score.h>
 
-TEST_CASE("Actions/RemoveChordText", "")
+TEST_CASE("Actions/RemoveChordText")
 {
     Score score;
     System system;

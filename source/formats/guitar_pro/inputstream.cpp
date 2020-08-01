@@ -40,7 +40,7 @@ Gp::InputStream::InputStream(std::istream &stream) : myStream(stream)
 
     auto it = theVersionStrings.find(versionString);
     if (it != theVersionStrings.end())
-        this->version = it->second;
+        myVersion = it->second;
     else
         throw FileFormatException("Unsupported file version: " + versionString);
 }
@@ -61,7 +61,7 @@ std::string Gp::InputStream::readVersionString()
 
 std::string Gp::InputStream::readString()
 {
-    const uint32_t size = read<uint32_t>();
+    [[maybe_unused]] const uint32_t size = read<uint32_t>();
 
     std::string str = readCharacterString<uint8_t>();
     assert(size - 1 == str.length());

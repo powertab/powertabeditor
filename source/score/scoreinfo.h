@@ -18,10 +18,10 @@
 #ifndef SCORE_SCOREINFO_H
 #define SCORE_SCOREINFO_H
 
-#include <boost/date_time/gregorian/greg_date.hpp>
 #include "fileversion.h"
 #include <optional>
 #include <string>
+#include <util/date.h>
 
 class SongData
 {
@@ -91,8 +91,7 @@ public:
     {
     public:
         BootlegInfo();
-        BootlegInfo(const std::string &title,
-                    const boost::gregorian::date &date);
+        BootlegInfo(const std::string &title, const Util::Date &date);
         bool operator==(const BootlegInfo &other) const;
 
         template <class Archive>
@@ -103,11 +102,11 @@ public:
         }
 
         const std::string &getTitle() const;
-        const boost::gregorian::date &getDate() const;
+        const Util::Date &getDate() const;
 
     private:
         std::string myTitle;
-        boost::gregorian::date myDate;
+        Util::Date myDate;
     };
 
     class AuthorInfo
@@ -140,6 +139,9 @@ public:
 
     void setTitle(const std::string &title);
     const std::string &getTitle() const;
+
+    void setSubtitle(const std::string &subtitle);
+    const std::string &getSubtitle() const;
 
     void setArtist(const std::string &artist);
     const std::string &getArtist() const;
@@ -181,6 +183,7 @@ public:
 
 private:
     std::string myTitle;
+    std::string mySubtitle;
     std::string myArtist;
     std::optional<AudioReleaseInfo> myAudioReleaseInfo;
     std::optional<VideoReleaseInfo> myVideoReleaseInfo;
@@ -195,9 +198,13 @@ private:
 };
 
 template <class Archive>
-void SongData::serialize(Archive &ar, const FileVersion /*version*/)
+void SongData::serialize(Archive &ar, const FileVersion version)
 {
     ar("title", myTitle);
+
+    if (version >= FileVersion::SONG_SUBTITLE)
+        ar("subtitle", mySubtitle);
+
     ar("artist", myArtist);
     ar("audio_release_info", myAudioReleaseInfo);
     ar("video_release_info", myVideoReleaseInfo);

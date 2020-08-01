@@ -63,6 +63,8 @@ set( srcs
     actions/test_removetempomarker.cpp
     actions/test_removetextitem.cpp
     actions/test_removetrill.cpp
+    actions/test_shiftstring.cpp
+    actions/test_volumeswell.cpp
 
     audio/test_midioutputdevice.cpp
 
@@ -114,6 +116,7 @@ set( headers
 
 set( data_files
     actions/data/test_editstaff.pt2
+    actions/data/test_shiftstring.pt2
 
     formats/powertab_old/data/alternate_endings.ptb
     formats/powertab_old/data/barlines.ptb
@@ -130,10 +133,14 @@ set( data_files
     formats/powertab_old/data/song_header.ptb
     formats/powertab_old/data/staves.ptb
     formats/powertab_old/data/tempo_markers.ptb
+    formats/powertab_old/data/volume_swells.ptb
 
     formats/guitar_pro/data/alt_endings.gp5
     formats/guitar_pro/data/barlines.gp5
+    formats/guitar_pro/data/bends.gp5
+    formats/guitar_pro/data/directions.gp5
     formats/guitar_pro/data/gracenote.gp5
+    formats/guitar_pro/data/harmonics.gp5
     formats/guitar_pro/data/irregular.gp5
     formats/guitar_pro/data/keys.gp5
     formats/guitar_pro/data/notes.gp5
@@ -172,10 +179,17 @@ pte_executable(
     PCH precompiled.h
     PCH_EXCLUDE test_main.cpp
     DEPENDS
-        Catch2::Catch2
+        doctest::doctest
         pteapp
         rtmidi::rtmidi
 )
+
+# Workaround for https://github.com/onqtam/doctest/issues/316
+if ( PLATFORM_OSX )
+    target_compile_definitions( pte_tests PRIVATE
+        DOCTEST_CONFIG_USE_STD_HEADERS
+    )
+endif ()
 
 add_test(
     NAME all_tests

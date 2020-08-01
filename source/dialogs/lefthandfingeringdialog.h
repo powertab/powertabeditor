@@ -17,6 +17,7 @@
 #define DIALOGS_LEFTHANDFINGERINGDIALOG_H
 
 #include <QDialog>
+#include <memory>
 #include <score/note.h>
 
 class QComboBox;
@@ -37,7 +38,7 @@ public:
     LeftHandFingering getLeftHandFingering() const;
 
 private:
-    Ui::LeftHandFingeringDialog *ui;
+    std::unique_ptr<Ui::LeftHandFingeringDialog> ui;
 };
 
 #endif

@@ -100,26 +100,13 @@
            <x>0</x>
            <y>10</y>
            <width>481</width>
-           <height>71</height>
+           <height>85</height>
           </rect>
          </property>
          <layout class="QFormLayout" name="formLayout_3">
           <property name="fieldGrowthPolicy">
            <enum>QFormLayout::AllNonFixedFieldsGrow</enum>
           </property>
-          <item row="0" column="1">
-           <widget class="QLineEdit" name="songTitleValue"/>
-          </item>
-          <item row="1" column="0">
-           <widget class="QLabel" name="songArtistLabel">
-            <property name="text">
-             <string>Artist:</string>
-            </property>
-           </widget>
-          </item>
-          <item row="1" column="1">
-           <widget class="QLineEdit" name="songArtistValue"/>
-          </item>
           <item row="0" column="0">
            <widget class="QLabel" name="songTitleLabel">
             <property name="text">
@@ -127,13 +114,36 @@
             </property>
            </widget>
           </item>
+          <item row="0" column="1">
+           <widget class="QLineEdit" name="songTitleValue"/>
+          </item>
+          <item row="1" column="0">
+           <widget class="QLabel" name="songSubtitleLabel">
+            <property name="text">
+             <string>Subtitle:</string>
+            </property>
+           </widget>
+          </item>
+          <item row="1" column="1">
+           <widget class="QLineEdit" name="songSubtitleValue"/>
+          </item>
+          <item row="2" column="0">
+           <widget class="QLabel" name="songArtistLabel">
+            <property name="text">
+             <string>Artist:</string>
+            </property>
+           </widget>
+          </item>
+          <item row="2" column="1">
+           <widget class="QLineEdit" name="songArtistValue"/>
+          </item>
          </layout>
         </widget>
         <widget class="QGroupBox" name="groupBox">
          <property name="geometry">
           <rect>
            <x>0</x>
-           <y>80</y>
+           <y>100</y>
            <width>491</width>
            <height>161</height>
           </rect>
@@ -363,7 +373,7 @@
          <property name="geometry">
           <rect>
            <x>0</x>
-           <y>250</y>
+           <y>270</y>
            <width>491</width>
            <height>251</height>
           </rect>
@@ -884,6 +894,7 @@
   </layout>
  </widget>
  <resources/>
+ <connections/>
  <buttongroups>
   <buttongroup name="lessonLevelButtonGroup"/>
   <buttongroup name="songTypeButtonGroup"/>

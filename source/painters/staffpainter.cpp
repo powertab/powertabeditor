@@ -24,11 +24,13 @@
 
 StaffPainter::StaffPainter(const LayoutConstPtr &layout,
                            const ScoreLocation &location,
-                           const std::shared_ptr<ClickPubSub> &pubsub)
+                           const std::shared_ptr<ClickPubSub> &pubsub,
+                           const QColor staffColor)
     : myLayout(layout),
       myPubSub(pubsub),
       myLocation(location),
-      myBounds(0, 0, LayoutInfo::STAFF_WIDTH, layout->getStaffHeight())
+      myBounds(0, 0, LayoutInfo::STAFF_WIDTH, layout->getStaffHeight()),
+      myStaffColor(staffColor)
 {
     // Only use the left mouse button for making selections.
     setAcceptedMouseButtons(Qt::LeftButton);
@@ -65,7 +67,7 @@ void StaffPainter::mouseMoveEvent(QGraphicsSceneMouseEvent *event)
 void StaffPainter::paint(QPainter *painter, const QStyleOptionGraphicsItem *,
                          QWidget *)
 {
-    painter->setPen(QPen(QBrush(QColor(213,213,213)), 0.75));
+    painter->setPen(QPen(QBrush(myStaffColor), 0.75));
 
     // Draw standard notation staff.
     drawStaffLines(painter, LayoutInfo::NUM_STD_NOTATION_LINES,

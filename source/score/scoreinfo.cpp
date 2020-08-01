@@ -17,7 +17,7 @@
 
 #include "scoreinfo.h"
 
-#include <boost/date_time/date.hpp>
+#include <boost/date_time/gregorian/greg_date.hpp>
 #include <boost/date_time/gregorian/gregorian_types.hpp>
 
 SongData::AudioReleaseInfo::AudioReleaseInfo()
@@ -87,12 +87,13 @@ bool SongData::VideoReleaseInfo::isLive() const
 }
 
 SongData::BootlegInfo::BootlegInfo()
-    : myDate(boost::gregorian::day_clock::local_day())
 {
+    auto greg_date = boost::gregorian::day_clock::local_day();
+    myDate = Util::Date(greg_date.year(), greg_date.month(), greg_date.day());
 }
 
 SongData::BootlegInfo::BootlegInfo(const std::string &title,
-                                   const boost::gregorian::date &date)
+                                   const Util::Date &date)
     : myTitle(title), myDate(date)
 {
 }
@@ -107,7 +108,7 @@ const std::string &SongData::BootlegInfo::getTitle() const
     return myTitle;
 }
 
-const boost::gregorian::date &SongData::BootlegInfo::getDate() const
+const Util::Date &SongData::BootlegInfo::getDate() const
 {
     return myDate;
 }
@@ -172,6 +173,16 @@ void SongData::setTitle(const std::string &title)
 const std::string &SongData::getTitle() const
 {
     return myTitle;
+}
+
+void SongData::setSubtitle(const std::string &subtitle)
+{
+    mySubtitle = subtitle;
+}
+
+const std::string &SongData::getSubtitle() const
+{
+    return mySubtitle;
 }
 
 void SongData::setArtist(const std::string &artist)

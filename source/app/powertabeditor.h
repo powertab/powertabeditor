@@ -232,6 +232,8 @@ private slots:
     void updateDynamic(Dynamic::VolumeLevel volume);
     /// Adds or removes a dynamic at the current location.
     void editDynamic();
+    /// Adds or removes a volume swell at the current location.
+    void editVolumeSwell();
 
     /// Adds or removes a hammeron/pulloff for the current note.
     void editHammerPull();
@@ -391,6 +393,8 @@ private:
                                     Position::SimpleProperty property);
     /// Toggles a simple note property.
     void editSimpleNoteProperty(Command *command, Note::SimpleProperty property);
+    /// Shifts tab numbers to an adjacent string.
+    void shiftString(bool shift_up);
 
     /// Helper function to insert a system at the given index.
     void insertSystem(int index);
@@ -482,8 +486,8 @@ private:
     Command *myPrevStaffCommand;
     Command *myNextBarCommand;
     Command *myPrevBarCommand;
-    Command *myShiftForwardCommand;
-    Command *myShiftBackwardCommand;
+    Command *myInsertSpaceCommand;
+    Command *myRemoveSpaceCommand;
     Command *myRemoveNoteCommand;
     Command *myRemovePositionCommand;
     Command *myGoToBarlineCommand;
@@ -521,6 +525,9 @@ private:
     Command *myDoubleDottedCommand;
     Command *myAddDotCommand;
     Command *myRemoveDotCommand;
+    Command *myLeftHandFingeringCommand;
+    Command *myShiftStringUpCommand;
+    Command *myShiftStringDownCommand;
     Command *myTieCommand;
     Command *myMutedCommand;
     Command *myGhostNoteCommand;
@@ -572,6 +579,7 @@ private:
     Command *myDynamicFFFCommand;
     /// Used to ensure that only one dynamic option is checked at a time.
     QActionGroup *myDynamicGroup;
+    Command *myVolumeSwellCommand;
 
     QMenu *myTabSymbolsMenu;
     QMenu *myHammerOnMenu;
@@ -623,27 +631,6 @@ private:
 
     QMenu *myHelpMenu;
     Command *myReportBugCommand;
-
-#if 0
-
-private:
-    void changePositionSpacing(int offset);
-    void shiftTabNumber(int direction);
-
-private slots:
-    void editVolumeSwell();
-    void toggleGuitarVisible(uint32_t trackIndex, bool isVisible);
-
-private:
-    QSplitter* vertSplitter;
-    QSplitter* horSplitter;
-
-    Command* shiftTabNumUp; // shift tab numbers up/down by a string
-    Command* shiftTabNumDown;
-
-    Command* volumeSwellAct;
-
-#endif
 };
 
 #endif

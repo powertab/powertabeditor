@@ -23,14 +23,26 @@
 #include <QGraphicsItem>
 #include <QPen>
 
+/// Specifies the text alignment for SimpleTextItem.
+enum class TextAlignment
+{
+    /// Matches the way that QSimpleTextItem aligns text. The ascent is at y=0
+    /// in local space.
+    Top,
+    /// The font's baseline is at y=0 in local space. This is particularly
+    /// useful for the Emmentaler font, where the baseline usually lines up
+    /// with where the symbol should be placed on e.g. a staff line.
+    Baseline
+};
+
 /// Replacement for QGraphicsSimpleTextItem, which is significantly faster but
 /// doesn't handle things like multi-line text.
 class SimpleTextItem : public QGraphicsItem
 {
 public:
     SimpleTextItem(const QString &text, const QFont &font,
-                   const QPen &pen = QPen(),
-                   const QBrush &background = QBrush(QColor(0,0,0,0)));
+                   TextAlignment alignment, const QPen &pen = QPen(),
+                   const QBrush &background = QBrush(QColor(0, 0, 0, 0)));
 
     virtual QRectF boundingRect() const override { return myBoundingRect; }
 
@@ -43,6 +55,7 @@ private:
     const QFont myFont;
     const QPen myPen;
     const QBrush myBackground;
+    const TextAlignment myAlignment;
     QRectF myBoundingRect;
     double myAscent;
 };

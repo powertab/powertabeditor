@@ -20,6 +20,7 @@
 #include "repeatcontroller.h"
 
 #include <boost/rational.hpp>
+#include <chrono>
 
 #include <score/generalmidi.h>
 #include <score/score.h>
@@ -125,6 +126,24 @@ static SystemLocation moveToNextBar(MidiEventList &event_list, int ticks,
     return location;
 }
 
+/// Returns the start and end barline around the given position.
+std::pair<const Barline &, const Barline &>
+getSurroundingBarlines(const System &system, int position)
+{
+    // If we're exactly on top of a barline, use that instead of grabbing the
+    // preceding barline.
+    const Barline *current_bar = ScoreUtils::findByPosition(
+        system.getBarlines(), position);
+    if (!current_bar)
+        current_bar = system.getPreviousBarline(position);
+
+    const Barline *next_bar = system.getNextBarline(position);
+    assert(next_bar);
+
+    return { *current_bar, *next_bar };
+}
+
+
 MidiFile::MidiFile() : myTicksPerBeat(0)
 {
 }
@@ -142,8 +161,8 @@ void MidiFile::load(const Score &score, const LoadOptions &options)
     std::vector<MidiEventList> regular_tracks(score.getPlayers().size());
     for (unsigned int i = 0; i < score.getPlayers().size(); ++i)
     {
-        regular_tracks[i].append(
-            MidiEvent::volumeChange(0, getChannel(i), Dynamic::fff));
+        regular_tracks[i].append(MidiEvent::volumeChange(
+            0, getChannel(i), static_cast<uint8_t>(VolumeLevel::fff)));
 
         for (const MidiEvent &event :
              MidiEvent::pitchWheelRange(0, getChannel(i), PITCH_BEND_RANGE))
@@ -157,20 +176,13 @@ void MidiFile::load(const Score &score, const LoadOptions &options)
     std::vector<uint8_t> active_bends;
     int system_index = -1;
     int current_tick = 0;
-    int current_tempo = Midi::BEAT_DURATION_120_BPM;
+    Midi::Tempo current_tempo = Midi::BEAT_DURATION_120_BPM;
 
     while (location.getSystem() < static_cast<int>(score.getSystems().size()))
     {
         const System &system = score.getSystems()[location.getSystem()];
-
-        // We might not be exactly on a barline - a musical direction might
-        // shift us into the middle of bar.
-        const Barline *current_bar = ScoreUtils::findByPosition(
-            system.getBarlines(), location.getPosition());
-        if (!current_bar)
-            current_bar = system.getPreviousBarline(location.getPosition());
-
-        const Barline *next_bar = system.getNextBarline(location.getPosition());
+        auto [current_bar, next_bar] =
+            getSurroundingBarlines(system, location.getPosition());
 
         if (location.getSystem() != system_index)
         {
@@ -180,8 +192,9 @@ void MidiFile::load(const Score &score, const LoadOptions &options)
 
         const int start_tick = current_tick;
         current_tempo =
-            addTempoEvent(master_track, start_tick, current_tempo, system,
-                          current_bar->getPosition(), next_bar->getPosition());
+            addTempoEvent(master_track, start_tick, current_tempo, score,
+                          location, repeat_controller,
+                          current_bar.getPosition(), next_bar.getPosition());
 
         for (unsigned int staff_index = 0; staff_index < system.getStaves().size();
              ++staff_index)
@@ -195,7 +208,7 @@ void MidiFile::load(const Score &score, const LoadOptions &options)
                     regular_tracks, active_bends[staff_index], start_tick,
                     current_tempo, score, system, location.getSystem(), staff,
                     staff_index, staff.getVoices()[voice_index], voice_index,
-                    current_bar->getPosition(), next_bar->getPosition(),
+                    current_bar.getPosition(), next_bar.getPosition(),
                     options);
 
                 current_tick = std::max(current_tick, end_tick);
@@ -203,14 +216,14 @@ void MidiFile::load(const Score &score, const LoadOptions &options)
         }
 
         // Generate metronome events.
-        current_tick = std::max(
-            current_tick,
-            generateMetronome(metronome_track, start_tick, system, *current_bar,
-                              *next_bar, location, options));
+        current_tick = std::max(current_tick,
+                                generateMetronome(metronome_track, start_tick,
+                                                  system, current_bar, next_bar,
+                                                  location, options));
 
         location = moveToNextBar(
             metronome_track, current_tick, options.myRecordPositionChanges,
-            system, location, next_bar->getPosition(), repeat_controller);
+            system, location, next_bar.getPosition(), repeat_controller);
     }
 
     myTracks.push_back(master_track);
@@ -285,28 +298,136 @@ int MidiFile::generateMetronome(MidiEventList &event_list, int current_tick,
     return current_tick;
 }
 
-int MidiFile::addTempoEvent(MidiEventList &event_list, int current_tick,
-                            int current_tempo, const System &system,
-                            int bar_start, int bar_end)
+/// Return the expected duration (in ticks) of the bar. This might not be the
+/// actual duration if the bar has too many notes.
+static int
+computeBarDurationTicks(const TimeSignature &time_sig, int ticks_per_beat)
 {
+    return boost::rational_cast<int>(
+        ticks_per_beat * time_sig.getBeatsPerMeasure() *
+        boost::rational<int>(4, time_sig.getBeatValue()));
+}
+
+/// Compute the tempo in microseconds.
+static Midi::Tempo
+computeTempo(const TempoMarker &marker)
+{
+    // Convert the values in the TempoMarker::BeatType enum to a factor that
+    // will scale the bpm value to be in terms of quarter notes.
+    boost::rational<int> scale(2, 1 << (marker.getBeatType() / 2));
+    if (marker.getBeatType() % 2 != 0)
+        scale *= boost::rational<int>(3, 2);
+
+    // Compute the number of microseconds per quarter note.
+    return Midi::Tempo(boost::rational_cast<int>(
+        60000000 / (scale * marker.getBeatsPerMinute())));
+}
+
+/// Finds the next tempo marker, along with the duration in ticks between the
+/// two bars.
+/// Note that this takes a copy of the repeat controller, since it shouldn't
+/// affect the main loop's state.
+static const TempoMarker *
+findNextTempoMarker(const Score &score, SystemLocation location,
+                    RepeatController repeat_controller,
+                    const int ticks_per_beat, int &duration)
+{
+    const SystemLocation start_location = location;
+
+    // Unused since moveToNextBar() is not configured to record position
+    // changes.
+    MidiEventList event_list;
+    const int current_tick = -1;
+
+    const int num_systems = static_cast<int>(score.getSystems().size());
+    while (location.getSystem() < num_systems)
+    {
+        const System &system = score.getSystems()[location.getSystem()];
+        auto [current_bar, next_bar] =
+            getSurroundingBarlines(system, location.getPosition());
+
+        // Loop until we find the next tempo marker.
+        auto markers = ScoreUtils::findInRange(system.getTempoMarkers(),
+                                               current_bar.getPosition(),
+                                               next_bar.getPosition() - 1);
+        // Ensure we don't find our original tempo marker we started from.
+        if (!markers.empty() && location != start_location)
+            return &markers.back();
+
+        // Count how much time there is between the two tempo markers.
+        duration += computeBarDurationTicks(current_bar.getTimeSignature(),
+                                            ticks_per_beat);
+
+        location = moveToNextBar(
+            event_list, current_tick, /* record_position_changes */ false,
+            system, location, next_bar.getPosition(), repeat_controller);
+    }
+
+    return nullptr;
+}
+
+Midi::Tempo
+MidiFile::addTempoEvent(MidiEventList &event_list, int current_tick,
+                        Midi::Tempo current_tempo, const Score &score,
+                        const SystemLocation &location,
+                        const RepeatController &repeat_controller,
+                        int bar_start, int bar_end)
+{
+    const System &system = score.getSystems()[location.getSystem()];
     auto markers = ScoreUtils::findInRange(system.getTempoMarkers(), bar_start,
                                            bar_end - 1);
+    if (markers.empty())
+        return current_tempo;
+
     // If multiple tempo markers occur in a bar, just choose the last one.
-    if (!markers.empty())
+    const TempoMarker &marker = markers.back();
+
+    if (marker.getMarkerType() != TempoMarker::AlterationOfPace)
     {
-        const TempoMarker &marker = markers.back();
-
-        // Convert the values in the TempoMarker::BeatType enum to a factor that
-        // will scale the bpm value to be in terms of quarter notes.
-        boost::rational<int> scale(2, 1 << (marker.getBeatType() / 2));
-        if (marker.getBeatType() % 2 != 0)
-            scale *= boost::rational<int>(3, 2);
-
-        // Compute the number of microseconds per quarter note.
-        current_tempo = boost::rational_cast<int>(
-            60000000 / (scale * marker.getBeatsPerMinute()));
-
+        // Simple change of tempo.
+        current_tempo = computeTempo(marker);
         event_list.append(MidiEvent::setTempo(current_tick, current_tempo));
+    }
+    else
+    {
+        // Find the next tempo marker, if any.
+        int duration = 0;
+        const TempoMarker *next_marker = findNextTempoMarker(
+            score, location, repeat_controller, myTicksPerBeat, duration);
+
+        // Skip if the next tempo marker is also an alteration of pace!
+        if (next_marker &&
+            next_marker->getMarkerType() == TempoMarker::AlterationOfPace)
+        {
+            return current_tempo;
+        }
+
+        // If there isn't an upcoming tempo marker, go to twice or half the
+        // current tempo by the end of the score.
+        // Note that the tempo is in microseconds, so to speed up we reduce the
+        // tempo!
+        Midi::Tempo delta_tempo{ 0 };
+        if (next_marker)
+            delta_tempo = computeTempo(*next_marker) - current_tempo;
+        else if (marker.getAlterationOfPace() == TempoMarker::Accelerando)
+            delta_tempo = -current_tempo / 2;
+        else if (marker.getAlterationOfPace() == TempoMarker::Ritardando)
+            delta_tempo = current_tempo;
+
+        // We're working in microseconds, so a tempo change event every
+        // millisecond seems reasonable ...
+        const int num_events = static_cast<int>(std::abs(delta_tempo.count()) / 1000);
+        if (!num_events)
+            return current_tempo;
+
+        const int event_duration = duration / num_events;
+        delta_tempo /= num_events;
+        for (int i = 0; i < num_events; ++i)
+        {
+            const int tick = current_tick + i * event_duration;
+            const Midi::Tempo tempo = current_tempo + i * delta_tempo;
+            event_list.append(MidiEvent::setTempo(tick, tempo));
+        }
     }
 
     return current_tempo;
@@ -314,7 +435,7 @@ int MidiFile::addTempoEvent(MidiEventList &event_list, int current_tick,
 
 static int getWholeRestDuration(const System &system, const Voice &voice,
                                 const Position &pos, int bar_start, int bar_end,
-                                int original_duration)
+                                int original_duration, int ticks_per_beat)
 {
     // If the whole rest is not the only item in the bar, treat it like a
     // regular rest.
@@ -331,10 +452,7 @@ static int getWholeRestDuration(const System &system, const Voice &voice,
     const Barline *barline =
         ScoreUtils::findByPosition(system.getBarlines(), bar_start);
     const TimeSignature& time_sig = barline->getTimeSignature();
-
-    return boost::rational_cast<int>(
-        time_sig.getBeatsPerMeasure() *
-        boost::rational<int>(4, time_sig.getBeatValue()));
+    return computeBarDurationTicks(time_sig, ticks_per_beat);
 }
 
 static int getActualNotePitch(const Note &note, const Tuning &tuning)
@@ -383,18 +501,18 @@ static Velocity getNoteVelocity(const Position &pos, const Note &note)
 
 /// Compute the number of ticks for a grace note - it should correspond to about
 /// a 32nd note at 120bpm.
-static int getGraceNoteTicks(int ppq, int current_tempo)
+static int getGraceNoteTicks(int ppq, Midi::Tempo current_tempo)
 {
     return boost::rational_cast<int>(
-        boost::rational<int>(Midi::BEAT_DURATION_120_BPM, 8) /
-        boost::rational<int>(current_tempo, ppq));
+        boost::rational<int>(Midi::BEAT_DURATION_120_BPM.count(), 8) /
+        boost::rational<int>(current_tempo.count(), ppq));
 }
 
-static int getArpeggioOffset(int ppq, int current_tempo)
+static int getArpeggioOffset(int ppq, Midi::Tempo current_tempo)
 {
     return boost::rational_cast<int>(
-        boost::rational<int>(Midi::BEAT_DURATION_120_BPM, 16) /
-        boost::rational<int>(current_tempo, ppq));
+        boost::rational<int>(Midi::BEAT_DURATION_120_BPM.count(), 16) /
+        boost::rational<int>(current_tempo.count(), ppq));
 }
 
 /// Holds basic information about a bend - used to simplify the generateBends
@@ -574,11 +692,75 @@ static void generateSlides(std::vector<BendEventInfo> &bends, int start_tick,
     }
 }
 
-int MidiFile::addEventsForBar(
-    std::vector<MidiEventList> &tracks, uint8_t &active_bend, int current_tick,
-    int current_tempo, const Score &score, const System &system,
-    int system_index, const Staff &staff, int staff_index, const Voice &voice,
-    int voice_index, int bar_start, int bar_end, const LoadOptions &options)
+static int
+getDurationTicks(const Voice &voice, const Position &position,
+                 int ticks_per_beat)
+{
+    return boost::rational_cast<int>(
+        ticks_per_beat * VoiceUtils::getDurationTime(voice, position));
+}
+
+namespace
+{
+struct VolumeSwellEvent
+{
+    VolumeSwellEvent(int tick, uint8_t volume) : myTick(tick), myVolume(volume)
+    {
+    }
+
+    int myTick = 0;
+    uint8_t myVolume = 0;
+};
+} // namespace
+
+static std::vector<VolumeSwellEvent>
+generateVolumeSwell(const int start_tick, int duration,
+                    const int ticks_per_beat, const Voice &voice,
+                    const Position &start_pos)
+{
+    std::vector<VolumeSwellEvent> events;
+
+    const VolumeSwell &swell = start_pos.getVolumeSwell();
+    const int start_idx = ScoreUtils::findIndexByPosition(
+        voice.getPositions(), start_pos.getPosition());
+
+    // Add in the duration for any extra notes the swell is held over.
+    for (int i = 1; i <= swell.getDuration(); ++i)
+    {
+        int idx = start_idx + i;
+        if (idx >= static_cast<int>(voice.getPositions().size()))
+            break;
+
+        duration +=
+            getDurationTicks(voice, voice.getPositions()[idx], ticks_per_beat);
+    }
+
+    const auto start_vol = static_cast<int>(swell.getStartVolume());
+    const auto end_vol = static_cast<int>(swell.getEndVolume());
+    const int num_events = std::abs(start_vol - end_vol);
+    if (!num_events)
+        return {};
+
+    events.reserve(num_events);
+    const int event_duration = duration / num_events;
+    const int increment = (start_vol < end_vol) ? 1 : -1;
+    for (int i = 0; i < num_events; ++i)
+    {
+        const int tick = start_tick + i * event_duration;
+        events.emplace_back(tick, start_vol + i * increment);
+    }
+
+    return events;
+}
+
+int
+MidiFile::addEventsForBar(std::vector<MidiEventList> &tracks,
+                          uint8_t &active_bend, int current_tick,
+                          Midi::Tempo current_tempo, const Score &score,
+                          const System &system, int system_index,
+                          const Staff &staff, int staff_index,
+                          const Voice &voice, int voice_index, int bar_start,
+                          int bar_end, const LoadOptions &options)
 {
     ScoreLocation location(score, system_index, staff_index, voice_index);
     const Voice *prev_voice = VoiceUtils::getAdjacentVoice(location, -1);
@@ -621,7 +803,8 @@ int MidiFile::addEventsForBar(
             for (const ActivePlayer &player : active_players)
             {
                 tracks[player.getPlayerNumber()].append(MidiEvent::volumeChange(
-                    current_tick, getChannel(player), dynamic->getVolume()));
+                    current_tick, getChannel(player),
+                    static_cast<uint8_t>(dynamic->getVolume())));
             }
         }
 
@@ -632,8 +815,7 @@ int MidiFile::addEventsForBar(
             continue;
 
         const SystemLocation system_location(system_index, position);
-        int duration = boost::rational_cast<int>(
-            myTicksPerBeat * VoiceUtils::getDurationTime(voice, *pos));
+        int duration = getDurationTicks(voice, *pos, myTicksPerBeat);
 
         if (pos->isRest())
         {
@@ -642,7 +824,7 @@ int MidiFile::addEventsForBar(
             if (pos->getDurationType() == Position::WholeNote)
             {
                 duration = getWholeRestDuration(system, voice, *pos, bar_start,
-                                                bar_end, duration);
+                                                bar_end, duration, myTicksPerBeat);
 
                 // Extend for multi-bar rests.
                 if (pos->hasMultiBarRest())
@@ -665,6 +847,23 @@ int MidiFile::addEventsForBar(
         {
             current_tick += duration;
             continue;
+        }
+
+        // Volume swells.
+        if (pos->hasVolumeSwell())
+        {
+            std::vector<VolumeSwellEvent> events = generateVolumeSwell(
+                current_tick, duration, myTicksPerBeat, voice, *pos);
+
+            for (const VolumeSwellEvent &event : events)
+            {
+                for (const ActivePlayer &player : active_players)
+                {
+                    tracks[player.getPlayerNumber()].append(
+                        MidiEvent::volumeChange(
+                            event.myTick, getChannel(player), event.myVolume));
+                }
+            }
         }
 
         // Vibrato events (these apply to all notes in the position).
@@ -808,7 +1007,8 @@ int MidiFile::addEventsForBar(
                     generateSlides(bend_events, current_tick, duration,
                                    myTicksPerBeat, note,
                                    VoiceUtils::getNextNote(voice, position,
-                                                           note.getString()));
+                                                           note.getString(),
+                                                           next_voice));
                 }
 
                 if (note.hasBend())

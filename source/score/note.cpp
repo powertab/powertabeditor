@@ -432,34 +432,36 @@ std::string Bend::getPitchText(int pitch)
 }
 
 LeftHandFingering::LeftHandFingering()
-    : myFinger(None),
-      myDisplayPosition(AboveLeft)
+    : myFinger(Finger::None), myDisplayPosition(DisplayPosition::AboveLeft)
 {
 }
 
 LeftHandFingering::LeftHandFingering(Finger finger, DisplayPosition pos)
-    : myFinger(finger),
-      myDisplayPosition(pos)
+    : myFinger(finger), myDisplayPosition(pos)
 {
 }
 
-bool LeftHandFingering::operator==(const LeftHandFingering &other) const
+bool
+LeftHandFingering::operator==(const LeftHandFingering &other) const
 {
-    return myFinger == other.getFingerNumber() &&
+    return myFinger == other.getFinger() &&
            myDisplayPosition == other.getDisplayPosition();
 }
 
-void LeftHandFingering::setFinger(Finger finger)
+void
+LeftHandFingering::setFinger(Finger finger)
 {
     myFinger = finger;
 }
 
-unsigned int LeftHandFingering::getFingerNumber() const
+LeftHandFingering::Finger
+LeftHandFingering::getFinger() const
 {
     return myFinger;
 }
 
-LeftHandFingering::DisplayPosition LeftHandFingering::getDisplayPosition() const
+LeftHandFingering::DisplayPosition
+LeftHandFingering::getDisplayPosition() const
 {
     return myDisplayPosition;
 }

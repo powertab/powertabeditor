@@ -1,6 +1,13 @@
 name: Build
 
-on: [push, pull_request]
+on:
+  # Build on new commits, tags, or pull requests.
+  create:
+  push:
+  pull_request:
+  schedule:
+    # Run every week just to make sure the CI environment still works. 
+    - cron: '0 0 * * 0'
 
 jobs:
   build-ubuntu:
@@ -10,9 +17,9 @@ jobs:
     steps:
     - uses: actions/checkout@v1
     - name: Install Apt Dependencies
-      run: sudo apt update && sudo apt install ninja-build qtbase5-dev libboost-dev libboost-date-time-dev libboost-filesystem-dev libboost-iostreams-dev rapidjson-dev libasound2-dev librtmidi-dev libminizip-dev
+      run: sudo apt update && sudo apt install ninja-build qtbase5-dev libboost-dev libboost-date-time-dev libboost-filesystem-dev libboost-iostreams-dev rapidjson-dev libasound2-dev librtmidi-dev libminizip-dev doctest-dev
     - name: Install Other Dependencies
-      run: vcpkg install catch2 pugixml
+      run: vcpkg install pugixml
     - name: Create Build Directory
       run: cmake -E make_directory ${{runner.workspace}}/build
     - name: Generate Project
@@ -31,15 +38,21 @@ jobs:
     steps:
     - uses: actions/checkout@v1
     - name: Install Dependencies
-      run: brew install boost cmake catch2 minizip ninja pugixml qt5 pugixml rapidjson rtmidi
+      # CMake 3.17 is already installed
+      run: brew update && brew install boost doctest minizip ninja pugixml qt5 pugixml rapidjson rtmidi
     - name: Generate Project
-      run: cmake -S ${GITHUB_WORKSPACE} -B ${{runner.workspace}}/build -G Ninja -DCMAKE_PREFIX_PATH=/usr/local/opt/qt5/lib/cmake
+      run: cmake -S ${GITHUB_WORKSPACE} -B ${{runner.workspace}}/build -G Ninja -DCMAKE_BUILD_TYPE=Release -DCMAKE_PREFIX_PATH=/usr/local/opt/qt5/lib/cmake
     - name: Build
       run: cmake --build ${{runner.workspace}}/build
     - name: Test
       run: ${{runner.workspace}}/build/bin/pte_tests
     - name: Build Installer
       run: cmake --build ${{runner.workspace}}/build --target package
+    - name: Upload Installer
+      uses: actions/upload-artifact@v2
+      with:
+        name: "powertabeditor-osx.dmg"
+        path: ${{runner.workspace}}/build/powertabeditor-osx.dmg
 
   build-windows:
 
@@ -48,13 +61,44 @@ jobs:
     steps:
     - uses: actions/checkout@v1
     - name: Install Dependencies
-      run: vcpkg install --triplet x64-windows boost-algorithm boost-date-time boost-endian boost-filesystem boost-functional boost-iostreams boost-range boost-rational boost-signals2 boost-stacktrace catch2 minizip pugixml rapidjson
+      run: vcpkg install --triplet x64-windows boost-algorithm boost-date-time boost-endian boost-filesystem boost-functional boost-iostreams boost-range boost-rational boost-signals2 boost-stacktrace doctest minizip pugixml rapidjson
     # Building Qt via vcpkg would take a while ...
     - name: Install Qt
       uses: jurplel/install-qt-action@v2
     - name: Generate Project
-      run: cmake -A x64 -S ${env:GITHUB_WORKSPACE} -B ${{runner.workspace}}/build -DCMAKE_TOOLCHAIN_FILE="${env:VCPKG_INSTALLATION_ROOT}/scripts/buildsystems/vcpkg.cmake"
+      run: cmake -A x64 -B ./build -DCMAKE_TOOLCHAIN_FILE="${env:VCPKG_INSTALLATION_ROOT}/scripts/buildsystems/vcpkg.cmake"
     - name: Build
-      run: cmake --build ${{runner.workspace}}/build
+      run: cmake --build ./build --config Release
     - name: Test
-      run: ${{runner.workspace}}/build/bin/pte_tests.exe
+      run: ./build/bin/pte_tests.exe
+
+    - uses: microsoft/setup-msbuild@v1.0.0
+
+    - name: Cache VC redist
+      id: cache-redist
+      uses: actions/cache@v2
+      with:
+        path: installer/windows/redist/vc_redist.x64.exe
+        key: ${{ runner.os }}-redist-v1
+
+    - name: Fetch VC redist
+      if: steps.cache-redist.outputs.cache-hit != 'true'
+      run: |
+        cd installer/windows
+        mkdir redist
+        Invoke-WebRequest https://aka.ms/vs/16/release/vc_redist.x64.exe -OutFile redist/vc_redist.x64.exe
+
+    # The qwindowsvistastyle plugin also needs to be installed, but isn't installed to the bin dir
+    # when building with the Qt package from install-qt-action ...
+    - name: Build Installer
+      run: |
+        mkdir ./build/bin/styles
+        cp "${env:QT_PLUGIN_PATH}/styles/qwindowsvistastyle.dll" ./build/bin/styles
+        cd installer/windows
+        msbuild pte_windows_build.sln -p:Configuration=Release
+
+    - name: Upload Installer
+      uses: actions/upload-artifact@v2
+      with:
+        name: "powertabeditor-windows.exe"
+        path: installer/windows/bin/x64/Release/powertabeditor.exe

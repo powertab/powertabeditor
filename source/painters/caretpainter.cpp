@@ -166,9 +166,7 @@ void CaretPainter::onLocationChanged()
     if (system.getStaves().empty())
         return;
 
-    myLayout.reset(new LayoutInfo(location.getScore(), system,
-                                  location.getSystemIndex(), location.getStaff(),
-                                  location.getStaffIndex()));
+    myLayout = std::make_unique<LayoutInfo>(location);
 
     const ViewFilter *filter =
         myViewOptions.getFilter()
@@ -182,9 +180,9 @@ void CaretPainter::onLocationChanged()
         if (!filter ||
             filter->accept(location.getScore(), location.getSystemIndex(), i))
         {
-            offset += LayoutInfo(location.getScore(), system,
-                                 location.getSystemIndex(),
-                                 system.getStaves()[i], i).getStaffHeight();
+            ScoreLocation staff_location(location);
+            staff_location.setStaffIndex(i);
+            offset += LayoutInfo(staff_location).getStaffHeight();
         }
     }
 

@@ -20,6 +20,18 @@
 #include <algorithm>
 #include <stdexcept>
 
+VolumeSwell::VolumeSwell(VolumeLevel start, VolumeLevel end, int duration)
+    : myStartVolume(start), myEndVolume(end), myDuration(duration)
+{
+}
+
+bool
+VolumeSwell::operator==(const VolumeSwell &other) const
+{
+    return myStartVolume == other.myStartVolume &&
+           myEndVolume == other.myEndVolume && myDuration == other.myDuration;
+}
+
 Position::Position()
     : myPosition(0),
       myDurationType(EighthNote),
@@ -40,6 +52,7 @@ bool Position::operator==(const Position &other) const
            myDurationType == other.myDurationType &&
            mySimpleProperties == other.mySimpleProperties &&
            myMultiBarRestCount == other.myMultiBarRestCount &&
+           myVolumeSwell == other.myVolumeSwell &&
            myNotes == other.myNotes;
 }
 
@@ -146,6 +159,30 @@ void Position::clearMultiBarRest()
     myMultiBarRestCount = 0;
 }
 
+bool
+Position::hasVolumeSwell() const
+{
+    return myVolumeSwell.has_value();
+}
+
+const VolumeSwell &
+Position::getVolumeSwell() const
+{
+    return *myVolumeSwell;
+}
+
+void
+Position::setVolumeSwell(const VolumeSwell &swell)
+{
+    myVolumeSwell = swell;
+}
+
+void
+Position::clearVolumeSwell()
+{
+    myVolumeSwell.reset();
+}
+
 boost::iterator_range<Position::NoteIterator> Position::getNotes()
 {
     return boost::make_iterator_range(myNotes);
@@ -180,6 +217,13 @@ const Note *Utils::findByString(const Position &pos, int string)
     }
 
     return nullptr;
+}
+
+Note *
+Utils::findByString(Position &pos, int string)
+{
+    return const_cast<Note *>(
+        Utils::findByString(const_cast<const Position &>(pos), string));
 }
 
 bool Utils::hasNoteWithTappedHarmonic(const Position &pos)

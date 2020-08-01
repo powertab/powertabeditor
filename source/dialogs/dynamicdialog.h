@@ -33,7 +33,7 @@ public:
     explicit DynamicDialog(QWidget *parent);
     ~DynamicDialog();
 
-    Dynamic::VolumeLevel getVolumeLevel() const;
+    VolumeLevel getVolumeLevel() const;
 
 private:
     Ui::DynamicDialog *ui;

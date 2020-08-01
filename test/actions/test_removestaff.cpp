@@ -15,13 +15,13 @@
   * along with this program.  If not, see <http://www.gnu.org/licenses/>.
 */
 
-#include <catch2/catch.hpp>
+#include <doctest/doctest.h>
 
 #include <actions/removestaff.h>
 #include <app/caret.h>
 #include <score/score.h>
 
-TEST_CASE("Actions/RemoveStaff", "")
+TEST_CASE("Actions/RemoveStaff")
 {
     Score score;
     System system;

@@ -15,12 +15,12 @@
   * along with this program.  If not, see <http://www.gnu.org/licenses/>.
 */
   
-#include <catch2/catch.hpp>
+#include <doctest/doctest.h>
 
 #include <actions/addsystem.h>
 #include <score/score.h>
 
-TEST_CASE("Actions/AddSystem", "")
+TEST_CASE("Actions/AddSystem")
 {
     Score score;
     System system;

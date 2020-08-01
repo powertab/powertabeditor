@@ -23,11 +23,11 @@
 #include <score/scoreinfo.h>
 #include <QDate>
 
-static const double VERTICAL_SPACING = 10.0;
+static constexpr double VERTICAL_SPACING = 10.0;
 static const double AUTHOR_INFO_WIDTH = LayoutInfo::STAFF_WIDTH * 0.4;
-static const int TITLE_SIZE = 36;
-static const int SUBTITLE_SIZE = 20;
-static const int AUTHOR_SIZE = 14;
+static constexpr int TITLE_SIZE = 36;
+static constexpr int SUBTITLE_SIZE = 20;
+static constexpr int AUTHOR_SIZE = 14;
 
 static const QString theAudioReleaseTypes[] = {
     "Single", "EP", "Album", "Double Album", "Triple Album", "Boxset"
@@ -47,10 +47,10 @@ static double getNextY(const QGraphicsItemGroup &group)
 }
 
 static void addCenteredText(QGraphicsItemGroup &group, QFont font,
-                            int font_size, const QString &text)
+                            int font_size, const QColor &color, const QString &text)
 {
     font.setPointSize(font_size);
-    auto text_item = new SimpleTextItem(text, font);
+    auto text_item = new SimpleTextItem(text, font, TextAlignment::Top, QPen(color));
 
     // Center horizontally.
     text_item->setX(LayoutInfo::centerItem(0.0, LayoutInfo::STAFF_WIDTH,
@@ -61,7 +61,7 @@ static void addCenteredText(QGraphicsItemGroup &group, QFont font,
 }
 
 static void renderReleaseInfo(QGraphicsItemGroup &group, const QFont &font,
-                              const SongData &song_data)
+                              const QColor &color, const SongData &song_data)
 {
     QString release_info;
 
@@ -108,11 +108,11 @@ static void renderReleaseInfo(QGraphicsItemGroup &group, const QFont &font,
     else
         return;
 
-    addCenteredText(group, font, 15, release_info);
+    addCenteredText(group, font, 15, color,release_info);
 }
 
 static void addAuthorText(QGraphicsItemGroup &group, QFont font,
-                          const QString &text, const double y,
+                          const QColor &color, const QString &text, const double y,
                           bool right_align = false)
 {
     font.setPointSize(AUTHOR_SIZE);
@@ -136,7 +136,7 @@ static void addAuthorText(QGraphicsItemGroup &group, QFont font,
 }
 
 static void renderAuthorInfo(QGraphicsItemGroup &group, const QFont &font,
-                             const SongData &song_data)
+                              const QColor &color, const SongData &song_data)
 {
     const double y = getNextY(group);
     QStringList author_lines;
@@ -177,7 +177,7 @@ static void renderAuthorInfo(QGraphicsItemGroup &group, const QFont &font,
     if (!author_lines.isEmpty())
     {
         QString author_text = author_lines.join('\n');
-        addAuthorText(group, font, author_text, y, /* right_align */ true);
+        addAuthorText(group, font, color, author_text, y, /* right_align */ true);
     }
 
     // Transcriber info.
@@ -187,18 +187,24 @@ static void renderAuthorInfo(QGraphicsItemGroup &group, const QFont &font,
             QStringLiteral("Transcribed by %1")
                 .arg(QString::fromStdString(song_data.getTranscriber()));
 
-        addAuthorText(group, font, transcriber_text, y,
+        addAuthorText(group, font, color, transcriber_text, y,
                       /* right_align */ false);
     }
 }
 
 static void renderSongInfo(QGraphicsItemGroup &group, const QFont &font,
-                           const SongData &song_data)
+                            const QColor &color, const SongData &song_data)
 {
     if (!song_data.getTitle().empty())
     {
-        addCenteredText(group, font, TITLE_SIZE,
+        addCenteredText(group, font, TITLE_SIZE, color,
                         QString::fromStdString(song_data.getTitle()));
+    }
+
+    if (!song_data.getSubtitle().empty())
+    {
+        addCenteredText(group, font, SUBTITLE_SIZE, color,
+                        QString::fromStdString(song_data.getSubtitle()));
     }
 
     if (!song_data.getArtist().empty())
@@ -207,26 +213,26 @@ static void renderSongInfo(QGraphicsItemGroup &group, const QFont &font,
             QStringLiteral("As recorded by %1")
                 .arg(QString::fromStdString(song_data.getArtist()));
 
-        addCenteredText(group, font, SUBTITLE_SIZE, artist_info);
+        addCenteredText(group, font, SUBTITLE_SIZE, color, artist_info);
     }
 
-    renderReleaseInfo(group, font, song_data);
+    renderReleaseInfo(group, font, color, song_data);
 
-    renderAuthorInfo(group, font, song_data);
+    renderAuthorInfo(group, font, color, song_data);
 }
 
 static void renderLessonInfo(QGraphicsItemGroup &group, const QFont &font,
-                           const LessonData &lesson_data)
+                           const QColor &color, const LessonData &lesson_data)
 {
     if (!lesson_data.getTitle().empty())
     {
-        addCenteredText(group, font, TITLE_SIZE,
+        addCenteredText(group, font, TITLE_SIZE, color,
                         QString::fromStdString(lesson_data.getTitle()));
     }
 
     if (!lesson_data.getSubtitle().empty())
     {
-        addCenteredText(group, font, SUBTITLE_SIZE,
+        addCenteredText(group, font, SUBTITLE_SIZE, color, 
                         QString::fromStdString(lesson_data.getSubtitle()));
     }
 
@@ -238,16 +244,16 @@ static void renderLessonInfo(QGraphicsItemGroup &group, const QFont &font,
             QStringLiteral("Written by %1")
                 .arg(QString::fromStdString(lesson_data.getAuthor()));
 
-        addAuthorText(group, font, author_text, y, /* right_align */ true);
+        addAuthorText(group, font, color ,author_text, y, /* right_align */ true);
     }
 
     const int level = static_cast<int>(lesson_data.getDifficultyLevel());
     QString level_text = QStringLiteral("Level: %1").arg(theDifficulties[level]);
-    addAuthorText(group, font, level_text, y, /* right_align */ false);
+    addAuthorText(group, font, color,level_text, y, /* right_align */ false);
 }
 
 QGraphicsItem *
-ScoreInfoRenderer::render(const ScoreInfo &score_info)
+ScoreInfoRenderer::render(const ScoreInfo &score_info, const QColor &color)
 {
     QFont font(QStringLiteral("Liberation Serif"));
 
@@ -256,10 +262,10 @@ ScoreInfoRenderer::render(const ScoreInfo &score_info)
     switch (score_info.getScoreType())
     {
         case ScoreInfo::ScoreType::Song:
-            renderSongInfo(*group, font, score_info.getSongData());
+            renderSongInfo(*group, font, color, score_info.getSongData());
             break;
         case ScoreInfo::ScoreType::Lesson:
-            renderLessonInfo(*group, font, score_info.getLessonData());
+            renderLessonInfo(*group, font, color, score_info.getLessonData());
             break;
     }
 
