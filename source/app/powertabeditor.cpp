@@ -2120,7 +2120,8 @@ void PowerTabEditor::createCommands()
             &PowerTabEditor::editChordName);
 
     myTextCommand = new Command(tr("Text..."), "Text.TextItem",
-                                QKeySequence(), this);
+                                QKeySequence(), this,
+                                QStringLiteral(u":images/text.png"));
     myTextCommand->setCheckable(true);
     connect(myTextCommand, &QAction::triggered, this,
             &PowerTabEditor::editTextItem);
@@ -2256,7 +2257,8 @@ void PowerTabEditor::createCommands()
 
     myLeftHandFingeringCommand = new Command(tr("Left Hand Fingering..."), 
                                              "Notes.LeftHandFingering",
-                                             QKeySequence(), this);
+                                             QKeySequence(), this,
+                                             QStringLiteral(u":images/lefthandfingering.png"));
     myLeftHandFingeringCommand->setCheckable(true);
     connect(myLeftHandFingeringCommand, &QAction::triggered, this,
             &PowerTabEditor::editLeftHandFingering);
@@ -2352,7 +2354,8 @@ void PowerTabEditor::createCommands()
             &PowerTabEditor::addRest);
 
     myMultibarRestCommand = new Command(
-        tr("Multi-Bar Rest..."), "Rests.MultibarRest", QKeySequence(), this);
+        tr("Multi-Bar Rest..."), "Rests.MultibarRest", QKeySequence(), this,
+        QStringLiteral(u":images/rest_multibar.png"));
     myMultibarRestCommand->setCheckable(true);
     connect(myMultibarRestCommand, &QAction::triggered, this,
             &PowerTabEditor::editMultiBarRest);
@@ -2366,7 +2369,8 @@ void PowerTabEditor::createCommands()
             &PowerTabEditor::editRehearsalSign);
 
     myTempoMarkerCommand = new Command(
-        tr("Tempo Marker..."), "MusicSymbols.TempoMarker", Qt::Key_O, this);
+        tr("Tempo Marker..."), "MusicSymbols.TempoMarker", Qt::Key_O, this,
+        QStringLiteral(u":images/tempo.png"));
     myTempoMarkerCommand->setCheckable(true);
     connect(myTempoMarkerCommand, &QAction::triggered, this,
             &PowerTabEditor::editTempoMarker);
@@ -2380,19 +2384,22 @@ void PowerTabEditor::createCommands()
 
     myKeySignatureCommand = new Command(tr("Edit Key Signature..."),
                                         "MusicSymbols.EditKeySignature",
-                                        Qt::Key_K, this);
+                                        Qt::Key_K, this,
+                                        QStringLiteral(u":images/keysignature.png"));
     connect(myKeySignatureCommand, &QAction::triggered, this,
             &PowerTabEditor::editKeySignatureFromCaret);
 
     myTimeSignatureCommand = new Command(tr("Edit Time Signature..."),
                                    "MusicSymbols.EditTimeSignature",
-                                   Qt::Key_T, this);
+                                         Qt::Key_T, this,
+                                         QStringLiteral(u":images/timesignature.png"));
     connect(myTimeSignatureCommand, &QAction::triggered, this,
             &PowerTabEditor::editTimeSignatureFromCaret);
 
     myStandardBarlineCommand = new Command(tr("Insert Standard Barline"),
                                      "MusicSymbols.InsertStandardBarline",
-                                     Qt::Key_B, this);
+                                           Qt::Key_B, this,
+                                           QStringLiteral(u":images/barline_single.png"));
     connect(myStandardBarlineCommand, &QAction::triggered, this,
             &PowerTabEditor::insertStandardBarline);
 
@@ -2403,14 +2410,16 @@ void PowerTabEditor::createCommands()
 
     myDirectionCommand =
         new Command(tr("Musical Direction..."), "MusicSymbols.MusicalDirection",
-                    Qt::SHIFT + Qt::Key_D, this);
+                    Qt::SHIFT + Qt::Key_D, this,
+                    QStringLiteral(u":images/coda.png"));
     myDirectionCommand->setCheckable(true);
     connect(myDirectionCommand, &QAction::triggered, this,
             &PowerTabEditor::editMusicalDirection);
 
     myRepeatEndingCommand =
         new Command(tr("Repeat Ending..."), "MusicSymbols.RepeatEnding",
-                    Qt::SHIFT + Qt::Key_E, this);
+                    Qt::SHIFT + Qt::Key_E, this,
+                    QStringLiteral(u":images/barline_repeatend.png"));
     myRepeatEndingCommand->setCheckable(true);
     connect(myRepeatEndingCommand, &QAction::triggered, this,
             &PowerTabEditor::editRepeatEnding);
@@ -3048,7 +3057,11 @@ void PowerTabEditor::createToolBox()
     myToolBoxDockWidget->setFeatures(QDockWidget::DockWidgetClosable);
     myToolBoxDockWidget->setObjectName("Toolbox");
 
-    myToolBox = new ToolBox(myOctave8vaCommand,
+    myToolBox = new ToolBox(myKeySignatureCommand,
+                            myTimeSignatureCommand,
+                            myStandardBarlineCommand,
+                            myRepeatEndingCommand,
+                            myOctave8vaCommand,
                             myOctave15maCommand,
                             myOctave8vbCommand,
                             myOctave15mbCommand,
@@ -3062,10 +3075,12 @@ void PowerTabEditor::createToolBox()
                             myAddRestCommand,
                             myDottedCommand,
                             myDoubleDottedCommand,
-                            myTieCommand,
-                            myFermataCommand,
                             myTripletCommand,
                             myIrregularGroupingCommand,
+                            myTieCommand,
+                            myFermataCommand,
+                            myTempoMarkerCommand,
+                            myMultibarRestCommand,
                             myDynamicPPPCommand,
                             myDynamicPPCommand,
                             myDynamicPCommand,
@@ -3075,32 +3090,35 @@ void PowerTabEditor::createToolBox()
                             myDynamicFFCommand,
                             myDynamicFFFCommand,
                             myMutedCommand,
+                            myGhostNoteCommand,
                             myMarcatoCommand,
                             mySforzandoCommand,
                             myStaccatoCommand,
                             myLetRingCommand,
                             myPalmMuteCommand,
-                            myGhostNoteCommand,
+                            myTapCommand,
                             myNaturalHarmonicCommand,
                             myArtificialHarmonicCommand,
                             myTappedHarmonicCommand,
                             myBendCommand,
                             myVibratoCommand,
                             myWideVibratoCommand,
+                            myGraceNoteCommand,
+                            myLeftHandFingeringCommand,
+                            myHammerPullCommand,
+                            myTrillCommand,
                             myLegatoSlideCommand,
                             myShiftSlideCommand,
                             mySlideIntoFromAboveCommand,
                             mySlideIntoFromBelowCommand,
                             mySlideOutOfDownwardsCommand,
                             mySlideOutOfUpwardsCommand,
-                            myHammerPullCommand,
-                            myTapCommand,
-                            myGraceNoteCommand,
-                            myTrillCommand,
-                            myArpeggioUpCommand,
-                            myArpeggioDownCommand,
                             myPickStrokeUpCommand,
                             myPickStrokeDownCommand,
+                            myArpeggioUpCommand,
+                            myArpeggioDownCommand,
+                            myTextCommand,
+                            myDirectionCommand,
                             myToolBoxDockWidget);
 
     myToolBoxDockWidget->setWidget(myToolBox);

@@ -35,7 +35,7 @@
     <item row="4" column="2">
      <widget class="QToolButton" name="marcatoButton">
       <property name="text">
-       <string>Accent</string>
+       <string/>
       </property>
       <property name="icon">
        <iconset resource="../../build/resources.qrc">
@@ -55,7 +55,7 @@
     <item row="2" column="4">
      <widget class="QToolButton" name="tieButton">
       <property name="text">
-       <string>...</string>
+       <string/>
       </property>
       <property name="icon">
        <iconset resource="../../build/resources.qrc">
@@ -78,7 +78,7 @@
     <item row="1" column="6">
      <widget class="QToolButton" name="sixtyFourthNoteButton">
       <property name="text">
-       <string>...</string>
+       <string/>
       </property>
       <property name="icon">
        <iconset resource="../../build/resources.qrc">
@@ -98,7 +98,7 @@
     <item row="6" column="2">
      <widget class="QToolButton" name="legatoSlideButton">
       <property name="text">
-       <string>...</string>
+       <string/>
       </property>
       <property name="icon">
        <iconset resource="../../build/resources.qrc">
@@ -118,7 +118,7 @@
     <item row="3" column="1">
      <widget class="QToolButton" name="dynamicPPButton">
       <property name="text">
-       <string>...</string>
+       <string/>
       </property>
       <property name="icon">
        <iconset resource="../../build/resources.qrc">
@@ -138,7 +138,7 @@
     <item row="1" column="3">
      <widget class="QToolButton" name="eighthNoteButton">
       <property name="text">
-       <string>...</string>
+       <string/>
       </property>
       <property name="icon">
        <iconset resource="../../build/resources.qrc">
@@ -161,7 +161,7 @@
        <string>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;&lt;br/&gt;&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
       </property>
       <property name="text">
-       <string>...</string>
+       <string/>
       </property>
       <property name="icon">
        <iconset resource="../../build/resources.qrc">
@@ -181,7 +181,7 @@
     <item row="2" column="2">
      <widget class="QToolButton" name="tripletButton">
       <property name="text">
-       <string>...</string>
+       <string/>
       </property>
       <property name="icon">
        <iconset resource="../../build/resources.qrc">
@@ -204,7 +204,7 @@
     <item row="4" column="7">
      <widget class="QToolButton" name="tapButton">
       <property name="text">
-       <string>Tap</string>
+       <string/>
       </property>
       <property name="icon">
        <iconset resource="../../build/resources.qrc">
@@ -224,7 +224,7 @@
     <item row="4" column="3">
      <widget class="QToolButton" name="sforzandoButton">
       <property name="text">
-       <string>Heavy Accent</string>
+       <string/>
       </property>
       <property name="icon">
        <iconset resource="../../build/resources.qrc">
@@ -244,7 +244,7 @@
     <item row="5" column="0">
      <widget class="QToolButton" name="naturalHarmonicButton">
       <property name="text">
-       <string>Natural Harmonic</string>
+       <string/>
       </property>
       <property name="icon">
        <iconset resource="../../build/resources.qrc">
@@ -264,7 +264,7 @@
     <item row="4" column="0">
      <widget class="QToolButton" name="mutedButton">
       <property name="text">
-       <string>Muted</string>
+       <string/>
       </property>
       <property name="icon">
        <iconset resource="../../build/resources.qrc">
@@ -284,7 +284,7 @@
     <item row="1" column="2">
      <widget class="QToolButton" name="quarterNoteButton">
       <property name="text">
-       <string>...</string>
+       <string/>
       </property>
       <property name="icon">
        <iconset resource="../../build/resources.qrc">
@@ -304,7 +304,7 @@
     <item row="6" column="6">
      <widget class="QToolButton" name="slideOutOfDownwardsButton">
       <property name="text">
-       <string>...</string>
+       <string/>
       </property>
       <property name="icon">
        <iconset resource="../../build/resources.qrc">
@@ -324,7 +324,7 @@
     <item row="2" column="1">
      <widget class="QToolButton" name="doubleDottedButton">
       <property name="text">
-       <string>...</string>
+       <string/>
       </property>
       <property name="icon">
        <iconset resource="../../build/resources.qrc">
@@ -347,7 +347,7 @@
     <item row="3" column="7">
      <widget class="QToolButton" name="dynamicFFFButton">
       <property name="text">
-       <string>...</string>
+       <string/>
       </property>
       <property name="icon">
        <iconset resource="../../build/resources.qrc">
@@ -367,7 +367,7 @@
     <item row="6" column="3">
      <widget class="QToolButton" name="shiftSlideButton">
       <property name="text">
-       <string>...</string>
+       <string/>
       </property>
       <property name="icon">
        <iconset resource="../../build/resources.qrc">
@@ -387,7 +387,7 @@
     <item row="1" column="1">
      <widget class="QToolButton" name="halfNoteButton">
       <property name="text">
-       <string>...</string>
+       <string/>
       </property>
       <property name="icon">
        <iconset resource="../../build/resources.qrc">
@@ -407,7 +407,7 @@
     <item row="3" column="2">
      <widget class="QToolButton" name="dynamicPButton">
       <property name="text">
-       <string>...</string>
+       <string/>
       </property>
       <property name="icon">
        <iconset resource="../../build/resources.qrc">
@@ -427,7 +427,7 @@
     <item row="2" column="5">
      <widget class="QToolButton" name="fermataButton">
       <property name="text">
-       <string>...</string>
+       <string/>
       </property>
       <property name="icon">
        <iconset resource="../../build/resources.qrc">
@@ -450,7 +450,7 @@
     <item row="5" column="3">
      <widget class="QToolButton" name="bendButton">
       <property name="text">
-       <string>...</string>
+       <string/>
       </property>
       <property name="icon">
        <iconset resource="../../build/resources.qrc">
@@ -470,7 +470,7 @@
     <item row="5" column="2">
      <widget class="QToolButton" name="tappedHarmonicButton">
       <property name="text">
-       <string>Tapped Harmonic</string>
+       <string/>
       </property>
       <property name="icon">
        <iconset resource="../../build/resources.qrc">
@@ -490,7 +490,7 @@
     <item row="6" column="4">
      <widget class="QToolButton" name="slideIntoFromAboveButton">
       <property name="text">
-       <string>...</string>
+       <string/>
       </property>
       <property name="icon">
        <iconset resource="../../build/resources.qrc">
@@ -507,30 +507,10 @@
       </property>
      </widget>
     </item>
-    <item row="0" column="0">
-     <widget class="QToolButton" name="octave8vaButton">
-      <property name="text">
-       <string>8va</string>
-      </property>
-      <property name="icon">
-       <iconset resource="../../build/resources.qrc">
-        <normaloff>:/images/8va.png</normaloff>:/images/8va.png</iconset>
-      </property>
-      <property name="iconSize">
-       <size>
-        <width>24</width>
-        <height>24</height>
-       </size>
-      </property>
-      <property name="autoRaise">
-       <bool>true</bool>
-      </property>
-     </widget>
-    </item>
     <item row="4" column="5">
      <widget class="QToolButton" name="letRingButton">
       <property name="text">
-       <string>Let Ring</string>
+       <string/>
       </property>
       <property name="icon">
        <iconset resource="../../build/resources.qrc">
@@ -547,30 +527,10 @@
       </property>
      </widget>
     </item>
-    <item row="0" column="3">
-     <widget class="QToolButton" name="octave15mbButton">
-      <property name="text">
-       <string>15mb</string>
-      </property>
-      <property name="icon">
-       <iconset resource="../../build/resources.qrc">
-        <normaloff>:/images/15mb.png</normaloff>:/images/15mb.png</iconset>
-      </property>
-      <property name="iconSize">
-       <size>
-        <width>24</width>
-        <height>24</height>
-       </size>
-      </property>
-      <property name="autoRaise">
-       <bool>true</bool>
-      </property>
-     </widget>
-    </item>
     <item row="6" column="5">
      <widget class="QToolButton" name="slideIntoFromBelowButton">
       <property name="text">
-       <string>...</string>
+       <string/>
       </property>
       <property name="icon">
        <iconset resource="../../build/resources.qrc">
@@ -590,7 +550,7 @@
     <item row="4" column="4">
      <widget class="QToolButton" name="staccatoButton">
       <property name="text">
-       <string>Staccato</string>
+       <string/>
       </property>
       <property name="icon">
        <iconset resource="../../build/resources.qrc">
@@ -607,30 +567,10 @@
       </property>
      </widget>
     </item>
-    <item row="0" column="2">
-     <widget class="QToolButton" name="octave8vbButton">
-      <property name="text">
-       <string>8vb</string>
-      </property>
-      <property name="icon">
-       <iconset resource="../../build/resources.qrc">
-        <normaloff>:/images/8vb.png</normaloff>:/images/8vb.png</iconset>
-      </property>
-      <property name="iconSize">
-       <size>
-        <width>24</width>
-        <height>24</height>
-       </size>
-      </property>
-      <property name="autoRaise">
-       <bool>true</bool>
-      </property>
-     </widget>
-    </item>
     <item row="5" column="6">
      <widget class="QToolButton" name="graceNoteButton">
       <property name="text">
-       <string>Grace Note</string>
+       <string/>
       </property>
       <property name="icon">
        <iconset resource="../../build/resources.qrc">
@@ -650,7 +590,7 @@
     <item row="3" column="3">
      <widget class="QToolButton" name="dynamicMPButton">
       <property name="text">
-       <string>...</string>
+       <string/>
       </property>
       <property name="icon">
        <iconset resource="../../build/resources.qrc">
@@ -670,7 +610,7 @@
     <item row="2" column="3">
      <widget class="QToolButton" name="irregularGroupingButton">
       <property name="text">
-       <string>Irregular Grouping</string>
+       <string/>
       </property>
       <property name="icon">
        <iconset resource="../../build/resources.qrc">
@@ -690,7 +630,7 @@
     <item row="6" column="7">
      <widget class="QToolButton" name="slideOutOfUpwardsButton">
       <property name="text">
-       <string>...</string>
+       <string/>
       </property>
       <property name="icon">
        <iconset resource="../../build/resources.qrc">
@@ -710,7 +650,7 @@
     <item row="3" column="6">
      <widget class="QToolButton" name="dynamicFFButton">
       <property name="text">
-       <string>...</string>
+       <string/>
       </property>
       <property name="icon">
        <iconset resource="../../build/resources.qrc">
@@ -730,7 +670,7 @@
     <item row="3" column="5">
      <widget class="QToolButton" name="dynamicFButton">
       <property name="text">
-       <string>...</string>
+       <string/>
       </property>
       <property name="icon">
        <iconset resource="../../build/resources.qrc">
@@ -750,7 +690,7 @@
     <item row="5" column="1">
      <widget class="QToolButton" name="artificialHarmonicButton">
       <property name="text">
-       <string>Artificial Harmonic</string>
+       <string/>
       </property>
       <property name="icon">
        <iconset resource="../../build/resources.qrc">
@@ -770,7 +710,7 @@
     <item row="5" column="5">
      <widget class="QToolButton" name="wideVibratoButton">
       <property name="text">
-       <string>...</string>
+       <string/>
       </property>
       <property name="icon">
        <iconset resource="../../build/resources.qrc">
@@ -790,7 +730,7 @@
     <item row="4" column="1">
      <widget class="QToolButton" name="ghostNoteButton">
       <property name="text">
-       <string>Ghost Note</string>
+       <string/>
       </property>
       <property name="icon">
        <iconset resource="../../build/resources.qrc">
@@ -810,7 +750,7 @@
     <item row="1" column="4">
      <widget class="QToolButton" name="sixteenthNoteButton">
       <property name="text">
-       <string>...</string>
+       <string/>
       </property>
       <property name="icon">
        <iconset resource="../../build/resources.qrc">
@@ -830,7 +770,7 @@
     <item row="6" column="1">
      <widget class="QToolButton" name="trillButton">
       <property name="text">
-       <string>...</string>
+       <string/>
       </property>
       <property name="icon">
        <iconset resource="../../build/resources.qrc">
@@ -850,7 +790,7 @@
     <item row="4" column="6">
      <widget class="QToolButton" name="palmMuteButton">
       <property name="text">
-       <string>Palm Mute</string>
+       <string/>
       </property>
       <property name="icon">
        <iconset resource="../../build/resources.qrc">
@@ -870,7 +810,7 @@
     <item row="1" column="5">
      <widget class="QToolButton" name="thirtySecondNoteButton">
       <property name="text">
-       <string>...</string>
+       <string/>
       </property>
       <property name="icon">
        <iconset resource="../../build/resources.qrc">
@@ -890,7 +830,7 @@
     <item row="5" column="4">
      <widget class="QToolButton" name="vibratoButton">
       <property name="text">
-       <string>...</string>
+       <string/>
       </property>
       <property name="icon">
        <iconset resource="../../build/resources.qrc">
@@ -910,7 +850,7 @@
     <item row="3" column="0">
      <widget class="QToolButton" name="dynamicPPPButton">
       <property name="text">
-       <string>...</string>
+       <string/>
       </property>
       <property name="icon">
        <iconset resource="../../build/resources.qrc">
@@ -930,7 +870,7 @@
     <item row="6" column="0">
      <widget class="QToolButton" name="hammerPullButton">
       <property name="text">
-       <string>...</string>
+       <string/>
       </property>
       <property name="icon">
        <iconset resource="../../build/resources.qrc">
@@ -950,7 +890,7 @@
     <item row="2" column="0">
      <widget class="QToolButton" name="dottedButton">
       <property name="text">
-       <string>...</string>
+       <string/>
       </property>
       <property name="icon">
        <iconset resource="../../build/resources.qrc">
@@ -973,7 +913,7 @@
     <item row="1" column="7">
      <widget class="QToolButton" name="addRestButton">
       <property name="text">
-       <string>...</string>
+       <string/>
       </property>
       <property name="icon">
        <iconset resource="../../build/resources.qrc">
@@ -996,7 +936,7 @@
     <item row="3" column="4">
      <widget class="QToolButton" name="dynamicMFButton">
       <property name="text">
-       <string>...</string>
+       <string/>
       </property>
       <property name="icon">
        <iconset resource="../../build/resources.qrc">
@@ -1013,30 +953,10 @@
       </property>
      </widget>
     </item>
-    <item row="0" column="1">
-     <widget class="QToolButton" name="octave15maButton">
-      <property name="text">
-       <string>15ma</string>
-      </property>
-      <property name="icon">
-       <iconset resource="../../build/resources.qrc">
-        <normaloff>:/images/15ma.png</normaloff>:/images/15ma.png</iconset>
-      </property>
-      <property name="iconSize">
-       <size>
-        <width>24</width>
-        <height>24</height>
-       </size>
-      </property>
-      <property name="autoRaise">
-       <bool>true</bool>
-      </property>
-     </widget>
-    </item>
     <item row="7" column="0">
      <widget class="QToolButton" name="pickStrokeUpButton">
       <property name="text">
-       <string>Pickstroke Up</string>
+       <string/>
       </property>
       <property name="icon">
        <iconset resource="../../build/resources.qrc">
@@ -1056,7 +976,7 @@
     <item row="7" column="1">
      <widget class="QToolButton" name="pickStrokeDownButton">
       <property name="text">
-       <string>Pickstroke Down</string>
+       <string/>
       </property>
       <property name="icon">
        <iconset resource="../../build/resources.qrc">
@@ -1076,7 +996,7 @@
     <item row="7" column="2">
      <widget class="QToolButton" name="arpeggioUpButton">
       <property name="text">
-       <string>Arpeggio Up</string>
+       <string/>
       </property>
       <property name="icon">
        <iconset resource="../../build/resources.qrc">
@@ -1096,11 +1016,271 @@
     <item row="7" column="3">
      <widget class="QToolButton" name="arpeggioDownButton">
       <property name="text">
-       <string>Arpeggio Down</string>
+       <string/>
       </property>
       <property name="icon">
        <iconset resource="../../build/resources.qrc">
         <normaloff>:/images/arpeggio_down.png</normaloff>:/images/arpeggio_down.png</iconset>
+      </property>
+      <property name="iconSize">
+       <size>
+        <width>24</width>
+        <height>24</height>
+       </size>
+      </property>
+      <property name="autoRaise">
+       <bool>true</bool>
+      </property>
+     </widget>
+    </item>
+    <item row="0" column="7">
+     <widget class="QToolButton" name="octave15mbButton">
+      <property name="text">
+       <string/>
+      </property>
+      <property name="icon">
+       <iconset resource="../../build/resources.qrc">
+        <normaloff>:/images/15mb.png</normaloff>:/images/15mb.png</iconset>
+      </property>
+      <property name="iconSize">
+       <size>
+        <width>24</width>
+        <height>24</height>
+       </size>
+      </property>
+      <property name="autoRaise">
+       <bool>true</bool>
+      </property>
+     </widget>
+    </item>
+    <item row="0" column="6">
+     <widget class="QToolButton" name="octave8vbButton">
+      <property name="text">
+       <string/>
+      </property>
+      <property name="icon">
+       <iconset resource="../../build/resources.qrc">
+        <normaloff>:/images/8vb.png</normaloff>:/images/8vb.png</iconset>
+      </property>
+      <property name="iconSize">
+       <size>
+        <width>24</width>
+        <height>24</height>
+       </size>
+      </property>
+      <property name="autoRaise">
+       <bool>true</bool>
+      </property>
+     </widget>
+    </item>
+    <item row="0" column="5">
+     <widget class="QToolButton" name="octave15maButton">
+      <property name="text">
+       <string/>
+      </property>
+      <property name="icon">
+       <iconset resource="../../build/resources.qrc">
+        <normaloff>:/images/15ma.png</normaloff>:/images/15ma.png</iconset>
+      </property>
+      <property name="iconSize">
+       <size>
+        <width>24</width>
+        <height>24</height>
+       </size>
+      </property>
+      <property name="autoRaise">
+       <bool>true</bool>
+      </property>
+     </widget>
+    </item>
+    <item row="0" column="4">
+     <widget class="QToolButton" name="octave8vaButton">
+      <property name="text">
+       <string/>
+      </property>
+      <property name="icon">
+       <iconset resource="../../build/resources.qrc">
+        <normaloff>:/images/8va.png</normaloff>:/images/8va.png</iconset>
+      </property>
+      <property name="iconSize">
+       <size>
+        <width>24</width>
+        <height>24</height>
+       </size>
+      </property>
+      <property name="autoRaise">
+       <bool>true</bool>
+      </property>
+     </widget>
+    </item>
+    <item row="0" column="0">
+     <widget class="QToolButton" name="keySignatureButton">
+      <property name="text">
+       <string/>
+      </property>
+      <property name="icon">
+       <iconset resource="../../build/resources.qrc">
+        <normaloff>:/images/keysignature.png</normaloff>:/images/keysignature.png</iconset>
+      </property>
+      <property name="iconSize">
+       <size>
+        <width>24</width>
+        <height>24</height>
+       </size>
+      </property>
+      <property name="autoRaise">
+       <bool>true</bool>
+      </property>
+     </widget>
+    </item>
+    <item row="0" column="1">
+     <widget class="QToolButton" name="timeSignatureButton">
+      <property name="text">
+       <string/>
+      </property>
+      <property name="icon">
+       <iconset resource="../../build/resources.qrc">
+        <normaloff>:/images/timesignature.png</normaloff>:/images/timesignature.png</iconset>
+      </property>
+      <property name="iconSize">
+       <size>
+        <width>24</width>
+        <height>24</height>
+       </size>
+      </property>
+      <property name="autoRaise">
+       <bool>true</bool>
+      </property>
+     </widget>
+    </item>
+    <item row="0" column="2">
+     <widget class="QToolButton" name="standardBarlineButton">
+      <property name="text">
+       <string/>
+      </property>
+      <property name="icon">
+       <iconset resource="../../build/resources.qrc">
+        <normaloff>:/images/barline_single.png</normaloff>:/images/barline_single.png</iconset>
+      </property>
+      <property name="iconSize">
+       <size>
+        <width>24</width>
+        <height>24</height>
+       </size>
+      </property>
+      <property name="autoRaise">
+       <bool>true</bool>
+      </property>
+     </widget>
+    </item>
+    <item row="0" column="3">
+     <widget class="QToolButton" name="repeatEndingButton">
+      <property name="text">
+       <string/>
+      </property>
+      <property name="icon">
+       <iconset resource="../../build/resources.qrc">
+        <normaloff>:/images/barline_repeatend.png</normaloff>:/images/barline_repeatend.png</iconset>
+      </property>
+      <property name="iconSize">
+       <size>
+        <width>24</width>
+        <height>24</height>
+       </size>
+      </property>
+      <property name="autoRaise">
+       <bool>true</bool>
+      </property>
+     </widget>
+    </item>
+    <item row="2" column="6">
+     <widget class="QToolButton" name="tempoMarkerButton">
+      <property name="text">
+       <string/>
+      </property>
+      <property name="icon">
+       <iconset resource="../../build/resources.qrc">
+        <normaloff>:/images/tempo.png</normaloff>:/images/tempo.png</iconset>
+      </property>
+      <property name="iconSize">
+       <size>
+        <width>24</width>
+        <height>24</height>
+       </size>
+      </property>
+      <property name="autoRaise">
+       <bool>true</bool>
+      </property>
+     </widget>
+    </item>
+    <item row="2" column="7">
+     <widget class="QToolButton" name="multibarRestButton">
+      <property name="text">
+       <string/>
+      </property>
+      <property name="icon">
+       <iconset resource="../../build/resources.qrc">
+        <normaloff>:/images/rest_multibar.png</normaloff>:/images/rest_multibar.png</iconset>
+      </property>
+      <property name="iconSize">
+       <size>
+        <width>24</width>
+        <height>24</height>
+       </size>
+      </property>
+      <property name="autoRaise">
+       <bool>true</bool>
+      </property>
+     </widget>
+    </item>
+    <item row="5" column="7">
+     <widget class="QToolButton" name="leftHandFingeringButton">
+      <property name="text">
+       <string/>
+      </property>
+      <property name="icon">
+       <iconset resource="../../build/resources.qrc">
+        <normaloff>:/images/lefthandfingering.png</normaloff>:/images/lefthandfingering.png</iconset>
+      </property>
+      <property name="iconSize">
+       <size>
+        <width>24</width>
+        <height>24</height>
+       </size>
+      </property>
+      <property name="autoRaise">
+       <bool>true</bool>
+      </property>
+     </widget>
+    </item>
+    <item row="7" column="4">
+     <widget class="QToolButton" name="textButton">
+      <property name="text">
+       <string/>
+      </property>
+      <property name="icon">
+       <iconset resource="../../build/resources.qrc">
+        <normaloff>:/images/text.png</normaloff>:/images/text.png</iconset>
+      </property>
+      <property name="iconSize">
+       <size>
+        <width>24</width>
+        <height>24</height>
+       </size>
+      </property>
+      <property name="autoRaise">
+       <bool>true</bool>
+      </property>
+     </widget>
+    </item>
+    <item row="7" column="5">
+     <widget class="QToolButton" name="directionButton">
+      <property name="text">
+       <string/>
+      </property>
+      <property name="icon">
+       <iconset resource="../../build/resources.qrc">
+        <normaloff>:/images/coda.png</normaloff>:/images/coda.png</iconset>
       </property>
       <property name="iconSize">
        <size>

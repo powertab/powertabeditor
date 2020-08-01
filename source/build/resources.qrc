@@ -5,6 +5,10 @@
         <file alias="LiberationSerif-Regular.ttf">../fonts/LiberationSerif-Regular.ttf</file>
     </qresource>
     <qresource prefix="/images">
+        <file alias="keysignature.png">../images/keysignature.png</file>
+        <file alias="timesignature.png">../images/timesignature.png</file>
+        <file alias="barline_single.png">../images/barline_single.png</file>
+        <file alias="barline_repeatend.png">../images/barline_repeatend.png</file>
         <file alias="8va.png">../images/8va.png</file>
         <file alias="15ma.png">../images/15ma.png</file>
         <file alias="8vb.png">../images/8vb.png</file>
@@ -13,6 +17,7 @@
         <file alias="legato">../images/legato.png</file>
         <file alias="tap.png">../images/tap.png</file>
         <file alias="grace.png">../images/grace.png</file>
+        <file alias="lefthandfingering.png">../images/lefthandfingering.png</file>
         <file alias="legatoslide">../images/legatoslide.png</file>
         <file alias="shiftslide">../images/shiftslide.png</file>
         <file alias="slideinabove">../images/slideinabove.png</file>
@@ -52,6 +57,8 @@
         <file alias="dotted_note">../images/dotted_note.png</file>
         <file alias="doubledotted_note">../images/doubledotted_note.png</file>
         <file alias="fermata">../images/fermata.png</file>
+        <file alias="tempo.png">../images/tempo.png</file>
+        <file alias="rest_multibar.png">../images/rest_multibar.png</file>
         <file alias="group_note">../images/group_note.png</file>
         <file alias="group_note_irregular.png">../images/group_note_irregular.png</file>
         <file alias="tie_note">../images/tie_note.png</file>
@@ -80,6 +87,8 @@
         <file alias="triplet_feel_sixteenth_off.png">../images/triplet_feel_sixteenth_off.png</file>
         <file alias="arpeggio_up.png">../images/arpeggio_up.png</file>
         <file alias="arpeggio_down.png">../images/arpeggio_down.png</file>
+        <file alias="text.png">../images/text.png</file>
+        <file alias="coda.png">../images/coda.png</file>
         <file alias="pickstroke_up.png">../images/pickstroke_up.png</file>
         <file alias="pickstroke_down.png">../images/pickstroke_down.png</file>
     </qresource>
