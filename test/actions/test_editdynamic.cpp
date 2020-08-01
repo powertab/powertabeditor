@@ -15,30 +15,31 @@
   * along with this program.  If not, see <http://www.gnu.org/licenses/>.
 */
   
-#include <catch2/catch.hpp>
+#include <doctest/doctest.h>
 
 #include <actions/editdynamic.h>
 #include <score/score.h>
 
-TEST_CASE("Actions/EditDynamic", "")
+TEST_CASE("Actions/EditDynamic")
 {
     Score score;
     System system;
     Staff staff;
-    Dynamic originalDynamic(6, Dynamic::f);
+    Dynamic originalDynamic(6, VolumeLevel::f);
     staff.insertDynamic(originalDynamic);
     system.insertStaff(staff);
     score.insertSystem(system);
 
-    Dynamic newDynamic(6, Dynamic::mp);
+    Dynamic newDynamic(6, VolumeLevel::mp);
     ScoreLocation location(score, 0, 0, 6);
     EditDynamic action(location, originalDynamic, newDynamic);
 
     action.redo();
     REQUIRE(location.getStaff().getDynamics().size() == 1);
-    REQUIRE(location.getStaff().getDynamics()[0].getVolume() == Dynamic::mp);
+    REQUIRE(location.getStaff().getDynamics()[0].getVolume() ==
+            VolumeLevel::mp);
 
     action.undo();
     REQUIRE(location.getStaff().getDynamics().size() == 1);
-    REQUIRE(location.getStaff().getDynamics()[0].getVolume() == Dynamic::f);
+    REQUIRE(location.getStaff().getDynamics()[0].getVolume() == VolumeLevel::f);
 }

@@ -229,7 +229,7 @@ private slots:
     /// Adds or removes a repeat ending at the current position.
     void editRepeatEnding();
     /// Adds, removes, or changes a dynamic at the current location.
-    void updateDynamic(Dynamic::VolumeLevel volume);
+    void updateDynamic(VolumeLevel volume);
     /// Adds or removes a dynamic at the current location.
     void editDynamic();
     /// Adds or removes a volume swell at the current location.
@@ -335,7 +335,7 @@ private:
     void createDynamicCommand(Command *&command,
                               const QString &menuName,
                               const QString &commandName,
-                              Dynamic::VolumeLevel volume,
+                              VolumeLevel volume,
                               const QString &iconFileName = QString());
     /// Set up the menus for the application.
     void createMenus();
@@ -591,7 +591,6 @@ private:
     Command *myArtificialHarmonicCommand;
     Command *myTappedHarmonicCommand;
     Command *myBendCommand;
-    Command *myLeftHandFingeringCommand;
 
     QMenu *mySlideIntoMenu;
     Command *mySlideIntoFromAboveCommand;

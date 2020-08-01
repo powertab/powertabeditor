@@ -1373,7 +1373,7 @@ void PowerTabEditor::editRepeatEnding()
     }
 }
 
-void PowerTabEditor::updateDynamic(Dynamic::VolumeLevel volume)
+void PowerTabEditor::updateDynamic(VolumeLevel volume)
 {
     ScoreLocation &location = getLocation();
     const Dynamic *currentDynamic = ScoreUtils::findByPosition(
@@ -2452,28 +2452,28 @@ void PowerTabEditor::createCommands()
     myDynamicGroup->setExclusionPolicy(QActionGroup::ExclusionPolicy::ExclusiveOptional);
 
     createDynamicCommand(myDynamicPPPCommand, tr("Dynamics"),
-                         "Dynamics.ppp", Dynamic::ppp,
+                         "Dynamics.ppp", VolumeLevel::ppp,
                          QStringLiteral(u":images/dynamic_ppp.png"));
     createDynamicCommand(myDynamicPPCommand, tr("Dynamics"),
-                         "Dynamics.pp", Dynamic::pp,
+                         "Dynamics.pp", VolumeLevel::pp,
                          QStringLiteral(u":images/dynamic_pp.png"));
     createDynamicCommand(myDynamicPCommand, tr("Dynamics"),
-                         "Dynamics.p", Dynamic::p,
+                         "Dynamics.p", VolumeLevel::p,
                          QStringLiteral(u":images/dynamic_p.png"));
     createDynamicCommand(myDynamicMPCommand, tr("Dynamics"),
-                         "Dynamics.mp", Dynamic::mp,
+                         "Dynamics.mp", VolumeLevel::mp,
                          QStringLiteral(u":images/dynamic_mp.png"));
     createDynamicCommand(myDynamicMFCommand, tr("Dynamics"),
-                         "Dynamics.mf", Dynamic::mf,
+                         "Dynamics.mf", VolumeLevel::mf,
                          QStringLiteral(u":images/dynamic_mf.png"));
     createDynamicCommand(myDynamicFCommand, tr("Dynamics"),
-                         "Dynamics.f", Dynamic::f,
+                         "Dynamics.f", VolumeLevel::f,
                          QStringLiteral(u":images/dynamic_f.png"));
     createDynamicCommand(myDynamicFFCommand, tr("Dynamics"),
-                         "Dynamics.ff", Dynamic::ff,
+                         "Dynamics.ff", VolumeLevel::ff,
                          QStringLiteral(u":images/dynamic_ff.png"));
     createDynamicCommand(myDynamicFFFCommand, tr("Dynamics"),
-                         "Dynamics.fff", Dynamic::fff,
+                         "Dynamics.fff", VolumeLevel::fff,
                          QStringLiteral(u":images/dynamic_fff.png"));
 
     myVolumeSwellCommand =
@@ -2824,7 +2824,7 @@ void PowerTabEditor::createPositionPropertyCommand(
 
 void PowerTabEditor::createDynamicCommand(
         Command *&command, const QString &menuName, const QString &commandName,
-        Dynamic::VolumeLevel volume, const QString &iconFileName)
+        VolumeLevel volume, const QString &iconFileName)
 {
     command = new Command(menuName, commandName, QKeySequence(), this,
                           iconFileName);
@@ -3468,30 +3468,30 @@ void PowerTabEditor::updateCommands()
     {
         switch (dynamic->getVolume())
         {
-            case Dynamic::Off:
+            case VolumeLevel::Off:
                 break;
-            case Dynamic::ppp:
+            case VolumeLevel::ppp:
                 myDynamicPPPCommand->setChecked(true);
                 break;
-            case Dynamic::pp:
+            case VolumeLevel::pp:
                 myDynamicPPCommand->setChecked(true);
                 break;
-            case Dynamic::p:
+            case VolumeLevel::p:
                 myDynamicPCommand->setChecked(true);
                 break;
-            case Dynamic::mp:
+            case VolumeLevel::mp:
                 myDynamicMPCommand->setChecked(true);
                 break;
-            case Dynamic::mf:
+            case VolumeLevel::mf:
                 myDynamicMFCommand->setChecked(true);
                 break;
-            case Dynamic::f:
+            case VolumeLevel::f:
                 myDynamicFCommand->setChecked(true);
                 break;
-            case Dynamic::ff:
+            case VolumeLevel::ff:
                 myDynamicFFCommand->setChecked(true);
                 break;
-            case Dynamic::fff:
+            case VolumeLevel::fff:
                 myDynamicFFFCommand->setChecked(true);
                 break;
         }
