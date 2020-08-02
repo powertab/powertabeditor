@@ -6,8 +6,10 @@ All notable changes to this project will be documented in this file.
 Thanks to the following contributors who worked on this release:
 - @cameronwhite
 - @mostafa-nabil
+- @nbrunett
 
 ### Added
+- Added a toolbox panel with common commands (#188, #300, @nbrunett).
 - Added support for volume swells (#17).
 - Added MIDI playback support for alterations of pace (#18).
 - Added new commands (`Note -> Shift String Up` and `Note -> Shift String Down`) to shift notes up or down by a string (#20).
