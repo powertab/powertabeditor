@@ -2449,7 +2449,6 @@ void PowerTabEditor::createCommands()
     connect(myDynamicCommand, &QAction::triggered, this, &PowerTabEditor::editDynamic);
 
     myDynamicGroup = new QActionGroup(this);
-    myDynamicGroup->setExclusionPolicy(QActionGroup::ExclusionPolicy::ExclusiveOptional);
 
     createDynamicCommand(myDynamicPPPCommand, tr("Dynamics"),
                          "Dynamics.ppp", VolumeLevel::ppp,
@@ -3498,14 +3497,9 @@ void PowerTabEditor::updateCommands()
     }
     else
     {
-        for (QAction *action : myDynamicGroup->actions())
-        {
-            if (action ==  myDynamicGroup->checkedAction())
-            {
-                action->setChecked(false);
-                break;
-            }
-        }
+        QAction *checkedAction = myDynamicGroup->checkedAction();
+        if (checkedAction)
+            checkedAction->setChecked(false);
     }
 
     myVolumeSwellCommand->setEnabled(pos);
