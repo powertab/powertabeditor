@@ -30,6 +30,7 @@ set( srcs
     actions/test_adjustlinespacing.cpp
     actions/test_editbarline.cpp
     actions/test_editclef.cpp
+    actions/test_editdynamic.cpp
     actions/test_editfileinformation.cpp
     actions/test_editinstrument.cpp
     actions/test_editkeysignature.cpp

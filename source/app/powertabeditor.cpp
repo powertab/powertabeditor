@@ -39,6 +39,7 @@
 #include <actions/addtextitem.h>
 #include <actions/adjustlinespacing.h>
 #include <actions/editbarline.h>
+#include <actions/editdynamic.h>
 #include <actions/editfileinformation.h>
 #include <actions/editinstrument.h>
 #include <actions/editkeysignature.h>
@@ -142,6 +143,7 @@
 #include <QUrl>
 #include <QVBoxLayout>
 
+#include <score/dynamic.h>
 #include <score/utils.h>
 #include <score/voiceutils.h>
 
@@ -150,6 +152,7 @@
 #include <widgets/instruments/instrumentpanel.h>
 #include <widgets/mixer/mixer.h>
 #include <widgets/playback/playbackwidget.h>
+#include <widgets/toolbox/toolbox.h>
 
 PowerTabEditor::PowerTabEditor()
     : QMainWindow(nullptr),
@@ -166,6 +169,8 @@ PowerTabEditor::PowerTabEditor()
       myMixerDockWidget(nullptr),
       myInstrumentPanel(nullptr),
       myInstrumentDockWidget(nullptr),
+      myToolBox(nullptr),
+      myToolBoxDockWidget(new QDockWidget(tr("Toolbox"), this)),
       myPlaybackWidget(nullptr),
       myPlaybackArea(nullptr)
 {
@@ -194,6 +199,7 @@ PowerTabEditor::PowerTabEditor()
     createCommands();
     loadKeyboardShortcuts();
     createMenus();
+    createToolBox();
 
     // Set up the recent files menu.
     myRecentFiles =
@@ -1367,6 +1373,32 @@ void PowerTabEditor::editRepeatEnding()
     }
 }
 
+void PowerTabEditor::updateDynamic(VolumeLevel volume)
+{
+    ScoreLocation &location = getLocation();
+    const Dynamic *currentDynamic = ScoreUtils::findByPosition(
+                location.getStaff().getDynamics(), location.getPositionIndex());
+    Dynamic newDynamic(location.getPositionIndex(), volume);
+
+    if (currentDynamic)
+    {
+        if (newDynamic.getVolume() == currentDynamic->getVolume())
+        {
+            myUndoManager->push(new RemoveDynamic(location),
+                                location.getSystemIndex());
+            QAction *checkedAction = myDynamicGroup->checkedAction();
+            if (checkedAction)
+              checkedAction->setChecked(false);
+        }
+        else
+            myUndoManager->push(new EditDynamic(location, *currentDynamic, newDynamic),
+                                location.getSystemIndex());
+    }
+    else
+        myUndoManager->push(new AddDynamic(location, newDynamic),
+                            location.getSystemIndex());
+}
+
 void PowerTabEditor::editDynamic()
 {
     ScoreLocation &location = getLocation();
@@ -2108,7 +2140,8 @@ void PowerTabEditor::createCommands()
             &PowerTabEditor::editChordName);
 
     myTextCommand = new Command(tr("Text..."), "Text.TextItem",
-                                QKeySequence(), this);
+                                QKeySequence(), this,
+                                QStringLiteral(u":images/text.png"));
     myTextCommand->setCheckable(true);
     connect(myTextCommand, &QAction::triggered, this,
             &PowerTabEditor::editTextItem);
@@ -2175,21 +2208,28 @@ void PowerTabEditor::createCommands()
     // Note-related actions.
     myNoteDurationGroup = new QActionGroup(this);
     createNoteDurationCommand(myWholeNoteCommand, tr("Whole"), "Notes.WholeNote",
-                              Position::WholeNote);
+                              Position::WholeNote,
+                              QStringLiteral(u":images/whole_note"));
     createNoteDurationCommand(myHalfNoteCommand, tr("Half"), "Notes.HalfNote",
-                              Position::HalfNote);
+                              Position::HalfNote,
+                              QStringLiteral(u":images/half_note"));
     createNoteDurationCommand(myQuarterNoteCommand, tr("Quarter"),
-                              "Notes.QuarterNote", Position::QuarterNote);
+                              "Notes.QuarterNote", Position::QuarterNote,
+                              QStringLiteral(u":images/quarter_note"));
     createNoteDurationCommand(myEighthNoteCommand, tr("8th"),
-                              "Notes.EighthNote", Position::EighthNote);
+                              "Notes.EighthNote", Position::EighthNote,
+                              QStringLiteral(u":images/8th_note"));
     createNoteDurationCommand(mySixteenthNoteCommand, tr("16th"),
-                              "Notes.SixteenthNote", Position::SixteenthNote);
+                              "Notes.SixteenthNote", Position::SixteenthNote,
+                              QStringLiteral(u":images/16th_note"));
     createNoteDurationCommand(myThirtySecondNoteCommand, tr("32nd"),
                               "Notes.ThirtySecondNote",
-                              Position::ThirtySecondNote);
+                              Position::ThirtySecondNote,
+                              QStringLiteral(u":images/32nd_note"));
     createNoteDurationCommand(mySixtyFourthNoteCommand, tr("64th"),
                               "Notes.SixtyFourthNote",
-                              Position::SixtyFourthNote);
+                              Position::SixtyFourthNote,
+                              QStringLiteral(u":images/64th_note"));
 
     myIncreaseDurationCommand = new Command(tr("Increase Duration"),
                                             "Notes.Duration.Increase",
@@ -2206,11 +2246,13 @@ void PowerTabEditor::createCommands()
     });
 
     createPositionPropertyCommand(myDottedCommand, tr("Dotted"), "Notes.Dotted",
-                                  QKeySequence(), Position::Dotted);
+                                  QKeySequence(), Position::Dotted,
+                                  QStringLiteral(u":images/dotted_note"));
 
     createPositionPropertyCommand(myDoubleDottedCommand, tr("Double Dotted"),
                                   "Notes.DoubleDotted", QKeySequence(),
-                                  Position::DoubleDotted);
+                                  Position::DoubleDotted,
+                                  QStringLiteral(u":images/doubledotted_note"));
 
     myAddDotCommand = new Command(tr("Add Dot"), "Notes.Dot.Add",
                             Qt::SHIFT + Qt::Key_Right, this);
@@ -2222,7 +2264,8 @@ void PowerTabEditor::createCommands()
 
     myLeftHandFingeringCommand = new Command(tr("Left Hand Fingering..."), 
                                              "Notes.LeftHandFingering",
-                                             QKeySequence(), this);
+                                             QKeySequence(), this,
+                                             QStringLiteral(u":images/lefthandfingering.png"));
     myLeftHandFingeringCommand->setCheckable(true);
     connect(myLeftHandFingeringCommand, &QAction::triggered, this,
             &PowerTabEditor::editLeftHandFingering);
@@ -2239,55 +2282,67 @@ void PowerTabEditor::createCommands()
     connect(myShiftStringDownCommand, &QAction::triggered, this,
             [=]() { shiftString(false); });
 
-    myTieCommand = new Command(tr("Tied"), "Notes.Tied", Qt::Key_Y, this);
+    myTieCommand = new Command(tr("Tied"), "Notes.Tied", Qt::Key_Y, this,
+                               QStringLiteral(u":images/tie_note"));
     myTieCommand->setCheckable(true);
     connect(myTieCommand, &QAction::triggered, this, &PowerTabEditor::editTiedNote);
 
     createNotePropertyCommand(myMutedCommand, tr("Muted"), "Notes.Muted",
-                              Qt::Key_X, Note::Muted);
+                              Qt::Key_X, Note::Muted,
+                              QStringLiteral(u":images/muted.png"));
     createNotePropertyCommand(myGhostNoteCommand, tr("Ghost Note"),
-                              "Notes.GhostNote", Qt::Key_G, Note::GhostNote);
+                              "Notes.GhostNote", Qt::Key_G, Note::GhostNote,
+                              QStringLiteral(u":images/ghost.png"));
 
     createPositionPropertyCommand(myFermataCommand, tr("Fermata"),
-                                  "Notes.Fermata", Qt::Key_F, Position::Fermata);
+                                  "Notes.Fermata", Qt::Key_F, Position::Fermata,
+                                  QStringLiteral(u":images/fermata"));
 
     createPositionPropertyCommand(myLetRingCommand, tr("Let Ring"),
                                   "Notes.LetRing", QKeySequence(),
-                                  Position::LetRing);
+                                  Position::LetRing, QStringLiteral(u":images/let_ring.png"));
 
     createPositionPropertyCommand(myGraceNoteCommand, tr("Grace Note"),
                                   "Notes.GraceNote", QKeySequence(),
-                                  Position::Acciaccatura);
+                                  Position::Acciaccatura,
+                                  QStringLiteral(u":images/grace.png"));
 
     createPositionPropertyCommand(myStaccatoCommand, tr("Staccato"),
                                   "Notes.Staccato", Qt::Key_Z,
-                                  Position::Staccato);
+                                  Position::Staccato, QStringLiteral(u":images/staccato.png"));
 
     createPositionPropertyCommand(myMarcatoCommand, tr("Accent"), "Notes.Accent",
-                                  Qt::Key_A, Position::Marcato);
+                                  Qt::Key_A, Position::Marcato,
+                                  QStringLiteral(u":images/accent_normal.png"));
 
     createPositionPropertyCommand(mySforzandoCommand, tr("Heavy Accent"),
                                   "Notes.HeavyAccent", QKeySequence(),
-                                  Position::Sforzando);
+                                  Position::Sforzando,
+                                  QStringLiteral(u":images/accent_heavy.png"));
 
     // Octave actions
     createNotePropertyCommand(myOctave8vaCommand, tr("8va"), "Notes.Octave.8va",
-                              QKeySequence(), Note::Octave8va);
+                              QKeySequence(), Note::Octave8va,
+                              QStringLiteral(u":images/8va.png"));
     createNotePropertyCommand(myOctave15maCommand, tr("15ma"), "Notes.Octave.15ma",
-                              QKeySequence(), Note::Octave15ma);
+                              QKeySequence(), Note::Octave15ma,
+                              QStringLiteral(u":images/15ma.png"));
     createNotePropertyCommand(myOctave8vbCommand, tr("8vb"), "Notes.Octave.8vb",
-                              QKeySequence(), Note::Octave8vb);
+                              QKeySequence(), Note::Octave8vb,
+                              QStringLiteral(u":images/8vb.png"));
     createNotePropertyCommand(myOctave15mbCommand, tr("15mb"),
                               "Notes.Octave.15mb", QKeySequence(),
-                              Note::Octave15mb);
+                              Note::Octave15mb, QStringLiteral(u":images/15mb.png"));
 
-    myTripletCommand = new Command(tr("Triplet"), "Notes.Triplet", Qt::Key_E, this);
+    myTripletCommand = new Command(tr("Triplet"), "Notes.Triplet", Qt::Key_E, this,
+                                   QStringLiteral(u":images/group_note"));
     connect(myTripletCommand, &QAction::triggered, [=]() {
         editIrregularGrouping(true);
     });
 
     myIrregularGroupingCommand = new Command(
-        tr("Irregular Grouping"), "Notes.IrregularGrouping", Qt::Key_I, this);
+                                             tr("Irregular Grouping"), "Notes.IrregularGrouping", Qt::Key_I, this,
+                                             QStringLiteral(u":images/group_note_irregular.png"));
     connect(myIrregularGroupingCommand, &QAction::triggered, [=]() {
         editIrregularGrouping(false);
     });
@@ -2313,12 +2368,13 @@ void PowerTabEditor::createCommands()
                               Position::SixtyFourthNote);
 
     myAddRestCommand = new Command(tr("Add Rest"), "Rests.AddRest", Qt::Key_R,
-                                   this);
+                                   this, QStringLiteral(u":images/quarter_rest"));
     connect(myAddRestCommand, &QAction::triggered, this,
             &PowerTabEditor::addRest);
 
     myMultibarRestCommand = new Command(
-        tr("Multi-Bar Rest..."), "Rests.MultibarRest", QKeySequence(), this);
+        tr("Multi-Bar Rest..."), "Rests.MultibarRest", QKeySequence(), this,
+        QStringLiteral(u":images/rest_multibar.png"));
     myMultibarRestCommand->setCheckable(true);
     connect(myMultibarRestCommand, &QAction::triggered, this,
             &PowerTabEditor::editMultiBarRest);
@@ -2332,7 +2388,8 @@ void PowerTabEditor::createCommands()
             &PowerTabEditor::editRehearsalSign);
 
     myTempoMarkerCommand = new Command(
-        tr("Tempo Marker..."), "MusicSymbols.TempoMarker", Qt::Key_O, this);
+        tr("Tempo Marker..."), "MusicSymbols.TempoMarker", Qt::Key_O, this,
+        QStringLiteral(u":images/tempo.png"));
     myTempoMarkerCommand->setCheckable(true);
     connect(myTempoMarkerCommand, &QAction::triggered, this,
             &PowerTabEditor::editTempoMarker);
@@ -2346,19 +2403,22 @@ void PowerTabEditor::createCommands()
 
     myKeySignatureCommand = new Command(tr("Edit Key Signature..."),
                                         "MusicSymbols.EditKeySignature",
-                                        Qt::Key_K, this);
+                                        Qt::Key_K, this,
+                                        QStringLiteral(u":images/keysignature.png"));
     connect(myKeySignatureCommand, &QAction::triggered, this,
             &PowerTabEditor::editKeySignatureFromCaret);
 
     myTimeSignatureCommand = new Command(tr("Edit Time Signature..."),
                                    "MusicSymbols.EditTimeSignature",
-                                   Qt::Key_T, this);
+                                         Qt::Key_T, this,
+                                         QStringLiteral(u":images/timesignature.png"));
     connect(myTimeSignatureCommand, &QAction::triggered, this,
             &PowerTabEditor::editTimeSignatureFromCaret);
 
     myStandardBarlineCommand = new Command(tr("Insert Standard Barline"),
                                      "MusicSymbols.InsertStandardBarline",
-                                     Qt::Key_B, this);
+                                           Qt::Key_B, this,
+                                           QStringLiteral(u":images/barline_single.png"));
     connect(myStandardBarlineCommand, &QAction::triggered, this,
             &PowerTabEditor::insertStandardBarline);
 
@@ -2369,14 +2429,16 @@ void PowerTabEditor::createCommands()
 
     myDirectionCommand =
         new Command(tr("Musical Direction..."), "MusicSymbols.MusicalDirection",
-                    Qt::SHIFT + Qt::Key_D, this);
+                    Qt::SHIFT + Qt::Key_D, this,
+                    QStringLiteral(u":images/coda.png"));
     myDirectionCommand->setCheckable(true);
     connect(myDirectionCommand, &QAction::triggered, this,
             &PowerTabEditor::editMusicalDirection);
 
     myRepeatEndingCommand =
         new Command(tr("Repeat Ending..."), "MusicSymbols.RepeatEnding",
-                    Qt::SHIFT + Qt::Key_E, this);
+                    Qt::SHIFT + Qt::Key_E, this,
+                    QStringLiteral(u":images/barline_repeatend.png"));
     myRepeatEndingCommand->setCheckable(true);
     connect(myRepeatEndingCommand, &QAction::triggered, this,
             &PowerTabEditor::editRepeatEnding);
@@ -2385,6 +2447,33 @@ void PowerTabEditor::createCommands()
         new Command(tr("Dynamic..."), "MusicSymbols.Dynamic", Qt::Key_D, this);
     myDynamicCommand->setCheckable(true);
     connect(myDynamicCommand, &QAction::triggered, this, &PowerTabEditor::editDynamic);
+
+    myDynamicGroup = new QActionGroup(this);
+
+    createDynamicCommand(myDynamicPPPCommand, tr("Dynamics"),
+                         "Dynamics.ppp", VolumeLevel::ppp,
+                         QStringLiteral(u":images/dynamic_ppp.png"));
+    createDynamicCommand(myDynamicPPCommand, tr("Dynamics"),
+                         "Dynamics.pp", VolumeLevel::pp,
+                         QStringLiteral(u":images/dynamic_pp.png"));
+    createDynamicCommand(myDynamicPCommand, tr("Dynamics"),
+                         "Dynamics.p", VolumeLevel::p,
+                         QStringLiteral(u":images/dynamic_p.png"));
+    createDynamicCommand(myDynamicMPCommand, tr("Dynamics"),
+                         "Dynamics.mp", VolumeLevel::mp,
+                         QStringLiteral(u":images/dynamic_mp.png"));
+    createDynamicCommand(myDynamicMFCommand, tr("Dynamics"),
+                         "Dynamics.mf", VolumeLevel::mf,
+                         QStringLiteral(u":images/dynamic_mf.png"));
+    createDynamicCommand(myDynamicFCommand, tr("Dynamics"),
+                         "Dynamics.f", VolumeLevel::f,
+                         QStringLiteral(u":images/dynamic_f.png"));
+    createDynamicCommand(myDynamicFFCommand, tr("Dynamics"),
+                         "Dynamics.ff", VolumeLevel::ff,
+                         QStringLiteral(u":images/dynamic_ff.png"));
+    createDynamicCommand(myDynamicFFFCommand, tr("Dynamics"),
+                         "Dynamics.fff", VolumeLevel::fff,
+                         QStringLiteral(u":images/dynamic_fff.png"));
 
     myVolumeSwellCommand =
         new Command(tr("Volume Swell..."), "MusicSymbols.VolumeSwell",
@@ -2395,7 +2484,8 @@ void PowerTabEditor::createCommands()
 
     // Tab Symbol Actions.
     myHammerPullCommand = new Command(tr("Hammer On/Pull Off"),
-                                      "TabSymbols.HammerPull", Qt::Key_H, this);
+                                      "TabSymbols.HammerPull", Qt::Key_H, this,
+                                      QStringLiteral(u":images/legato"));//image name wrong
     myHammerPullCommand->setCheckable(true);
     connect(myHammerPullCommand, &QAction::triggered, this,
             &PowerTabEditor::editHammerPull);
@@ -2412,39 +2502,44 @@ void PowerTabEditor::createCommands()
 
     createNotePropertyCommand(myNaturalHarmonicCommand, tr("Natural Harmonic"),
                               "TabSymbols.NaturalHarmonic", QKeySequence(),
-                              Note::NaturalHarmonic);
+                              Note::NaturalHarmonic, QStringLiteral(u":images/harmonic_natural.png"));
 
     myArtificialHarmonicCommand =
         new Command(tr("Artificial Harmonic..."),
-                    "TabSymbols.ArtificialHarmonic", QKeySequence(), this);
+                    "TabSymbols.ArtificialHarmonic", QKeySequence(), this,
+                    QStringLiteral(u":images/harmonic_artificial.png"));
     myArtificialHarmonicCommand->setCheckable(true);
     connect(myArtificialHarmonicCommand, &QAction::triggered, this,
             &PowerTabEditor::editArtificialHarmonic);
 
     myTappedHarmonicCommand = new Command(tr("Tapped Harmonic..."),
                                           "TabSymbols.TappedHarmonic",
-                                          QKeySequence(), this);
+                                          QKeySequence(), this,
+                                          QStringLiteral(u":images/harmonic_tapped.png"));
     myTappedHarmonicCommand->setCheckable(true);
     connect(myTappedHarmonicCommand, &QAction::triggered, this,
             &PowerTabEditor::editTappedHarmonic);
 
     myBendCommand =
-        new Command(tr("Bend..."), "TabSymbols.Bend", QKeySequence(), this);
+        new Command(tr("Bend..."), "TabSymbols.Bend", QKeySequence(), this,
+                    QStringLiteral(u":images/bend"));
     myBendCommand->setCheckable(true);
     connect(myBendCommand, &QAction::triggered, this,
             &PowerTabEditor::editBend);
 
     createPositionPropertyCommand(myVibratoCommand, tr("Vibrato"),
                                   "TabSymbols.Vibrato", Qt::Key_V,
-                                  Position::Vibrato);
+                                  Position::Vibrato,
+                                  QStringLiteral(u":images/vibrato.png"));
 
     createPositionPropertyCommand(myWideVibratoCommand, tr("Wide Vibrato"),
                                   "TabSymbols.WideVibrato", Qt::Key_W,
-                                  Position::WideVibrato);
+                                  Position::WideVibrato,
+                                  QStringLiteral(u":images/widevibrato.png"));
 
     createPositionPropertyCommand(myPalmMuteCommand, tr("Palm Mute"),
                                   "TabSymbols.PalmMute", Qt::Key_M,
-                                  Position::PalmMuting);
+                                  Position::PalmMuting, QStringLiteral(u":images/palm_mute.png"));
 
     createPositionPropertyCommand(myTremoloPickingCommand, tr("Tremolo Picking"),
                                   "TabSymbols.TremoloPicking", QKeySequence(),
@@ -2452,52 +2547,64 @@ void PowerTabEditor::createCommands()
 
     createPositionPropertyCommand(myArpeggioUpCommand, tr("Arpeggio Up"),
                                   "TabSymbols.ArpeggioUp", QKeySequence(),
-                                  Position::ArpeggioUp);
+                                  Position::ArpeggioUp,
+                                  QStringLiteral(u":images/arpeggio_up.png"));
 
     createPositionPropertyCommand(myArpeggioDownCommand, tr("Arpeggio Down"),
                                   "TabSymbols.ArpeggioDown", QKeySequence(),
-                                  Position::ArpeggioDown);
+                                  Position::ArpeggioDown,
+                                  QStringLiteral(u":images/arpeggio_down.png"));
 
     createPositionPropertyCommand(myTapCommand, tr("Tap"), "TabSymbols.Tap",
-                                  Qt::Key_P, Position::Tap);
+                                  Qt::Key_P, Position::Tap,
+                                  QStringLiteral(u":images/tap.png"));
 
     myTrillCommand = new Command(tr("Trill..."), "TabSymbols.Trill",
-                                 QKeySequence(), this);
+                                 QKeySequence(), this,
+                                 QStringLiteral(u":images/trill.png"));
     myTrillCommand->setCheckable(true);
     connect(myTrillCommand, &QAction::triggered, this, &PowerTabEditor::editTrill);
 
     createPositionPropertyCommand(myPickStrokeUpCommand, tr("Pickstroke Up"),
                                   "TabSymbols.PickStrokeUp", QKeySequence(),
-                                  Position::PickStrokeUp);
+                                  Position::PickStrokeUp,
+                                  QStringLiteral(u":images/pickstroke_up.png"));
 
     createPositionPropertyCommand(myPickStrokeDownCommand, tr("Pickstroke Down"),
                                   "TabSymbols.PickStrokeDown", QKeySequence(),
-                                  Position::PickStrokeDown);
+                                  Position::PickStrokeDown,
+                                  QStringLiteral(u":images/pickstroke_down.png"));
 
     createNotePropertyCommand(mySlideIntoFromAboveCommand,
                               tr("Slide Into From Above"),
                               "TabSymbols.SlideInto.FromAbove", QKeySequence(),
-                              Note::SlideIntoFromAbove);
+                              Note::SlideIntoFromAbove,
+                              QStringLiteral(u":images/slideinabove"));
     createNotePropertyCommand(mySlideIntoFromBelowCommand,
                               tr("Slide Into From Below"),
                               "TabSymbols.SlideInto.FromBelow", QKeySequence(),
-                              Note::SlideIntoFromBelow);
+                              Note::SlideIntoFromBelow,
+                              QStringLiteral(u":images/slideinbelow"));
 
     createNotePropertyCommand(myShiftSlideCommand, tr("Shift Slide"),
                               "TabSymbols.ShiftSlide", Qt::Key_S,
-                              Note::ShiftSlide);
+                              Note::ShiftSlide,
+                              QStringLiteral(u":images/shiftslide"));
     createNotePropertyCommand(myLegatoSlideCommand, tr("Legato Slide"),
                               "TabSymbols.LegatoSlide", Qt::Key_L,
-                              Note::LegatoSlide);
+                              Note::LegatoSlide,
+                              QStringLiteral(u":images/legatoslide"));
 
     createNotePropertyCommand(mySlideOutOfDownwardsCommand,
                               tr("Slide Out Of Downwards"),
                               "TabSymbols.SlideOutOf.Downwards", QKeySequence(),
-                              Note::SlideOutOfDownwards);
+                              Note::SlideOutOfDownwards,
+                              QStringLiteral(u":images/slideoutdown"));
     createNotePropertyCommand(mySlideOutOfUpwardsCommand,
                               tr("Slide Out Of Upwards"),
                               "TabSymbols.SlideOutOf.Upwards", QKeySequence(),
-                              Note::SlideOutOfUpwards);
+                              Note::SlideOutOfUpwards,
+                              QStringLiteral(u":images/slideoutup"));
 
     // Player menu.
     myAddPlayerCommand =
@@ -2566,6 +2673,9 @@ void PowerTabEditor::createCommands()
     myInstrumentDockWidgetCommand =
         createCommandWrapper(myInstrumentDockWidget->toggleViewAction(),
                              "Window.Instruments", QKeySequence(), this);
+    myToolBoxDockWidgetCommand =
+        createCommandWrapper(myToolBoxDockWidget->toggleViewAction(),
+                             "Window.Toolbox", QKeySequence(), this);
 }
 
 void PowerTabEditor::loadKeyboardShortcuts()
@@ -2663,9 +2773,10 @@ Command *PowerTabEditor::createCommandWrapper(
 
 void PowerTabEditor::createNoteDurationCommand(
         Command *&command, const QString &menuName, const QString &commandName,
-        Position::DurationType durationType)
+        Position::DurationType durationType, const QString &iconFileName)
 {
-    command = new Command(menuName, commandName, QKeySequence(), this);
+    command = new Command(menuName, commandName, QKeySequence(), this,
+                          iconFileName);
     command->setCheckable(true);
     connect(command, &QAction::triggered, [=]() {
         updateNoteDuration(durationType);
@@ -2675,9 +2786,10 @@ void PowerTabEditor::createNoteDurationCommand(
 
 void PowerTabEditor::createRestDurationCommand(
         Command *&command, const QString &menuName, const QString &commandName,
-        Position::DurationType durationType)
+        Position::DurationType durationType, const QString &iconFileName)
 {
-    command = new Command(menuName, commandName, QKeySequence(), this);
+    command = new Command(menuName, commandName, QKeySequence(), this,
+                          iconFileName);
     command->setCheckable(true);
     connect(command, &QAction::triggered, [=]() {
         editRest(durationType);
@@ -2687,9 +2799,10 @@ void PowerTabEditor::createRestDurationCommand(
 
 void PowerTabEditor::createNotePropertyCommand(
         Command *&command, const QString &menuName, const QString &commandName,
-        const QKeySequence &shortcut, Note::SimpleProperty property)
+        const QKeySequence &shortcut, Note::SimpleProperty property,
+        const QString &iconFileName)
 {
-    command = new Command(menuName, commandName, shortcut, this);
+    command = new Command(menuName, commandName, shortcut, this, iconFileName);
     command->setCheckable(true);
     connect(command, &QAction::triggered, [=]() {
         editSimpleNoteProperty(command, property);
@@ -2698,13 +2811,27 @@ void PowerTabEditor::createNotePropertyCommand(
 
 void PowerTabEditor::createPositionPropertyCommand(
         Command *&command, const QString &menuName, const QString &commandName,
-        const QKeySequence &shortcut, Position::SimpleProperty property)
+        const QKeySequence &shortcut, Position::SimpleProperty property,
+        const QString &iconFileName)
 {
-    command = new Command(menuName, commandName, shortcut, this);
+    command = new Command(menuName, commandName, shortcut, this, iconFileName);
     command->setCheckable(true);
     connect(command, &QAction::triggered, [=]() {
         editSimplePositionProperty(command, property);
     });
+}
+
+void PowerTabEditor::createDynamicCommand(
+        Command *&command, const QString &menuName, const QString &commandName,
+        VolumeLevel volume, const QString &iconFileName)
+{
+    command = new Command(menuName, commandName, QKeySequence(), this,
+                          iconFileName);
+    command->setCheckable(true);
+    connect(command, &QAction::triggered, [=]() {
+        updateDynamic(volume);
+    });
+    myDynamicGroup->addAction(command);
 }
 
 void PowerTabEditor::createMenus()
@@ -2930,10 +3057,85 @@ void PowerTabEditor::createMenus()
     myWindowMenu->addSeparator();
     myWindowMenu->addAction(myMixerDockWidgetCommand);
     myWindowMenu->addAction(myInstrumentDockWidgetCommand);
+    myWindowMenu->addAction(myToolBoxDockWidgetCommand);
 
     // Help menu.
     myHelpMenu = menuBar()->addMenu(tr("&Help"));
     myHelpMenu->addAction(myReportBugCommand);
+}
+
+void PowerTabEditor::createToolBox()
+{
+    myToolBoxDockWidget->setAllowedAreas(Qt::LeftDockWidgetArea);
+    myToolBoxDockWidget->setFeatures(QDockWidget::DockWidgetClosable);
+    myToolBoxDockWidget->setObjectName("Toolbox");
+
+    myToolBox = new ToolBox(myKeySignatureCommand,
+                            myTimeSignatureCommand,
+                            myStandardBarlineCommand,
+                            myRepeatEndingCommand,
+                            myOctave8vaCommand,
+                            myOctave15maCommand,
+                            myOctave8vbCommand,
+                            myOctave15mbCommand,
+                            myWholeNoteCommand,
+                            myHalfNoteCommand,
+                            myQuarterNoteCommand,
+                            myEighthNoteCommand,
+                            mySixteenthNoteCommand,
+                            myThirtySecondNoteCommand,
+                            mySixtyFourthNoteCommand,
+                            myAddRestCommand,
+                            myDottedCommand,
+                            myDoubleDottedCommand,
+                            myTripletCommand,
+                            myIrregularGroupingCommand,
+                            myTieCommand,
+                            myFermataCommand,
+                            myTempoMarkerCommand,
+                            myMultibarRestCommand,
+                            myDynamicPPPCommand,
+                            myDynamicPPCommand,
+                            myDynamicPCommand,
+                            myDynamicMPCommand,
+                            myDynamicMFCommand,
+                            myDynamicFCommand,
+                            myDynamicFFCommand,
+                            myDynamicFFFCommand,
+                            myMutedCommand,
+                            myGhostNoteCommand,
+                            myMarcatoCommand,
+                            mySforzandoCommand,
+                            myStaccatoCommand,
+                            myLetRingCommand,
+                            myPalmMuteCommand,
+                            myTapCommand,
+                            myNaturalHarmonicCommand,
+                            myArtificialHarmonicCommand,
+                            myTappedHarmonicCommand,
+                            myBendCommand,
+                            myVibratoCommand,
+                            myWideVibratoCommand,
+                            myGraceNoteCommand,
+                            myLeftHandFingeringCommand,
+                            myHammerPullCommand,
+                            myTrillCommand,
+                            myLegatoSlideCommand,
+                            myShiftSlideCommand,
+                            mySlideIntoFromAboveCommand,
+                            mySlideIntoFromBelowCommand,
+                            mySlideOutOfDownwardsCommand,
+                            mySlideOutOfUpwardsCommand,
+                            myPickStrokeUpCommand,
+                            myPickStrokeDownCommand,
+                            myArpeggioUpCommand,
+                            myArpeggioDownCommand,
+                            myTextCommand,
+                            myDirectionCommand,
+                            myToolBoxDockWidget);
+
+    myToolBoxDockWidget->setWidget(myToolBox);
+    addDockWidget(Qt::LeftDockWidgetArea, myToolBoxDockWidget);
 }
 
 void PowerTabEditor::createTabArea()
@@ -3257,7 +3459,48 @@ void PowerTabEditor::updateCommands()
         ScoreUtils::findByPosition(system.getDirections(), position) !=
         nullptr);
     myRepeatEndingCommand->setChecked(altEnding != nullptr);
+
+    // dynamics
     myDynamicCommand->setChecked(dynamic != nullptr);
+
+    if (dynamic)
+    {
+        switch (dynamic->getVolume())
+        {
+            case VolumeLevel::Off:
+                break;
+            case VolumeLevel::ppp:
+                myDynamicPPPCommand->setChecked(true);
+                break;
+            case VolumeLevel::pp:
+                myDynamicPPCommand->setChecked(true);
+                break;
+            case VolumeLevel::p:
+                myDynamicPCommand->setChecked(true);
+                break;
+            case VolumeLevel::mp:
+                myDynamicMPCommand->setChecked(true);
+                break;
+            case VolumeLevel::mf:
+                myDynamicMFCommand->setChecked(true);
+                break;
+            case VolumeLevel::f:
+                myDynamicFCommand->setChecked(true);
+                break;
+            case VolumeLevel::ff:
+                myDynamicFFCommand->setChecked(true);
+                break;
+            case VolumeLevel::fff:
+                myDynamicFFFCommand->setChecked(true);
+                break;
+        }
+    }
+    else
+    {
+        QAction *checkedAction = myDynamicGroup->checkedAction();
+        if (checkedAction)
+            checkedAction->setChecked(false);
+    }
 
     myVolumeSwellCommand->setEnabled(pos);
     myVolumeSwellCommand->setChecked(pos && pos->hasVolumeSwell());

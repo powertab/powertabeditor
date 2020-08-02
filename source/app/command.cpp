@@ -23,10 +23,16 @@
 const std::string theKeyPrefix("shortcuts/");
 
 Command::Command(const QString &text, const QString &id,
-                 const QKeySequence &default_shortcut, QObject *parent)
+                 const QKeySequence &default_shortcut, QObject *parent,
+                 const QString &iconFileName)
     : QAction(text, parent), myId(id), myDefaultShortcut(default_shortcut)
 {
     setShortcut(myDefaultShortcut);
+
+    setIconVisibleInMenu(false);
+
+    if (!iconFileName.isNull())
+        setIcon(QIcon(iconFileName));
 }
 
 QString Command::id() const

@@ -8,6 +8,7 @@ set( srcs
     mixer/mixer.cpp
     mixer/mixeritem.cpp
     playback/playbackwidget.cpp
+    toolbox/toolbox.cpp
 )
 
 set( headers
@@ -17,17 +18,20 @@ set( headers
     mixer/mixer.h
     mixer/mixeritem.h
     playback/playbackwidget.h
+    toolbox/toolbox.h
 )
 
 set( moc_headers
     clickablelabel.h
     playback/playbackwidget.h
+    toolbox/toolbox.h
 )
 
 set( forms
     instruments/instrumentpanelitem.ui
     mixer/mixeritem.ui
     playback/playbackwidget.ui
+    toolbox/toolbox.ui
 )
 
 pte_library(

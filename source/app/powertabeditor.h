@@ -23,6 +23,7 @@
 #include <app/pubsub/instrumentpubsub.h>
 #include <app/pubsub/playerpubsub.h>
 #include <memory>
+#include <score/dynamic.h>
 #include <score/position.h>
 #include <string>
 #include <vector>
@@ -32,6 +33,7 @@ class Command;
 class DocumentManager;
 class FileFormatManager;
 class InstrumentPanel;
+class ToolBox;
 class MidiPlayer;
 class Mixer;
 class PlaybackWidget;
@@ -226,6 +228,8 @@ private slots:
     void editMusicalDirection();
     /// Adds or removes a repeat ending at the current position.
     void editRepeatEnding();
+    /// Adds, removes, or changes a dynamic at the current location.
+    void updateDynamic(VolumeLevel volume);
     /// Adds or removes a dynamic at the current location.
     void editDynamic();
     /// Adds or removes a volume swell at the current location.
@@ -305,26 +309,38 @@ private:
     /// Helper function to create a note duration command.
     void createNoteDurationCommand(Command *&command, const QString &menuName,
                                    const QString &commandName,
-                                   Position::DurationType durationType);
+                                   Position::DurationType durationType,
+                                   const QString &iconFileName = QString());
     /// Helper function to create a rest duration command.
     void createRestDurationCommand(Command *&command, const QString &menuName,
                                    const QString &commandName,
-                                   Position::DurationType durationType);
+                                   Position::DurationType durationType,
+                                   const QString &iconFileName = QString());
     /// Helper function to create a command for toggling a simple note
     /// property.
     void createNotePropertyCommand(Command *&command, const QString &menuName,
                                    const QString &commandName,
                                    const QKeySequence &shortcut,
-                                   Note::SimpleProperty property);
+                                   Note::SimpleProperty property,
+                                   const QString &iconFileName = QString());
     /// Helper function to create a command for toggling a simple position
     /// property.
     void createPositionPropertyCommand(Command *&command,
                                        const QString &menuName,
                                        const QString &commandName,
                                        const QKeySequence &shortcut,
-                                       Position::SimpleProperty property);
+                                       Position::SimpleProperty property,
+                                       const QString &iconFileName = QString());
+    /// Helper function to reate a dynamic command.
+    void createDynamicCommand(Command *&command,
+                              const QString &menuName,
+                              const QString &commandName,
+                              VolumeLevel volume,
+                              const QString &iconFileName = QString());
     /// Set up the menus for the application.
     void createMenus();
+    /// Set up the toolbox for the application.
+    void createToolBox();
     /// Create the tab widget and score area.
     void createTabArea();
     /// Updates the last directory that a file was opened from.
@@ -418,6 +434,8 @@ private:
     QDockWidget *myMixerDockWidget;
     InstrumentPanel *myInstrumentPanel;
     QDockWidget *myInstrumentDockWidget;
+    ToolBox *myToolBox;
+    QDockWidget *myToolBoxDockWidget;
     PlaybackWidget *myPlaybackWidget;
     QWidget *myPlaybackArea;
 
@@ -551,6 +569,16 @@ private:
     Command *myDirectionCommand;
     Command *myRepeatEndingCommand;
     Command *myDynamicCommand;
+    Command *myDynamicPPPCommand;
+    Command *myDynamicPPCommand;
+    Command *myDynamicPCommand;
+    Command *myDynamicMPCommand;
+    Command *myDynamicMFCommand;
+    Command *myDynamicFCommand;
+    Command *myDynamicFFCommand;
+    Command *myDynamicFFFCommand;
+    /// Used to ensure that only one dynamic option is checked at a time.
+    QActionGroup *myDynamicGroup;
     Command *myVolumeSwellCommand;
 
     QMenu *myTabSymbolsMenu;
@@ -562,7 +590,7 @@ private:
     Command *myNaturalHarmonicCommand;
     Command *myArtificialHarmonicCommand;
     Command *myTappedHarmonicCommand;
-	Command *myBendCommand;
+    Command *myBendCommand;
 
     QMenu *mySlideIntoMenu;
     Command *mySlideIntoFromAboveCommand;
@@ -598,6 +626,7 @@ private:
     Command *myPrevTabCommand;
     Command *myMixerDockWidgetCommand;
     Command *myInstrumentDockWidgetCommand;
+    Command *myToolBoxDockWidgetCommand;
 
     QMenu *myHelpMenu;
     Command *myReportBugCommand;
