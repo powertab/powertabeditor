@@ -68,7 +68,7 @@ jobs:
       run: |
         cd "${env:VCPKG_INSTALLATION_ROOT}"
         git pull
-        vcpkg install --triplet x64-windows boost-algorithm boost-date-time boost-endian boost-filesystem boost-functional boost-iostreams boost-range boost-rational boost-signals2 boost-stacktrace doctest minizip pugixml rapidjson
+        vcpkg install --triplet x64-windows boost-algorithm boost-date-time boost-endian boost-filesystem boost-functional boost-iostreams boost-range boost-rational boost-signals2 boost-stacktrace doctest minizip pugixml rapidjson rtmidi
     # Building Qt via vcpkg would take a while ...
     - name: Install Qt
       uses: jurplel/install-qt-action@v2
