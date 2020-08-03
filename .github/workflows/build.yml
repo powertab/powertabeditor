@@ -53,6 +53,7 @@ jobs:
       with:
         name: "powertabeditor-osx.dmg"
         path: ${{runner.workspace}}/build/powertabeditor-osx.dmg
+        if-no-files-found: error
 
   build-windows:
 
@@ -109,3 +110,4 @@ jobs:
       with:
         name: "powertabeditor-windows.exe"
         path: installer/windows/bin/x64/Release/powertabeditor.exe
+        if-no-files-found: error
