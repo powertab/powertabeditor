@@ -75,14 +75,6 @@ private slots:
     /// @return True if the document was closed successfully.
     bool closeCurrentTab();
 
-    /// Saves the current document.
-    /// @return True if the file was successfully saved.
-    bool saveFile();
-
-    /// Saves the current document to a new filename.
-    /// @return True if the file was successfully saved.
-    bool saveFileAs();
-
     /// Prints the current document.
     void printDocument();
 
@@ -372,9 +364,18 @@ private:
     /// open.
     void openFilesInteractive();
 
-    /// Saves the current document to the specified path.
+    /// Saves the document, either to its current path or launching the Save As
+    /// dialog.
     /// @return True if the file was successfully saved.
-    bool saveFile(QString path);
+    bool saveFile(int doc_index);
+
+    /// Saves the document to the specified path.
+    /// @return True if the file was successfully saved.
+    bool saveFile(int doc_index, QString path);
+
+    /// Saves the document to a new filename.
+    /// @return True if the file was successfully saved.
+    bool saveFileAs(int doc_index);
 
     /// Adds or removes a rest at the current location.
     void editRest(Position::DurationType duration);

@@ -11,6 +11,7 @@ Thanks to the following contributors who worked on this release:
 ### Changed
 
 ### Fixed
+- Closing a tab that has modifications and isn't the active tab now works correctly (#304).
 
 ## [Alpha 13] - 2020-08-11
 

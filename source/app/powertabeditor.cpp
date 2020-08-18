@@ -327,7 +327,7 @@ void PowerTabEditor::switchTab(int index)
 bool PowerTabEditor::closeTab(int index)
 {
     // Prompt to save modified documents.
-    if (isWindowModified())
+    if (!myUndoManager->stacks()[index]->isClean())
     {
         QMessageBox msg(this);
         msg.setWindowTitle(tr("Close Document"));
@@ -340,7 +340,7 @@ bool PowerTabEditor::closeTab(int index)
         const int ret = msg.exec();
         if (ret == QMessageBox::Save)
         {
-            if (!saveFile())
+            if (!saveFile(index))
                 return false;
         }
         else if (ret == QMessageBox::Cancel)
@@ -371,18 +371,18 @@ bool PowerTabEditor::closeCurrentTab()
     return closeTab(myDocumentManager->getCurrentDocumentIndex());
 }
 
-bool PowerTabEditor::saveFile()
+bool PowerTabEditor::saveFile(int doc_index)
 {
-    const Document &doc = myDocumentManager->getCurrentDocument();
+    Document &doc = myDocumentManager->getDocument(doc_index);
     if (!doc.hasFilename())
-        return saveFileAs();
+        return saveFileAs(doc_index);
 
     const QString filename = Paths::toQString(doc.getFilename());
-    return QFileInfo(filename).suffix() == "pt2" ? saveFile(filename)
-                                                 : saveFileAs();
+    return QFileInfo(filename).suffix() == "pt2" ? saveFile(doc_index, filename)
+                                                 : saveFileAs(doc_index);
 }
 
-bool PowerTabEditor::saveFile(QString path)
+bool PowerTabEditor::saveFile(int doc_index, QString path)
 {
     QFileInfo info(path);
     QString extension = info.suffix();
@@ -398,7 +398,7 @@ bool PowerTabEditor::saveFile(QString path)
     }
 
     auto path_str = Paths::fromQString(path);
-    Document &doc = myDocumentManager->getCurrentDocument();
+    Document &doc = myDocumentManager->getDocument(doc_index);
 
     try
     {
@@ -420,21 +420,21 @@ bool PowerTabEditor::saveFile(QString path)
         // Update window title and tab bar.
         updateWindowTitle();
         const QString filename = info.fileName();
-        myTabWidget->setTabText(myTabWidget->currentIndex(), filename);
-        myTabWidget->setTabToolTip(myTabWidget->currentIndex(), filename);
+        myTabWidget->setTabText(doc_index, filename);
+        myTabWidget->setTabToolTip(doc_index, filename);
 
         // Add to the recent files list and update the last used directory.
         myRecentFiles->add(path);
         setPreviousDirectory(path);
 
         // Mark the file as being in an unmodified state.
-        myUndoManager->setClean();
+        myUndoManager->stacks()[doc_index]->setClean();
     }
 
     return true;
 }
 
-bool PowerTabEditor::saveFileAs()
+bool PowerTabEditor::saveFileAs(int doc_index)
 {
     const QString filter =
         QString::fromStdString(myFileFormatManager->exportFileFilter());
@@ -462,7 +462,7 @@ bool PowerTabEditor::saveFileAs()
             path += extension;
         }
 
-        return saveFile(path);
+        return saveFile(doc_index, path);
     }
     else
         return false;
@@ -1898,7 +1898,9 @@ void PowerTabEditor::createCommands()
 
     mySaveCommand = new Command(tr("Save"), "File.Save",
                                 QKeySequence::Save, this);
-    connect(mySaveCommand, &QAction::triggered, this, [this]() { saveFile(); });
+    connect(mySaveCommand, &QAction::triggered, this, [this]() {
+        saveFile(myDocumentManager->getCurrentDocumentIndex());
+    });
 
     mySaveAsCommand = new Command(tr("Save As..."), "File.SaveAs",
                                   QKeySequence::SaveAs, this);
