@@ -21,6 +21,7 @@
 
     <Chain>
       <!-- VS2015 Redistributable. -->
+      <!-- Use SuppressSignatureVerification=no instead of hashing, since the VC redist URL is frequently updated by Microsoft. -->
       <ExePackage Id="vcredist"
           DisplayName="$(var.VCRedistName)"
           Cache="no"
@@ -31,6 +32,7 @@
           SourceFile="$(var.VCRedistFile)"
           DownloadUrl="$(var.VCRedistURL)"
           InstallCommand="/quiet /norestart"
+          SuppressSignatureVerification="no"
           DetectCondition="vcredist AND (vcredist &gt;= &quot;14.26.28720&quot;)">
       </ExePackage>
 

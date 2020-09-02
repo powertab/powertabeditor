@@ -82,15 +82,7 @@ jobs:
 
     - uses: microsoft/setup-msbuild@v1.0.0
 
-    - name: Cache VC redist
-      id: cache-redist
-      uses: actions/cache@v2
-      with:
-        path: installer/windows/redist/vc_redist.x64.exe
-        key: ${{ runner.os }}-redist-v1
-
     - name: Fetch VC redist
-      if: steps.cache-redist.outputs.cache-hit != 'true'
       run: |
         cd installer/windows
         mkdir redist
