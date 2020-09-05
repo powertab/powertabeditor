@@ -174,8 +174,41 @@ RepeatIndexer::RepeatIndexer(const Score &score)
                     activeRepeat.getAlternateEndingCount() >=
                         activeRepeat.getTotalRepeatCount())
                 {
-                    myRepeats.insert(activeRepeat);
-                    repeats.pop();
+                    // Check for following repeat endings that means we're not
+                    // done scanning all alternate endings of this repeat.
+                    bool done = true;
+                    for (const Barline &barCheck : system.getBarlines())
+                    {
+                        if (barCheck.getPosition() > bar.getPosition())
+                        {
+                            // If we get to a repeat end first then the repeated
+                            // section is not finished.
+                            if (barCheck.getBarType() == Barline::RepeatEnd)
+                            {
+                                done = false;
+                                break;
+                            }
+                            // If we get to a repeat start first then the
+                            // repeated section must be finished.
+                            else if (barCheck.getBarType() == Barline::RepeatStart)
+                            {
+                                break;
+                            }
+                        }
+                    }
+                    // If no following repeat endings then we're done with this
+                    // repeat.
+                    if (done)
+                    {
+                        if (bar.getBarType() == Barline::RepeatEnd)
+                        {
+                            activeRepeat.addRepeatEndBar(
+                                SystemLocation(systemIndex, bar.getPosition()),
+                                bar.getRepeatCount());
+                        }
+                        myRepeats.insert(activeRepeat);
+                        repeats.pop();
+                    }
                 }
             }
 
