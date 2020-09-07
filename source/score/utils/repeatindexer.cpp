@@ -176,29 +176,38 @@ RepeatIndexer::RepeatIndexer(const Score &score)
                 {
                     // Check for following repeat endings that means we're not
                     // done scanning all alternate endings of this repeat.
-                    bool done = true;
-                    for (const Barline &barCheck : system.getBarlines())
+                    bool doneScanning = false;
+                    bool repeatDone = true;
+                    for (size_t i = systemIndex; i < score.getSystems().size(); ++i)
                     {
-                        if (barCheck.getPosition() > bar.getPosition())
+                        for (const Barline &barCheck : score.getSystems()[i].getBarlines())
                         {
-                            // If we get to a repeat end first then the repeated
-                            // section is not finished.
-                            if (barCheck.getBarType() == Barline::RepeatEnd)
+                            if (barCheck.getPosition() > bar.getPosition() ||
+                                i > systemIndex)
                             {
-                                done = false;
-                                break;
-                            }
-                            // If we get to a repeat start first then the
-                            // repeated section must be finished.
-                            else if (barCheck.getBarType() == Barline::RepeatStart)
-                            {
-                                break;
+                                // If we get to a repeat end first then the repeated
+                                // section is not finished.
+                                if (barCheck.getBarType() == Barline::RepeatEnd)
+                                {
+                                    doneScanning = true;
+                                    repeatDone = false;
+                                    break;
+                                }
+                                // If we get to a repeat start first then the
+                                // repeated section must be finished.
+                                else if (barCheck.getBarType() == Barline::RepeatStart)
+                                {
+                                    doneScanning = true;
+                                    break;
+                                }
                             }
                         }
+                        if (doneScanning)
+                            break;
                     }
                     // If no following repeat endings then we're done with this
                     // repeat.
-                    if (done)
+                    if (repeatDone)
                     {
                         if (bar.getBarType() == Barline::RepeatEnd)
                         {
