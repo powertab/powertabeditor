@@ -100,7 +100,7 @@ jobs:
       if: steps.cache-wix.outputs.cache-hit != 'true'
       run: |
         cd installer/windows
-        Invoke-WebRequest -Uri https://wixtoolset.org/downloads/v3.14.0.4118/wix314-binaries.zip -MaximumRedirection 10 -OutFile wix314-binaries.zip
+        Invoke-WebRequest -Uri http://static.wixtoolset.org/releases/v3.14.0.4118/wix314-binaries.zip -OutFile wix314-binaries.zip
 
     # The qwindowsvistastyle plugin also needs to be installed, but isn't installed to the bin dir
     # when building with the Qt package from install-qt-action ...
