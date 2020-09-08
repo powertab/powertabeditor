@@ -88,6 +88,20 @@ jobs:
         mkdir redist
         Invoke-WebRequest https://aka.ms/vs/16/release/vc_redist.x64.exe -OutFile redist/vc_redist.x64.exe
 
+    - name: Cache Wix
+      id: cache-wix
+      uses: actions/cache@v2
+      with:
+        path: installer/windows/wix314-binaries.zip
+        key: ${{ runner.os }}-wix314-4118
+
+    # Use Wix 3.14 (e.g. for issue #305). Wix 3.11 is present in the CI environment.
+    - name: Fetch Wix
+      if: steps.cache-wix.outputs.cache-hit != 'true'
+      run: |
+        cd installer/windows
+        Invoke-WebRequest https://wixtoolset.org/downloads/v3.14.0.4118/wix314-binaries.zip -OutFile wix314-binaries.zip
+
     # The qwindowsvistastyle plugin also needs to be installed, but isn't installed to the bin dir
     # when building with the Qt package from install-qt-action ...
     - name: Build Installer
@@ -95,6 +109,7 @@ jobs:
         mkdir ./build/bin/styles
         cp "${env:QT_PLUGIN_PATH}/styles/qwindowsvistastyle.dll" ./build/bin/styles
         cd installer/windows
+        Expand-Archive -Path wix314-binaries.zip
         msbuild pte_windows_build.sln -p:Configuration=Release
 
     - name: Upload Installer
