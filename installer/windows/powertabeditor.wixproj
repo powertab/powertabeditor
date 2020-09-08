@@ -11,9 +11,9 @@
     <Name>powertabeditor</Name>
 
     <!-- Use the local installation of Wix for CI builds -->
-    <WixToolPath>$(MSBuildProjectDirectory)\wix314-binaries</WixToolPath>
-    <WixTargetsPath>$(WixToolPath)\Wix.targets</WixTargetsPath>
-    <WixTasksPath>$(WixToolPath)\wixtasks.dll</WixTasksPath>
+    <WixToolPath>$(MSBuildProjectDirectory)\wix314-binaries\</WixToolPath>
+    <WixTargetsPath>$(WixToolPath)Wix.targets</WixTargetsPath>
+    <WixTasksPath>$(WixToolPath)wixtasks.dll</WixTasksPath>
 
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|x86' ">
