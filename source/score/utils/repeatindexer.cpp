@@ -137,7 +137,7 @@ RepeatIndexer::RepeatIndexer(const Score &score)
     // The start of the score can always act as a repeat start bar.
     repeats.push(SystemLocation(0, 0));
 
-    int systemIndex = 0;
+    unsigned int systemIndex = 0;
     for (const System &system : score.getSystems())
     {
         for (const Barline &bar : system.getBarlines())
@@ -174,40 +174,9 @@ RepeatIndexer::RepeatIndexer(const Score &score)
                     activeRepeat.getAlternateEndingCount() >=
                         activeRepeat.getTotalRepeatCount())
                 {
-                    // Check for following repeat endings that means we're not
-                    // done scanning all alternate endings of this repeat.
-                    bool doneScanning = false;
-                    bool repeatDone = true;
-                    for (size_t i = systemIndex; i < score.getSystems().size(); ++i)
-                    {
-                        for (const Barline &barCheck : score.getSystems()[i].getBarlines())
-                        {
-                            if (barCheck.getPosition() > bar.getPosition() ||
-                                i > systemIndex)
-                            {
-                                // If we get to a repeat end first then the repeated
-                                // section is not finished.
-                                if (barCheck.getBarType() == Barline::RepeatEnd)
-                                {
-                                    doneScanning = true;
-                                    repeatDone = false;
-                                    break;
-                                }
-                                // If we get to a repeat start first then the
-                                // repeated section must be finished.
-                                else if (barCheck.getBarType() == Barline::RepeatStart)
-                                {
-                                    doneScanning = true;
-                                    break;
-                                }
-                            }
-                        }
-                        if (doneScanning)
-                            break;
-                    }
                     // If no following repeat endings then we're done with this
                     // repeat.
-                    if (repeatDone)
+                    if (!this->nextRepeatIsEnd(score, systemIndex, bar))
                     {
                         if (bar.getBarType() == Barline::RepeatEnd)
                         {
@@ -280,4 +249,32 @@ boost::iterator_range<RepeatIndexer::RepeatedSectionIterator>
 RepeatIndexer::getRepeats() const
 {
     return boost::make_iterator_range(myRepeats);
+}
+
+bool RepeatIndexer::nextRepeatIsEnd(
+    const Score &score, const int systemIndex, const Barline &bar) const
+{
+    for (size_t i = systemIndex; i < score.getSystems().size(); ++i)
+    {
+        for (const Barline &barCheck : score.getSystems()[i].getBarlines())
+        {
+            if (barCheck.getPosition() > bar.getPosition() ||
+                i > systemIndex)
+            {
+                // If we get to a repeat end first then the repeated
+                // section is not finished.
+                if (barCheck.getBarType() == Barline::RepeatEnd)
+                {
+                    return true;
+                }
+                // If we get to a repeat start first then the
+                // repeated section must be finished.
+                else if (barCheck.getBarType() == Barline::RepeatStart)
+                {
+                    return false;
+                }
+            }
+        }
+    }
+    return false;
 }
