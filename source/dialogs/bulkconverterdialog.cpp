@@ -50,7 +50,7 @@ std::optional<std::string> convertFile(const boost::filesystem::path& src,
 
     try
     {
-      ffm->exportFile(score, dst, FileFormat(getPowerTabFileFormat()));
+        ffm->exportFile(score, dst, FileFormat(getPowerTabFileFormat()));
     }
     catch (const std::exception &e)
     {
@@ -88,18 +88,24 @@ void BulkConverterWorker::walkAndConvert()
 
         auto dir_it = boost::filesystem::directory_iterator(p);
 
-        for(auto& entry : boost::make_iterator_range(dir_it, {})) {
+        for(auto& entry : boost::make_iterator_range(dir_it, {}))
+        {
             if (boost::filesystem::is_directory(entry)) {
                children.emplace_back(entry);
                continue;
             }
 
-            // TODO: this should probably handle any supported format.
-            //   check to see if there is a list of file formats
-            //   like this
-            if (!(boost::filesystem::is_regular_file(entry) &&
-                  boost::filesystem::extension(entry) == ".ptb"))
+            const bool isRegularFile = boost::filesystem::is_regular_file(entry);
+            std::string extension = boost::filesystem::extension(entry);
+            extension.erase(std::remove(extension.begin(), extension.end(), '.'),
+                            extension.end());
+            const bool isSupportedFormat = myFileFormatManager->extensionImportSupported(extension);
+
+            if (!(isRegularFile && isSupportedFormat)) {
+                QString errorMsg = QString::fromStdString(std::string("ignoring unsupported extension: ") + extension);
+                emit message(errorMsg);
                 continue;
+            }
 
             myFileCount++;
 
@@ -120,13 +126,14 @@ void BulkConverterWorker::walkAndConvert()
             std::optional<std::string> error = convertFile(entry, toPath, myFileFormatManager);
             if (error != std::nullopt) {
                 QString err = QString::fromStdString(error.value());
-                emit errorMessage("error processing file: " + err);
+                emit message("error processing file: " + err);
             }
 
             emit progress((int) myFileCount);
         }
     } while (!children.empty());
 
+    emit message("DONE!");
     emit done();
 }
 
@@ -214,8 +221,8 @@ void BulkConverterDialog::convert()
     connect(myBulkConverterWorker, &BulkConverterWorker::done,
             this, &BulkConverterDialog::enableConvertButton);
 
-    connect(myBulkConverterWorker, &BulkConverterWorker::errorMessage,
-            this, &BulkConverterDialog::consumeErrorMessage);
+    connect(myBulkConverterWorker, &BulkConverterWorker::message,
+            this, &BulkConverterDialog::consumeMessage);
 
     myBulkWorkerThread->start();
 }
@@ -230,7 +237,7 @@ void BulkConverterDialog::enableConvertButton(void)
     ui->convertButton->setEnabled(true);
 }
 
-void BulkConverterDialog::consumeErrorMessage(QString error)
+void BulkConverterDialog::consumeMessage(QString message)
 {
-    ui->logger->appendPlainText(error);
+    ui->logger->appendPlainText(message);
 }

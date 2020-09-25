@@ -54,7 +54,7 @@ public slots:
 signals:
     void progress(int pos);
     void done(void);
-    void errorMessage(QString error);
+    void message(QString error);
 
 private:
     boost::filesystem::path mySrc;
@@ -74,7 +74,7 @@ public:
 
 public slots:
     void progress(int pos);
-    void consumeErrorMessage(QString error);
+    void consumeMessage(QString message);
 
 private slots:
     void setPath(QLineEdit*);
@@ -85,7 +85,7 @@ private:
     Ui::BulkConverterDialog *ui;
     QThread* myBulkWorkerThread;
     BulkConverterWorker* myBulkConverterWorker;
-    std::unique_ptr<FileFormatManager>& myFileFormatManager;;
+    std::unique_ptr<FileFormatManager>& myFileFormatManager;
 };
 
 #endif

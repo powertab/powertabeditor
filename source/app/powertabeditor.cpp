@@ -1924,7 +1924,7 @@ void PowerTabEditor::createCommands()
     connect(myPrintPreviewCommand, &QAction::triggered, this,
             &PowerTabEditor::printPreview);
 
-    myBulkConverterCommand = new Command(tr("Bulk Converter"),
+    myBulkConverterCommand = new Command(tr("Bulk Converter..."),
                                         "File.BulkConverter",
                                         QKeySequence(), this);
     connect(myBulkConverterCommand, &QAction::triggered, this,

@@ -11,7 +11,7 @@
    </rect>
   </property>
   <property name="windowTitle">
-   <string>Dialog</string>
+   <string>Bulk Converter</string>
   </property>
   <widget class="QProgressBar" name="progressBar">
    <property name="geometry">
@@ -34,8 +34,6 @@
     <rect>
      <x>299</x>
      <y>30</y>
-     <width>41</width>
-     <height>21</height>
     </rect>
    </property>
    <property name="text">
@@ -99,8 +97,6 @@
     <rect>
      <x>300</x>
      <y>80</y>
-     <width>41</width>
-     <height>21</height>
     </rect>
    </property>
    <property name="text">

@@ -14,7 +14,7 @@
   * You should have received a copy of the GNU General Public License
   * along with this program.  If not, see <http://www.gnu.org/licenses/>.
 */
-  
+
 #ifndef FORMATS_FILEFORMATMANAGER_H
 #define FORMATS_FILEFORMATMANAGER_H
 
@@ -55,6 +55,8 @@ public:
     void exportFile(const Score &score, const boost::filesystem::path &filename,
                     const FileFormat &format);
 
+    // Checks to see if there is an importer for the designated extension
+    bool extensionImportSupported(const std::string& extension) const;
 private:
     template <typename Importer>
     void registerImporter();
