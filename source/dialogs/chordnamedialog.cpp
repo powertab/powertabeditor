@@ -58,8 +58,8 @@ ChordNameDialog::ChordNameDialog(QWidget *parent)
     myTonicKeys->addButton(ui->tonicGButton, ChordName::G);
     myTonicKeys->addButton(ui->tonicAButton, ChordName::A);
     myTonicKeys->addButton(ui->tonicBButton, ChordName::B);
-    connect(myTonicKeys, qOverload<int>(&QButtonGroup::buttonClicked), this,
-            &ChordNameDialog::onTonicChanged);
+    connect(myTonicKeys, &QButtonGroup::idClicked,
+            this, &ChordNameDialog::onTonicChanged);
 
     myBassKeys = new QButtonGroup(this);
     myBassKeys->addButton(ui->bassCButton, ChordName::C);
@@ -69,8 +69,8 @@ ChordNameDialog::ChordNameDialog(QWidget *parent)
     myBassKeys->addButton(ui->bassGButton, ChordName::G);
     myBassKeys->addButton(ui->bassAButton, ChordName::A);
     myBassKeys->addButton(ui->bassBButton, ChordName::B);
-    connect(myBassKeys, qOverload<int>(&QButtonGroup::buttonClicked), this,
-            &ChordNameDialog::updateState);
+    connect(myBassKeys, &QButtonGroup::idClicked,
+            this, &ChordNameDialog::updateState);
 
     connect(ui->formulaListWidget, &QListWidget::currentRowChanged, this,
             &ChordNameDialog::updateState);

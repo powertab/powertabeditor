@@ -129,7 +129,7 @@ PlaybackWidget::PlaybackWidget(const QAction &play_pause_command,
 
     ui->zoomComboBox->setValidator(new PercentageValidator(ui->zoomComboBox));
 
-    connect(myVoices, qOverload<int>(&QButtonGroup::buttonClicked), this,
+    connect(myVoices, &QButtonGroup::idClicked, this,
             &PlaybackWidget::activeVoiceChanged);
     connect(ui->speedSpinner,qOverload<int>(&QSpinBox::valueChanged), this,
             &PlaybackWidget::playbackSpeedChanged);
