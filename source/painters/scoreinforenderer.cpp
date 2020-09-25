@@ -115,6 +115,8 @@ static void addAuthorText(QGraphicsItemGroup &group, QFont font,
                           const QColor &color, const QString &text, const double y,
                           bool right_align = false)
 {
+    (void) color;
+
     font.setPointSize(AUTHOR_SIZE);
 
     auto text_item = new QGraphicsTextItem(text);
@@ -232,7 +234,7 @@ static void renderLessonInfo(QGraphicsItemGroup &group, const QFont &font,
 
     if (!lesson_data.getSubtitle().empty())
     {
-        addCenteredText(group, font, SUBTITLE_SIZE, color, 
+        addCenteredText(group, font, SUBTITLE_SIZE, color,
                         QString::fromStdString(lesson_data.getSubtitle()));
     }
 
