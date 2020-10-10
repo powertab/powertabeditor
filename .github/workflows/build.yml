@@ -126,7 +126,7 @@ jobs:
         cp "${env:QT_PLUGIN_PATH}/styles/qwindowsvistastyle.dll" ./build/bin/styles
         cd installer/windows
         Expand-Archive -Path wix314-binaries.zip
-        msbuild pte_windows_build.sln -p:Configuration=Release
+        msbuild pte_windows_build.sln -p:Configuration=Release -p:Platform=${{ matrix.arch }}
 
     - name: Upload Installer
       uses: actions/upload-artifact@v2

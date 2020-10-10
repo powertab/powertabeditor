@@ -79,10 +79,10 @@
 			</Component>
 
 			<Component Id="boost_filesystem" Guid="489736B7-B9C3-48D1-B718-F9EC08FB2D8C">
-				<File Source="$(var.BinDir)/boost_filesystem-vc142-mt-x64-1_73.dll" KeyPath="yes" Checksum="yes" />
+				<File Source="$(var.BinDir)/boost_filesystem-vc142-mt-$(var.Arch)-1_73.dll" KeyPath="yes" Checksum="yes" />
 			</Component>
 			<Component Id="boost_iostreams" Guid="CFE16A17-A758-4718-83CA-1EF6FB9667E0">
-				<File Source="$(var.BinDir)/boost_iostreams-vc142-mt-x64-1_73.dll" KeyPath="yes" Checksum="yes" />
+				<File Source="$(var.BinDir)/boost_iostreams-vc142-mt-$(var.Arch)-1_73.dll" KeyPath="yes" Checksum="yes" />
 			</Component>
 			<Component Id="Qt5Core" Guid="C12EB9A4-E465-4738-BD49-898C4E843A8D">
 				<File Source="$(var.BinDir)/Qt5Core.dll" KeyPath="yes" Checksum="yes" />

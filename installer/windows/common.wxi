@@ -1,15 +1,25 @@
 <?xml version="1.0" encoding="utf-8"?>
 <Include>
-	<?define ProductName="Power Tab Editor"?>
-	<?define ProductShortName="Power Tab"?>
-	<?define Manufacturer="Power Tab Community"?>
-	<?define Version="1.98.13"?>
-	<?define UpgradeCode="6cab03ff-a31b-4c76-a4d1-20a37575896a"?>
+    <?define ProductName="Power Tab Editor"?>
+    <?define ProductShortName="Power Tab"?>
+    <?define Manufacturer="Power Tab Community"?>
+    <?define Version="1.98.13"?>
+    <?define UpgradeCode="6cab03ff-a31b-4c76-a4d1-20a37575896a"?>
     <?define SourceDir="../../source"?>
     <?define BinDir="../../build/bin"?>
 
-	<?define VCRedistName="Microsoft Visual C++ 2019 Redistributable (x64)"?>
-	<?define VCRedistFile="redist\vc_redist.x64.exe"?>
-	<?define VCRedistURL="https://aka.ms/vs/16/release/vc_redist.x64.exe"?>
-	<?define ProgramFilesFolder="ProgramFiles64Folder"?>
+    <?if $(var.Platform) = x64?>
+        <?define VCRedistName="Microsoft Visual C++ 2019 Redistributable (x64)"?>
+        <?define VCRedistFile="redist\vc_redist.x64.exe"?>
+        <?define VCRedistURL="https://aka.ms/vs/16/release/vc_redist.x64.exe"?>
+        <?define ProgramFilesFolder="ProgramFiles64Folder"?>
+        <?define Arch="x64"?>
+    <?else?>
+        <?define VCRedistName="Microsoft Visual C++ 2019 Redistributable (x86)"?>
+        <?define VCRedistFile="redist\vc_redist.x86.exe"?>
+        <?define VCRedistURL="https://aka.ms/vs/16/release/vc_redist.x86.exe"?>
+        <?define ProgramFilesFolder="ProgramFilesFolder"?>
+        <?define Arch="x86"?>
+    <?endif?>
+
 </Include>
