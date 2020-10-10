@@ -122,7 +122,6 @@ jobs:
     # when building with the Qt package from install-qt-action ...
     - name: Build Installer
       run: |
-        ls ./build/bin
         mkdir ./build/bin/styles
         cp "${env:QT_PLUGIN_PATH}/styles/qwindowsvistastyle.dll" ./build/bin/styles
         cd installer/windows

@@ -13,13 +13,13 @@
         <?define VCRedistFile="redist\vc_redist.x64.exe"?>
         <?define VCRedistURL="https://aka.ms/vs/16/release/vc_redist.x64.exe"?>
         <?define ProgramFilesFolder="ProgramFiles64Folder"?>
-        <?define Arch="x64"?>
+        <?define BoostArch="x64"?>
     <?else?>
         <?define VCRedistName="Microsoft Visual C++ 2019 Redistributable (x86)"?>
         <?define VCRedistFile="redist\vc_redist.x86.exe"?>
         <?define VCRedistURL="https://aka.ms/vs/16/release/vc_redist.x86.exe"?>
         <?define ProgramFilesFolder="ProgramFilesFolder"?>
-        <?define Arch="x86"?>
+        <?define BoostArch="x32"?>
     <?endif?>
 
 </Include>
