@@ -59,6 +59,18 @@ jobs:
 
     runs-on: windows-latest
 
+    # Run both 32-bit and 64-bit builds.
+    strategy:
+      matrix:
+        arch: [x64, x86]
+        include:
+          - arch: x64
+            cmake_arch: x64
+            qt_arch: win64_msvc2017_64
+          - arch: x86
+            cmake_arch: Win32
+            qt_arch: win32_msvc2017
+
     steps:
     - uses: actions/checkout@v1
     - name: Install Dependencies
@@ -69,12 +81,16 @@ jobs:
       run: |
         cd "${env:VCPKG_INSTALLATION_ROOT}"
         git pull
-        vcpkg install --triplet x64-windows boost-algorithm boost-date-time boost-endian boost-filesystem boost-functional boost-iostreams boost-range boost-rational boost-signals2 boost-stacktrace doctest minizip pugixml rapidjson
+        vcpkg install --triplet ${{ matrix.arch }}-windows boost-algorithm boost-date-time boost-endian boost-filesystem boost-functional boost-iostreams boost-range boost-rational boost-signals2 boost-stacktrace doctest minizip pugixml rapidjson
+
     # Building Qt via vcpkg would take a while ...
     - name: Install Qt
       uses: jurplel/install-qt-action@v2
+      with:
+        arch: ${{ matrix.qt_arch }}
+
     - name: Generate Project
-      run: cmake -A x64 -B ./build -DCMAKE_TOOLCHAIN_FILE="${env:VCPKG_INSTALLATION_ROOT}/scripts/buildsystems/vcpkg.cmake"
+      run: cmake -A ${{ matrix.cmake_arch }} -B ./build -DCMAKE_TOOLCHAIN_FILE="${env:VCPKG_INSTALLATION_ROOT}/scripts/buildsystems/vcpkg.cmake"
     - name: Build
       run: cmake --build ./build --config Release
     - name: Test
@@ -86,7 +102,7 @@ jobs:
       run: |
         cd installer/windows
         mkdir redist
-        Invoke-WebRequest https://aka.ms/vs/16/release/vc_redist.x64.exe -OutFile redist/vc_redist.x64.exe
+        Invoke-WebRequest https://aka.ms/vs/16/release/vc_redist.${{ matrix.arch }}.exe -OutFile redist/vc_redist.${{ matrix.arch }}.exe
 
     - name: Cache Wix
       id: cache-wix
@@ -110,11 +126,11 @@ jobs:
         cp "${env:QT_PLUGIN_PATH}/styles/qwindowsvistastyle.dll" ./build/bin/styles
         cd installer/windows
         Expand-Archive -Path wix314-binaries.zip
-        msbuild pte_windows_build.sln -p:Configuration=Release
+        msbuild pte_windows_build.sln -p:Configuration=Release -p:Platform=${{ matrix.arch }}
 
     - name: Upload Installer
       uses: actions/upload-artifact@v2
       with:
-        name: "powertabeditor-windows.exe"
-        path: installer/windows/bin/x64/Release/powertabeditor.exe
+        name: powertabeditor-windows-${{ matrix.arch }}.exe
+        path: installer/windows/bin/${{ matrix.arch }}/Release/powertabeditor.exe
         if-no-files-found: error
