@@ -7,11 +7,13 @@ Thanks to the following contributors who worked on this release:
 - @cameronwhite
 
 ### Added
+- Added a 32-bit installer for Windows in addition to the default 64-bit build (#312).
 
 ### Changed
 
 ### Fixed
 - Closing a tab that has modifications and isn't the active tab now works correctly (#304).
+- Fixed multiple issues that could cause the Windows installer to fail (#305).
 
 ## [Alpha 13] - 2020-08-11
 
