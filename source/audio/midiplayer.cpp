@@ -138,13 +138,15 @@ void MidiPlayer::run()
         if (event->isTempoChange())
             beat_duration = event->getTempo();
 
-        // Skip events before the start location, except for events such as
-        // instrument changes. Tempo changes are tracked above.
+        // Skip note on / off events before the start location, but send events
+        // such as instrument changes, pitch wheels, etc.
+        // Tempo changes are tracked above and shouldn't be sent out since
+        // CoreMidi on OSX complains about them.
         if (!started)
         {
             if (event->getLocation() < start_location)
             {
-                if (event->isProgramChange())
+                if (!event->isNoteOnOff() && !event->isTempoChange())
                     device.sendMessage(event->getData());
 
                 continue;
