@@ -375,7 +375,7 @@ parseMasterBars(const pugi::xml_node &master_bars_node)
         master_bar.myKeySig.mySharps = (accidentals >= 0);
 
         // Fermatas.
-        for (const pugi::xml_node fermata :
+        for (const pugi::xml_node &fermata :
              node.child("Fermatas").children("Fermata"))
         {
             std::vector<int> offset =
@@ -537,7 +537,7 @@ parseBeats(const pugi::xml_node &beats_node)
         if (node.child("Tremolo"))
             beat.myTremoloPicking = true;
 
-        for (const pugi::xml_node property :
+        for (const pugi::xml_node &property :
              node.child("Properties").children("Property"))
         {
             const std::string_view name =
@@ -581,7 +581,7 @@ parseNotes(const pugi::xml_node &notes_node)
 
         Gp7::Note::Bend bend;
         bool has_bend = false;
-        for (const pugi::xml_node property :
+        for (const pugi::xml_node &property :
              node.child("Properties").children("Property"))
         {
             const std::string_view name =
