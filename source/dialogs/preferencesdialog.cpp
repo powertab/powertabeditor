@@ -122,6 +122,9 @@ void PreferencesDialog::loadCurrentSettings()
 
     ui->countInVolumeSpinBox->setValue(settings->get(Settings::CountInVolume));
 
+    ui->scoreThemeComboBox->setCurrentIndex(
+        static_cast<int>(settings->get(Settings::Theme)));
+
     ui->openInNewWindowCheckBox->setChecked(
         settings->get(Settings::OpenFilesInNewWindow));
 
@@ -173,6 +176,9 @@ void PreferencesDialog::accept()
                   ui->countInPresetComboBox->currentIndex());
 
     settings->set(Settings::CountInVolume, ui->countInVolumeSpinBox->value());
+
+    settings->set(Settings::Theme, static_cast<ScoreTheme>(
+                                       ui->scoreThemeComboBox->currentIndex()));
 
     settings->set(Settings::OpenFilesInNewWindow,
                   ui->openInNewWindowCheckBox->isChecked());

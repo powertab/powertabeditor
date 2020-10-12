@@ -22,6 +22,7 @@
 #include <QGraphicsScene>
 #include <QGraphicsView>
 #include <score/staff.h>
+#include <app/settingsmanager.h>
 
 class CaretPainter;
 class ClickPubSub;
@@ -41,7 +42,7 @@ class ScoreArea : public QGraphicsView
     };
 
 public:
-    explicit ScoreArea(QWidget *parent);
+    explicit ScoreArea(SettingsManager &settings_manager, QWidget *parent);
 
     void renderDocument(const Document &document);
 
@@ -67,16 +68,26 @@ private:
     /// Adjusts the scroll location whenever the caret moves.
     void adjustScroll();
 
+    /// Load the user's preferred color scheme for the score.
+    void loadTheme(const SettingsManager &settings_manager, bool redraw = true);
+
     Scene myScene;
     const Document *myDocument;
     QGraphicsItem *myScoreInfoBlock;
     QList<QGraphicsItem *> myRenderedSystems;
     CaretPainter *myCaretPainter;
-    const QPalette *myScorePalette; // the palette used by scorearea
-    QPalette myPrintPalette; // the palette used by when printing
-    const QPalette *activePalette;
+    /// The color palette from the parent widget.
+    const QPalette *myDefaultPalette;
+    /// The color palette for the light theme (and printing).
+    QPalette myLightPalette;
+    /// The color palette for the dark theme.
+    QPalette myDarkPalette;
+    /// The palette (default / light / dark) currently used by the score area.
+    const QPalette *myActivePalette;
 
     std::shared_ptr<ClickPubSub> myClickPubSub;
+    boost::signals2::scoped_connection mySettingsListener;
+    bool myDisableRedraw;
 };
 
 #endif

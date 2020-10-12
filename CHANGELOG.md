@@ -8,6 +8,7 @@ Thanks to the following contributors who worked on this release:
 
 ### Added
 - Added a 32-bit installer for Windows in addition to the default 64-bit build (#312).
+- Added a preference to select a light or dark score theme, in addition to the system default colors (#307).
 
 ### Changed
 

@@ -19,6 +19,7 @@
 
 #include <app/documentmanager.h>
 #include <app/pubsub/clickpubsub.h>
+#include <app/settings.h>
 #include <chrono>
 #include <future>
 #include <painters/caretpainter.h>
@@ -38,21 +39,34 @@ void ScoreArea::Scene::dragEnterEvent(QGraphicsSceneDragDropEvent *event)
     event->ignore();
 }
 
-ScoreArea::ScoreArea(QWidget *parent)
+ScoreArea::ScoreArea(SettingsManager &settings_manager, QWidget *parent)
     : QGraphicsView(parent),
       myScoreInfoBlock(nullptr),
       myCaretPainter(nullptr),
-      myScorePalette(&parent->palette()),
-      myClickPubSub(std::make_shared<ClickPubSub>())
+      myDefaultPalette(&parent->palette()),
+      myActivePalette(nullptr),
+      myClickPubSub(std::make_shared<ClickPubSub>()),
+      myDisableRedraw(false)
 {
     setScene(&myScene);
 
-    // set the palette colors to be used when printing
-    myPrintPalette.setColor(QPalette::Text,Qt::black);
-    myPrintPalette.setColor(QPalette::Light,Qt::white);
-    myPrintPalette.setColor(QPalette::Dark,Qt::lightGray);
+    // Configure the palette for the light theme and printing.
+    myLightPalette.setColor(QPalette::Base, Qt::white);
+    myLightPalette.setColor(QPalette::Text, Qt::black);
+    myLightPalette.setColor(QPalette::Light, Qt::white);
+    myLightPalette.setColor(QPalette::Dark, Qt::lightGray);
 
-    activePalette = myScorePalette;
+    // Configure the palette for the dark theme.
+    myDarkPalette.setColor(QPalette::Base, QColor(30, 30, 30));
+    myDarkPalette.setColor(QPalette::Text, QColor(255, 255, 255, 216));
+    myDarkPalette.setColor(QPalette::Light, QColor(55, 55, 55));
+    myDarkPalette.setColor(QPalette::Dark, QColor(191, 191, 191));
+
+    // Load the user's preferred theme, and re-render when the theme setting
+    // changes.
+    loadTheme(settings_manager, /* redraw */ false);
+    mySettingsListener = settings_manager.subscribeToChanges(
+        [&]() { loadTheme(settings_manager); });
 }
 
 void ScoreArea::renderDocument(const Document &document)
@@ -71,7 +85,7 @@ void ScoreArea::renderDocument(const Document &document)
         adjustScroll();
     });
 
-    myScoreInfoBlock = ScoreInfoRenderer::render(score.getScoreInfo(), activePalette->text().color());
+    myScoreInfoBlock = ScoreInfoRenderer::render(score.getScoreInfo(), myActivePalette->text().color());
 
     myRenderedSystems.reserve(static_cast<int>(score.getSystems().size()));
     for (unsigned int i = 0; i < score.getSystems().size(); ++i)
@@ -171,8 +185,9 @@ void ScoreArea::print(QPrinter &printer)
     QPainter painter;
     painter.begin(&printer);
 
-    // use the printPalette for rendering
-    activePalette = &myPrintPalette;
+    // Use the light palette for printing.
+    const QPalette *orig_palette = myActivePalette;
+    myActivePalette = &myLightPalette;
 
     // Hide the caret when printing.
     myCaretPainter->hide();
@@ -222,9 +237,9 @@ void ScoreArea::print(QPrinter &printer)
     myCaretPainter->show();
     painter.end();
 
-    // reuse the original app palette and render the document
-    activePalette = myScorePalette;
-    this->renderDocument(*myDocument);    
+    // Revert to the original app palette and re-render the document
+    myActivePalette = orig_palette;
+    renderDocument(*myDocument);
 }
 
 std::shared_ptr<ClickPubSub> ScoreArea::getClickPubSub() const
@@ -266,21 +281,53 @@ void ScoreArea::refreshZoom()
 
 const QPalette *ScoreArea::getPalette() const
 {
-    return activePalette;
+    return myActivePalette;
 }
 
 bool ScoreArea::event(QEvent *event)
 {
-
     QGraphicsView::event(event);
-    if(event->type() == QEvent::PaletteChange)
+
+    // Redraw when the parent widget's (default) palette changes, or our
+    // palette is changed.
+    if (event->type() == QEvent::PaletteChange)
     {
-        this->renderDocument(*myDocument);
+        if (!myDisableRedraw)
+            this->renderDocument(*myDocument);
+
         return true;
     }
-    else
+
+    return false;
+}
+
+void
+ScoreArea::loadTheme(const SettingsManager &settings_manager, bool redraw)
+{
+    auto settings = settings_manager.getReadHandle();
+    const QPalette *prev_palette = myActivePalette;
+
+    switch (settings->get(Settings::Theme))
     {
-        return false;
+        case ScoreTheme::SystemDefault:
+            myActivePalette = myDefaultPalette;
+            break;
+        case ScoreTheme::Light:
+            myActivePalette = &myLightPalette;
+            break;
+        case ScoreTheme::Dark:
+            myActivePalette = &myDarkPalette;
+            break;
     }
-    
+
+    if (myActivePalette != prev_palette)
+    {
+        // The palette change will be detected by the ScoreArea::event()
+        // listener, which is where the redraw decision is handled.
+        if (!redraw)
+            myDisableRedraw = true;
+
+        setPalette(*myActivePalette);
+        myDisableRedraw = false;
+    }
 }

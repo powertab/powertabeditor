@@ -21,6 +21,10 @@
 #include <score/generalmidi.h>
 #include <sstream>
 
+static const std::string theLightName("light");
+static const std::string theDarkName("dark");
+static const std::string theDefaultName("default");
+
 namespace Settings
 {
 const Setting<std::string> PreviousDirectory(
@@ -32,6 +36,8 @@ const Setting<std::vector<std::string>> RecentFiles("app/recent_files", {});
 
 const Setting<bool> OpenFilesInNewWindow("app/open_files_in_new_window",
                                          false);
+
+const Setting<ScoreTheme> Theme("app/score_theme", ScoreTheme::SystemDefault);
 
 const Setting<std::string> DefaultInstrumentName("app/default_instrument_name",
                                                  "Untitled");
@@ -106,4 +112,31 @@ SettingsTree::SettingValue SettingValueConverter<QKeySequence>::to(
     const QKeySequence &seq)
 {
     return seq.toString().toStdString();
+}
+
+ScoreTheme
+SettingValueConverter<ScoreTheme>::from(const SettingsTree::SettingValue &v)
+{
+    const std::string name = std::get<std::string>(v);
+
+    if (name == theLightName)
+        return ScoreTheme::Light;
+    else if (name == theDarkName)
+        return ScoreTheme::Dark;
+    else
+        return ScoreTheme::SystemDefault;
+}
+
+SettingsTree::SettingValue
+SettingValueConverter<ScoreTheme>::to(const ScoreTheme &theme)
+{
+    switch (theme)
+    {
+        case ScoreTheme::Light:
+            return theLightName;
+        case ScoreTheme::Dark:
+            return theDarkName;
+        default:
+            return theDefaultName;
+    }
 }

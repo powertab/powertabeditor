@@ -3207,7 +3207,7 @@ void PowerTabEditor::setupNewTab()
         updateLocationLabel();
     });
 
-    auto scorearea = new ScoreArea(this);
+    auto scorearea = new ScoreArea(*mySettingsManager, this);
     scorearea->renderDocument(doc);
     scorearea->installEventFilter(this);
 

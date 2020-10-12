@@ -23,12 +23,22 @@
 #include <score/tuning.h>
 #include <util/settingstree.h>
 
+/// Preference for whether the score should follow the system default colors,
+/// or always use a light / dark theme.
+enum class ScoreTheme : int
+{
+    SystemDefault,
+    Light,
+    Dark
+};
+
 /// All predefined settings and their default values.
 namespace Settings
 {
     extern const Setting<std::string> PreviousDirectory;
     extern const Setting<QByteArray> WindowState;
     extern const Setting<std::vector<std::string>> RecentFiles;
+    extern const Setting<ScoreTheme> Theme;
     extern const Setting<bool> OpenFilesInNewWindow;
 
     extern const Setting<std::string> DefaultInstrumentName;
@@ -55,6 +65,13 @@ struct SettingValueConverter<QKeySequence>
 {
     static QKeySequence from(const SettingsTree::SettingValue &v);
     static SettingsTree::SettingValue to(const QKeySequence &seq);
+};
+
+template <>
+struct SettingValueConverter<ScoreTheme>
+{
+    static ScoreTheme from(const SettingsTree::SettingValue &v);
+    static SettingsTree::SettingValue to(const ScoreTheme &theme);
 };
 
 #endif
