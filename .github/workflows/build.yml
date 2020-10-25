@@ -39,7 +39,7 @@ jobs:
     - uses: actions/checkout@v1
     - name: Install Dependencies
       # CMake 3.17 is already installed
-      run: brew update && brew install boost doctest minizip ninja pugixml qt5 pugixml rapidjson rtmidi
+      run: brew install boost doctest minizip ninja pugixml qt5 pugixml rapidjson rtmidi
     - name: Generate Project
       run: cmake -S ${GITHUB_WORKSPACE} -B ${{runner.workspace}}/build -G Ninja -DCMAKE_BUILD_TYPE=Release -DCMAKE_PREFIX_PATH=/usr/local/opt/qt5/lib/cmake
     - name: Build
