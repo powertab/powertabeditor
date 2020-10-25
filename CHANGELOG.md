@@ -16,6 +16,8 @@ Thanks to the following contributors who worked on this release:
 - Fixed an issue where starting MIDI playback later in the score could prevent bends from being played (#311).
 - Closing a tab that has modifications and isn't the active tab now works correctly (#304).
 - Fixed multiple issues that could cause the Windows installer to fail (#305).
+- Fixed issues where scores without any song information (title, artist info, etc) would be printed incorrectly (#313).
+- Fixed printing of the song information at the top of the score, which previously was extremely large when printed (#313).
 
 ## [Alpha 13] - 2020-08-11
 

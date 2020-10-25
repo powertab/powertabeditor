@@ -49,7 +49,7 @@ static double getNextY(const QGraphicsItemGroup &group)
 static void addCenteredText(QGraphicsItemGroup &group, QFont font,
                             int font_size, const QColor &color, const QString &text)
 {
-    font.setPointSize(font_size);
+    font.setPixelSize(font_size);
     auto text_item = new SimpleTextItem(text, font, TextAlignment::Top, QPen(color));
 
     // Center horizontally.
@@ -115,10 +115,11 @@ static void addAuthorText(QGraphicsItemGroup &group, QFont font,
                           const QColor &color, const QString &text, const double y,
                           bool right_align = false)
 {
-    font.setPointSize(AUTHOR_SIZE);
+    font.setPixelSize(AUTHOR_SIZE);
 
     auto text_item = new QGraphicsTextItem(text);
     text_item->setFont(font);
+    text_item->setDefaultTextColor(color);
 
     const double text_width =
         std::min(AUTHOR_INFO_WIDTH, text_item->boundingRect().width());

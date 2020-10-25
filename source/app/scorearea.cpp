@@ -206,6 +206,11 @@ void ScoreArea::print(QPrinter &printer)
     {
         const QGraphicsItem *item = items[i];
         const QRectF source_rect = item->sceneBoundingRect();
+        // Skip if e.g. the score info block is completely empty to avoid
+        // division by zero and other issues.
+        if (source_rect.height() == 0.0)
+            continue;
+
         const float ratio =
             std::min(target_rect.width() / source_rect.width(),
                      target_rect.height() / source_rect.height());
