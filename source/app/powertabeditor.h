@@ -14,7 +14,7 @@
   * You should have received a copy of the GNU General Public License
   * along with this program.  If not, see <http://www.gnu.org/licenses/>.
 */
-  
+
 #ifndef APP_POWERTABEDITOR_H
 #define APP_POWERTABEDITOR_H
 
@@ -77,6 +77,9 @@ private slots:
 
     /// Prints the current document.
     void printDocument();
+
+    /// Bulk conversion tool
+    void bulkConverter();
 
     /// Displays a preview of the current document.
     void printPreview();
@@ -448,6 +451,7 @@ private:
     Command *mySaveAsCommand;
     Command *myPrintCommand;
     Command *myPrintPreviewCommand;
+    Command *myBulkConverterCommand;
     QMenu *myRecentFilesMenu;
     Command *myEditShortcutsCommand;
     Command *myEditPreferencesCommand;
@@ -482,7 +486,7 @@ private:
     Command *myPrevPositionCommand;
     Command *myNextStringCommand;
     Command *myPrevStringCommand;
-    Command *myLastPositionCommand;    
+    Command *myLastPositionCommand;
     Command *myNextStaffCommand;
     Command *myPrevStaffCommand;
     Command *myNextBarCommand;

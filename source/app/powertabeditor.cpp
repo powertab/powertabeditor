@@ -99,6 +99,7 @@
 #include <dialogs/artificialharmonicdialog.h>
 #include <dialogs/barlinedialog.h>
 #include <dialogs/benddialog.h>
+#include <dialogs/bulkconverterdialog.h>
 #include <dialogs/chordnamedialog.h>
 #include <dialogs/directiondialog.h>
 #include <dialogs/dynamicdialog.h>
@@ -508,6 +509,12 @@ void PowerTabEditor::printDocument()
         return;
 
     getScoreArea()->print(printer);
+}
+
+void PowerTabEditor::bulkConverter()
+{
+    BulkConverterDialog dialog(this, myFileFormatManager);
+    dialog.exec();
 }
 
 void PowerTabEditor::printPreview()
@@ -1578,7 +1585,7 @@ void PowerTabEditor::editLeftHandFingering()
         LeftHandFingeringDialog dialog(this);
         if (dialog.exec() == QDialog::Accepted)
         {
-            myUndoManager->push(new AddLeftHandFingering(location, 
+            myUndoManager->push(new AddLeftHandFingering(location,
                                 dialog.getLeftHandFingering()),
                                 location.getSystemIndex());
         }
@@ -1916,6 +1923,12 @@ void PowerTabEditor::createCommands()
         tr("Print Preview..."), "File.PrintPreview", QKeySequence(), this);
     connect(myPrintPreviewCommand, &QAction::triggered, this,
             &PowerTabEditor::printPreview);
+
+    myBulkConverterCommand = new Command(tr("Bulk Converter..."),
+                                        "File.BulkConverter",
+                                        QKeySequence(), this);
+    connect(myBulkConverterCommand, &QAction::triggered, this,
+            &PowerTabEditor::bulkConverter);
 
     myEditShortcutsCommand = new Command(tr("Customize Shortcuts..."),
                                          "File.CustomizeShortcuts",
@@ -2264,7 +2277,7 @@ void PowerTabEditor::createCommands()
                                Qt::SHIFT + Qt::Key_Left, this);
     connect(myRemoveDotCommand, &QAction::triggered, this, &PowerTabEditor::removeDot);
 
-    myLeftHandFingeringCommand = new Command(tr("Left Hand Fingering..."), 
+    myLeftHandFingeringCommand = new Command(tr("Left Hand Fingering..."),
                                              "Notes.LeftHandFingering",
                                              QKeySequence(), this,
                                              QStringLiteral(u":images/lefthandfingering.png"));
@@ -2639,7 +2652,7 @@ void PowerTabEditor::createCommands()
             &PowerTabEditor::editViewFilters);
 
     // Window Menu commands.
-    
+
 #ifdef Q_OS_MAC
     // NextChild is Command-{ on OS X, so use the more conventional Control-Tab
     // to match Safari, Finder, etc.
@@ -2649,7 +2662,7 @@ void PowerTabEditor::createCommands()
     QKeySequence next_tab_seq = QKeySequence::NextChild;
     QKeySequence prev_tab_seq = QKeySequence::PreviousChild;
 #endif
-    
+
     myNextTabCommand = new Command(tr("Next Tab"), "Window.NextTab",
                                    next_tab_seq, this);
     connect(myNextTabCommand, &QAction::triggered, [=]() {
@@ -2851,6 +2864,8 @@ void PowerTabEditor::createMenus()
     myFileMenu->addAction(myPrintPreviewCommand);
     myFileMenu->addSeparator();
     myRecentFilesMenu = myFileMenu->addMenu(tr("Recent Files"));
+    myFileMenu->addSeparator();
+    myFileMenu->addAction(myBulkConverterCommand);
     myFileMenu->addSeparator();
     myFileMenu->addAction(myEditShortcutsCommand);
     myFileMenu->addAction(myEditPreferencesCommand);

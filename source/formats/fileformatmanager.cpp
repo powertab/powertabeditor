@@ -14,7 +14,7 @@
   * You should have received a copy of the GNU General Public License
   * along with this program.  If not, see <http://www.gnu.org/licenses/>.
 */
-  
+
 #include "fileformatmanager.h"
 
 #include <formats/gp7/gp7importer.h>
@@ -120,4 +120,10 @@ void FileFormatManager::exportFile(const Score &score,
     }
 
     throw std::runtime_error("Unknown file format");
+}
+
+bool FileFormatManager::extensionImportSupported(const std::string& extension) const {
+    for (auto const& importer : myImporters)
+        if (importer->fileFormat().contains(extension)) return true;
+    return false;
 }
