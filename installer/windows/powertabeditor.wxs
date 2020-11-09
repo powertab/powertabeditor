@@ -78,11 +78,11 @@
 				<RegistryValue Root="HKCU" Key="Software\Power Tab\Power Tab Editor" Name="installed" Type="integer" Value="1" KeyPath="yes" />
 			</Component>
 
-			<Component Id="boost_filesystem" Guid="489736B7-B9C3-48D1-B718-F9EC08FB2D8C">
-				<File Source="$(var.BinDir)/boost_filesystem-vc142-mt-$(var.BoostArch)-1_73.dll" KeyPath="yes" Checksum="yes" />
+			<Component Id="boost_filesystem" Guid="7CD94800-73CD-4302-A0DA-34FDB3565276">
+				<File Source="$(var.BinDir)/boost_filesystem-vc142-mt-$(var.BoostArch)-1_74.dll" KeyPath="yes" Checksum="yes" />
 			</Component>
-			<Component Id="boost_iostreams" Guid="CFE16A17-A758-4718-83CA-1EF6FB9667E0">
-				<File Source="$(var.BinDir)/boost_iostreams-vc142-mt-$(var.BoostArch)-1_73.dll" KeyPath="yes" Checksum="yes" />
+			<Component Id="boost_iostreams" Guid="7C4C5638-3427-42FD-A3BA-4312CECC41D3">
+				<File Source="$(var.BinDir)/boost_iostreams-vc142-mt-$(var.BoostArch)-1_74.dll" KeyPath="yes" Checksum="yes" />
 			</Component>
 			<Component Id="Qt5Core" Guid="C12EB9A4-E465-4738-BD49-898C4E843A8D">
 				<File Source="$(var.BinDir)/Qt5Core.dll" KeyPath="yes" Checksum="yes" />
