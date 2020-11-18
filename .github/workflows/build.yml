@@ -96,7 +96,7 @@ jobs:
     - name: Test
       run: ./build/bin/pte_tests.exe
 
-    - uses: microsoft/setup-msbuild@v1.0.0
+    - uses: microsoft/setup-msbuild@v1.0.2
 
     - name: Fetch VC redist
       run: |
