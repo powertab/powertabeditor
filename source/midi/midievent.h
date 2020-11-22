@@ -57,9 +57,12 @@ public:
     const std::vector<uint8_t> &getData() const { return myData; }
     const SystemLocation &getLocation() const { return myLocation; }
 
+    bool isMetaMessage() const;
     bool isTempoChange() const;
+    bool isVolumeChange() const;
     bool isTrackEnd() const;
     Midi::Tempo getTempo() const;
+    uint8_t getVolume() const;
     bool isProgramChange() const;
     bool isPositionChange() const;
     bool isNoteOnOff() const;
@@ -82,14 +85,12 @@ public:
 
 private:
     MidiEvent(int ticks, std::vector<uint8_t> data,
-              const SystemLocation &location, int player, int instrument);
+              const SystemLocation &location);
 
     int myTicks; // TODO - does this need to be 64-bit for absolute times?
     std::vector<uint8_t> myData;
 
     SystemLocation myLocation;
-    int myPlayer;
-    int myInstrument;
 };
 
 #endif
