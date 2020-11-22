@@ -185,27 +185,30 @@ void MidiPlayer::run()
         if (!(event->isNoteOnOff() &&
               event->getChannel() == METRONOME_CHANNEL &&
               !myMetronomeEnabled) &&
-            !event->isTempoChange() && 
+            !event->isTempoChange() &&
             !event->isTrackEnd() &&
             !event->isVolumeChange())
         {
             device.sendMessage(event->getData());
         }
 
-        // get the channel and the correspondin player
-        int channel  = event->getChannel();
-        int player = getPlayerFromChannel(channel);
-        // if the channel corresponds to a valid player, set its maximum volume
-        if(player != -1)
+        if (!event->isMetaMessage())
         {
-            device.setChannelMaxVolume(channel, myScore.getPlayers()[player].getMaxVolume());
-        }
-        // handle volume change events
-        // using device.setVolume() ensures that the maximum volume threshold
-        // is taken into consideration
-        if(event -> isVolumeChange())
-        {
-            device.setVolume(channel, event->getData()[2]);
+            const int channel = event->getChannel();
+            const int player = getPlayerFromChannel(channel);
+            // If the channel corresponds to a valid player, set its maximum
+            // volume
+            if (player >= 0)
+            {
+                device.setChannelMaxVolume(
+                    channel, myScore.getPlayers()[player].getMaxVolume());
+            }
+
+            // handle volume change events
+            // using device.setVolume() ensures that the maximum volume
+            // threshold is taken into consideration
+            if (event->isVolumeChange())
+                device.setVolume(channel, event->getVolume());
         }
 
         // Notify listeners of the current playback position.
@@ -298,25 +301,13 @@ bool MidiPlayer::isPlaying() const
     return myIsPlaying;
 }
 
-int MidiPlayer::getPlayerFromChannel(const int channel)
-{   
-    int player;
-
-    //check for invalid channel
-    if (METRONOME_CHANNEL == channel || 15 == channel)
-    {
-        player = -1;
-    }
-    else if (channel < METRONOME_CHANNEL)
-    {
-        player = channel;
-    }
-    else if (channel > METRONOME_CHANNEL)
-    {
-        player = channel - 1;
-    }
-
-    return player;
-    
+int
+MidiPlayer::getPlayerFromChannel(const int channel)
+{
+    if (channel < METRONOME_CHANNEL)
+        return channel;
+    else if (channel == METRONOME_CHANNEL)
+        return -1;
+    else
+        return channel - 1;
 }
-
