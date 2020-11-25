@@ -5,7 +5,19 @@ All notable changes to this project will be documented in this file.
 
 Thanks to the following contributors who worked on this release:
 - @cameronwhite
+
+### Added
+
+### Changed
+
+### Fixed
+
+## [Alpha 14] - 2020-11-24
+
+Thanks to the following contributors who worked on this release:
+- @cameronwhite
 - @psyomn
+- @mostafa-nabil
 
 ### Added
 - Added a bulk file conversion tool (#288, #212).
@@ -296,7 +308,8 @@ Thanks to the following contributors who worked on this release:
 ## [Alpha 1] - 2014-07-27
 * The first alpha release!
 
-[Unreleased]: https://github.com/powertab/powertabeditor/compare/2.0.0-alpha13...HEAD
+[Unreleased]: https://github.com/powertab/powertabeditor/compare/2.0.0-alpha14...HEAD
+[Alpha 14]: https://github.com/powertab/powertabeditor/releases/tag/2.0.0-alpha14
 [Alpha 13]: https://github.com/powertab/powertabeditor/releases/tag/2.0.0-alpha13
 [Alpha 12]: https://github.com/powertab/powertabeditor/releases/tag/2.0.0-alpha12
 [Alpha 11]: https://github.com/powertab/powertabeditor/releases/tag/2.0.0-alpha11
