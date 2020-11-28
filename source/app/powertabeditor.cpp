@@ -3216,8 +3216,9 @@ void PowerTabEditor::createTabArea()
     connect(myPlaybackWidget, &PlaybackWidget::activeFilterChanged, this,
             &PowerTabEditor::updateActiveFilter);
 
-    connect(myPlaybackWidget, &PlaybackWidget::zoomChanged, this,
-            &PowerTabEditor::updateZoom);
+    connect(myPlaybackWidget, &PlaybackWidget::zoomChanged, this, [=](int percent) {
+        updateZoom(percent, true);
+    });
 
     auto update_metronome_state = [&]() {
         auto settings = mySettingsManager->getReadHandle();
@@ -3733,15 +3734,15 @@ void PowerTabEditor::updateActiveFilter(int filter)
     redrawScore();
 }
 
-void PowerTabEditor::updateZoom(double percent)
+void PowerTabEditor::updateZoom(double percent, bool pb_widget_update)
 {
     myDocumentManager->getCurrentDocument().getViewOptions().setZoom(percent);
     getScoreArea()->refreshZoom();
 
-    // TODO reset only the zoom element?
-    // XXX avoid a cycle playback->playback ; add origin/source of the update
-    // Ensure the playbackWidget zoom is updated if shortcuts were used
-    myPlaybackWidget->reset(myDocumentManager->getCurrentDocument());
+    if (!pb_widget_update)
+    {
+        myPlaybackWidget->reset(myDocumentManager->getCurrentDocument());
+    }
 }
 
 void PowerTabEditor::updateLocationLabel()

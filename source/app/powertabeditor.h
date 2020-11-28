@@ -360,7 +360,7 @@ private:
     /// Sets the current score filter.
     void updateActiveFilter(int);
     /// Updates the zoom level.
-    void updateZoom(double percent);
+    void updateZoom(double percent, bool pb_widget_update=false);
     /// Increase the zoom level of the score
     void zoomInScore();
     /// Decrease the zoom level of the score
