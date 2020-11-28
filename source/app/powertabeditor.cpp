@@ -1762,6 +1762,23 @@ void PowerTabEditor::editViewFilters()
     }
 }
 
+void PowerTabEditor::zoomInScore()
+{
+    // TODO Move constant to a global place
+    const int ZOOM_CHANGE_COEFITIENT = 25;
+    auto currentZoom = myDocumentManager->getCurrentDocument().getViewOptions().getZoom();
+
+    updateZoom(currentZoom + ZOOM_CHANGE_COEFITIENT);
+}
+
+void PowerTabEditor::zoomOutScore()
+{
+    const int ZOOM_CHANGE_COEFITIENT = 25;
+    auto currentZoom = myDocumentManager->getCurrentDocument().getViewOptions().getZoom();
+
+    updateZoom(currentZoom - ZOOM_CHANGE_COEFITIENT);
+}
+
 bool PowerTabEditor::eventFilter(QObject *object, QEvent *event)
 {
     // Don't handle key presses during playback.
@@ -2675,6 +2692,27 @@ void PowerTabEditor::createCommands()
         cycleTab(-1);
     });
 
+#ifndef Q_OS_MAC
+    // TODO set alternative? - QKeySequence zoom_in_alt = Qt::META + Qt::Key_Plus;
+    QKeySequence zoom_in  = Qt::META + Qt::Key_Equal;
+    QKeySequence zoom_out = Qt::META + Qt::Key_Minus;
+#else
+    QKeySequence zoom_in  = Qt::CTRL + Qt::Key_Equal;
+    QKeySequence zoom_out = Qt::CTRL + Qt::Key_Minus;
+    // TODO search for QKeySequence commands
+#endif
+
+    // TODO better placed in Section?
+    myZoomInCommand = new Command(tr("Zoom In"), "Window.ZoomIn",
+                                  zoom_in, this);
+    connect(myZoomInCommand, &QAction::triggered, this,
+            &PowerTabEditor::zoomInScore);
+
+    myZoomOutCommand = new Command(tr("Zoom Out"), "Window.ZoomOut",
+                                   zoom_out, this);
+    connect(myZoomOutCommand, &QAction::triggered, this,
+            &PowerTabEditor::zoomOutScore);
+
     // Help menu commands.
     myReportBugCommand = new Command(tr("Report Bug..."), "Help.ReportBug",
                                      QKeySequence(), this);
@@ -3071,6 +3109,8 @@ void PowerTabEditor::createMenus()
     myWindowMenu = menuBar()->addMenu(tr("&Window"));
     myWindowMenu->addAction(myNextTabCommand);
     myWindowMenu->addAction(myPrevTabCommand);
+    myWindowMenu->addAction(myZoomInCommand);
+    myWindowMenu->addAction(myZoomOutCommand);
     myWindowMenu->addSeparator();
     myWindowMenu->addAction(myMixerDockWidgetCommand);
     myWindowMenu->addAction(myInstrumentDockWidgetCommand);
@@ -3611,6 +3651,8 @@ void PowerTabEditor::enableEditing(bool enable)
     myEditViewFiltersCommand->setEnabled(enable);
     myNextTabCommand->setEnabled(enable);
     myPrevTabCommand->setEnabled(enable);
+    myZoomInCommand->setEnabled(enable);
+    myZoomOutCommand->setEnabled(enable);
 
     // MIDI commands are always enabled if documents are open.
     if (myDocumentManager->hasOpenDocuments())
@@ -3695,6 +3737,11 @@ void PowerTabEditor::updateZoom(double percent)
 {
     myDocumentManager->getCurrentDocument().getViewOptions().setZoom(percent);
     getScoreArea()->refreshZoom();
+
+    // TODO reset only the zoom element?
+    // XXX avoid a cycle playback->playback ; add origin/source of the update
+    // Ensure the playbackWidget zoom is updated if shortcuts were used
+    myPlaybackWidget->reset(myDocumentManager->getCurrentDocument());
 }
 
 void PowerTabEditor::updateLocationLabel()

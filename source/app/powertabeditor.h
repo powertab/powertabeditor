@@ -262,6 +262,7 @@ private slots:
     /// Shows a dialog to edit the score's view filters.
     void editViewFilters();
 
+
 protected:
     /// Handle key presses for 0-9 when entering tab numbers.
     virtual bool eventFilter(QObject *object, QEvent *event) override;
@@ -360,6 +361,10 @@ private:
     void updateActiveFilter(int);
     /// Updates the zoom level.
     void updateZoom(double percent);
+    /// Increase the zoom level of the score
+    void zoomInScore();
+    /// Decrease the zoom level of the score
+    void zoomOutScore();
     /// Updates the playback widget with the caret's current location.
     void updateLocationLabel();
 
@@ -629,6 +634,8 @@ private:
     QMenu *myWindowMenu;
     Command *myNextTabCommand;
     Command *myPrevTabCommand;
+    Command *myZoomInCommand;
+    Command *myZoomOutCommand;
     Command *myMixerDockWidgetCommand;
     Command *myInstrumentDockWidgetCommand;
     Command *myToolBoxDockWidgetCommand;

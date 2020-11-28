@@ -19,6 +19,7 @@
 #define APP_VIEWOPTIONS_H
 
 #include <optional>
+#include <algorithm>
 
 /// Stores any view options that are not saved with the score (e.g. the current
 /// zoom level or the active score filter).
@@ -31,8 +32,9 @@ public:
     void setFilter(int filter) { myFilter = filter; }
     void clearFilter() { myFilter.reset(); }
 
+    // TODO add bounds
     double getZoom() const { return myZoom; }
-    void setZoom(double percent) { myZoom = percent; }
+    void setZoom(double percent);
 
 private:
     std::optional<int> myFilter;
