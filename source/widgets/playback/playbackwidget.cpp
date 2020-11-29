@@ -28,7 +28,6 @@
 #include <QAction>
 #include <QButtonGroup>
 
-// TODO use?
 static constexpr double MIN_ZOOM = 25;
 static constexpr double MAX_ZOOM = 300;
 

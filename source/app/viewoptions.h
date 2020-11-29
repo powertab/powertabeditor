@@ -32,7 +32,6 @@ public:
     void setFilter(int filter) { myFilter = filter; }
     void clearFilter() { myFilter.reset(); }
 
-    // TODO add bounds
     double getZoom() const { return myZoom; }
     void setZoom(double percent);
 

@@ -1764,7 +1764,6 @@ void PowerTabEditor::editViewFilters()
 
 void PowerTabEditor::zoomInScore()
 {
-    // TODO Move constant to a global place
     const int ZOOM_CHANGE_COEFITIENT = 25;
     auto currentZoom = myDocumentManager->getCurrentDocument().getViewOptions().getZoom();
 
@@ -2692,7 +2691,6 @@ void PowerTabEditor::createCommands()
         cycleTab(-1);
     });
 
-    // TODO better placed in Section?
     myZoomInCommand = new Command(tr("Zoom In"), "Window.ZoomIn",
                                   QKeySequence::ZoomIn, this);
     connect(myZoomInCommand, &QAction::triggered, this,
