@@ -262,7 +262,6 @@ private slots:
     /// Shows a dialog to edit the score's view filters.
     void editViewFilters();
 
-
 protected:
     /// Handle key presses for 0-9 when entering tab numbers.
     virtual bool eventFilter(QObject *object, QEvent *event) override;

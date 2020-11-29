@@ -2692,24 +2692,14 @@ void PowerTabEditor::createCommands()
         cycleTab(-1);
     });
 
-#ifndef Q_OS_MAC
-    // TODO set alternative? - QKeySequence zoom_in_alt = Qt::META + Qt::Key_Plus;
-    QKeySequence zoom_in  = Qt::META + Qt::Key_Equal;
-    QKeySequence zoom_out = Qt::META + Qt::Key_Minus;
-#else
-    QKeySequence zoom_in  = Qt::CTRL + Qt::Key_Equal;
-    QKeySequence zoom_out = Qt::CTRL + Qt::Key_Minus;
-    // TODO search for QKeySequence commands
-#endif
-
     // TODO better placed in Section?
     myZoomInCommand = new Command(tr("Zoom In"), "Window.ZoomIn",
-                                  zoom_in, this);
+                                  QKeySequence::ZoomIn, this);
     connect(myZoomInCommand, &QAction::triggered, this,
             &PowerTabEditor::zoomInScore);
 
     myZoomOutCommand = new Command(tr("Zoom Out"), "Window.ZoomOut",
-                                   zoom_out, this);
+                                   QKeySequence::ZoomOut, this);
     connect(myZoomOutCommand, &QAction::triggered, this,
             &PowerTabEditor::zoomOutScore);
 
