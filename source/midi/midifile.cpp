@@ -215,11 +215,17 @@ void MidiFile::load(const Score &score, const LoadOptions &options)
             }
         }
 
-        // Generate metronome events.
-        current_tick = std::max(current_tick,
-                                generateMetronome(metronome_track, start_tick,
-                                                  system, current_bar, next_bar,
-                                                  location, options));
+        // Generate metronome events, unless there aren't actually any notes
+        // between the two bars (this typically occurs between adjacent repeat
+        // sections, where a repeat end is immediately followed by a repeat
+        // start).
+        if (current_tick != start_tick)
+        {
+            current_tick = std::max(
+                current_tick,
+                generateMetronome(metronome_track, start_tick, system,
+                                  current_bar, next_bar, location, options));
+        }
 
         location = moveToNextBar(
             metronome_track, current_tick, options.myRecordPositionChanges,

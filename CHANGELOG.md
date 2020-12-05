@@ -11,6 +11,7 @@ Thanks to the following contributors who worked on this release:
 ### Changed
 
 ### Fixed
+- Fixed a MIDI playback bug where adjacent repeated sections resulted in an empty bar being played (#289).
 
 ## [Alpha 14] - 2020-11-24
 
