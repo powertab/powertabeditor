@@ -824,13 +824,14 @@ void PowerTabEditor::removeSelectedPositions()
 
 void PowerTabEditor::gotoBarline()
 {
-    GoToBarlineDialog dialog(this, getLocation().getScore());
+    Score &score = getLocation().getScore();
+    GoToBarlineDialog dialog(this, score);
 
     if (dialog.exec() == QDialog::Accepted)
     {
-        ScoreLocation location(dialog.getLocation());
-        getCaret().moveToSystem(location.getSystemIndex(), true);
-        getCaret().moveToPosition(location.getPositionIndex());
+        auto &&new_location = dialog.getLocation();
+        getCaret().moveToSystem(new_location.getSystemIndex(), true);
+        getCaret().moveToPosition(new_location.getPositionIndex());
     }
 }
 
@@ -840,9 +841,9 @@ void PowerTabEditor::gotoRehearsalSign()
 
     if (dialog.exec() == QDialog::Accepted)
     {
-        ScoreLocation location(dialog.getLocation());
-        getCaret().moveToSystem(location.getSystemIndex(), true);
-        getCaret().moveToPosition(location.getPositionIndex());
+        auto &&new_location = dialog.getLocation();
+        getCaret().moveToSystem(new_location.getSystemIndex(), true);
+        getCaret().moveToPosition(new_location.getPositionIndex());
     }
 }
 
@@ -1301,16 +1302,6 @@ void PowerTabEditor::editAlterationOfPace()
     }
 }
 
-void PowerTabEditor::editKeySignatureFromCaret()
-{
-    editKeySignature(getLocation());
-}
-
-void PowerTabEditor::editTimeSignatureFromCaret()
-{
-    editTimeSignature(getLocation());
-}
-
 void PowerTabEditor::insertStandardBarline()
 {
     ScoreLocation &location = getLocation();
@@ -1318,11 +1309,6 @@ void PowerTabEditor::insertStandardBarline()
                                        Barline(location.getPositionIndex(),
                                                Barline::SingleBar)),
                         location.getSystemIndex());
-}
-
-void PowerTabEditor::editBarlineFromCaret()
-{
-    editBarline(getLocation());
 }
 
 void PowerTabEditor::editMusicalDirection()
@@ -2421,14 +2407,14 @@ void PowerTabEditor::createCommands()
                                         Qt::Key_K, this,
                                         QStringLiteral(u":images/keysignature.png"));
     connect(myKeySignatureCommand, &QAction::triggered, this,
-            &PowerTabEditor::editKeySignatureFromCaret);
+            &PowerTabEditor::editKeySignature);
 
     myTimeSignatureCommand = new Command(tr("Edit Time Signature..."),
                                    "MusicSymbols.EditTimeSignature",
                                          Qt::Key_T, this,
                                          QStringLiteral(u":images/timesignature.png"));
     connect(myTimeSignatureCommand, &QAction::triggered, this,
-            &PowerTabEditor::editTimeSignatureFromCaret);
+            &PowerTabEditor::editTimeSignature);
 
     myStandardBarlineCommand = new Command(tr("Insert Standard Barline"),
                                      "MusicSymbols.InsertStandardBarline",
@@ -2440,7 +2426,7 @@ void PowerTabEditor::createCommands()
     myBarlineCommand = new Command(tr("Barline..."), "MusicSymbols.Barline",
                                    Qt::SHIFT + Qt::Key_B, this);
     connect(myBarlineCommand, &QAction::triggered, this,
-            &PowerTabEditor::editBarlineFromCaret);
+            &PowerTabEditor::editBarline);
 
     myDirectionCommand =
         new Command(tr("Musical Direction..."), "MusicSymbols.MusicalDirection",
@@ -3229,17 +3215,23 @@ void PowerTabEditor::setupNewTab()
     // Connect the signals for mouse clicks on time signatures, barlines, etc.
     // to the appropriate event handlers.
     scorearea->getClickPubSub()->subscribe([=](ClickType type,
-                                               const ScoreLocation &location) {
+                                               const ConstScoreLocation &location) {
+        if (getCaret().isInPlaybackMode())
+            return;
+
+        getCaret().moveToSystem(location.getSystemIndex(), true);
+        getCaret().moveToPosition(location.getPositionIndex());
+
         switch (type)
         {
             case ClickType::Barline:
-                editBarline(location);
+                editBarline();
                 break;
             case ClickType::TimeSignature:
-                editTimeSignature(location);
+                editTimeSignature();
                 break;
             case ClickType::KeySignature:
-                editKeySignature(location);
+                editKeySignature();
                 break;
             case ClickType::TabClef:
                 editStaff(location.getSystemIndex(), location.getStaffIndex());
@@ -3248,8 +3240,7 @@ void PowerTabEditor::setupNewTab()
                 editClef(location.getSystemIndex(), location.getStaffIndex());
                 break;
             case ClickType::Selection:
-                if (!getCaret().isInPlaybackMode())
-                    getCaret().moveToLocation(location);
+                getCaret().moveToLocation(location);
                 break;
             default:
                 Q_ASSERT(false);
@@ -3703,11 +3694,9 @@ void PowerTabEditor::updateLocationLabel()
         Util::toString(getCaret().getLocation()));
 }
 
-void PowerTabEditor::editKeySignature(const ScoreLocation &keyLocation)
+void PowerTabEditor::editKeySignature()
 {
-    ScoreLocation location(getLocation());
-    location.setSystemIndex(keyLocation.getSystemIndex());
-    location.setPositionIndex(keyLocation.getPositionIndex());
+    ScoreLocation &location = getLocation();
 
     const Barline *barline = location.getBarline();
     Q_ASSERT(barline);
@@ -3720,11 +3709,9 @@ void PowerTabEditor::editKeySignature(const ScoreLocation &keyLocation)
     }
 }
 
-void PowerTabEditor::editTimeSignature(const ScoreLocation &timeLocation)
+void PowerTabEditor::editTimeSignature()
 {
-    ScoreLocation location(getLocation());
-    location.setSystemIndex(timeLocation.getSystemIndex());
-    location.setPositionIndex(timeLocation.getPositionIndex());
+    ScoreLocation &location = getLocation();
 
     const Barline *barline = location.getBarline();
     Q_ASSERT(barline);
@@ -3738,11 +3725,9 @@ void PowerTabEditor::editTimeSignature(const ScoreLocation &timeLocation)
     }
 }
 
-void PowerTabEditor::editBarline(const ScoreLocation &barLocation)
+void PowerTabEditor::editBarline()
 {
-	ScoreLocation location(getLocation());
-    location.setSystemIndex(barLocation.getSystemIndex());
-    location.setPositionIndex(barLocation.getPositionIndex());
+	ScoreLocation &location = getLocation();
     System &system = location.getSystem();
 
     Barline *barline = ScoreUtils::findByPosition(system.getBarlines(),

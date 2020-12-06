@@ -23,7 +23,7 @@
 #include <QPainter>
 
 StaffPainter::StaffPainter(const LayoutConstPtr &layout,
-                           const ScoreLocation &location,
+                           const ConstScoreLocation &location,
                            const std::shared_ptr<ClickPubSub> &pubsub,
                            const QColor staffColor)
     : myLayout(layout),

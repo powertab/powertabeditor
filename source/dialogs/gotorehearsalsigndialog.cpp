@@ -50,7 +50,7 @@ GoToRehearsalSignDialog::~GoToRehearsalSignDialog()
     delete ui;
 }
 
-ScoreLocation GoToRehearsalSignDialog::getLocation() const
+ConstScoreLocation GoToRehearsalSignDialog::getLocation() const
 {
     const int index = ui->rehearsalSignComboBox->currentIndex();
     Q_ASSERT(index >= 0);
@@ -58,7 +58,7 @@ ScoreLocation GoToRehearsalSignDialog::getLocation() const
     SystemAndPosition location = ui->rehearsalSignComboBox->itemData(
                 index).value<SystemAndPosition>();
 
-    return ScoreLocation(myScore, location.first, 0, location.second);
+    return ConstScoreLocation(myScore, location.first, 0, location.second);
 }
 
 void GoToRehearsalSignDialog::accept()

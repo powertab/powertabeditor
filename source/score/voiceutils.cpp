@@ -25,7 +25,7 @@
 namespace VoiceUtils
 {
 
-const Voice *getAdjacentVoice(const ScoreLocation &location, int offset)
+const Voice *getAdjacentVoice(const ConstScoreLocation &location, int offset)
 {
     const int systemIndex = location.getSystemIndex() + offset;
     const int staffIndex = location.getStaffIndex();

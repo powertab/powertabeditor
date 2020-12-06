@@ -35,11 +35,11 @@ public:
     ~GoToBarlineDialog();
 
     /// Returns the location of the selected barline.
-    ScoreLocation getLocation() const;
+    ConstScoreLocation getLocation() const;
 
 private:
     Ui::GoToBarlineDialog *ui;
-    std::vector<ScoreLocation> myLocations;
+    std::vector<ConstScoreLocation> myLocations;
 };
 
 #endif

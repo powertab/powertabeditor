@@ -21,7 +21,7 @@
 #include <boost/rational.hpp>
 #include <vector>
 
-class ScoreLocation;
+class ConstScoreLocation;
 class IrregularGrouping;
 class Note;
 class Position;
@@ -30,7 +30,7 @@ class Voice;
 namespace VoiceUtils
 {
 /// Finds the corresponding voice in a following (or preceding) system.
-const Voice *getAdjacentVoice(const ScoreLocation &location, int offset);
+const Voice *getAdjacentVoice(const ConstScoreLocation &location, int offset);
 
 /// Returns the next position in the staff, if it exists.
 const Position *getNextPosition(const Voice &voice, int position);

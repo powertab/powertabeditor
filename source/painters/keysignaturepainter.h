@@ -30,7 +30,7 @@ class KeySignaturePainter : public QGraphicsItem
 {
 public:
     KeySignaturePainter(const LayoutConstPtr &layout, const KeySignature &key,
-                        const ScoreLocation &location,
+                        const ConstScoreLocation &location,
                         const std::shared_ptr<ClickPubSub> &pubsub);
 
     virtual void paint(QPainter *painter, const QStyleOptionGraphicsItem *,
@@ -48,7 +48,7 @@ private:
 
     LayoutConstPtr myLayout;
     const KeySignature &myKeySignature;
-    const ScoreLocation myLocation;
+    const ConstScoreLocation myLocation;
     std::shared_ptr<ClickPubSub> myPubSub;
     QFont myMusicFont;
     const QRectF myBounds;

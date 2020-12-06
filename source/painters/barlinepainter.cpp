@@ -27,7 +27,7 @@ const double BarlinePainter::DOUBLE_BAR_WIDTH = 4;
 
 BarlinePainter::BarlinePainter(const LayoutConstPtr &layout,
                                const Barline &barline,
-                               const ScoreLocation &location,
+                               const ConstScoreLocation &location,
                                const std::shared_ptr<ClickPubSub> &pubsub,
                                const QColor &barlineColor)
     : myLayout(layout),

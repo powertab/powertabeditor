@@ -26,7 +26,8 @@
 
 KeySignaturePainter::KeySignaturePainter(
     const LayoutConstPtr &layout, const KeySignature &key,
-    const ScoreLocation &location, const std::shared_ptr<ClickPubSub> &pubsub)
+    const ConstScoreLocation &location,
+    const std::shared_ptr<ClickPubSub> &pubsub)
     : myLayout(layout),
       myKeySignature(key),
       myLocation(location),

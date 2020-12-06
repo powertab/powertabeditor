@@ -30,7 +30,7 @@ class BarlinePainter : public QGraphicsItem
 {
 public:
     BarlinePainter(const LayoutConstPtr& layout, const Barline &barline,
-                   const ScoreLocation& location,
+                   const ConstScoreLocation& location,
                    const std::shared_ptr<ClickPubSub> &pubsub,
                    const QColor &barlineColor);
 
@@ -55,7 +55,7 @@ private:
     LayoutConstPtr myLayout;
     const Barline &myBarline;
     QRectF myBounds;
-    ScoreLocation myLocation;
+    ConstScoreLocation myLocation;
     std::shared_ptr<ClickPubSub> myPubSub;
     double myX;
     double myWidth;

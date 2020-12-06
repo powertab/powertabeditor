@@ -31,7 +31,7 @@ class TimeSignaturePainter : public QGraphicsItem
 public:
     TimeSignaturePainter(const LayoutConstPtr &layout,
                          const TimeSignature &time,
-                         const ScoreLocation &location,
+                         const ConstScoreLocation &location,
                          const std::shared_ptr<ClickPubSub> &pubsub);
 
     virtual void paint(QPainter *painter, const QStyleOptionGraphicsItem *,
@@ -53,7 +53,7 @@ private:
 
     LayoutConstPtr myLayout;
     const TimeSignature &myTimeSignature;
-    const ScoreLocation myLocation;
+    const ConstScoreLocation myLocation;
     std::shared_ptr<ClickPubSub> myPubSub;
     const QRectF myBounds;
 };

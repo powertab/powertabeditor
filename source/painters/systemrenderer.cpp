@@ -104,7 +104,7 @@ QGraphicsItem *SystemRenderer::operator()(const System &system,
         }
 
         const bool isFirstStaff = (height == 0);
-        const ScoreLocation location(myScore, systemIndex, i);
+        const ConstScoreLocation location(myScore, systemIndex, i);
         LayoutConstPtr layout = std::make_shared<LayoutInfo>(location);
 
         if (isFirstStaff)
@@ -132,10 +132,8 @@ QGraphicsItem *SystemRenderer::operator()(const System &system,
                     g2*avgWeight+g1*(1-avgWeight), 
                     b2*avgWeight+b1*(1-avgWeight));
 
-        myParentStaff = new StaffPainter(layout,
-                                         ScoreLocation(myScore, systemIndex, i),
-                                         myScoreArea->getClickPubSub(),
-                                         staffColor);
+        myParentStaff = new StaffPainter(
+            layout, location, myScoreArea->getClickPubSub(), staffColor);
         myParentStaff->setPos(0, height);
         myParentStaff->setParentItem(myParentSystem);
         height += layout->getStaffHeight();
@@ -186,7 +184,7 @@ QGraphicsItem *SystemRenderer::operator()(const System &system,
 }
 
 void SystemRenderer::drawTabClef(double x, const LayoutInfo &layout,
-                                 const ScoreLocation &location)
+                                 const ConstScoreLocation &location)
 {
     // Determine the size of the clef symbol based on the number of strings and
     // the line spacing.
@@ -232,8 +230,8 @@ void SystemRenderer::drawBarlines(const System &system, int systemIndex,
 {
     for (const Barline &barline : system.getBarlines())
     {
-        const ScoreLocation location(myScore, systemIndex, staffIndex,
-                                     barline.getPosition());
+        const ConstScoreLocation location(myScore, systemIndex, staffIndex,
+                                          barline.getPosition());
 
         const KeySignature &keySig = barline.getKeySignature();
         const TimeSignature &timeSig = barline.getTimeSignature();
@@ -919,7 +917,7 @@ void SystemRenderer::drawPlayerChanges(const System &system, int staffIndex,
 
 void
 SystemRenderer::drawSlides(const Staff &staff, const LayoutInfo &layout,
-                           ScoreLocation location)
+                           ConstScoreLocation location)
 {
     location.setVoiceIndex(0);
     for (const Voice &voice : staff.getVoices())

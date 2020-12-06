@@ -42,7 +42,7 @@ const double LayoutInfo::DEFAULT_POSITION_SPACING = 20;
 const double LayoutInfo::IRREGULAR_GROUP_HEIGHT = 9;
 const double LayoutInfo::IRREGULAR_GROUP_BEAM_SPACING = 3;
 
-LayoutInfo::LayoutInfo(const ScoreLocation &location)
+LayoutInfo::LayoutInfo(const ConstScoreLocation &location)
     : myLocation(location),
       myLineSpacing(location.getScore().getLineSpacing()),
       myPositionSpacing(0),
@@ -353,7 +353,7 @@ void LayoutInfo::computePositionSpacing()
 
 void LayoutInfo::calculateTabStaffBelowLayout()
 {
-    ScoreLocation location(myLocation);
+    ConstScoreLocation location(myLocation);
     location.setVoiceIndex(0);
 
     for (const Voice &voice : myLocation.getStaff().getVoices())

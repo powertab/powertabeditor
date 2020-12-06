@@ -38,7 +38,7 @@ GoToBarlineDialog::GoToBarlineDialog(QWidget *parent, const Score &score)
         for (int i = 0; i < static_cast<int>(system.getBarlines().size()) - 1;
              ++i)
         {
-            myLocations.push_back(ScoreLocation(
+            myLocations.push_back(ConstScoreLocation(
                 score, system_index, 0, system.getBarlines()[i].getPosition()));
         }
     }
@@ -56,7 +56,7 @@ GoToBarlineDialog::~GoToBarlineDialog()
 }
 
 /// Returns the location of the selected barline.
-ScoreLocation GoToBarlineDialog::getLocation() const
+ConstScoreLocation GoToBarlineDialog::getLocation() const
 {
     const int index = ui->barlineSpinBox->value();
     return myLocations.at(index - 1);

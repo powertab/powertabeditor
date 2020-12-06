@@ -212,13 +212,13 @@ private slots:
     /// Adds or removes an accel/rit symbol at the current position.
     void editAlterationOfPace();
     /// Edits the key signature at the caret's current location.
-    void editKeySignatureFromCaret();
+    void editKeySignature();
     /// Edits the time signature at the caret's current location.
-    void editTimeSignatureFromCaret();
+    void editTimeSignature();
     /// Inserts a single barline at the current location.
     void insertStandardBarline();
     /// Edits or inserts a barline at the current location.
-    void editBarlineFromCaret();
+    void editBarline();
     /// Adds or removes a musical direction at the current position.
     void editMusicalDirection();
     /// Adds or removes a repeat ending at the current position.
@@ -383,12 +383,6 @@ private:
     /// Adds or removes a rest at the current location.
     void editRest(Position::DurationType duration);
 
-    /// Edits the key signature at the given location.
-    void editKeySignature(const ScoreLocation &keyLocation);
-    /// Edits the time signature at the given location.
-    void editTimeSignature(const ScoreLocation &timeLocation);
-    /// Edits the barline at the given location.
-    void editBarline(const ScoreLocation &barLocation);
     /// Edits the clef at the given location.
     void editClef(int system, int staff);
 

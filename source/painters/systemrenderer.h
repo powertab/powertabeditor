@@ -45,7 +45,7 @@ public:
 private:
     /// Draws the tab clef.
     void drawTabClef(double x, const LayoutInfo &layout,
-                     const ScoreLocation &location);
+                     const ConstScoreLocation &location);
 
     /// Draws barlines, along with time signatures, rehearsal signs, etc.
     void drawBarlines(const System &system, int systemIndex,
@@ -188,7 +188,7 @@ private:
 
     /// Draws all slides in a staff.
     void drawSlides(const Staff &staff, const LayoutInfo &layout,
-                    ScoreLocation location);
+                    ConstScoreLocation location);
 
     /// Draws a single slide between the given positions.
     void drawSlide(const LayoutInfo &layout, int string, bool slideUp,

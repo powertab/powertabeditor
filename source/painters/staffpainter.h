@@ -23,14 +23,14 @@
 #include <QGraphicsItem>
 #include <score/scorelocation.h>
 
-class ScoreLocation;
 class ClickPubSub;
 class Staff;
 
 class StaffPainter : public QGraphicsItem
 {
 public:
-    StaffPainter(const LayoutConstPtr &layout, const ScoreLocation &location,
+    StaffPainter(const LayoutConstPtr &layout,
+                 const ConstScoreLocation &location,
                  const std::shared_ptr<ClickPubSub> &pubsub,
                  const QColor staffColor);
 
@@ -53,7 +53,7 @@ private:
 
     LayoutConstPtr myLayout;
     std::shared_ptr<ClickPubSub> myPubSub;
-    ScoreLocation myLocation;
+    ConstScoreLocation myLocation;
     const QRectF myBounds;
     const QColor myStaffColor;
 };

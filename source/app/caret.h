@@ -77,7 +77,7 @@ public:
     void moveToPrevBar();
 
     /// Moves to the specified location.
-    void moveToLocation(const ScoreLocation &location);
+    void moveToLocation(const ConstScoreLocation &location);
 
     /// Ensures that the caret is still at a valid position.
     void moveToValidPosition();
