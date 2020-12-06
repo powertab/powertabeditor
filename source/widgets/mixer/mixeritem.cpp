@@ -23,6 +23,7 @@
 #include <util/tostring.h>
 
 #include <QStyle>
+#include <memory>
 
 MixerItem::MixerItem(QWidget *parent, int playerIndex, const Player &player,
                      const TuningDictionary &dictionary)
