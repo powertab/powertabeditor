@@ -21,10 +21,8 @@
 #include <QVBoxLayout>
 #include <score/score.h>
 
-InstrumentPanel::InstrumentPanel(QWidget *parent,
-                                 const InstrumentEditPubSub &editPubSub,
-                                 const InstrumentRemovePubSub &removePubSub)
-    : QWidget(parent), myEditPubSub(editPubSub), myRemovePubSub(removePubSub)
+InstrumentPanel::InstrumentPanel(QWidget *parent)
+    : QWidget(parent)
 {
     myLayout = new QVBoxLayout(this);
     myLayout->setSpacing(0);
@@ -38,8 +36,13 @@ void InstrumentPanel::reset(const Score &score)
 
     for (unsigned int i = 0; i < score.getInstruments().size(); ++i)
     {
-        myLayout->addWidget(new InstrumentPanelItem(
-            this, i, score.getInstruments()[i], myEditPubSub, myRemovePubSub));
+        auto item = new InstrumentPanelItem(this, i, score.getInstruments()[i]);
+        connect(item, &InstrumentPanelItem::instrumentEdited,
+                [=](const Instrument &inst) { instrumentEdited(i, inst); });
+        connect(item, &InstrumentPanelItem::instrumentRemoved,
+                [=]() { instrumentRemoved(i); });
+
+        myLayout->addWidget(item);
     }
 }
 

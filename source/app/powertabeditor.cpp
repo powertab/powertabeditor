@@ -2742,19 +2742,18 @@ void PowerTabEditor::createInstrumentPanel()
     QScrollArea *scroll = new QScrollArea(this);
     scroll->setMinimumSize(0, 150);
 
-    myInstrumentPanel = new InstrumentPanel(scroll, myInstrumentEditPubSub,
-                                            myInstrumentRemovePubSub);
+    myInstrumentPanel = new InstrumentPanel(scroll);
 
     scroll->setWidget(myInstrumentPanel);
     myInstrumentDockWidget->setWidget(scroll);
     addDockWidget(Qt::BottomDockWidgetArea, myInstrumentDockWidget);
 
-    myInstrumentEditPubSub.subscribe([=](int index, const Instrument &instrument) {
-        editInstrument(index, instrument);
-    });
-    myInstrumentRemovePubSub.subscribe([=](int index) {
-        removeInstrument(index);
-    });
+    connect(myInstrumentPanel, &InstrumentPanel::instrumentEdited,
+            [=](int index, const Instrument &instrument) {
+                editInstrument(index, instrument);
+            });
+    connect(myInstrumentPanel, &InstrumentPanel::instrumentRemoved,
+            [=](int index) { removeInstrument(index); });
 }
 
 Command *PowerTabEditor::createCommandWrapper(

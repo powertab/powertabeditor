@@ -20,16 +20,16 @@
 
 #include <QWidget>
 
-class InstrumentEditPubSub;
-class InstrumentRemovePubSub;
+class Instrument;
 class QVBoxLayout;
 class Score;
 
 class InstrumentPanel : public QWidget
 {
+    Q_OBJECT
+
 public:
-    InstrumentPanel(QWidget *parent, const InstrumentEditPubSub &editPubSub,
-                    const InstrumentRemovePubSub &removePubSub);
+    InstrumentPanel(QWidget *parent);
 
     /// Clear and then populate the instrument panel.
     void reset(const Score &score);
@@ -37,10 +37,12 @@ public:
     /// Removes all items from the panel.
     void clear();
 
+signals:
+    void instrumentEdited(int index, const Instrument &instrument);
+    void instrumentRemoved(int index);
+
 private:
     QVBoxLayout *myLayout;
-    const InstrumentEditPubSub &myEditPubSub;
-    const InstrumentRemovePubSub &myRemovePubSub;
 };
 
 #endif

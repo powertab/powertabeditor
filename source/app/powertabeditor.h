@@ -20,7 +20,6 @@
 
 #include <QMainWindow>
 
-#include <app/pubsub/instrumentpubsub.h>
 #include <app/pubsub/playerpubsub.h>
 #include <memory>
 #include <score/dynamic.h>
@@ -32,6 +31,7 @@ class Caret;
 class Command;
 class DocumentManager;
 class FileFormatManager;
+class Instrument;
 class InstrumentPanel;
 class ToolBox;
 class MidiPlayer;
@@ -418,8 +418,6 @@ private:
     std::unique_ptr<TuningDictionary> myTuningDictionary;
     PlayerEditPubSub myPlayerEditPubSub;
     PlayerRemovePubSub myPlayerRemovePubSub;
-    InstrumentEditPubSub myInstrumentEditPubSub;
-    InstrumentRemovePubSub myInstrumentRemovePubSub;
     /// Tracks whether we are currently in playback mode.
     bool myIsPlaying;
     /// Tracks the last directory that a file was opened from.

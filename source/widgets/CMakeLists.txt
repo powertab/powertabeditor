@@ -23,6 +23,8 @@ set( headers
 
 set( moc_headers
     clickablelabel.h
+    instruments/instrumentpanel.h
+    instruments/instrumentpanelitem.h
     playback/playbackwidget.h
     toolbox/toolbox.h
 )
