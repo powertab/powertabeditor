@@ -53,7 +53,6 @@ set( headers
     tuningdictionary.h
     viewoptions.h
 
-    pubsub/playerpubsub.h
     pubsub/pubsub.h
     pubsub/clickpubsub.h
 )

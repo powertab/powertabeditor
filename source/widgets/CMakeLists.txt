@@ -25,6 +25,8 @@ set( moc_headers
     clickablelabel.h
     instruments/instrumentpanel.h
     instruments/instrumentpanelitem.h
+    mixer/mixer.h
+    mixer/mixeritem.h
     playback/playbackwidget.h
     toolbox/toolbox.h
 )

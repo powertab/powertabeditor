@@ -2716,20 +2716,18 @@ void PowerTabEditor::createMixer()
     QScrollArea *scroll = new QScrollArea(this);
     scroll->setMinimumSize(0, 150);
 
-    myMixer = new Mixer(scroll, *myTuningDictionary, myPlayerEditPubSub,
-                        myPlayerRemovePubSub);
+    myMixer = new Mixer(scroll, *myTuningDictionary);
 
     scroll->setWidget(myMixer);
     myMixerDockWidget->setWidget(scroll);
     addDockWidget(Qt::BottomDockWidgetArea, myMixerDockWidget);
 
-    myPlayerEditPubSub.subscribe([=](int index, const Player & player,
-                                 bool undoable) {
-        editPlayer(index, player, undoable);
-    });
-    myPlayerRemovePubSub.subscribe([=](int index) {
-        removePlayer(index);
-    });
+    connect(myMixer, &Mixer::playerEdited,
+            [=](int index, const Player &player, bool undoable) {
+                editPlayer(index, player, undoable);
+            });
+    connect(myMixer, &Mixer::playerRemoved,
+            [=](int index) { removePlayer(index); });
 }
 
 void PowerTabEditor::createInstrumentPanel()

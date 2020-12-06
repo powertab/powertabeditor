@@ -27,18 +27,20 @@ class MixerItem;
 }
 
 class Player;
-class PlayerEditPubSub;
-class PlayerRemovePubSub;
 class TuningDictionary;
 
 class MixerItem : public QWidget
 {
+    Q_OBJECT
+
 public:
     explicit MixerItem(QWidget *parent, int playerIndex, const Player &player,
-                       const TuningDictionary &dictionary,
-                       const PlayerEditPubSub &editPubSub,
-                       const PlayerRemovePubSub &removePubSub);
+                       const TuningDictionary &dictionary);
     ~MixerItem();
+
+signals:
+    void playerEdited(const Player &player, bool undoable);
+    void playerRemoved();
 
 private:
     void onPlayerNameEdited();
@@ -47,9 +49,6 @@ private:
 
     Ui::MixerItem *ui;
     const TuningDictionary &myDictionary;
-    const PlayerEditPubSub &myEditPubSub;
-    const PlayerRemovePubSub &myRemovePubSub;
-    const int myPlayerIndex;
     Tuning myTuning;
 };
 

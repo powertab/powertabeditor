@@ -20,7 +20,6 @@
 
 #include <QMainWindow>
 
-#include <app/pubsub/playerpubsub.h>
 #include <memory>
 #include <score/dynamic.h>
 #include <score/position.h>
@@ -37,6 +36,7 @@ class ToolBox;
 class MidiPlayer;
 class Mixer;
 class PlaybackWidget;
+class Player;
 class QActionGroup;
 class RecentFiles;
 class ScoreArea;
@@ -416,8 +416,6 @@ private:
     std::unique_ptr<UndoManager> myUndoManager;
     std::unique_ptr<MidiPlayer> myMidiPlayer;
     std::unique_ptr<TuningDictionary> myTuningDictionary;
-    PlayerEditPubSub myPlayerEditPubSub;
-    PlayerRemovePubSub myPlayerRemovePubSub;
     /// Tracks whether we are currently in playback mode.
     bool myIsPlaying;
     /// Tracks the last directory that a file was opened from.
