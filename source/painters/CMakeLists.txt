@@ -15,6 +15,7 @@ set( srcs
     simpletextitem.cpp
     staffpainter.cpp
     stdnotationnote.cpp
+    styles.cpp
     systemrenderer.cpp
     timesignaturepainter.cpp
     verticallayout.cpp

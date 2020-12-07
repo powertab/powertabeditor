@@ -15,14 +15,11 @@
   * along with this program.  If not, see <http://www.gnu.org/licenses/>.
 */
 
-#ifndef PAINTERS_STYLES_H
-#define PAINTERS_STYLES_H
+#include "styles.h"
 
 #include <QColor>
 
 namespace Styles
 {
-extern const QColor SelectionColor;
+const QColor SelectionColor(168, 205, 241, 125);
 }
-
-#endif
