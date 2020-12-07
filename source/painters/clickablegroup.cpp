@@ -14,25 +14,27 @@
   * You should have received a copy of the GNU General Public License
   * along with this program.  If not, see <http://www.gnu.org/licenses/>.
 */
-  
+
 #include "clickablegroup.h"
 
+#include "styles.h"
+
 #include <QCursor>
+#include <QPainter>
+#include <QStyleOptionGraphicsItem>
 
 ClickableGroup::ClickableGroup(const QString &tooltip, const Callback &callback)
     : myCallback(callback)
 {
     setToolTip(tooltip);
     setAcceptHoverEvents(true);
+
+    // Enable selection. The default implementations of mousePressEvent() and
+    // mouseReleaseEvent() handle selection already.
+    setFlag(ItemIsSelectable, true);
 }
 
-void ClickableGroup::mousePressEvent(QGraphicsSceneMouseEvent *)
-{
-    // No action is needed here, but we need to override this method in
-    // order to get the mouse release event.
-}
-
-void ClickableGroup::mouseReleaseEvent(QGraphicsSceneMouseEvent *)
+void ClickableGroup::mouseDoubleClickEvent(QGraphicsSceneMouseEvent *)
 {
     myCallback();
 }
@@ -45,4 +47,13 @@ void ClickableGroup::hoverEnterEvent(QGraphicsSceneHoverEvent *)
 void ClickableGroup::hoverLeaveEvent(QGraphicsSceneHoverEvent *)
 {
     unsetCursor();
+}
+
+void
+ClickableGroup::paint(QPainter *painter, const QStyleOptionGraphicsItem *option,
+                      QWidget *)
+{
+    // Override how the selection is drawn (default is to draw a black border).
+    if (option->state & QStyle::State_Selected)
+        painter->fillRect(boundingRect(), Styles::SelectionColor);
 }

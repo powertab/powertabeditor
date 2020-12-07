@@ -34,6 +34,7 @@ set( headers
     simpletextitem.h
     staffpainter.h
     stdnotationnote.h
+    styles.h
     systemrenderer.h
     timesignaturepainter.h
     verticallayout.h
@@ -42,7 +43,7 @@ set( headers
 pte_library(
     NAME ptepainters
     SOURCES ${srcs}
-    HEADERS ${headers} 
+    HEADERS ${headers}
     DEPENDS
         ptescore
         Qt5::Widgets

@@ -14,8 +14,10 @@
   * You should have received a copy of the GNU General Public License
   * along with this program.  If not, see <http://www.gnu.org/licenses/>.
 */
-  
+
 #include "caretpainter.h"
+
+#include "styles.h"
 
 #include <app/caret.h>
 #include <app/viewoptions.h>
@@ -103,7 +105,7 @@ void CaretPainter::paint(QPainter *painter, const QStyleOptionGraphicsItem *,
     painter->drawLines(lines);
 
     // Draw the selection
-    painter->setBrush(QColor(168, 205, 241, 125));
+    painter->setBrush(Styles::SelectionColor);
     painter->setPen(QPen(QBrush(), 0));
 
     left = myLayout->getPositionX(std::min(location.getSelectionStart(),
