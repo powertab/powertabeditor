@@ -23,7 +23,7 @@
 #include <QGraphicsItem>
 #include <score/scorelocation.h>
 
-class ClickPubSub;
+class ScoreClickEvent;
 class TimeSignature;
 
 class TimeSignaturePainter : public QGraphicsItem
@@ -32,7 +32,7 @@ public:
     TimeSignaturePainter(const LayoutConstPtr &layout,
                          const TimeSignature &time,
                          const ConstScoreLocation &location,
-                         const std::shared_ptr<ClickPubSub> &pubsub);
+                         const ScoreClickEvent &click_event);
 
     virtual void paint(QPainter *painter, const QStyleOptionGraphicsItem *,
                        QWidget *) override;
@@ -54,7 +54,7 @@ private:
     LayoutConstPtr myLayout;
     const TimeSignature &myTimeSignature;
     const ConstScoreLocation myLocation;
-    std::shared_ptr<ClickPubSub> myPubSub;
+    const ScoreClickEvent &myClickEvent;
     const QRectF myBounds;
 };
 

@@ -25,7 +25,7 @@ class ClickableGroup : public QGraphicsItemGroup
 {
 public:
     typedef std::function<void()> Callback;
-    ClickableGroup(const QString &tooltip, const Callback &callback);
+    ClickableGroup(const QString &tooltip, Callback &&callback);
 
     virtual void mouseDoubleClickEvent(
         QGraphicsSceneMouseEvent *event) override;

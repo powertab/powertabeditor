@@ -1,5 +1,5 @@
 /*
-  * Copyright (C) 2012 Cameron White
+  * Copyright (C) 2020 Cameron White
   *
   * This program is free software: you can redistribute it and/or modify
   * it under the terms of the GNU General Public License as published by
@@ -15,26 +15,41 @@
   * along with this program.  If not, see <http://www.gnu.org/licenses/>.
 */
 
-#ifndef APP_CLICKPUBSUB_H
-#define APP_CLICKPUBSUB_H
+#ifndef APP_SCORECLICKEVENT_H
+#define APP_SCORECLICKEVENT_H
 
-#include <app/pubsub/pubsub.h>
-#include <score/scorelocation.h>
+#include <boost/signals2/signal.hpp>
 
-enum class ClickType
+class ConstScoreLocation;
+
+/// Item types that can be clicked.
+enum class ClickedItem
 {
     Barline,
     KeySignature,
     TimeSignature,
-    TabClef,
     Clef,
+    TabClef,
     Selection
 };
 
-/// Provides a way to subscribe to or publish notifications about events at
-/// a score location (e.g. a mouse click on a particular symbol).
-class ClickPubSub : public PubSub<void (ClickType, const ConstScoreLocation&)>
+/// QGraphicsItem doesn't use QObject signals / slots, so just use a simple
+/// signal / slot for mouse event handlers.
+class ScoreClickEvent
 {
+public:
+    using MessageType =
+        boost::signals2::signal<void(ClickedItem, const ConstScoreLocation &)>;
+
+    /// Connect an event listener.
+    boost::signals2::connection connect(
+            const typename MessageType::slot_type& slot)
+    {
+        return signal.connect(slot);
+    }
+
+    /// Call signal(args) to invoke the slots.
+    MessageType signal;
 };
 
 #endif

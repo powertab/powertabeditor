@@ -23,8 +23,8 @@
 #include <QPainter>
 #include <QStyleOptionGraphicsItem>
 
-ClickableGroup::ClickableGroup(const QString &tooltip, const Callback &callback)
-    : myCallback(callback)
+ClickableGroup::ClickableGroup(const QString &tooltip, Callback &&callback)
+    : myCallback(std::move(callback))
 {
     setToolTip(tooltip);
     setAcceptHoverEvents(true);

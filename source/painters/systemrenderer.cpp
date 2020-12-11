@@ -17,7 +17,6 @@
 
 #include "systemrenderer.h"
 
-#include <app/pubsub/clickpubsub.h>
 #include <app/scorearea.h>
 #include <app/viewoptions.h>
 #include <boost/range/adaptor/map.hpp>
@@ -133,7 +132,7 @@ QGraphicsItem *SystemRenderer::operator()(const System &system,
                     b2*avgWeight+b1*(1-avgWeight));
 
         myParentStaff = new StaffPainter(
-            layout, location, myScoreArea->getClickPubSub(), staffColor);
+            layout, location, myScoreArea->getClickEvent(), staffColor);
         myParentStaff->setPos(0, height);
         myParentStaff->setParentItem(myParentSystem);
         height += layout->getStaffHeight();
@@ -147,16 +146,16 @@ QGraphicsItem *SystemRenderer::operator()(const System &system,
         const double clef_y = (staff.getClefType() == Staff::TrebleClef)
                                   ? layout->getStdNotationLine(4)
                                   : layout->getStdNotationLine(2);
-        auto pubsub = myScoreArea->getClickPubSub();
         auto clef = new SimpleTextItem(staff.getClefType() == Staff::TrebleClef
                                            ? QChar(MusicFont::TrebleClef)
                                            : QChar(MusicFont::BassClef),
                                            clef_font, TextAlignment::Baseline,
                                            QPen(myPalette.text().color()));
         auto group = new ClickableGroup(
-            QObject::tr("Click to change clef type."), [=]() {
-            pubsub->publish(ClickType::Clef, location);
-        });
+            QObject::tr("Click to change clef type."),
+            [=, score_area = this->myScoreArea]() {
+                score_area->getClickEvent().signal(ClickedItem::Clef, location);
+            });
         group->addToGroup(clef);
         group->setPos(LayoutInfo::CLEF_PADDING, clef_y);
         group->setParentItem(myParentStaff);
@@ -196,11 +195,11 @@ void SystemRenderer::drawTabClef(double x, const LayoutInfo &layout,
 
     auto clef = new SimpleTextItem(QChar(MusicFont::TabClef), font, TextAlignment::Baseline, QPen(myPalette.text().color()));
 
-    auto pubsub = myScoreArea->getClickPubSub();
     auto group = new ClickableGroup(
-        QObject::tr("Click to edit the number of strings."), [=]() {
-        pubsub->publish(ClickType::TabClef, location);
-    });
+        QObject::tr("Click to edit the number of strings."),
+        [=, score_area = this->myScoreArea]() {
+            score_area->getClickEvent().signal(ClickedItem::TabClef, location);
+        });
     group->addToGroup(clef);
 
     // Position the clef symbol. The middle of the 'A' is aligned with the
@@ -236,8 +235,9 @@ void SystemRenderer::drawBarlines(const System &system, int systemIndex,
         const KeySignature &keySig = barline.getKeySignature();
         const TimeSignature &timeSig = barline.getTimeSignature();
 
-        BarlinePainter *barlinePainter = new BarlinePainter(layout, barline,
-                location, myScoreArea->getClickPubSub(), myPalette.text().color());
+        BarlinePainter *barlinePainter = new BarlinePainter(
+            layout, barline, location, myScoreArea->getClickEvent(),
+            myPalette.text().color());
 
         double x = layout->getPositionX(barline.getPosition());
         double keySigX = x + barlinePainter->boundingRect().width() - 1;
@@ -282,9 +282,8 @@ void SystemRenderer::drawBarlines(const System &system, int systemIndex,
 
         if (keySig.isVisible())
         {
-            KeySignaturePainter *keySigPainter = new KeySignaturePainter(
-                        layout, keySig, location,
-                        myScoreArea->getClickPubSub());
+            auto keySigPainter = new KeySignaturePainter(
+                layout, keySig, location, myScoreArea->getClickEvent());
 
             keySigPainter->setPos(keySigX, layout->getTopStdNotationLine());
             keySigPainter->setParentItem(myParentStaff);
@@ -292,9 +291,8 @@ void SystemRenderer::drawBarlines(const System &system, int systemIndex,
 
         if (timeSig.isVisible())
         {
-            TimeSignaturePainter *timeSigPainter = new TimeSignaturePainter(
-                        layout, timeSig, location,
-                        myScoreArea->getClickPubSub());
+            auto timeSigPainter = new TimeSignaturePainter(
+                layout, timeSig, location, myScoreArea->getClickEvent());
 
             timeSigPainter->setPos(timeSigX, layout->getTopStdNotationLine());
             timeSigPainter->setParentItem(myParentStaff);

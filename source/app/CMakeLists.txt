@@ -48,13 +48,11 @@ set( headers
     powertabeditor.h
     recentfiles.h
     scorearea.h
+    scoreclickevent.h
     settings.h
     settingsmanager.h
     tuningdictionary.h
     viewoptions.h
-
-    pubsub/pubsub.h
-    pubsub/clickpubsub.h
 )
 
 
@@ -62,6 +60,7 @@ set( moc_headers
     command.h
     powertabeditor.h
     recentfiles.h
+    scorearea.h
 )
 
 pte_library(

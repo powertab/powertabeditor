@@ -18,7 +18,7 @@
 #include "scorearea.h"
 
 #include <app/documentmanager.h>
-#include <app/pubsub/clickpubsub.h>
+#include <app/scoreclickevent.h>
 #include <app/settings.h>
 #include <chrono>
 #include <future>
@@ -45,7 +45,6 @@ ScoreArea::ScoreArea(SettingsManager &settings_manager, QWidget *parent)
       myCaretPainter(nullptr),
       myDefaultPalette(&parent->palette()),
       myActivePalette(nullptr),
-      myClickPubSub(std::make_shared<ClickPubSub>()),
       myDisableRedraw(false)
 {
     setScene(&myScene);
@@ -67,6 +66,12 @@ ScoreArea::ScoreArea(SettingsManager &settings_manager, QWidget *parent)
     loadTheme(settings_manager, /* redraw */ false);
     mySettingsListener = settings_manager.subscribeToChanges(
         [&]() { loadTheme(settings_manager); });
+
+    // Connect the click event handler to our public signals.
+    myClickEvent.connect(
+        [&](ClickedItem item, const ConstScoreLocation &location) {
+            itemClicked(item, location);
+        });
 }
 
 void ScoreArea::renderDocument(const Document &document)
@@ -245,11 +250,6 @@ void ScoreArea::print(QPrinter &printer)
     // Revert to the original app palette and re-render the document
     myActivePalette = orig_palette;
     renderDocument(*myDocument);
-}
-
-std::shared_ptr<ClickPubSub> ScoreArea::getClickPubSub() const
-{
-    return myClickPubSub;
 }
 
 void ScoreArea::adjustScroll()

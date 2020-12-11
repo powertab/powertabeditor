@@ -18,20 +18,20 @@
 #include "keysignaturepainter.h"
 #include "score/staff.h"
 
-#include <app/pubsub/clickpubsub.h>
+#include <app/scoreclickevent.h>
 #include <painters/musicfont.h>
 #include <QCursor>
 #include <QPainter>
 #include <score/keysignature.h>
 
-KeySignaturePainter::KeySignaturePainter(
-    const LayoutConstPtr &layout, const KeySignature &key,
-    const ConstScoreLocation &location,
-    const std::shared_ptr<ClickPubSub> &pubsub)
+KeySignaturePainter::KeySignaturePainter(const LayoutConstPtr &layout,
+                                         const KeySignature &key,
+                                         const ConstScoreLocation &location,
+                                         const ScoreClickEvent &click_event)
     : myLayout(layout),
       myKeySignature(key),
       myLocation(location),
-      myPubSub(pubsub),
+      myClickEvent(click_event),
       myMusicFont(MusicFont::getFont(MusicFont::DEFAULT_FONT_SIZE)),
       myBounds(0, -10, LayoutInfo::getWidth(myKeySignature),
                layout->getStdNotationStaffHeight())
@@ -48,7 +48,7 @@ void KeySignaturePainter::mousePressEvent(QGraphicsSceneMouseEvent *)
 
 void KeySignaturePainter::mouseReleaseEvent(QGraphicsSceneMouseEvent *)
 {
-    myPubSub->publish(ClickType::KeySignature, myLocation);
+    myClickEvent.signal(ClickedItem::KeySignature, myLocation);
 }
 
 void KeySignaturePainter::hoverEnterEvent(QGraphicsSceneHoverEvent *)

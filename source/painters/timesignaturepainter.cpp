@@ -17,7 +17,7 @@
   
 #include "timesignaturepainter.h"
 
-#include <app/pubsub/clickpubsub.h>
+#include <app/scoreclickevent.h>
 #include <painters/musicfont.h>
 #include <QCursor>
 #include <QPainter>
@@ -26,11 +26,11 @@
 TimeSignaturePainter::TimeSignaturePainter(const LayoutConstPtr &layout,
                                            const TimeSignature &time,
                                            const ConstScoreLocation &location,
-                                           const std::shared_ptr<ClickPubSub> &pubsub)
+                                           const ScoreClickEvent &click_event)
     : myLayout(layout),
       myTimeSignature(time),
       myLocation(location),
-      myPubSub(pubsub),
+      myClickEvent(click_event),
       myBounds(0, 0, LayoutInfo::getWidth(myTimeSignature),
                myLayout->getStdNotationStaffHeight())
 {
@@ -40,7 +40,7 @@ TimeSignaturePainter::TimeSignaturePainter(const LayoutConstPtr &layout,
 
 void TimeSignaturePainter::mouseReleaseEvent(QGraphicsSceneMouseEvent *)
 {
-    myPubSub->publish(ClickType::TimeSignature, myLocation);
+    myClickEvent.signal(ClickedItem::TimeSignature, myLocation);
 }
 
 void TimeSignaturePainter::paint(QPainter *painter,

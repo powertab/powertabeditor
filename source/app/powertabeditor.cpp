@@ -81,7 +81,6 @@
 #include <app/command.h>
 #include <app/documentmanager.h>
 #include <app/paths.h>
-#include <app/pubsub/clickpubsub.h>
 #include <app/recentfiles.h>
 #include <app/scorearea.h>
 #include <app/settings.h>
@@ -3211,39 +3210,41 @@ void PowerTabEditor::setupNewTab()
 
     // Connect the signals for mouse clicks on time signatures, barlines, etc.
     // to the appropriate event handlers.
-    scorearea->getClickPubSub()->subscribe([=](ClickType type,
-                                               const ConstScoreLocation &location) {
-        if (getCaret().isInPlaybackMode())
-            return;
+    connect(scorearea, &ScoreArea::itemClicked,
+            [&](ClickedItem item, const ConstScoreLocation &location) {
+                if (getCaret().isInPlaybackMode())
+                    return;
 
-        getCaret().moveToSystem(location.getSystemIndex(), true);
-        getCaret().moveToPosition(location.getPositionIndex());
+                getCaret().moveToSystem(location.getSystemIndex(), true);
+                getCaret().moveToPosition(location.getPositionIndex());
 
-        switch (type)
-        {
-            case ClickType::Barline:
-                editBarline();
-                break;
-            case ClickType::TimeSignature:
-                editTimeSignature();
-                break;
-            case ClickType::KeySignature:
-                editKeySignature();
-                break;
-            case ClickType::TabClef:
-                editStaff(location.getSystemIndex(), location.getStaffIndex());
-                break;
-            case ClickType::Clef:
-                editClef(location.getSystemIndex(), location.getStaffIndex());
-                break;
-            case ClickType::Selection:
-                getCaret().moveToLocation(location);
-                break;
-            default:
-                Q_ASSERT(false);
-                break;
-        }
-    });
+                switch (item)
+                {
+                    case ClickedItem::Barline:
+                        editBarline();
+                        break;
+                    case ClickedItem::TimeSignature:
+                        editTimeSignature();
+                        break;
+                    case ClickedItem::KeySignature:
+                        editKeySignature();
+                        break;
+                    case ClickedItem::TabClef:
+                        editStaff(location.getSystemIndex(),
+                                  location.getStaffIndex());
+                        break;
+                    case ClickedItem::Clef:
+                        editClef(location.getSystemIndex(),
+                                 location.getStaffIndex());
+                        break;
+                    case ClickedItem::Selection:
+                        getCaret().moveToLocation(location);
+                        break;
+                    default:
+                        Q_ASSERT(false);
+                        break;
+                }
+            });
 
     myUndoManager->addNewUndoStack();
 

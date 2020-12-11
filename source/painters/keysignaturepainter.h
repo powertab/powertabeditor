@@ -24,14 +24,14 @@
 #include <painters/layoutinfo.h>
 #include <score/scorelocation.h>
 
-class ClickPubSub;
+class ScoreClickEvent;
 
 class KeySignaturePainter : public QGraphicsItem
 {
 public:
     KeySignaturePainter(const LayoutConstPtr &layout, const KeySignature &key,
                         const ConstScoreLocation &location,
-                        const std::shared_ptr<ClickPubSub> &pubsub);
+                        const ScoreClickEvent &click_event);
 
     virtual void paint(QPainter *painter, const QStyleOptionGraphicsItem *,
                        QWidget *) override;
@@ -49,7 +49,7 @@ private:
     LayoutConstPtr myLayout;
     const KeySignature &myKeySignature;
     const ConstScoreLocation myLocation;
-    std::shared_ptr<ClickPubSub> myPubSub;
+    const ScoreClickEvent &myClickEvent;
     QFont myMusicFont;
     const QRectF myBounds;
     QVector<double> myFlatPositions;

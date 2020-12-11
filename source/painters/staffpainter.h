@@ -23,7 +23,7 @@
 #include <QGraphicsItem>
 #include <score/scorelocation.h>
 
-class ClickPubSub;
+class ScoreClickEvent;
 class Staff;
 
 class StaffPainter : public QGraphicsItem
@@ -31,7 +31,7 @@ class StaffPainter : public QGraphicsItem
 public:
     StaffPainter(const LayoutConstPtr &layout,
                  const ConstScoreLocation &location,
-                 const std::shared_ptr<ClickPubSub> &pubsub,
+                 const ScoreClickEvent &click_event,
                  const QColor staffColor);
 
     virtual void paint(QPainter *painter, const QStyleOptionGraphicsItem *,
@@ -52,7 +52,7 @@ private:
     int getPositionFromX(double x) const;
 
     LayoutConstPtr myLayout;
-    std::shared_ptr<ClickPubSub> myPubSub;
+    const ScoreClickEvent &myClickEvent;
     ConstScoreLocation myLocation;
     const QRectF myBounds;
     const QColor myStaffColor;

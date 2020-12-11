@@ -18,6 +18,8 @@
 #ifndef APP_SCOREAREA_H
 #define APP_SCOREAREA_H
 
+#include "scoreclickevent.h"
+
 #include <memory>
 #include <QGraphicsScene>
 #include <QGraphicsView>
@@ -25,13 +27,15 @@
 #include <app/settingsmanager.h>
 
 class CaretPainter;
-class ClickPubSub;
+class ConstScoreLocation;
 class Document;
 class QPrinter;
 
 /// The visual display of the score.
 class ScoreArea : public QGraphicsView
 {
+    Q_OBJECT
+
     class Scene : public QGraphicsScene
     {
     protected:
@@ -54,10 +58,13 @@ public:
     /// necessary.
     void redrawSystem(int index);
 
-    std::shared_ptr<ClickPubSub> getClickPubSub() const;
+    const ScoreClickEvent &getClickEvent() const { return myClickEvent; }
 
     /// returns the palette used by scorearea
     const QPalette *getPalette() const;
+
+signals:
+    void itemClicked(ClickedItem item, const ConstScoreLocation &location);
 
 protected:
     virtual void focusInEvent(QFocusEvent *event) override;
@@ -85,7 +92,7 @@ private:
     /// The palette (default / light / dark) currently used by the score area.
     const QPalette *myActivePalette;
 
-    std::shared_ptr<ClickPubSub> myClickPubSub;
+    ScoreClickEvent myClickEvent;
     boost::signals2::scoped_connection mySettingsListener;
     bool myDisableRedraw;
 };
