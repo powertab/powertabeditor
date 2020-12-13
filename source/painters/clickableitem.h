@@ -1,5 +1,5 @@
 /*
-  * Copyright (C) 2014 Cameron White
+  * Copyright (C) 2020 Cameron White
   *
   * This program is free software: you can redistribute it and/or modify
   * it under the terms of the GNU General Public License as published by
@@ -14,18 +14,21 @@
   * You should have received a copy of the GNU General Public License
   * along with this program.  If not, see <http://www.gnu.org/licenses/>.
 */
-  
-#ifndef PAINTERS_CLICKABLEGROUP_H
-#define PAINTERS_CLICKABLEGROUP_H
 
-#include <functional>
-#include <QGraphicsItemGroup>
+#ifndef PAINTERS_CLICKABLEITEM_H
+#define PAINTERS_CLICKABLEITEM_H
 
-class ClickableGroup : public QGraphicsItemGroup
+#include "scoreclickevent.h"
+#include <QGraphicsItem>
+#include <score/scorelocation.h>
+
+/// This class can either be a subclass of QGraphicsItem or QGraphicsItemGroup.
+template <typename GraphicsItemT>
+class ClickableItemT : public GraphicsItemT
 {
 public:
-    typedef std::function<void()> Callback;
-    ClickableGroup(const QString &tooltip, Callback &&callback);
+    ClickableItemT(const QString &tooltip, const ScoreClickEvent &click_event,
+                   const ConstScoreLocation &location, ClickedItem item);
 
     virtual void mouseDoubleClickEvent(
         QGraphicsSceneMouseEvent *event) override;
@@ -36,8 +39,14 @@ public:
                        const QStyleOptionGraphicsItem *option,
                        QWidget *widget) override;
 
-private:
-    Callback myCallback;
+protected:
+    const ScoreClickEvent &myClickEvent;
+    const ConstScoreLocation myLocation;
+    const ClickedItem myItem;
 };
 
+using ClickableGroup = ClickableItemT<QGraphicsItemGroup>;
+using ClickableItem = ClickableItemT<QGraphicsItem>;
+
 #endif
+

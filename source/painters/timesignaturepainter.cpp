@@ -17,7 +17,8 @@
   
 #include "timesignaturepainter.h"
 
-#include <app/scoreclickevent.h>
+#include "scoreclickevent.h"
+
 #include <painters/musicfont.h>
 #include <QCursor>
 #include <QPainter>

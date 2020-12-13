@@ -17,7 +17,8 @@
   
 #include "barlinepainter.h"
 
-#include <app/scoreclickevent.h>
+#include "scoreclickevent.h"
+
 #include <QCursor>
 #include <QGraphicsSceneMouseEvent>
 #include <QPainter>

@@ -17,7 +17,8 @@
   
 #include "staffpainter.h"
 
-#include <app/scoreclickevent.h>
+#include "scoreclickevent.h"
+
 #include <cmath>
 #include <QGraphicsSceneMouseEvent>
 #include <QPainter>

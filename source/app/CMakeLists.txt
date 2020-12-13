@@ -48,7 +48,6 @@ set( headers
     powertabeditor.h
     recentfiles.h
     scorearea.h
-    scoreclickevent.h
     settings.h
     settingsmanager.h
     tuningdictionary.h

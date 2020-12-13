@@ -23,7 +23,7 @@
 #include <boost/range/algorithm/find_if.hpp>
 #include <painters/antialiasedpathitem.h>
 #include <painters/barlinepainter.h>
-#include <painters/clickablegroup.h>
+#include <painters/clickableitem.h>
 #include <painters/keysignaturepainter.h>
 #include <painters/layoutinfo.h>
 #include <painters/simpletextitem.h>
@@ -152,10 +152,8 @@ QGraphicsItem *SystemRenderer::operator()(const System &system,
                                            clef_font, TextAlignment::Baseline,
                                            QPen(myPalette.text().color()));
         auto group = new ClickableGroup(
-            QObject::tr("Click to change clef type."),
-            [=, score_area = this->myScoreArea]() {
-                score_area->getClickEvent().signal(ClickedItem::Clef, location);
-            });
+            QObject::tr("Double-click to change clef type."),
+            myScoreArea->getClickEvent(), location, ClickedItem::Clef);
         group->addToGroup(clef);
         group->setPos(LayoutInfo::CLEF_PADDING, clef_y);
         group->setParentItem(myParentStaff);
@@ -196,10 +194,8 @@ void SystemRenderer::drawTabClef(double x, const LayoutInfo &layout,
     auto clef = new SimpleTextItem(QChar(MusicFont::TabClef), font, TextAlignment::Baseline, QPen(myPalette.text().color()));
 
     auto group = new ClickableGroup(
-        QObject::tr("Click to edit the number of strings."),
-        [=, score_area = this->myScoreArea]() {
-            score_area->getClickEvent().signal(ClickedItem::TabClef, location);
-        });
+        QObject::tr("Double-click to edit the number of strings."),
+        myScoreArea->getClickEvent(), location, ClickedItem::TabClef);
     group->addToGroup(clef);
 
     // Position the clef symbol. The middle of the 'A' is aligned with the

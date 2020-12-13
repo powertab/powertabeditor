@@ -18,13 +18,13 @@
 #ifndef APP_SCOREAREA_H
 #define APP_SCOREAREA_H
 
-#include "scoreclickevent.h"
+#include "settingsmanager.h"
 
 #include <memory>
 #include <QGraphicsScene>
 #include <QGraphicsView>
 #include <score/staff.h>
-#include <app/settingsmanager.h>
+#include <painters/scoreclickevent.h>
 
 class CaretPainter;
 class ConstScoreLocation;

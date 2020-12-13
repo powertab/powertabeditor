@@ -18,7 +18,6 @@
 #ifndef PAINTERS_SYSTEMRENDERER_H
 #define PAINTERS_SYSTEMRENDERER_H
 
-#include <app/scoreclickevent.h>
 #include <map>
 #include <painters/layoutinfo.h>
 #include <painters/musicfont.h>

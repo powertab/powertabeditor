@@ -18,11 +18,11 @@
 #include "scorearea.h"
 
 #include <app/documentmanager.h>
-#include <app/scoreclickevent.h>
 #include <app/settings.h>
 #include <chrono>
 #include <future>
 #include <painters/caretpainter.h>
+#include <painters/scoreclickevent.h>
 #include <painters/scoreinforenderer.h>
 #include <painters/systemrenderer.h>
 #include <QDebug>
