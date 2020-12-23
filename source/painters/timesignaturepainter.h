@@ -18,6 +18,8 @@
 #ifndef PAINTERS_TIMESIGNATUREPAINTER_H
 #define PAINTERS_TIMESIGNATUREPAINTER_H
 
+#include "clickableitem.h"
+
 #include <memory>
 #include <painters/layoutinfo.h>
 #include <QGraphicsItem>
@@ -26,7 +28,7 @@
 class ScoreClickEvent;
 class TimeSignature;
 
-class TimeSignaturePainter : public QGraphicsItem
+class TimeSignaturePainter : public ClickableItem
 {
 public:
     TimeSignaturePainter(const LayoutConstPtr &layout,
@@ -42,19 +44,11 @@ public:
         return myBounds;
     }
 
-protected:
-    virtual void mousePressEvent(QGraphicsSceneMouseEvent *event) override;
-    virtual void mouseReleaseEvent(QGraphicsSceneMouseEvent *event) override;
-    virtual void hoverEnterEvent(QGraphicsSceneHoverEvent *) override;
-    virtual void hoverLeaveEvent(QGraphicsSceneHoverEvent *) override;
-
 private:
     void drawNumber(QPainter* painter, const double y, const int number) const;
 
     LayoutConstPtr myLayout;
     const TimeSignature &myTimeSignature;
-    const ConstScoreLocation myLocation;
-    const ScoreClickEvent &myClickEvent;
     const QRectF myBounds;
 };
 
