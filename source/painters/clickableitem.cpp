@@ -25,7 +25,7 @@
 template <typename GraphicsItemT>
 ClickableItemT<GraphicsItemT>::ClickableItemT(
     const QString &tooltip, const ScoreClickEvent &click_event,
-    const ConstScoreLocation &location, ClickedItem item)
+    const ConstScoreLocation &location, ScoreItem item)
     : myClickEvent(click_event), myLocation(location), myItem(item)
 {
     this->setAcceptHoverEvents(true);

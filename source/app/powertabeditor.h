@@ -418,6 +418,8 @@ private:
     std::unique_ptr<TuningDictionary> myTuningDictionary;
     /// Tracks whether we are currently in playback mode.
     bool myIsPlaying;
+    /// Flag for whether a score click event is being handled.
+    bool myIsHandlingClick = false;
     /// Tracks the last directory that a file was opened from.
     QString myPreviousDirectory;
     RecentFiles *myRecentFiles;

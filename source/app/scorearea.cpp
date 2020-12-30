@@ -69,7 +69,7 @@ ScoreArea::ScoreArea(SettingsManager &settings_manager, QWidget *parent)
 
     // Connect the click event handler to our public signals.
     myClickEvent.connect(
-        [&](ClickedItem item, const ConstScoreLocation &location) {
+        [&](ScoreItem item, const ConstScoreLocation &location) {
             itemClicked(item, location);
         });
 }

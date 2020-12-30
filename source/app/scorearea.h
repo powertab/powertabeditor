@@ -54,6 +54,8 @@ public:
 
     void print(QPrinter &printer);
 
+    void clearSelection() { myScene.clearSelection(); }
+
     /// Redraws the specified system, and shifts the following systems as
     /// necessary.
     void redrawSystem(int index);
@@ -64,7 +66,7 @@ public:
     const QPalette *getPalette() const;
 
 signals:
-    void itemClicked(ClickedItem item, const ConstScoreLocation &location);
+    void itemClicked(ScoreItem item, const ConstScoreLocation &location);
 
 protected:
     virtual void focusInEvent(QFocusEvent *event) override;

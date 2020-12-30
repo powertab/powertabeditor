@@ -28,7 +28,7 @@ class ClickableItemT : public GraphicsItemT
 {
 public:
     ClickableItemT(const QString &tooltip, const ScoreClickEvent &click_event,
-                   const ConstScoreLocation &location, ClickedItem item);
+                   const ConstScoreLocation &location, ScoreItem item);
 
     virtual void mouseDoubleClickEvent(
         QGraphicsSceneMouseEvent *event) override;
@@ -42,7 +42,7 @@ public:
 protected:
     const ScoreClickEvent &myClickEvent;
     const ConstScoreLocation myLocation;
-    const ClickedItem myItem;
+    const ScoreItem myItem;
 };
 
 using ClickableGroup = ClickableItemT<QGraphicsItemGroup>;

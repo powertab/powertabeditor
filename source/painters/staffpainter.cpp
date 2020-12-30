@@ -54,7 +54,7 @@ void StaffPainter::mousePressEvent(QGraphicsSceneMouseEvent *event)
         myLocation.setSelectionStart(position);
         myLocation.setString(string);
 
-        myClickEvent.signal(ClickedItem::Selection, myLocation);
+        myClickEvent.signal(ScoreItem::Staff, myLocation);
     }
 }
 
@@ -62,7 +62,7 @@ void StaffPainter::mouseMoveEvent(QGraphicsSceneMouseEvent *event)
 {
     const double x = event->pos().x();
     myLocation.setPositionIndex(myLayout->getPositionFromX(x));
-    myClickEvent.signal(ClickedItem::Selection, myLocation);
+    myClickEvent.signal(ScoreItem::Staff, myLocation);
 }
 
 void StaffPainter::paint(QPainter *painter, const QStyleOptionGraphicsItem *,

@@ -153,7 +153,7 @@ QGraphicsItem *SystemRenderer::operator()(const System &system,
                                            QPen(myPalette.text().color()));
         auto group = new ClickableGroup(
             QObject::tr("Double-click to change clef type."),
-            myScoreArea->getClickEvent(), location, ClickedItem::Clef);
+            myScoreArea->getClickEvent(), location, ScoreItem::Clef);
         group->addToGroup(clef);
         group->setPos(LayoutInfo::CLEF_PADDING, clef_y);
         group->setParentItem(myParentStaff);
@@ -195,7 +195,7 @@ void SystemRenderer::drawTabClef(double x, const LayoutInfo &layout,
 
     auto group = new ClickableGroup(
         QObject::tr("Double-click to edit the number of strings."),
-        myScoreArea->getClickEvent(), location, ClickedItem::TabClef);
+        myScoreArea->getClickEvent(), location, ScoreItem::TabClef);
     group->addToGroup(clef);
 
     // Position the clef symbol. The middle of the 'A' is aligned with the

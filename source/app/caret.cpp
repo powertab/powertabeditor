@@ -233,3 +233,15 @@ void Caret::moveToValidPosition()
     moveToStaff(myLocation.getStaffIndex());
     moveToPosition(myLocation.getPositionIndex());
 }
+
+ScoreItem
+Caret::getSelectedItem() const
+{
+    return mySelectedItem;
+}
+
+void
+Caret::setSelectedItem(ScoreItem item)
+{
+    mySelectedItem = item;
+}

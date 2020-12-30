@@ -84,7 +84,7 @@ void BarlinePainter::mousePressEvent(QGraphicsSceneMouseEvent *event)
 
 void BarlinePainter::mouseReleaseEvent(QGraphicsSceneMouseEvent *)
 {
-    myClickEvent.signal(ClickedItem::Barline, myLocation);
+    myClickEvent.signal(ScoreItem::Barline, myLocation);
 }
 
 void BarlinePainter::hoverMoveEvent(QGraphicsSceneHoverEvent *event)

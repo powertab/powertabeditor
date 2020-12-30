@@ -23,14 +23,14 @@
 class ConstScoreLocation;
 
 /// Item types that can be clicked.
-enum class ClickedItem
+enum class ScoreItem
 {
+    Staff,
     Barline,
     KeySignature,
     TimeSignature,
     Clef,
-    TabClef,
-    Selection
+    TabClef
 };
 
 /// QGraphicsItem doesn't use QObject signals / slots, so just use a simple
@@ -39,7 +39,7 @@ class ScoreClickEvent
 {
 public:
     using MessageType =
-        boost::signals2::signal<void(ClickedItem, const ConstScoreLocation &)>;
+        boost::signals2::signal<void(ScoreItem, const ConstScoreLocation &)>;
 
     /// Connect an event listener.
     boost::signals2::connection connect(

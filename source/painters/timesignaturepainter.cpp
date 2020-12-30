@@ -27,7 +27,7 @@ TimeSignaturePainter::TimeSignaturePainter(const LayoutConstPtr &layout,
                                            const ConstScoreLocation &location,
                                            const ScoreClickEvent &click_event)
     : ClickableItem(QObject::tr("Click to edit time signature."), click_event,
-                    location, ClickedItem::TimeSignature),
+                    location, ScoreItem::TimeSignature),
       myLayout(layout),
       myTimeSignature(time),
       myBounds(0, 0, LayoutInfo::getWidth(myTimeSignature),

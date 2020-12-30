@@ -3202,6 +3202,14 @@ void PowerTabEditor::setupNewTab()
     doc.getCaret().subscribeToChanges([=]() {
         updateCommands();
         updateLocationLabel();
+
+        // When changing location to somewhere on the staff, clear any existing
+        // selected item.
+        if (getCaret().getSelectedItem() == ScoreItem::Staff ||
+            !myIsHandlingClick)
+        {
+            getScoreArea()->clearSelection();
+        }
     });
 
     auto scorearea = new ScoreArea(*mySettingsManager, this);
@@ -3211,39 +3219,44 @@ void PowerTabEditor::setupNewTab()
     // Connect the signals for mouse clicks on time signatures, barlines, etc.
     // to the appropriate event handlers.
     connect(scorearea, &ScoreArea::itemClicked,
-            [&](ClickedItem item, const ConstScoreLocation &location) {
+            [&](ScoreItem item, const ConstScoreLocation &location) {
                 if (getCaret().isInPlaybackMode())
                     return;
 
+                myIsHandlingClick = true;
+
                 getCaret().moveToSystem(location.getSystemIndex(), true);
                 getCaret().moveToPosition(location.getPositionIndex());
+                getCaret().setSelectedItem(item);
 
                 switch (item)
                 {
-                    case ClickedItem::Barline:
+                    case ScoreItem::Staff:
+                        getCaret().moveToLocation(location);
+                        break;
+                    case ScoreItem::Barline:
                         editBarline();
                         break;
-                    case ClickedItem::TimeSignature:
+                    case ScoreItem::TimeSignature:
                         editTimeSignature();
                         break;
-                    case ClickedItem::KeySignature:
+                    case ScoreItem::KeySignature:
                         editKeySignature();
                         break;
-                    case ClickedItem::TabClef:
+                    case ScoreItem::TabClef:
                         editStaff(location.getSystemIndex(),
                                   location.getStaffIndex());
                         break;
-                    case ClickedItem::Clef:
+                    case ScoreItem::Clef:
                         editClef(location.getSystemIndex(),
                                  location.getStaffIndex());
-                        break;
-                    case ClickedItem::Selection:
-                        getCaret().moveToLocation(location);
                         break;
                     default:
                         Q_ASSERT(false);
                         break;
                 }
+
+                myIsHandlingClick = false;
             });
 
     myUndoManager->addNewUndoStack();

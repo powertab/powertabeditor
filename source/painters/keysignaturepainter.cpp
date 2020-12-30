@@ -30,7 +30,7 @@ KeySignaturePainter::KeySignaturePainter(const LayoutConstPtr &layout,
                                          const ConstScoreLocation &location,
                                          const ScoreClickEvent &click_event)
     : ClickableItem(QObject::tr("Double-click to edit key signature."),
-            click_event, location, ClickedItem::KeySignature)
+            click_event, location, ScoreItem::KeySignature)
             , myLayout(layout),
       myKeySignature(key),
       myMusicFont(MusicFont::getFont(MusicFont::DEFAULT_FONT_SIZE)),
