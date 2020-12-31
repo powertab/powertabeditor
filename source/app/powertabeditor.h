@@ -383,9 +383,6 @@ private:
     /// Adds or removes a rest at the current location.
     void editRest(Position::DurationType duration);
 
-    /// Edits the clef at the given location.
-    void editClef(int system, int staff);
-
     /// Toggles a simple position property.
     void editSimplePositionProperty(Command *command,
                                     Position::SimpleProperty property);
@@ -398,7 +395,7 @@ private:
     void insertSystem(int index);
     /// Helper function to insert a staff at the given index in a system.
     void insertStaff(int index);
-    /// Edits the number of strings for the current staff.
+    /// Edits the clef and number of strings for the current staff.
     void editStaff(int system, int staff);
     /// Increases or decreases the line spacing by the given amount.
     void adjustLineSpacing(int amount);

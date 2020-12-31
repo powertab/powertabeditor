@@ -195,7 +195,7 @@ void SystemRenderer::drawTabClef(double x, const LayoutInfo &layout,
 
     auto group = new ClickableGroup(
         QObject::tr("Double-click to edit the number of strings."),
-        myScoreArea->getClickEvent(), location, ScoreItem::TabClef);
+        myScoreArea->getClickEvent(), location, ScoreItem::Clef);
     group->addToGroup(clef);
 
     // Position the clef symbol. The middle of the 'A' is aligned with the

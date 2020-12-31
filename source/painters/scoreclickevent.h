@@ -29,8 +29,7 @@ enum class ScoreItem
     Barline,
     KeySignature,
     TimeSignature,
-    Clef,
-    TabClef
+    Clef
 };
 
 /// QGraphicsItem doesn't use QObject signals / slots, so just use a simple

@@ -3243,13 +3243,9 @@ void PowerTabEditor::setupNewTab()
                     case ScoreItem::KeySignature:
                         editKeySignature();
                         break;
-                    case ScoreItem::TabClef:
+                    case ScoreItem::Clef:
                         editStaff(location.getSystemIndex(),
                                   location.getStaffIndex());
-                        break;
-                    case ScoreItem::Clef:
-                        editClef(location.getSystemIndex(),
-                                 location.getStaffIndex());
                         break;
                     default:
                         Q_ASSERT(false);
@@ -3770,22 +3766,6 @@ void PowerTabEditor::editBarline()
                                 location.getSystemIndex());
         }
     }
-}
-
-void PowerTabEditor::editClef(int system, int staff)
-{
-    ScoreLocation location = getLocation();
-    location.setSystemIndex(system);
-    location.setStaffIndex(staff);
-
-    const Staff &currentStaff = location.getStaff();
-    Staff::ClefType newClef = currentStaff.getClefType() == Staff::TrebleClef
-                                  ? Staff::BassClef
-                                  : Staff::TrebleClef;
-
-    myUndoManager->push(
-        new EditStaff(location, newClef, currentStaff.getStringCount()),
-        location.getSystemIndex());
 }
 
 void PowerTabEditor::editSimplePositionProperty(Command *command,
