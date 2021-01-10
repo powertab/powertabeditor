@@ -66,7 +66,8 @@ public:
     const QPalette *getPalette() const;
 
 signals:
-    void itemClicked(ScoreItem item, const ConstScoreLocation &location);
+    void itemClicked(ScoreItem item, const ConstScoreLocation &location,
+                     ScoreItemAction action);
 
 protected:
     virtual void focusInEvent(QFocusEvent *event) override;

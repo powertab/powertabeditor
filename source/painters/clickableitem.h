@@ -35,6 +35,9 @@ public:
     virtual void hoverEnterEvent(QGraphicsSceneHoverEvent *event) override;
     virtual void hoverLeaveEvent(QGraphicsSceneHoverEvent *event) override;
 
+    virtual QVariant itemChange(QGraphicsItem::GraphicsItemChange change,
+                                const QVariant &value) override;
+
     virtual void paint(QPainter *painter,
                        const QStyleOptionGraphicsItem *option,
                        QWidget *widget) override;

@@ -40,7 +40,7 @@ template <typename GraphicsItemT>
 void
 ClickableItemT<GraphicsItemT>::mouseDoubleClickEvent(QGraphicsSceneMouseEvent *)
 {
-    myClickEvent.signal(myItem, myLocation);
+    myClickEvent.signal(myItem, myLocation, ScoreItemAction::DoubleClicked);
 }
 
 template <typename GraphicsItemT>
@@ -55,6 +55,17 @@ void
 ClickableItemT<GraphicsItemT>::hoverLeaveEvent(QGraphicsSceneHoverEvent *)
 {
     this->unsetCursor();
+}
+
+template <typename GraphicsItemT>
+QVariant
+ClickableItemT<GraphicsItemT>::itemChange(
+    QGraphicsItem::GraphicsItemChange change, const QVariant &value)
+{
+    if (change == QGraphicsItem::ItemSelectedHasChanged && value.toBool())
+        myClickEvent.signal(myItem, myLocation, ScoreItemAction::Selected);
+
+    return QGraphicsItem::itemChange(change, value);
 }
 
 template <typename GraphicsItemT>

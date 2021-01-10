@@ -84,7 +84,9 @@ void BarlinePainter::mousePressEvent(QGraphicsSceneMouseEvent *event)
 
 void BarlinePainter::mouseReleaseEvent(QGraphicsSceneMouseEvent *)
 {
-    myClickEvent.signal(ScoreItem::Barline, myLocation);
+    // TODO - unify selection / click behaviour with other selectable items.
+    myClickEvent.signal(ScoreItem::Barline, myLocation,
+                        ScoreItemAction::DoubleClicked);
 }
 
 void BarlinePainter::hoverMoveEvent(QGraphicsSceneHoverEvent *event)

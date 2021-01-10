@@ -3219,7 +3219,8 @@ void PowerTabEditor::setupNewTab()
     // Connect the signals for mouse clicks on time signatures, barlines, etc.
     // to the appropriate event handlers.
     connect(scorearea, &ScoreArea::itemClicked,
-            [&](ScoreItem item, const ConstScoreLocation &location) {
+            [&](ScoreItem item, const ConstScoreLocation &location,
+                ScoreItemAction action) {
                 if (getCaret().isInPlaybackMode())
                     return;
 
@@ -3229,26 +3230,38 @@ void PowerTabEditor::setupNewTab()
                 getCaret().moveToPosition(location.getPositionIndex());
                 getCaret().setSelectedItem(item);
 
-                switch (item)
+                switch (action)
                 {
-                    case ScoreItem::Staff:
-                        getCaret().moveToLocation(location);
+                    case ScoreItemAction::Selected:
+                        switch (item)
+                        {
+                            case ScoreItem::Staff:
+                                getCaret().moveToLocation(location);
+                                break;
+                            default:
+                                break;
+                        }
                         break;
-                    case ScoreItem::Barline:
-                        editBarline();
-                        break;
-                    case ScoreItem::TimeSignature:
-                        editTimeSignature();
-                        break;
-                    case ScoreItem::KeySignature:
-                        editKeySignature();
-                        break;
-                    case ScoreItem::Clef:
-                        editStaff(location.getSystemIndex(),
-                                  location.getStaffIndex());
-                        break;
-                    default:
-                        Q_ASSERT(false);
+
+                    case ScoreItemAction::DoubleClicked:
+                        switch (item)
+                        {
+                            case ScoreItem::Barline:
+                                editBarline();
+                                break;
+                            case ScoreItem::TimeSignature:
+                                editTimeSignature();
+                                break;
+                            case ScoreItem::KeySignature:
+                                editKeySignature();
+                                break;
+                            case ScoreItem::Clef:
+                                editStaff(location.getSystemIndex(),
+                                          location.getStaffIndex());
+                                break;
+                            default:
+                                break;
+                        }
                         break;
                 }
 

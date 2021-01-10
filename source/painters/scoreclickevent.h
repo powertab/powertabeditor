@@ -32,13 +32,19 @@ enum class ScoreItem
     Clef
 };
 
+enum class ScoreItemAction
+{
+    Selected,
+    DoubleClicked
+};
+
 /// QGraphicsItem doesn't use QObject signals / slots, so just use a simple
 /// signal / slot for mouse event handlers.
 class ScoreClickEvent
 {
 public:
-    using MessageType =
-        boost::signals2::signal<void(ScoreItem, const ConstScoreLocation &)>;
+    using MessageType = boost::signals2::signal<void(
+        ScoreItem, const ConstScoreLocation &, ScoreItemAction)>;
 
     /// Connect an event listener.
     boost::signals2::connection connect(
