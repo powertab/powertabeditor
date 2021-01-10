@@ -68,7 +68,8 @@ private:
                       const LayoutInfo &layout);
 
     /// Draws system-level symbols such as alternate endings and tempo markers.
-    void drawSystemSymbols(const System &system, const LayoutInfo &layout);
+    void drawSystemSymbols(const ConstScoreLocation &location,
+                           const LayoutInfo &layout);
 
     /// Draws the bar number for the first bar in the system.
     void drawBarNumber(int systemIndex, const LayoutInfo &layout);
@@ -81,8 +82,8 @@ private:
                               double height);
 
     /// Draws all of the tempo markers in the system.
-    void drawTempoMarkers(const System &system, const LayoutInfo &layout,
-                          double height);
+    void drawTempoMarkers(const ConstScoreLocation &location,
+                          const LayoutInfo &layout, double height);
 
     /// Draws all of the directions in the system.
     double drawDirections(const System &system, const LayoutInfo &layout,

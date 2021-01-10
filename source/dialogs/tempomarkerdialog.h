@@ -32,7 +32,7 @@ class TempoMarkerDialog : public QDialog
     Q_OBJECT
 
 public:
-    explicit TempoMarkerDialog(QWidget *parent);
+    explicit TempoMarkerDialog(QWidget *parent, const TempoMarker *marker);
     ~TempoMarkerDialog();
 
     TempoMarker getTempoMarker() const;

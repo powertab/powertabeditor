@@ -764,19 +764,33 @@ void PowerTabEditor::shiftBackward()
                         location.getSystemIndex());
 }
 
-void PowerTabEditor::removeCurrentPosition()
+void PowerTabEditor::removeSelectedItem()
 {
-    auto location = getLocation();
-    bool isNote = location.getNote();
+    switch (getCaret().getSelectedItem())
+    {
+        case ScoreItem::Barline:
+        case ScoreItem::TimeSignature:
+        case ScoreItem::KeySignature:
+        case ScoreItem::Clef:
+            // Do nothing.
+            break;
 
-    if(!isNote)
-    {
-    	removeSelectedPositions();
-    }
-    else
-    {
-    	myUndoManager->push(new RemoveNote(location),
-    			location.getSystemIndex());
+        case ScoreItem::TempoMarker:
+            editTempoMarker(/* remove */ true);
+            break;
+
+        case ScoreItem::Staff:
+        {
+            auto location = getLocation();
+            if (!location.getNote())
+                removeSelectedPositions();
+            else
+            {
+                myUndoManager->push(new RemoveNote(location),
+                                    location.getSystemIndex());
+            }
+        }
+        break;
     }
 }
 
@@ -1244,32 +1258,40 @@ void PowerTabEditor::editRehearsalSign()
     }
 }
 
-void PowerTabEditor::editTempoMarker()
+void PowerTabEditor::editTempoMarker(bool remove)
 {
     const ScoreLocation &location = getLocation();
     const TempoMarker *marker = ScoreUtils::findByPosition(
-                location.getSystem().getTempoMarkers(),
-                location.getPositionIndex());
+        location.getSystem().getTempoMarkers(), location.getPositionIndex());
 
-    if (marker)
+    if (remove && marker)
     {
         myUndoManager->push(new RemoveTempoMarker(location),
                             location.getSystemIndex());
+        return;
     }
-    else
-    {
-        TempoMarkerDialog dialog(this);
-        if (dialog.exec() == QDialog::Accepted)
-        {
-            TempoMarker marker(dialog.getTempoMarker());
-            marker.setPosition(location.getPositionIndex());
 
-            myUndoManager->push(new AddTempoMarker(location, marker),
+    TempoMarkerDialog dialog(this, marker);
+    if (dialog.exec() == QDialog::Accepted)
+    {
+        TempoMarker new_marker(dialog.getTempoMarker());
+        new_marker.setPosition(location.getPositionIndex());
+
+        if (marker)
+        {
+            myUndoManager->beginMacro(tr("Edit Tempo Marker"));
+            myUndoManager->push(new RemoveTempoMarker(location),
                                 location.getSystemIndex());
         }
-        else
-            myTempoMarkerCommand->setChecked(false);
+
+        myUndoManager->push(new AddTempoMarker(location, new_marker),
+                            location.getSystemIndex());
+
+        if (marker)
+            myUndoManager->endMacro();
     }
+    else
+        myTempoMarkerCommand->setChecked(false);
 }
 
 void PowerTabEditor::editAlterationOfPace()
@@ -2110,13 +2132,25 @@ void PowerTabEditor::createCommands()
     connect(myPrevBarCommand, &QAction::triggered, this,
             &PowerTabEditor::moveCaretToPrevBar);
 
-    myRemoveNoteCommand = new Command(tr("Remove Note"), "Position.RemoveNote",
-                                      QKeySequence::Delete, this);
-    connect(myRemoveNoteCommand, &QAction::triggered, this, &PowerTabEditor::removeCurrentPosition);
+#ifdef Q_OS_MAC
+    // On macOS we need to use the "backspace" key so that you can just press
+    // Delete rather than Fn+Delete.
+    QKeySequence delete_seq = Qt::Key_Backspace;
+    QKeySequence ctrl_delete_seq = Qt::CTRL + Qt::Key_Backspace;
+#else
+    QKeySequence delete_seq = QKeySequence::Delete;
+    QKeySequence ctrl_delete_seq = QKeySequence::DeleteEndOfWord;
+#endif
 
-    myRemovePositionCommand = new Command(tr("Remove Position"),
-                                          "Position.RemovePosition",
-                                          QKeySequence::DeleteEndOfWord, this);
+    myRemoveItemCommand =
+        new Command(tr("Remove Selected Item"), "Position.RemoveSelectedItem",
+                    delete_seq, this);
+    connect(myRemoveItemCommand, &QAction::triggered, this,
+            &PowerTabEditor::removeSelectedItem);
+
+    myRemovePositionCommand =
+        new Command(tr("Remove Position"), "Position.RemovePosition",
+                    ctrl_delete_seq, this);
     connect(myRemovePositionCommand, &QAction::triggered, this,
             &PowerTabEditor::removeSelectedPositions);
 
@@ -2863,7 +2897,7 @@ void PowerTabEditor::createMenus()
     myEditMenu->addAction(myCopyCommand);
     myEditMenu->addAction(myPasteCommand);
     myEditMenu->addSeparator();
-    myEditMenu->addAction(myRemoveNoteCommand);
+    myEditMenu->addAction(myRemoveItemCommand);
     myEditMenu->addAction(myRemovePositionCommand);
     myEditMenu->addSeparator();
     myEditMenu->addAction(myPolishCommand);
@@ -2902,7 +2936,7 @@ void PowerTabEditor::createMenus()
     myPositionMenu->addAction(myInsertSpaceCommand);
     myPositionMenu->addAction(myRemoveSpaceCommand);
     myPositionMenu->addSeparator();
-    myPositionMenu->addAction(myRemoveNoteCommand);
+    myPositionMenu->addAction(myRemoveItemCommand);
     myPositionMenu->addAction(myRemovePositionCommand);
     myPositionMenu->addSeparator();
     myPositionMenu->addAction(myGoToBarlineCommand);
@@ -3259,6 +3293,9 @@ void PowerTabEditor::setupNewTab()
                                 editStaff(location.getSystemIndex(),
                                           location.getStaffIndex());
                                 break;
+                            case ScoreItem::TempoMarker:
+                                editTempoMarker();
+                                break;
                             default:
                                 break;
                         }
@@ -3359,7 +3396,10 @@ void PowerTabEditor::updateCommands()
         ScoreUtils::findByPosition(system.getAlternateEndings(), position);
     const Dynamic *dynamic =
         ScoreUtils::findByPosition(staff.getDynamics(), position);
-    const bool hasSelection = !location.getSelectedPositions().empty();
+    const bool positions_selected = !location.getSelectedPositions().empty();
+
+    const bool item_selected =
+        getCaret().getSelectedItem() == ScoreItem::TempoMarker;
 
     myRemoveCurrentSystemCommand->setEnabled(score.getSystems().size() > 1);
     myRemoveCurrentStaffCommand->setEnabled(system.getStaves().size() > 1);
@@ -3369,8 +3409,9 @@ void PowerTabEditor::updateCommands()
                                              Score::MIN_LINE_SPACING);
     myRemoveSpaceCommand->setEnabled(!pos && (position == 0 || !barline) &&
                                      !tempoMarker && !altEnding && !dynamic);
-    myRemoveNoteCommand->setEnabled(pos || barline || hasSelection);
-    myRemovePositionCommand->setEnabled(pos || barline || hasSelection);
+    myRemoveItemCommand->setEnabled(pos || barline || positions_selected ||
+                                    item_selected);
+    myRemovePositionCommand->setEnabled(pos || barline || positions_selected);
 
     myChordNameCommand->setChecked(
         ScoreUtils::findByPosition(system.getChords(), position) != nullptr);
@@ -3429,8 +3470,8 @@ void PowerTabEditor::updateCommands()
     myLeftHandFingeringCommand->setEnabled(note != nullptr);
     myLeftHandFingeringCommand->setChecked(note && note->hasLeftHandFingering());
 
-    myShiftStringUpCommand->setEnabled(note != nullptr || hasSelection);
-    myShiftStringDownCommand->setEnabled(note != nullptr || hasSelection);
+    myShiftStringUpCommand->setEnabled(note != nullptr || positions_selected);
+    myShiftStringDownCommand->setEnabled(note != nullptr || positions_selected);
 
     if (note)
     {

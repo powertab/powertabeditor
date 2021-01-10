@@ -108,7 +108,7 @@ QGraphicsItem *SystemRenderer::operator()(const System &system,
 
         if (isFirstStaff)
         {
-            drawSystemSymbols(system, *layout);
+            drawSystemSymbols(location, *layout);
             height += layout->getSystemSymbolSpacing();
         }
 
@@ -410,9 +410,10 @@ void SystemRenderer::drawArpeggio(const Position &position, double x,
     endPoint->setParentItem(myParentStaff);
 }
 
-void SystemRenderer::drawSystemSymbols(const System &system,
+void SystemRenderer::drawSystemSymbols(const ConstScoreLocation &location,
                                        const LayoutInfo& layout)
 {
+    const System &system = location.getSystem();
     double height = 0;
 
     // Allocate space for any rehearsal signs - they are drawn at the same
@@ -436,7 +437,7 @@ void SystemRenderer::drawSystemSymbols(const System &system,
 
     if (!system.getTempoMarkers().empty())
     {
-        drawTempoMarkers(system, layout, height);
+        drawTempoMarkers(location, layout, height);
         height += LayoutInfo::SYSTEM_SYMBOL_SPACING;
         drawDividerLine(height);
     }
@@ -591,10 +592,11 @@ static QString getTripletFeelImage(const TempoMarker &tempo)
     }
 }
 
-void SystemRenderer::drawTempoMarkers(const System &system,
-                                      const LayoutInfo &layout,
-                                      double height)
+void
+SystemRenderer::drawTempoMarkers(const ConstScoreLocation &location,
+                                 const LayoutInfo &layout, double height)
 {
+    const System &system = location.getSystem();
     for (const TempoMarker &tempo : system.getTempoMarkers())
     {
         if (tempo.getMarkerType() == TempoMarker::NotShown)
@@ -602,13 +604,12 @@ void SystemRenderer::drawTempoMarkers(const System &system,
 
         const double x = layout.getPositionX(tempo.getPosition());
 
-#if 0
-        auto group = new ClickableGroup([]() {
-            // TODO - allow editing a tempo marker by clicking on it.
-        });
-#else
-        auto group = new QGraphicsItemGroup();
-#endif
+        ConstScoreLocation marker_location(location);
+        marker_location.setPositionIndex(tempo.getPosition());
+        auto group = new ClickableGroup(
+            QObject::tr("Double-click to edit tempo marker."),
+            myScoreArea->getClickEvent(), marker_location,
+            ScoreItem::TempoMarker);
 
         QFont font = myPlainTextFont;
         if (tempo.getMarkerType() == TempoMarker::AlterationOfPace)

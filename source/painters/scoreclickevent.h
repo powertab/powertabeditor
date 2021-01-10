@@ -29,7 +29,8 @@ enum class ScoreItem
     Barline,
     KeySignature,
     TimeSignature,
-    Clef
+    Clef,
+    TempoMarker
 };
 
 enum class ScoreItemAction

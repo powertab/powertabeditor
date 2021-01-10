@@ -157,8 +157,8 @@ private slots:
     void shiftForward();
     /// Moves all positions after the current location backwards.
     void shiftBackward();
-    /// Deletes the current note.
-    void removeCurrentPosition();
+    /// Deletes the selected note (or items like tempo markers).
+    void removeSelectedItem();
     /// Deletes the currently-selected positions.
     void removeSelectedPositions();
     /// Moves the caret to a specific barline.
@@ -208,7 +208,7 @@ private slots:
     /// Adds or removes a rehearsal sign at the current barline.
     void editRehearsalSign();
     /// Adds or removes a tempo marker at the current position.
-    void editTempoMarker();
+    void editTempoMarker(bool remove = false);
     /// Adds or removes an accel/rit symbol at the current position.
     void editAlterationOfPace();
     /// Edits the key signature at the caret's current location.
@@ -482,7 +482,7 @@ private:
     Command *myPrevBarCommand;
     Command *myInsertSpaceCommand;
     Command *myRemoveSpaceCommand;
-    Command *myRemoveNoteCommand;
+    Command *myRemoveItemCommand;
     Command *myRemovePositionCommand;
     Command *myGoToBarlineCommand;
     Command *myGoToRehearsalSignCommand;
