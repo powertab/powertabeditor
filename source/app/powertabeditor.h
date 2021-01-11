@@ -206,7 +206,7 @@ private slots:
     void editMultiBarRest();
 
     /// Adds or removes a rehearsal sign at the current barline.
-    void editRehearsalSign();
+    void editRehearsalSign(bool remove = false);
     /// Adds or removes a tempo marker at the current position.
     void editTempoMarker(bool remove = false);
     /// Adds or removes an accel/rit symbol at the current position.

@@ -34,10 +34,30 @@ TEST_CASE("Actions/AddRehearsalSign")
     action.redo();
     const Barline &barline = score.getSystems()[0].getBarlines()[1];
     REQUIRE(barline.hasRehearsalSign());
-    const RehearsalSign &sign = barline.getRehearsalSign();
-    REQUIRE(sign.getDescription() == "Verse");
-    REQUIRE(sign.getLetters() == "B");
+    {
+        const RehearsalSign &sign = barline.getRehearsalSign();
+        REQUIRE(sign.getDescription() == "Verse");
+        REQUIRE(sign.getLetters() == "B");
+    }
 
     action.undo();
     REQUIRE(!score.getSystems()[0].getBarlines()[1].hasRehearsalSign());
+
+    action.redo();
+
+    EditRehearsalSign edit_action(location, "Chorus");
+    edit_action.redo();
+    {
+        REQUIRE(barline.hasRehearsalSign());
+        const RehearsalSign &sign = barline.getRehearsalSign();
+        REQUIRE(sign.getDescription() == "Chorus");
+        REQUIRE(sign.getLetters() == "B");
+    }
+    edit_action.undo();
+    {
+        REQUIRE(barline.hasRehearsalSign());
+        const RehearsalSign &sign = barline.getRehearsalSign();
+        REQUIRE(sign.getDescription() == "Verse");
+        REQUIRE(sign.getLetters() == "B");
+    }
 }

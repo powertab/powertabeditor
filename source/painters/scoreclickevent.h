@@ -30,7 +30,8 @@ enum class ScoreItem
     KeySignature,
     TimeSignature,
     Clef,
-    TempoMarker
+    TempoMarker,
+    RehearsalSign
 };
 
 enum class ScoreItemAction

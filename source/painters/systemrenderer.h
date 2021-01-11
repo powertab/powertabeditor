@@ -48,8 +48,8 @@ private:
                      const ConstScoreLocation &location);
 
     /// Draws barlines, along with time signatures, rehearsal signs, etc.
-    void drawBarlines(const System &system, int systemIndex,
-                      const LayoutConstPtr &layout, int staffIndex);
+    void drawBarlines(const ConstScoreLocation &location,
+                      const LayoutConstPtr &layout);
 
     /// Draws the tab notes for all notes in the staff.
     void drawTabNotes(const Staff &staff, const LayoutConstPtr &layout);

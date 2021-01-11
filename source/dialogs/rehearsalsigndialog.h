@@ -29,7 +29,7 @@ class RehearsalSignDialog : public QDialog
     Q_OBJECT
 
 public:
-    RehearsalSignDialog(QWidget *parent);
+    RehearsalSignDialog(QWidget *parent, const std::string &description);
     ~RehearsalSignDialog();
 
     /// Returns the description of the rehearsal sign that was entered by

@@ -160,7 +160,7 @@ QGraphicsItem *SystemRenderer::operator()(const System &system,
 
         drawTabClef(LayoutInfo::CLEF_PADDING, *layout, location);
 
-        drawBarlines(system, systemIndex, layout, location.getStaffIndex());
+        drawBarlines(location, layout);
         drawTabNotes(staff, layout);
         drawLegato(staff, *layout);
         drawSlides(staff, *layout, location);
@@ -219,20 +219,21 @@ void SystemRenderer::drawBarNumber(int systemIndex, const LayoutInfo &layout)
     text->setParentItem(myParentStaff);
 }
 
-void SystemRenderer::drawBarlines(const System &system, int systemIndex,
-                                  const LayoutConstPtr &layout,
-                                  int staffIndex)
+void
+SystemRenderer::drawBarlines(const ConstScoreLocation &location,
+                             const LayoutConstPtr &layout)
 {
+    const System &system = location.getSystem();
     for (const Barline &barline : system.getBarlines())
     {
-        const ConstScoreLocation location(myScore, systemIndex, staffIndex,
-                                          barline.getPosition());
+        ConstScoreLocation bar_location(location);
+        bar_location.setPositionIndex(barline.getPosition());
 
         const KeySignature &keySig = barline.getKeySignature();
         const TimeSignature &timeSig = barline.getTimeSignature();
 
         BarlinePainter *barlinePainter = new BarlinePainter(
-            layout, barline, location, myScoreArea->getClickEvent(),
+            layout, barline, bar_location, myScoreArea->getClickEvent(),
             myPalette.text().color());
 
         double x = layout->getPositionX(barline.getPosition());
@@ -279,7 +280,7 @@ void SystemRenderer::drawBarlines(const System &system, int systemIndex,
         if (keySig.isVisible())
         {
             auto keySigPainter = new KeySignaturePainter(
-                layout, keySig, location, myScoreArea->getClickEvent());
+                layout, keySig, bar_location, myScoreArea->getClickEvent());
 
             keySigPainter->setPos(keySigX, layout->getTopStdNotationLine());
             keySigPainter->setParentItem(myParentStaff);
@@ -288,24 +289,32 @@ void SystemRenderer::drawBarlines(const System &system, int systemIndex,
         if (timeSig.isVisible())
         {
             auto timeSigPainter = new TimeSignaturePainter(
-                layout, timeSig, location, myScoreArea->getClickEvent());
+                layout, timeSig, bar_location, myScoreArea->getClickEvent());
 
             timeSigPainter->setPos(timeSigX, layout->getTopStdNotationLine());
             timeSigPainter->setParentItem(myParentStaff);
         }
 
-        if (barline.hasRehearsalSign() && staffIndex == 0)
+        if (barline.hasRehearsalSign() && location.getStaffIndex() == 0)
         {
             const RehearsalSign &sign = barline.getRehearsalSign();
-            const int RECTANGLE_OFFSET = 4;
+            static constexpr int RECTANGLE_OFFSET = 4;
+
+            auto group = new ClickableGroup(
+                QObject::tr("Double-click to edit rehearsal sign."),
+                myScoreArea->getClickEvent(), bar_location,
+                ScoreItem::RehearsalSign);
 
             auto signLetters = new SimpleTextItem(
-                QString::fromStdString(sign.getLetters()), myRehearsalSignFont, TextAlignment::Top, QPen(myPalette.text().color()));
+                QString::fromStdString(sign.getLetters()), myRehearsalSignFont,
+                TextAlignment::Top, QPen(myPalette.text().color()));
             signLetters->setX(rehearsalSignX + RECTANGLE_OFFSET);
             centerSymbolVertically(*signLetters, 0);
+            group->addToGroup(signLetters);
 
             QFontMetricsF metrics(myRehearsalSignFont);
-            const Barline *nextBar = system.getNextBarline(barline.getPosition());
+            const Barline *nextBar =
+                system.getNextBarline(barline.getPosition());
             Q_ASSERT(nextBar);
             const double signTextX =
                 signLetters->x() + signLetters->boundingRect().width() + 7;
@@ -315,12 +324,14 @@ void SystemRenderer::drawBarlines(const System &system, int systemIndex,
                 layout->getPositionX(nextBar->getPosition()) - signTextX -
                     RECTANGLE_OFFSET);
 
-            auto signText =
-                new SimpleTextItem(shortenedSignText, myRehearsalSignFont, TextAlignment::Top, QPen(myPalette.text().color()));
+            auto signText = new SimpleTextItem(
+                shortenedSignText, myRehearsalSignFont, TextAlignment::Top,
+                QPen(myPalette.text().color()));
             signText->setX(signTextX);
             centerSymbolVertically(*signText, 0);
             // The tooltip should contain the full description.
             signText->setToolTip(QString::fromStdString(sign.getDescription()));
+            group->addToGroup(signText);
 
             // Draw rectangle around rehearsal sign letters.
             QRectF boundingRect = signLetters->boundingRect();
@@ -328,10 +339,9 @@ void SystemRenderer::drawBarlines(const System &system, int systemIndex,
             auto rect = new QGraphicsRectItem(boundingRect);
             rect->setX(rehearsalSignX);
             centerSymbolVertically(*rect, 0);
+            group->addToGroup(rect);
 
-            rect->setParentItem(myParentSystem);
-            signText->setParentItem(myParentSystem);
-            signLetters->setParentItem(myParentSystem);
+            group->setParentItem(myParentSystem);
         }
     }
 }

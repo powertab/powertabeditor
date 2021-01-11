@@ -779,6 +779,10 @@ void PowerTabEditor::removeSelectedItem()
             editTempoMarker(/* remove */ true);
             break;
 
+        case ScoreItem::RehearsalSign:
+            editRehearsalSign(/* remove */ true);
+            break;
+
         case ScoreItem::Staff:
         {
             auto location = getLocation();
@@ -1232,30 +1236,41 @@ void PowerTabEditor::editMultiBarRest()
     }
 }
 
-void PowerTabEditor::editRehearsalSign()
+void
+PowerTabEditor::editRehearsalSign(bool remove)
 {
     const ScoreLocation &location = getLocation();
     const Barline *barline = location.getBarline();
     Q_ASSERT(barline);
 
-    if (barline->hasRehearsalSign())
+    if (remove)
     {
+        Q_ASSERT(barline->hasRehearsalSign());
         myUndoManager->push(new RemoveRehearsalSign(location),
                             UndoManager::AFFECTS_ALL_SYSTEMS);
+        return;
     }
-    else
-    {
-        RehearsalSignDialog dialog(this);
 
-        if (dialog.exec() == QDialog::Accepted)
+    auto sign =
+        barline->hasRehearsalSign() ? &barline->getRehearsalSign() : nullptr;
+    RehearsalSignDialog dialog(this, sign ? sign->getDescription() : "");
+    if (dialog.exec() == QDialog::Accepted)
+    {
+        if (sign)
         {
-            myUndoManager->push(new AddRehearsalSign(location,
-                                                     dialog.getDescription()),
-                                UndoManager::AFFECTS_ALL_SYSTEMS);
+            myUndoManager->push(
+                new EditRehearsalSign(location, dialog.getDescription()),
+                location.getSystemIndex());
         }
         else
-            myRehearsalSignCommand->setChecked(false);
+        {
+            myUndoManager->push(
+                new AddRehearsalSign(location, dialog.getDescription()),
+                UndoManager::AFFECTS_ALL_SYSTEMS);
+        }
     }
+    else
+        myRehearsalSignCommand->setChecked(false);
 }
 
 void PowerTabEditor::editTempoMarker(bool remove)
@@ -1264,8 +1279,9 @@ void PowerTabEditor::editTempoMarker(bool remove)
     const TempoMarker *marker = ScoreUtils::findByPosition(
         location.getSystem().getTempoMarkers(), location.getPositionIndex());
 
-    if (remove && marker)
+    if (remove)
     {
+        Q_ASSERT(marker);
         myUndoManager->push(new RemoveTempoMarker(location),
                             location.getSystemIndex());
         return;
@@ -2419,14 +2435,14 @@ void PowerTabEditor::createCommands()
                     Qt::SHIFT + Qt::Key_R, this);
     myRehearsalSignCommand->setCheckable(true);
     connect(myRehearsalSignCommand, &QAction::triggered, this,
-            &PowerTabEditor::editRehearsalSign);
+            [=]() { editRehearsalSign(); });
 
     myTempoMarkerCommand = new Command(
         tr("Tempo Marker..."), "MusicSymbols.TempoMarker", Qt::Key_O, this,
         QStringLiteral(u":images/tempo.png"));
     myTempoMarkerCommand->setCheckable(true);
     connect(myTempoMarkerCommand, &QAction::triggered, this,
-            &PowerTabEditor::editTempoMarker);
+            [=]() { editTempoMarker(); });
 
     myAlterationOfPaceCommand =
         new Command(tr("Alteration of Pace..."),
@@ -3273,6 +3289,7 @@ void PowerTabEditor::setupNewTab()
                                 getCaret().moveToLocation(location);
                                 break;
                             default:
+                                // Do nothing.
                                 break;
                         }
                         break;
@@ -3280,6 +3297,9 @@ void PowerTabEditor::setupNewTab()
                     case ScoreItemAction::DoubleClicked:
                         switch (item)
                         {
+                            case ScoreItem::Staff:
+                                // Do nothing.
+                                break;
                             case ScoreItem::Barline:
                                 editBarline();
                                 break;
@@ -3296,9 +3316,16 @@ void PowerTabEditor::setupNewTab()
                             case ScoreItem::TempoMarker:
                                 editTempoMarker();
                                 break;
-                            default:
+                            case ScoreItem::RehearsalSign:
+                                editRehearsalSign();
                                 break;
                         }
+
+                        // Clear the selection after editing. We may have also
+                        // triggered a redraw anyways that cleared the graphics
+                        // scene selection.
+                        getScoreArea()->clearSelection();
+                        getCaret().setSelectedItem(ScoreItem::Staff);
                         break;
                 }
 
@@ -3369,6 +3396,23 @@ inline void updateNoteProperty(Command *command, const Note *note,
     command->setEnabled(note != nullptr);
     command->setChecked(note && note->hasProperty(property));
 }
+
+bool
+canDeleteItem(ScoreItem item)
+{
+    switch (item)
+    {
+        case ScoreItem::TempoMarker:
+        case ScoreItem::RehearsalSign:
+            return true;
+        case ScoreItem::Staff:
+        case ScoreItem::Barline:
+        case ScoreItem::TimeSignature:
+        case ScoreItem::KeySignature:
+        case ScoreItem::Clef:
+            return false;
+    }
+}
 }
 
 void PowerTabEditor::updateCommands()
@@ -3398,9 +3442,6 @@ void PowerTabEditor::updateCommands()
         ScoreUtils::findByPosition(staff.getDynamics(), position);
     const bool positions_selected = !location.getSelectedPositions().empty();
 
-    const bool item_selected =
-        getCaret().getSelectedItem() == ScoreItem::TempoMarker;
-
     myRemoveCurrentSystemCommand->setEnabled(score.getSystems().size() > 1);
     myRemoveCurrentStaffCommand->setEnabled(system.getStaves().size() > 1);
     myIncreaseLineSpacingCommand->setEnabled(score.getLineSpacing() <
@@ -3409,8 +3450,9 @@ void PowerTabEditor::updateCommands()
                                              Score::MIN_LINE_SPACING);
     myRemoveSpaceCommand->setEnabled(!pos && (position == 0 || !barline) &&
                                      !tempoMarker && !altEnding && !dynamic);
-    myRemoveItemCommand->setEnabled(pos || barline || positions_selected ||
-                                    item_selected);
+    myRemoveItemCommand->setEnabled(
+        pos || barline || positions_selected ||
+        canDeleteItem(getCaret().getSelectedItem()));
     myRemovePositionCommand->setEnabled(pos || barline || positions_selected);
 
     myChordNameCommand->setChecked(

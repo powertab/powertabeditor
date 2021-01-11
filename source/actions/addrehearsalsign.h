@@ -19,13 +19,15 @@
 #define ACTIONS_ADDREHEARSALSIGN_H
 
 #include <QUndoCommand>
+#include <score/rehearsalsign.h>
 #include <score/scorelocation.h>
 
+/// Adds a new rehearsal sign.
 class AddRehearsalSign : public QUndoCommand
 {
 public:
     AddRehearsalSign(const ScoreLocation &location,
-                     const std::string &description);
+                      const std::string &description);
 
     virtual void redo() override;
     virtual void undo() override;
@@ -33,6 +35,22 @@ public:
 private:
     ScoreLocation myLocation;
     const std::string myDescription;
+};
+
+/// Edits an existing rehearsal sign.
+class EditRehearsalSign : public QUndoCommand
+{
+public:
+    EditRehearsalSign(const ScoreLocation &location,
+                      const std::string &new_description);
+
+    virtual void redo() override;
+    virtual void undo() override;
+
+private:
+    ScoreLocation myLocation;
+    const std::string myNewDescription;
+    RehearsalSign myOrigSign;
 };
 
 #endif

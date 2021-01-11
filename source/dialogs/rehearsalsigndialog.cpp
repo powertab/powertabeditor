@@ -21,9 +21,9 @@
 #include <QCompleter>
 #include <QMessageBox>
 
-RehearsalSignDialog::RehearsalSignDialog(QWidget *parent)
-    : QDialog(parent),
-      ui(new Ui::RehearsalSignDialog)
+RehearsalSignDialog::RehearsalSignDialog(QWidget *parent,
+                                         const std::string &description)
+    : QDialog(parent), ui(new Ui::RehearsalSignDialog)
 {
     ui->setupUi(this);
 
@@ -32,6 +32,8 @@ RehearsalSignDialog::RehearsalSignDialog(QWidget *parent)
 
     populateDescriptionChoices();
     ui->descriptionComboBox->clearEditText();
+    ui->descriptionComboBox->setCurrentText(
+        QString::fromStdString(description));
 }
 
 RehearsalSignDialog::~RehearsalSignDialog()
@@ -60,9 +62,7 @@ void RehearsalSignDialog::populateDescriptionChoices()
 
 void RehearsalSignDialog::accept()
 {
-    std::string description = ui->descriptionComboBox->currentText().toStdString();
-    
-    if (description.empty())
+    if (getDescription().empty())
     {
         QMessageBox(QMessageBox::Warning, tr("Rehearsal Sign"),
                     tr("The Rehearsal Sign description cannot be empty.")).exec();

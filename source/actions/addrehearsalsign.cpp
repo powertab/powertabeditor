@@ -30,7 +30,8 @@ AddRehearsalSign::AddRehearsalSign(const ScoreLocation &location,
 
 void AddRehearsalSign::redo()
 {
-    myLocation.getBarline()->setRehearsalSign(RehearsalSign("A", myDescription));
+    myLocation.getBarline()->setRehearsalSign(
+        RehearsalSign("A", myDescription));
     ScoreUtils::adjustRehearsalSigns(myLocation.getScore());
 }
 
@@ -38,4 +39,25 @@ void AddRehearsalSign::undo()
 {
     myLocation.getBarline()->clearRehearsalSign();
     ScoreUtils::adjustRehearsalSigns(myLocation.getScore());
+}
+
+EditRehearsalSign::EditRehearsalSign(const ScoreLocation &location,
+                                     const std::string &new_description)
+    : QUndoCommand(QObject::tr("Edit Rehearsal Sign")),
+      myLocation(location),
+      myNewDescription(new_description),
+      myOrigSign(location.getBarline()->getRehearsalSign())
+{
+}
+
+void EditRehearsalSign::redo()
+{
+    RehearsalSign sign = myOrigSign;
+    sign.setDescription(myNewDescription);
+    myLocation.getBarline()->setRehearsalSign(sign);
+}
+
+void EditRehearsalSign::undo()
+{
+    myLocation.getBarline()->setRehearsalSign(myOrigSign);
 }
