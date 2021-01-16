@@ -3431,6 +3431,9 @@ canDeleteItem(ScoreItem item)
         case ScoreItem::Clef:
             return false;
     }
+
+    // This is unreachable, but neccessary to avoid a gcc warning.
+    return false;
 }
 }
 
