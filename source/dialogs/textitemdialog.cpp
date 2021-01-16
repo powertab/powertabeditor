@@ -19,14 +19,21 @@
 #include "ui_textitemdialog.h"
 
 #include <QMessageBox>
+#include <score/textitem.h>
 
-TextItemDialog::TextItemDialog(QWidget *parent)
+TextItemDialog::TextItemDialog(QWidget *parent, const TextItem *current_item)
     : QDialog(parent), ui(new Ui::TextItemDialog)
 {
     ui->setupUi(this);
 
     connect(ui->buttonBox, &QDialogButtonBox::accepted, this, &QDialog::accept);
     connect(ui->buttonBox, &QDialogButtonBox::rejected, this, &QDialog::reject);
+
+    if (current_item)
+    {
+        ui->contentsTextEdit->setPlainText(
+            QString::fromStdString(current_item->getContents()));
+    }
 }
 
 TextItemDialog::~TextItemDialog()

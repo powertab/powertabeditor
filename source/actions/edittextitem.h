@@ -15,12 +15,25 @@
   * along with this program.  If not, see <http://www.gnu.org/licenses/>.
 */
 
-#ifndef ACTIONS_REMOVETEXTITEM_H
-#define ACTIONS_REMOVETEXTITEM_H
+#ifndef ACTIONS_EDITTEXTITEM_H
+#define ACTIONS_EDITTEXTITEM_H
 
 #include <QUndoCommand>
 #include <score/scorelocation.h>
 #include <score/textitem.h>
+
+class AddTextItem : public QUndoCommand
+{
+public:
+    AddTextItem(const ScoreLocation &location, const TextItem &text);
+
+    virtual void redo() override;
+    virtual void undo() override;
+
+private:
+    ScoreLocation myLocation;
+    const TextItem myText;
+};
 
 class RemoveTextItem : public QUndoCommand
 {

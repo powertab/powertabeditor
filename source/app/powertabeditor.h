@@ -169,7 +169,7 @@ private slots:
     /// Adds or removes a chord name at the current position.
     void editChordName();
     /// Adds or removes a text item at the current position.
-    void editTextItem();
+    void editTextItem(bool remove = false);
 
     /// Inserts a new system at the end of the score.
     void insertSystemAtEnd();

@@ -14,11 +14,28 @@
   * You should have received a copy of the GNU General Public License
   * along with this program.  If not, see <http://www.gnu.org/licenses/>.
 */
-  
+
 #include <doctest/doctest.h>
 
-#include <actions/removetextitem.h>
+#include <actions/edittextitem.h>
 #include <score/score.h>
+
+TEST_CASE("Actions/AddTextItem")
+{
+    Score score;
+    score.insertSystem(System());
+
+    TextItem text(7, "foo");
+    ScoreLocation location(score, 0, 0, 6);
+    AddTextItem action(location, text);
+
+    action.redo();
+    REQUIRE(location.getSystem().getTextItems().size() == 1);
+    REQUIRE(location.getSystem().getTextItems()[0] == text);
+
+    action.undo();
+    REQUIRE(location.getSystem().getTextItems().size() == 0);
+}
 
 TEST_CASE("Actions/RemoveTextItem")
 {

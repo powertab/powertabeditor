@@ -25,7 +25,6 @@ set( srcs
     actions/test_addsystem.cpp
     actions/test_addtappedharmonic.cpp
     actions/test_addtempomarker.cpp
-    actions/test_addtextitem.cpp
     actions/test_addtrill.cpp
     actions/test_adjustlinespacing.cpp
     actions/test_editbarline.cpp
@@ -38,6 +37,7 @@ set( srcs
     actions/test_editplayer.cpp
     actions/test_editstaff.cpp
     actions/test_edittabnumber.cpp
+    actions/test_edittextitem.cpp
     actions/test_edittimesignature.cpp
     actions/test_editviewfilters.cpp
     actions/test_removealternateending.cpp
@@ -61,7 +61,6 @@ set( srcs
     actions/test_removesystem.cpp
     actions/test_removetappedharmonic.cpp
     actions/test_removetempomarker.cpp
-    actions/test_removetextitem.cpp
     actions/test_removetrill.cpp
     actions/test_shiftstring.cpp
     actions/test_volumeswell.cpp

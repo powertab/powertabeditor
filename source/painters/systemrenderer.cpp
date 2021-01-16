@@ -467,7 +467,7 @@ void SystemRenderer::drawSystemSymbols(const ConstScoreLocation &location,
 
     if (!system.getTextItems().empty())
     {
-        drawTextItems(system, layout, height);
+        drawTextItems(location, layout, height);
         height += LayoutInfo::SYSTEM_SYMBOL_SPACING;
         drawDividerLine(height);
     }
@@ -727,12 +727,19 @@ void SystemRenderer::drawChordText(const System &system,
     }
 }
 
-void SystemRenderer::drawTextItems(const System &system,
-                                   const LayoutInfo &layout, double height)
+void
+SystemRenderer::drawTextItems(const ConstScoreLocation &location,
+                              const LayoutInfo &layout, double height)
 {
-    for (const TextItem &text : system.getTextItems())
+    for (const TextItem &text : location.getSystem().getTextItems())
     {
         const QString &contents = QString::fromStdString(text.getContents());
+
+        ConstScoreLocation item_location(location);
+        item_location.setPositionIndex(text.getPosition());
+        auto group = new ClickableGroup(
+            QObject::tr("Double-click to edit text."),
+            myScoreArea->getClickEvent(), item_location, ScoreItem::TextItem);
 
         // Note: the SimpleTextItem class is not used here since multi-line
         // support is needed.
@@ -743,7 +750,9 @@ void SystemRenderer::drawTextItems(const System &system,
 
         text_item->setX(layout.getPositionX(text.getPosition()));
         centerSymbolVertically(*text_item, height);
-        text_item->setParentItem(myParentSystem);
+        group->addToGroup(text_item);
+
+        group->setParentItem(myParentSystem);
     }
 }
 

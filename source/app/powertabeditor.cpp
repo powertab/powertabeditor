@@ -36,7 +36,6 @@
 #include <actions/addstaff.h>
 #include <actions/addsystem.h>
 #include <actions/addtempomarker.h>
-#include <actions/addtextitem.h>
 #include <actions/adjustlinespacing.h>
 #include <actions/editbarline.h>
 #include <actions/editdynamic.h>
@@ -47,6 +46,7 @@
 #include <actions/editplayer.h>
 #include <actions/editstaff.h>
 #include <actions/edittabnumber.h>
+#include <actions/edittextitem.h>
 #include <actions/edittimesignature.h>
 #include <actions/editviewfilters.h>
 #include <actions/polishscore.h>
@@ -69,7 +69,6 @@
 #include <actions/removestaff.h>
 #include <actions/removesystem.h>
 #include <actions/removetempomarker.h>
-#include <actions/removetextitem.h>
 #include <actions/shiftpositions.h>
 #include <actions/shiftstring.h>
 #include <actions/undomanager.h>
@@ -783,6 +782,10 @@ void PowerTabEditor::removeSelectedItem()
             editRehearsalSign(/* remove */ true);
             break;
 
+        case ScoreItem::TextItem:
+            editTextItem(/* remove */ true);
+            break;
+
         case ScoreItem::Staff:
         {
             auto location = getLocation();
@@ -890,29 +893,41 @@ void PowerTabEditor::editChordName()
     }
 }
 
-void PowerTabEditor::editTextItem()
+void
+PowerTabEditor::editTextItem(bool remove)
 {
-    ScoreLocation &location(getLocation());
+    const ScoreLocation &location = getLocation();
+    const TextItem *item = ScoreUtils::findByPosition(
+        location.getSystem().getTextItems(), location.getPositionIndex());
 
-    if (!ScoreUtils::findByPosition(location.getSystem().getTextItems(),
-                                    location.getPositionIndex()))
+    if (remove)
     {
-        TextItemDialog dialog(this);
-        if (dialog.exec() == QDialog::Accepted)
-        {
-            TextItem text(location.getPositionIndex(), dialog.getContents());
-
-            myUndoManager->push(new AddTextItem(location, text),
-                                location.getSystemIndex());
-        }
-        else
-            myTextCommand->setChecked(false);
-    }
-    else
-    {
+        Q_ASSERT(item);
         myUndoManager->push(new RemoveTextItem(location),
                             location.getSystemIndex());
+        return;
     }
+
+    TextItemDialog dialog(this, item);
+    if (dialog.exec() == QDialog::Accepted)
+    {
+        TextItem new_item(location.getPositionIndex(), dialog.getContents());
+
+        if (item)
+        {
+            myUndoManager->beginMacro(tr("Edit Text Item"));
+            myUndoManager->push(new RemoveTextItem(location),
+                                location.getSystemIndex());
+        }
+
+        myUndoManager->push(new AddTextItem(location, new_item),
+                            location.getSystemIndex());
+
+        if (item)
+            myUndoManager->endMacro();
+    }
+    else
+        myTextCommand->setChecked(false);
 }
 
 void PowerTabEditor::insertSystemAtEnd()
@@ -3319,6 +3334,9 @@ void PowerTabEditor::setupNewTab()
                             case ScoreItem::RehearsalSign:
                                 editRehearsalSign();
                                 break;
+                            case ScoreItem::TextItem:
+                                editTextItem();
+                                break;
                         }
 
                         // Clear the selection after editing. We may have also
@@ -3404,6 +3422,7 @@ canDeleteItem(ScoreItem item)
     {
         case ScoreItem::TempoMarker:
         case ScoreItem::RehearsalSign:
+        case ScoreItem::TextItem:
             return true;
         case ScoreItem::Staff:
         case ScoreItem::Barline:

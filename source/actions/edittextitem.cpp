@@ -15,23 +15,44 @@
   * along with this program.  If not, see <http://www.gnu.org/licenses/>.
 */
 
-#include "addtextitem.h"
+#include "edittextitem.h"
 
 #include <score/system.h>
+#include <score/utils.h>
 
 AddTextItem::AddTextItem(const ScoreLocation &location, const TextItem &text)
-    : QUndoCommand(QObject::tr("Add Text")),
-      myLocation(location),
-      myText(text)
+    : QUndoCommand(QObject::tr("Add Text")), myLocation(location), myText(text)
 {
 }
 
-void AddTextItem::redo()
+void
+AddTextItem::redo()
 {
     myLocation.getSystem().insertTextItem(myText);
 }
 
-void AddTextItem::undo()
+void
+AddTextItem::undo()
 {
     myLocation.getSystem().removeTextItem(myText);
+}
+
+RemoveTextItem::RemoveTextItem(const ScoreLocation &location)
+    : QUndoCommand(QObject::tr("Remove Text")),
+      myLocation(location),
+      myOriginalText(*ScoreUtils::findByPosition(
+          location.getSystem().getTextItems(), location.getPositionIndex()))
+{
+}
+
+void
+RemoveTextItem::redo()
+{
+    myLocation.getSystem().removeTextItem(myOriginalText);
+}
+
+void
+RemoveTextItem::undo()
+{
+    myLocation.getSystem().insertTextItem(myOriginalText);
 }

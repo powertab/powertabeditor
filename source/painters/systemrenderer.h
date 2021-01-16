@@ -94,8 +94,8 @@ private:
                        double height);
 
     /// Draws all of the text items in the system.
-    void drawTextItems(const System &system, const LayoutInfo &layout,
-                       double height);
+    void drawTextItems(const ConstScoreLocation &location,
+                       const LayoutInfo &layout, double height);
 
     /// Draws the text symbols that appear below the tab staff
     /// (hammerons, slides, etc).

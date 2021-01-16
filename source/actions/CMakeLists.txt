@@ -19,7 +19,6 @@ set( srcs
     addstaff.cpp
     addsystem.cpp
     addtempomarker.cpp
-    addtextitem.cpp
     adjustlinespacing.cpp
     editbarline.cpp
     editdynamic.cpp
@@ -30,6 +29,7 @@ set( srcs
     editplayer.cpp
     editstaff.cpp
     edittabnumber.cpp
+    edittextitem.cpp
     edittimesignature.cpp
     editviewfilters.cpp
     insertnotes.cpp
@@ -52,7 +52,6 @@ set( srcs
     removestaff.cpp
     removesystem.cpp
     removetempomarker.cpp
-    removetextitem.cpp
     shiftpositions.cpp
     shiftstring.cpp
     undomanager.cpp
@@ -79,7 +78,6 @@ set( headers
     addstaff.h
     addsystem.h
     addtempomarker.h
-    addtextitem.h
     adjustlinespacing.h
     editbarline.h
     editdynamic.h
@@ -90,6 +88,7 @@ set( headers
     editplayer.h
     editstaff.h
     edittabnumber.h
+    edittextitem.h
     edittimesignature.h
     editviewfilters.h
     insertnotes.h
@@ -113,7 +112,6 @@ set( headers
     removestaff.h
     removesystem.h
     removetempomarker.h
-    removetextitem.h
     shiftpositions.h
     shiftstring.h
     undomanager.h
