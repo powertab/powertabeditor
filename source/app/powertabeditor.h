@@ -228,7 +228,7 @@ private slots:
     /// Adds or removes a dynamic at the current location.
     void editDynamic();
     /// Adds or removes a volume swell at the current location.
-    void editVolumeSwell();
+    void editVolumeSwell(bool remove = false);
 
     /// Adds or removes a hammeron/pulloff for the current note.
     void editHammerPull();

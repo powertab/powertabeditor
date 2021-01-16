@@ -787,6 +787,10 @@ void PowerTabEditor::removeSelectedItem()
             editPlayerChange(/* remove */ true);
             break;
 
+        case ScoreItem::VolumeSwell:
+            editVolumeSwell(/* remove */ true);
+            break;
+
         case ScoreItem::Staff:
         {
             auto location = getLocation();
@@ -1473,29 +1477,41 @@ void PowerTabEditor::editDynamic()
 }
 
 void
-PowerTabEditor::editVolumeSwell()
+PowerTabEditor::editVolumeSwell(bool remove)
 {
     const ScoreLocation &location = getLocation();
     const Position *position = location.getPosition();
     assert(position);
 
-    if (position->hasVolumeSwell())
+    if (remove)
     {
+        Q_ASSERT(position->hasVolumeSwell());
         myUndoManager->push(new RemoveVolumeSwell(location),
                             location.getSystemIndex());
+        return;
+    }
+
+    VolumeSwellDialog dialog(this, position->hasVolumeSwell()
+                                       ? &position->getVolumeSwell()
+                                       : nullptr);
+    if (dialog.exec() == QDialog::Accepted)
+    {
+        const bool editing = position->hasVolumeSwell();
+        if (editing)
+        {
+            myUndoManager->beginMacro(tr("Edit Volume Swell"));
+            myUndoManager->push(new RemoveVolumeSwell(location),
+                                location.getSystemIndex());
+        }
+        myUndoManager->push(
+            new AddVolumeSwell(location, dialog.getVolumeSwell()),
+            location.getSystemIndex());
+
+        if (editing)
+            myUndoManager->endMacro();
     }
     else
-    {
-        VolumeSwellDialog dialog(this);
-        if (dialog.exec() == QDialog::Accepted)
-        {
-            myUndoManager->push(
-                new AddVolumeSwell(location, dialog.getVolumeSwell()),
-                location.getSystemIndex());
-        }
-        else
-            myVolumeSwellCommand->setChecked(false);
-    }
+        myVolumeSwellCommand->setChecked(false);
 }
 
 void PowerTabEditor::editHammerPull()
@@ -2557,7 +2573,7 @@ void PowerTabEditor::createCommands()
                     QKeySequence(), this);
     myVolumeSwellCommand->setCheckable(true);
     connect(myVolumeSwellCommand, &QAction::triggered, this,
-            &PowerTabEditor::editVolumeSwell);
+            [=] { editVolumeSwell(); });
 
     // Tab Symbol Actions.
     myHammerPullCommand = new Command(tr("Hammer On/Pull Off"),
@@ -3352,6 +3368,9 @@ void PowerTabEditor::setupNewTab()
                             case ScoreItem::PlayerChange:
                                 editPlayerChange();
                                 break;
+                            case ScoreItem::VolumeSwell:
+                                editVolumeSwell();
+                                break;
                         }
 
                         // Clear the selection after editing. We may have also
@@ -3439,6 +3458,7 @@ canDeleteItem(ScoreItem item)
         case ScoreItem::RehearsalSign:
         case ScoreItem::TextItem:
         case ScoreItem::PlayerChange:
+        case ScoreItem::VolumeSwell:
             return true;
         case ScoreItem::Staff:
         case ScoreItem::Barline:

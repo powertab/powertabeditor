@@ -21,6 +21,7 @@
 #include <QCursor>
 #include <QPainter>
 #include <QStyleOptionGraphicsItem>
+#include <type_traits>
 
 template <typename GraphicsItemT>
 ClickableItemT<GraphicsItemT>::ClickableItemT(
@@ -72,7 +73,7 @@ template <typename GraphicsItemT>
 void
 ClickableItemT<GraphicsItemT>::paint(QPainter *painter,
                                      const QStyleOptionGraphicsItem *option,
-                                     QWidget *)
+                                     QWidget *widget)
 {
     // Override how the selection is drawn (default is to draw a black border).
     if (option->state & QStyle::State_Selected)
@@ -80,7 +81,16 @@ ClickableItemT<GraphicsItemT>::paint(QPainter *painter,
         painter->fillRect(this->boundingRect(),
                           Styles::SelectionColor);
     }
+
+    // Invoke the base class paint method if it's an actual QGraphicsItem
+    // subclass.
+    if constexpr (!std::is_same<GraphicsItemT, QGraphicsItem>::value &&
+                  !std::is_same<GraphicsItemT, QGraphicsItemGroup>::value)
+    {
+        GraphicsItemT::paint(painter, option, widget);
+    }
 }
 
 template class ClickableItemT<QGraphicsItem>;
 template class ClickableItemT<QGraphicsItemGroup>;
+template class ClickableItemT<QGraphicsPathItem>;

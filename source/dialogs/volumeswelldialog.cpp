@@ -22,7 +22,8 @@
 
 #include <QButtonGroup>
 
-VolumeSwellDialog::VolumeSwellDialog(QWidget *parent)
+VolumeSwellDialog::VolumeSwellDialog(QWidget *parent,
+                                     const VolumeSwell *current_swell)
     : QDialog(parent),
       ui(new Ui::VolumeSwellDialog),
       myStartVolumeLevels(new QButtonGroup(this)),
@@ -59,6 +60,14 @@ VolumeSwellDialog::VolumeSwellDialog(QWidget *parent)
                                    static_cast<int>(VolumeLevel::ff));
     myStartVolumeLevels->addButton(ui->fffButtonStart,
                                    static_cast<int>(VolumeLevel::fff));
+    if (current_swell)
+    {
+        myStartVolumeLevels
+            ->button(static_cast<int>(current_swell->getStartVolume()))
+            ->setChecked(true);
+    }
+    else
+        ui->volumeOffButtonStart->setChecked(true);
 
     myEndVolumeLevels->addButton(ui->volumeOffButtonEnd,
                                  static_cast<int>(VolumeLevel::Off));
@@ -78,11 +87,21 @@ VolumeSwellDialog::VolumeSwellDialog(QWidget *parent)
                                  static_cast<int>(VolumeLevel::ff));
     myEndVolumeLevels->addButton(ui->fffButtonEnd,
                                  static_cast<int>(VolumeLevel::fff));
+    if (current_swell)
+    {
+        myEndVolumeLevels
+            ->button(static_cast<int>(current_swell->getEndVolume()))
+            ->setChecked(true);
+    }
+    else
+        ui->fffButtonEnd->setChecked(true);
 
-    // Set default values.
-    ui->volumeOffButtonStart->setChecked(true);
-    ui->fffButtonEnd->setChecked(true);
     ui->overCurNoteOpt->setChecked(true);
+    if (current_swell)
+    {
+        ui->overFollowingNotesOpt->setChecked(current_swell->getDuration() > 0);
+        ui->numNotesSpinBox->setValue(current_swell->getDuration());
+    }
 
     ui->buttonBox->setFocus();
 }

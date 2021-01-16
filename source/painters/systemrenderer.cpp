@@ -167,7 +167,7 @@ QGraphicsItem *SystemRenderer::operator()(const System &system,
 
         drawSymbolsAboveStdNotationStaff(*layout);
         drawSymbolsBelowStdNotationStaff(*layout);
-        drawSymbolsAboveTabStaff(staff, *layout);
+        drawSymbolsAboveTabStaff(location, *layout);
         drawSymbolsBelowTabStaff(*layout);
 
         drawPlayerChanges(location, *layout);
@@ -1152,8 +1152,9 @@ QGraphicsItem* SystemRenderer::createArtificialHarmonicText(
                                  QFont::StyleNormal);
 }
 
-void SystemRenderer::drawSymbolsAboveTabStaff(const Staff &staff,
-                                              const LayoutInfo& layout)
+void
+SystemRenderer::drawSymbolsAboveTabStaff(const ConstScoreLocation &location,
+                                         const LayoutInfo &layout)
 {
     for (const SymbolGroup &symbolGroup : layout.getTabStaffAboveSymbols())
     {
@@ -1193,8 +1194,9 @@ void SystemRenderer::drawSymbolsAboveTabStaff(const Staff &staff,
             break;
         case SymbolGroup::Dynamic:
         {
-            const Dynamic *dynamic = ScoreUtils::findByPosition(
-                staff.getDynamics(), symbolGroup.getLeftPosition());
+            const Dynamic *dynamic =
+                ScoreUtils::findByPosition(location.getStaff().getDynamics(),
+                                           symbolGroup.getLeftPosition());
             Q_ASSERT(dynamic);
 
             renderedSymbol = createDynamic(*dynamic);
@@ -1205,7 +1207,7 @@ void SystemRenderer::drawSymbolsAboveTabStaff(const Staff &staff,
                 QStringLiteral("A.H."), QFont::StyleNormal, width, layout);
             break;
         case SymbolGroup::VolumeSwell:
-            renderedSymbol = createVolumeSwell(symbolGroup, layout);
+            renderedSymbol = createVolumeSwell(location, symbolGroup, layout);
             break;
 #if 0
         case Layout::SymbolTremoloBar:
@@ -1338,13 +1340,17 @@ void SystemRenderer::createDashedLine(QGraphicsItemGroup *group, double left,
 }
 
 QGraphicsItem *
-SystemRenderer::createVolumeSwell(const SymbolGroup &group,
+SystemRenderer::createVolumeSwell(const ConstScoreLocation &location,
+                                  const SymbolGroup &group,
                                   const LayoutInfo &layout)
 {
     const Position *pos = ScoreUtils::findByPosition(
         group.getVoice().getPositions(), group.getLeftPosition());
     assert(pos && pos->hasVolumeSwell());
     const VolumeSwell &swell = pos->getVolumeSwell();
+
+    ConstScoreLocation swell_location(location);
+    swell_location.setPositionIndex(pos->getPosition());
 
     // The width of the symbol rectangle is the number of positions that the
     // volume swell spans.
@@ -1361,7 +1367,10 @@ SystemRenderer::createVolumeSwell(const SymbolGroup &group,
     path.lineTo(start_x, LayoutInfo::TAB_SYMBOL_SPACING * 0.5);
     path.lineTo(end_x, (1.0 - padding) * LayoutInfo::TAB_SYMBOL_SPACING);
 
-    auto path_item = new QGraphicsPathItem(path);
+    auto path_item = new ClickableItemT<QGraphicsPathItem>(
+        QObject::tr("Double-click to edit volume swell."),
+        myScoreArea->getClickEvent(), swell_location, ScoreItem::VolumeSwell);
+    path_item->setPath(path);
     path_item->setPen(myPalette.text().color());
     return path_item;
 }

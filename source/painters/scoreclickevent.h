@@ -33,7 +33,8 @@ enum class ScoreItem
     TempoMarker,
     RehearsalSign,
     TextItem,
-    PlayerChange
+    PlayerChange,
+    VolumeSwell
 };
 
 enum class ScoreItemAction

@@ -33,7 +33,7 @@ class QButtonGroup;
 class VolumeSwellDialog : public QDialog
 {
 public:
-    VolumeSwellDialog(QWidget *parent);
+    VolumeSwellDialog(QWidget *parent, const VolumeSwell *current_swell);
     ~VolumeSwellDialog();
 
     VolumeSwell getVolumeSwell() const;

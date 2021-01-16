@@ -133,7 +133,8 @@ private:
                            const LayoutInfo &layout);
 
     /// Draws the symbols that appear above the tab staff (e.g. vibrato).
-    void drawSymbolsAboveTabStaff(const Staff &staff, const LayoutInfo &layout);
+    void drawSymbolsAboveTabStaff(const ConstScoreLocation &location,
+                                  const LayoutInfo &layout);
 
     /// Draws a sequence of continuous music symbols (e.g. vibrato).
     QGraphicsItem *drawContinuousFontSymbols(QChar symbol, int width);
@@ -151,7 +152,8 @@ private:
     QGraphicsItem *createDynamic(const Dynamic &dynamic);
 
     /// Creates a volume swell.
-    QGraphicsItem *createVolumeSwell(const SymbolGroup &group,
+    QGraphicsItem *createVolumeSwell(const ConstScoreLocation &location,
+                                     const SymbolGroup &group,
                                      const LayoutInfo &layout);
 
     /// Draws a group of bends.
