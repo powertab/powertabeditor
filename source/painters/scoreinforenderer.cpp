@@ -17,10 +17,13 @@
 
 #include "scoreinforenderer.h"
 
+#include "clickableitem.h"
 #include "layoutinfo.h"
 #include "simpletextitem.h"
 
+#include <score/score.h>
 #include <score/scoreinfo.h>
+#include <QColor>
 #include <QDate>
 
 static constexpr double VERTICAL_SPACING = 10.0;
@@ -254,11 +257,16 @@ static void renderLessonInfo(QGraphicsItemGroup &group, const QFont &font,
 }
 
 QGraphicsItem *
-ScoreInfoRenderer::render(const ScoreInfo &score_info, const QColor &color)
+ScoreInfoRenderer::render(const Score &score, const QColor &color,
+                          const ScoreClickEvent &click_event)
 {
+    const ScoreInfo &score_info = score.getScoreInfo();
     QFont font(QStringLiteral("Liberation Serif"));
 
-    auto group = new QGraphicsItemGroup();
+    ConstScoreLocation location(score);
+    auto group = new ClickableGroup(
+        QObject::tr("Double-click to edit score information."), click_event,
+        location, ScoreItem::ScoreInfo);
 
     switch (score_info.getScoreType())
     {

@@ -765,9 +765,10 @@ void PowerTabEditor::removeSelectedItem()
     switch (getCaret().getSelectedItem())
     {
         case ScoreItem::Barline:
-        case ScoreItem::TimeSignature:
-        case ScoreItem::KeySignature:
         case ScoreItem::Clef:
+        case ScoreItem::KeySignature:
+        case ScoreItem::ScoreInfo:
+        case ScoreItem::TimeSignature:
             // Do nothing.
             break;
 
@@ -3371,6 +3372,9 @@ void PowerTabEditor::setupNewTab()
                             case ScoreItem::VolumeSwell:
                                 editVolumeSwell();
                                 break;
+                            case ScoreItem::ScoreInfo:
+                                editFileInformation();
+                                break;
                         }
 
                         // Clear the selection after editing. We may have also
@@ -3454,17 +3458,18 @@ canDeleteItem(ScoreItem item)
 {
     switch (item)
     {
-        case ScoreItem::TempoMarker:
-        case ScoreItem::RehearsalSign:
-        case ScoreItem::TextItem:
         case ScoreItem::PlayerChange:
+        case ScoreItem::RehearsalSign:
+        case ScoreItem::TempoMarker:
+        case ScoreItem::TextItem:
         case ScoreItem::VolumeSwell:
             return true;
-        case ScoreItem::Staff:
         case ScoreItem::Barline:
-        case ScoreItem::TimeSignature:
-        case ScoreItem::KeySignature:
         case ScoreItem::Clef:
+        case ScoreItem::KeySignature:
+        case ScoreItem::ScoreInfo:
+        case ScoreItem::Staff:
+        case ScoreItem::TimeSignature:
             return false;
     }
 

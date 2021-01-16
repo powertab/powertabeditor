@@ -46,6 +46,7 @@ protected:
     const ScoreClickEvent &myClickEvent;
     const ConstScoreLocation myLocation;
     const ScoreItem myItem;
+    int myPendingHoverLeaveEvents;
 };
 
 using ClickableGroup = ClickableItemT<QGraphicsItemGroup>;

@@ -25,16 +25,17 @@ class ConstScoreLocation;
 /// Item types that can be clicked.
 enum class ScoreItem
 {
-    Staff,
     Barline,
-    KeySignature,
-    TimeSignature,
     Clef,
-    TempoMarker,
-    RehearsalSign,
-    TextItem,
+    KeySignature,
     PlayerChange,
-    VolumeSwell
+    RehearsalSign,
+    ScoreInfo,
+    Staff,
+    TempoMarker,
+    TextItem,
+    TimeSignature,
+    VolumeSwell,
 };
 
 enum class ScoreItemAction

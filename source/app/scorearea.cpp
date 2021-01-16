@@ -89,7 +89,8 @@ void ScoreArea::renderDocument(const Document &document)
         adjustScroll();
     });
 
-    myScoreInfoBlock = ScoreInfoRenderer::render(score.getScoreInfo(), myActivePalette->text().color());
+    myScoreInfoBlock = ScoreInfoRenderer::render(
+        score, myActivePalette->text().color(), myClickEvent);
 
     myRenderedSystems.reserve(static_cast<int>(score.getSystems().size()));
     for (unsigned int i = 0; i < score.getSystems().size(); ++i)

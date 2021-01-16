@@ -27,7 +27,10 @@ template <typename GraphicsItemT>
 ClickableItemT<GraphicsItemT>::ClickableItemT(
     const QString &tooltip, const ScoreClickEvent &click_event,
     const ConstScoreLocation &location, ScoreItem item)
-    : myClickEvent(click_event), myLocation(location), myItem(item)
+    : myClickEvent(click_event),
+      myLocation(location),
+      myItem(item),
+      myPendingHoverLeaveEvents(0)
 {
     this->setAcceptHoverEvents(true);
     this->setToolTip(tooltip);
@@ -49,13 +52,18 @@ void
 ClickableItemT<GraphicsItemT>::hoverEnterEvent(QGraphicsSceneHoverEvent *)
 {
     this->setCursor(Qt::PointingHandCursor);
+    ++myPendingHoverLeaveEvents;
 }
 
 template <typename GraphicsItemT>
 void
 ClickableItemT<GraphicsItemT>::hoverLeaveEvent(QGraphicsSceneHoverEvent *)
 {
-    this->unsetCursor();
+    // It seems possible to get multiple calls to hoverEnterEvent() with
+    // QGraphicsItemGroup, so wait until the last hoverLeaveEvent() call.
+    --myPendingHoverLeaveEvents;
+    if (myPendingHoverLeaveEvents == 0)
+        this->unsetCursor();
 }
 
 template <typename GraphicsItemT>
