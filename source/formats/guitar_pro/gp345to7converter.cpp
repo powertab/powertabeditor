@@ -201,7 +201,7 @@ convertBend(Gp7::Note &gp7_note, const Gp::Note &note)
 
     // Try to find a middle region.
     const int start_value = points.front().myValue;
-    const int end_value = points.back().myValue;
+    [[maybe_unused]] const int end_value = points.back().myValue;
     auto middle_1 =
         std::find_if(points.begin(), points.end(), [&](const Point &point) {
             return point.myValue != start_value;
