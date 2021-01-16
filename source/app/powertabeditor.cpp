@@ -786,6 +786,10 @@ void PowerTabEditor::removeSelectedItem()
             editTextItem(/* remove */ true);
             break;
 
+        case ScoreItem::PlayerChange:
+            editPlayerChange(/* remove */ true);
+            break;
+
         case ScoreItem::Staff:
         {
             auto location = getLocation();
@@ -1709,39 +1713,50 @@ void PowerTabEditor::addInstrument()
                         UndoManager::AFFECTS_ALL_SYSTEMS);
 }
 
-void PowerTabEditor::editPlayerChange()
+void PowerTabEditor::editPlayerChange(bool remove)
 {
     const ScoreLocation &location = getLocation();
+    const PlayerChange *existing_change = ScoreUtils::findByPosition(
+        location.getSystem().getPlayerChanges(), location.getPositionIndex());
 
     // Note that adding/removing a player change affects multiple systems,
     // since the standard notation will need to be updated if the new player
     // has a different tuning.
-    if (ScoreUtils::findByPosition(location.getSystem().getPlayerChanges(),
-                                   location.getPositionIndex()))
+    if (remove)
     {
+        Q_ASSERT(existing_change);
         myUndoManager->push(new RemovePlayerChange(location),
                             UndoManager::AFFECTS_ALL_SYSTEMS);
+        return;
+    }
+
+    // Initialize the dialog with the current staves for each player (e.g. from
+    // a previous player change if we're not editing an existing one at this
+    // position).
+    const PlayerChange *active_players = ScoreUtils::getCurrentPlayers(
+        location.getScore(), location.getSystemIndex(),
+        location.getPositionIndex());
+
+    PlayerChangeDialog dialog(this, location.getScore(), location.getSystem(),
+                              active_players);
+    if (dialog.exec() == QDialog::Accepted)
+    {
+        if (existing_change)
+        {
+            myUndoManager->beginMacro(tr("Edit Player Change"));
+            myUndoManager->push(new RemovePlayerChange(location),
+                                UndoManager::AFFECTS_ALL_SYSTEMS);
+        }
+
+        myUndoManager->push(
+            new AddPlayerChange(location, dialog.getPlayerChange()),
+            UndoManager::AFFECTS_ALL_SYSTEMS);
+
+        if (existing_change)
+            myUndoManager->endMacro();
     }
     else
-    {
-        // Initialize the dialog with the current staves for each player.
-        const PlayerChange *currentPlayers =
-                ScoreUtils::getCurrentPlayers(location.getScore(),
-                                              location.getSystemIndex(),
-                                              location.getPositionIndex());
-
-        PlayerChangeDialog dialog(this, location.getScore(),
-                                  location.getSystem(), currentPlayers);
-        if (dialog.exec() == QDialog::Accepted)
-        {
-            myUndoManager->push(
-                        new AddPlayerChange(location, dialog.getPlayerChange()),
-                        UndoManager::AFFECTS_ALL_SYSTEMS);
-
-        }
-        else
-            myPlayerChangeCommand->setChecked(false);
-    }
+        myPlayerChangeCommand->setChecked(false);
 }
 
 void PowerTabEditor::editPlayer(int playerIndex, const Player &player,
@@ -2209,7 +2224,7 @@ void PowerTabEditor::createCommands()
                                 QStringLiteral(u":images/text.png"));
     myTextCommand->setCheckable(true);
     connect(myTextCommand, &QAction::triggered, this,
-            &PowerTabEditor::editTextItem);
+            [=]() { editTextItem(); });
 
     myInsertSystemAtEndCommand = new Command(tr("Insert System At End"),
                                              "Section.InsertSystemAtEnd",
@@ -2687,7 +2702,7 @@ void PowerTabEditor::createCommands()
                                         this);
     myPlayerChangeCommand->setCheckable(true);
     connect(myPlayerChangeCommand, &QAction::triggered, this,
-            &PowerTabEditor::editPlayerChange);
+            [=]() { editPlayerChange(); });
 
     myShowTuningDictionaryCommand = new Command(tr("Tuning Dictionary..."),
                                                 "Player.TuningDictionary",
@@ -3337,6 +3352,9 @@ void PowerTabEditor::setupNewTab()
                             case ScoreItem::TextItem:
                                 editTextItem();
                                 break;
+                            case ScoreItem::PlayerChange:
+                                editPlayerChange();
+                                break;
                         }
 
                         // Clear the selection after editing. We may have also
@@ -3423,6 +3441,7 @@ canDeleteItem(ScoreItem item)
         case ScoreItem::TempoMarker:
         case ScoreItem::RehearsalSign:
         case ScoreItem::TextItem:
+        case ScoreItem::PlayerChange:
             return true;
         case ScoreItem::Staff:
         case ScoreItem::Barline:

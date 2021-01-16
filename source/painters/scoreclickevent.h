@@ -32,7 +32,8 @@ enum class ScoreItem
     Clef,
     TempoMarker,
     RehearsalSign,
-    TextItem
+    TextItem,
+    PlayerChange
 };
 
 enum class ScoreItemAction

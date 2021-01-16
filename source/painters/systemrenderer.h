@@ -129,7 +129,7 @@ private:
     void drawLegato(const Staff &staff, const LayoutInfo &layout);
 
     /// Draws player changes for the given staff.
-    void drawPlayerChanges(const System &system, int staffIndex,
+    void drawPlayerChanges(const ConstScoreLocation &location,
                            const LayoutInfo &layout);
 
     /// Draws the symbols that appear above the tab staff (e.g. vibrato).

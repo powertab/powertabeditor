@@ -248,7 +248,7 @@ private slots:
     /// Adds a new instrument to the score.
     void addInstrument();
     /// Adds or removes a player change at the current location.
-    void editPlayerChange();
+    void editPlayerChange(bool remove = false);
     /// Edits the properties of a player.
     void editPlayer(int playerIndex, const Player &player, bool undoable);
     /// Removes the specified player.

@@ -170,7 +170,7 @@ QGraphicsItem *SystemRenderer::operator()(const System &system,
         drawSymbolsAboveTabStaff(staff, *layout);
         drawSymbolsBelowTabStaff(*layout);
 
-        drawPlayerChanges(system, i, *layout);
+        drawPlayerChanges(location, *layout);
         drawStdNotation(system, staff, *layout);
 
         ++i;
@@ -896,13 +896,21 @@ void SystemRenderer::drawLegato(const Staff &staff, const LayoutInfo &layout)
     }
 }
 
-void SystemRenderer::drawPlayerChanges(const System &system, int staffIndex,
-                                       const LayoutInfo &layout)
+void
+SystemRenderer::drawPlayerChanges(const ConstScoreLocation &location,
+                                  const LayoutInfo &layout)
 {
-    for (const PlayerChange &change : system.getPlayerChanges())
+    for (const PlayerChange &change : location.getSystem().getPlayerChanges())
     {
         const std::vector<ActivePlayer> activePlayers =
-                change.getActivePlayers(staffIndex);
+                change.getActivePlayers(location.getStaffIndex());
+
+        ConstScoreLocation change_location(location);
+        change_location.setPositionIndex(change.getPosition());
+        auto group = new ClickableGroup(
+            QObject::tr("Double-click to edit the active players."),
+            myScoreArea->getClickEvent(), change_location,
+            ScoreItem::PlayerChange);
 
         QString description;
         if (!activePlayers.empty())
@@ -920,12 +928,16 @@ void SystemRenderer::drawPlayerChanges(const System &system, int staffIndex,
         else
             description = QStringLiteral("(No Players)");
 
-        auto text = new SimpleTextItem(description, myPlainTextFont, TextAlignment::Top,QPen(myPalette.text().color()));
+        auto text =
+            new SimpleTextItem(description, myPlainTextFont, TextAlignment::Top,
+                               QPen(myPalette.text().color()));
         text->setPos(layout.getPositionX(change.getPosition()),
                      layout.getBottomStdNotationLine() +
                      LayoutInfo::STAFF_BORDER_SPACING +
                      layout.getStdNotationStaffBelowSpacing());
-        text->setParentItem(myParentStaff);
+        group->addToGroup(text);
+
+        group->setParentItem(myParentStaff);
     }
 }
 
