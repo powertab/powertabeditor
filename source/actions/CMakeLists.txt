@@ -12,13 +12,10 @@ set( srcs
     addnote.cpp
     addnoteproperty.cpp
     addplayer.cpp
-    addplayerchange.cpp
     addpositionproperty.cpp
-    addrehearsalsign.cpp
     addrest.cpp
     addstaff.cpp
     addsystem.cpp
-    addtempomarker.cpp
     adjustlinespacing.cpp
     editbarline.cpp
     editdynamic.cpp
@@ -27,8 +24,11 @@ set( srcs
     editkeysignature.cpp
     editnoteduration.cpp
     editplayer.cpp
+    editplayerchange.cpp
+    editrehearsalsign.cpp
     editstaff.cpp
     edittabnumber.cpp
+    edittempomarker.cpp
     edittextitem.cpp
     edittimesignature.cpp
     editviewfilters.cpp
@@ -45,13 +45,10 @@ set( srcs
     removenote.cpp
     removenoteproperty.cpp
     removeplayer.cpp
-    removeplayerchange.cpp
     removeposition.cpp
     removepositionproperty.cpp
-    removerehearsalsign.cpp
     removestaff.cpp
     removesystem.cpp
-    removetempomarker.cpp
     shiftpositions.cpp
     shiftstring.cpp
     undomanager.cpp
@@ -70,14 +67,11 @@ set( headers
     addnote.h
     addnoteproperty.h
     addplayer.h
-    addplayerchange.h
     addpositionproperty.h
-    addrehearsalsign.h
     addrest.h
     addspecialnoteproperty.h
     addstaff.h
     addsystem.h
-    addtempomarker.h
     adjustlinespacing.h
     editbarline.h
     editdynamic.h
@@ -86,8 +80,11 @@ set( headers
     editkeysignature.h
     editnoteduration.h
     editplayer.h
+    editplayerchange.h
+    editrehearsalsign.h
     editstaff.h
     edittabnumber.h
+    edittempomarker.h
     edittextitem.h
     edittimesignature.h
     editviewfilters.h
@@ -104,14 +101,11 @@ set( headers
     removenote.h
     removenoteproperty.h
     removeplayer.h
-    removeplayerchange.h
     removeposition.h
     removepositionproperty.h
-    removerehearsalsign.h
     removespecialnoteproperty.h
     removestaff.h
     removesystem.h
-    removetempomarker.h
     shiftpositions.h
     shiftstring.h
     undomanager.h

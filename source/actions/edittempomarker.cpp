@@ -15,28 +15,51 @@
   * along with this program.  If not, see <http://www.gnu.org/licenses/>.
 */
 
-#include "removetempomarker.h"
+#include "edittempomarker.h"
 
 #include <score/system.h>
 #include <score/utils.h>
 
+AddTempoMarker::AddTempoMarker(const ScoreLocation &location,
+                               const TempoMarker &marker)
+    : QUndoCommand(marker.getMarkerType() == TempoMarker::AlterationOfPace
+                       ? QObject::tr("Add Alteration of Pace")
+                       : QObject::tr("Add Tempo Marker")),
+      myLocation(location),
+      myMarker(marker)
+{
+}
+
+void
+AddTempoMarker::redo()
+{
+    myLocation.getSystem().insertTempoMarker(myMarker);
+}
+
+void
+AddTempoMarker::undo()
+{
+    myLocation.getSystem().removeTempoMarker(myMarker);
+}
+
 RemoveTempoMarker::RemoveTempoMarker(const ScoreLocation &location)
     : myLocation(location),
-      myOriginalTempo(
-          *ScoreUtils::findByPosition(location.getSystem().getTempoMarkers(),
-                                      location.getPositionIndex()))
+      myOriginalTempo(*ScoreUtils::findByPosition(
+          location.getSystem().getTempoMarkers(), location.getPositionIndex()))
 {
     setText(myOriginalTempo.getMarkerType() == TempoMarker::AlterationOfPace
                 ? QObject::tr("Remove Alteration of Pace")
                 : QObject::tr("Remove Tempo Marker"));
 }
 
-void RemoveTempoMarker::redo()
+void
+RemoveTempoMarker::redo()
 {
     myLocation.getSystem().removeTempoMarker(myOriginalTempo);
 }
 
-void RemoveTempoMarker::undo()
+void
+RemoveTempoMarker::undo()
 {
     myLocation.getSystem().insertTempoMarker(myOriginalTempo);
 }

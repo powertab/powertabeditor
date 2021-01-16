@@ -15,7 +15,7 @@
   * along with this program.  If not, see <http://www.gnu.org/licenses/>.
 */
 
-#include "addrehearsalsign.h"
+#include "editrehearsalsign.h"
 
 #include <score/barline.h>
 #include <score/score.h>
@@ -28,14 +28,16 @@ AddRehearsalSign::AddRehearsalSign(const ScoreLocation &location,
 {
 }
 
-void AddRehearsalSign::redo()
+void
+AddRehearsalSign::redo()
 {
     myLocation.getBarline()->setRehearsalSign(
         RehearsalSign("A", myDescription));
     ScoreUtils::adjustRehearsalSigns(myLocation.getScore());
 }
 
-void AddRehearsalSign::undo()
+void
+AddRehearsalSign::undo()
 {
     myLocation.getBarline()->clearRehearsalSign();
     ScoreUtils::adjustRehearsalSigns(myLocation.getScore());
@@ -50,14 +52,37 @@ EditRehearsalSign::EditRehearsalSign(const ScoreLocation &location,
 {
 }
 
-void EditRehearsalSign::redo()
+void
+EditRehearsalSign::redo()
 {
     RehearsalSign sign = myOrigSign;
     sign.setDescription(myNewDescription);
     myLocation.getBarline()->setRehearsalSign(sign);
 }
 
-void EditRehearsalSign::undo()
+void
+EditRehearsalSign::undo()
 {
     myLocation.getBarline()->setRehearsalSign(myOrigSign);
+}
+
+RemoveRehearsalSign::RemoveRehearsalSign(const ScoreLocation &location)
+    : QUndoCommand(QObject::tr("Remove Rehearsal Sign")),
+      myLocation(location),
+      myRehearsalSign(location.getBarline()->getRehearsalSign())
+{
+}
+
+void
+RemoveRehearsalSign::redo()
+{
+    myLocation.getBarline()->clearRehearsalSign();
+    ScoreUtils::adjustRehearsalSigns(myLocation.getScore());
+}
+
+void
+RemoveRehearsalSign::undo()
+{
+    myLocation.getBarline()->setRehearsalSign(myRehearsalSign);
+    ScoreUtils::adjustRehearsalSigns(myLocation.getScore());
 }

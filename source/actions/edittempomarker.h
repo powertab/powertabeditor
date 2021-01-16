@@ -15,26 +15,37 @@
   * along with this program.  If not, see <http://www.gnu.org/licenses/>.
 */
 
-#include "addtempomarker.h"
+#ifndef ACTIONS_EDITTEMPOMARKER_H
+#define ACTIONS_EDITTEMPOMARKER_H
 
-#include <score/system.h>
+#include <QUndoCommand>
+#include <score/scorelocation.h>
+#include <score/tempomarker.h>
 
-AddTempoMarker::AddTempoMarker(const ScoreLocation &location,
-                               const TempoMarker &marker)
-    : QUndoCommand(marker.getMarkerType() == TempoMarker::AlterationOfPace
-                       ? QObject::tr("Add Alteration of Pace")
-                       : QObject::tr("Add Tempo Marker")),
-      myLocation(location),
-      myMarker(marker)
+class AddTempoMarker : public QUndoCommand
 {
-}
+public:
+    AddTempoMarker(const ScoreLocation &location, const TempoMarker &marker);
 
-void AddTempoMarker::redo()
-{
-    myLocation.getSystem().insertTempoMarker(myMarker);
-}
+    virtual void redo() override;
+    virtual void undo() override;
 
-void AddTempoMarker::undo()
+private:
+    ScoreLocation myLocation;
+    const TempoMarker myMarker;
+};
+
+class RemoveTempoMarker : public QUndoCommand
 {
-    myLocation.getSystem().removeTempoMarker(myMarker);
-}
+public:
+    RemoveTempoMarker(const ScoreLocation &location);
+
+    virtual void redo() override;
+    virtual void undo() override;
+
+private:
+    ScoreLocation myLocation;
+    const TempoMarker myOriginalTempo;
+};
+
+#endif
