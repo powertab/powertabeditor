@@ -94,7 +94,7 @@ jobs:
         version: 5.15.2
 
     - name: Generate Project
-      run: cmake -A ${{ matrix.cmake_arch }} -B ./build -DCMAKE_TOOLCHAIN_FILE="${env:VCPKG_INSTALLATION_ROOT}/scripts/buildsystems/vcpkg.cmake"
+      run: cmake -A ${{ matrix.cmake_arch }} -B ./build -DPTE_ENABLE_PCH=1 -DCMAKE_TOOLCHAIN_FILE="${env:VCPKG_INSTALLATION_ROOT}/scripts/buildsystems/vcpkg.cmake"
     - name: Build
       run: cmake --build ./build --config Release
     - name: Test
