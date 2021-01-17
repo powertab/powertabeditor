@@ -30,7 +30,8 @@ class AlterationOfPaceDialog : public QDialog
     Q_OBJECT
 
 public:
-    explicit AlterationOfPaceDialog(QWidget *parent);
+    explicit AlterationOfPaceDialog(QWidget *parent,
+                                    const TempoMarker *current_marker);
     ~AlterationOfPaceDialog();
 
     TempoMarker::AlterationOfPaceType getAlterationOfPaceType() const;

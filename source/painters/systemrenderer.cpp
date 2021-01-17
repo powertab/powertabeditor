@@ -632,7 +632,9 @@ SystemRenderer::drawTempoMarkers(const ConstScoreLocation &location,
         auto group = new ClickableGroup(
             QObject::tr("Double-click to edit tempo marker."),
             myScoreArea->getClickEvent(), marker_location,
-            ScoreItem::TempoMarker);
+            tempo.getMarkerType() == TempoMarker::AlterationOfPace
+                ? ScoreItem::AlterationOfPace
+                : ScoreItem::TempoMarker);
 
         QFont font = myPlainTextFont;
         if (tempo.getMarkerType() == TempoMarker::AlterationOfPace)

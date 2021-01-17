@@ -776,6 +776,10 @@ void PowerTabEditor::removeSelectedItem()
             editTempoMarker(/* remove */ true);
             break;
 
+        case ScoreItem::AlterationOfPace:
+            editAlterationOfPace(/* remove */ true);
+            break;
+
         case ScoreItem::RehearsalSign:
             editRehearsalSign(/* remove */ true);
             break;
@@ -1335,33 +1339,43 @@ void PowerTabEditor::editTempoMarker(bool remove)
         myTempoMarkerCommand->setChecked(false);
 }
 
-void PowerTabEditor::editAlterationOfPace()
+void PowerTabEditor::editAlterationOfPace(bool remove)
 {
     const ScoreLocation &location = getLocation();
     const TempoMarker *marker = ScoreUtils::findByPosition(
         location.getSystem().getTempoMarkers(), location.getPositionIndex());
 
-    if (marker)
+    if (remove)
     {
+        Q_ASSERT(marker);
         Q_ASSERT(marker->getMarkerType() == TempoMarker::AlterationOfPace);
         myUndoManager->push(new RemoveTempoMarker(location),
                             location.getSystemIndex());
+        return;
     }
-    else
-    {
-        AlterationOfPaceDialog dialog(this);
-        if (dialog.exec() == QDialog::Accepted)
-        {
-            TempoMarker marker(location.getPositionIndex());
-            marker.setMarkerType(TempoMarker::AlterationOfPace);
-            marker.setAlterationOfPace(dialog.getAlterationOfPaceType());
 
-            myUndoManager->push(new AddTempoMarker(location, marker),
+    AlterationOfPaceDialog dialog(this, marker);
+    if (dialog.exec() == QDialog::Accepted)
+    {
+        TempoMarker new_marker(location.getPositionIndex());
+        new_marker.setMarkerType(TempoMarker::AlterationOfPace);
+        new_marker.setAlterationOfPace(dialog.getAlterationOfPaceType());
+
+        if (marker)
+        {
+            myUndoManager->beginMacro(tr("Edit Alteration of Pace"));
+            myUndoManager->push(new RemoveTempoMarker(location),
                                 location.getSystemIndex());
         }
-        else
-            myAlterationOfPaceCommand->setChecked(false);
+
+        myUndoManager->push(new AddTempoMarker(location, new_marker),
+                            location.getSystemIndex());
+
+        if (marker)
+            myUndoManager->endMacro();
     }
+    else
+        myAlterationOfPaceCommand->setChecked(false);
 }
 
 void PowerTabEditor::insertStandardBarline()
@@ -2508,7 +2522,7 @@ void PowerTabEditor::createCommands()
                     "MusicSymbols.AlterationOfPace", QKeySequence(), this);
     myAlterationOfPaceCommand->setCheckable(true);
     connect(myAlterationOfPaceCommand, &QAction::triggered, this,
-            &PowerTabEditor::editAlterationOfPace);
+            [=]() { editAlterationOfPace(); });
 
     myKeySignatureCommand = new Command(tr("Edit Key Signature..."),
                                         "MusicSymbols.EditKeySignature",
@@ -3375,6 +3389,9 @@ void PowerTabEditor::setupNewTab()
                             case ScoreItem::TempoMarker:
                                 editTempoMarker();
                                 break;
+                            case ScoreItem::AlterationOfPace:
+                                editAlterationOfPace();
+                                break;
                             case ScoreItem::RehearsalSign:
                                 editRehearsalSign();
                                 break;
@@ -3476,6 +3493,7 @@ canDeleteItem(ScoreItem item)
 {
     switch (item)
     {
+        case ScoreItem::AlterationOfPace:
         case ScoreItem::AlternateEnding:
         case ScoreItem::PlayerChange:
         case ScoreItem::RehearsalSign:

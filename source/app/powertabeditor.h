@@ -210,7 +210,7 @@ private slots:
     /// Adds or removes a tempo marker at the current position.
     void editTempoMarker(bool remove = false);
     /// Adds or removes an accel/rit symbol at the current position.
-    void editAlterationOfPace();
+    void editAlterationOfPace(bool remove = false);
     /// Edits the key signature at the caret's current location.
     void editKeySignature();
     /// Edits the time signature at the caret's current location.

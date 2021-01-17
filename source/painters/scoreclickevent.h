@@ -25,6 +25,7 @@ class ConstScoreLocation;
 /// Item types that can be clicked.
 enum class ScoreItem
 {
+    AlterationOfPace,
     AlternateEnding,
     Barline,
     Clef,
