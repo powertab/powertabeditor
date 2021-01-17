@@ -941,7 +941,7 @@ PowerTabEditor::editTextItem(bool remove)
             myUndoManager->endMacro();
     }
     else
-        myTextCommand->setChecked(false);
+        myTextCommand->setChecked(item != nullptr);
 }
 
 void PowerTabEditor::insertSystemAtEnd()
@@ -1299,7 +1299,7 @@ PowerTabEditor::editRehearsalSign(bool remove)
         }
     }
     else
-        myRehearsalSignCommand->setChecked(false);
+        myRehearsalSignCommand->setChecked(sign != nullptr);
 }
 
 void PowerTabEditor::editTempoMarker(bool remove)
@@ -1336,7 +1336,7 @@ void PowerTabEditor::editTempoMarker(bool remove)
             myUndoManager->endMacro();
     }
     else
-        myTempoMarkerCommand->setChecked(false);
+        myTempoMarkerCommand->setChecked(marker != nullptr);
 }
 
 void PowerTabEditor::editAlterationOfPace(bool remove)
@@ -1375,7 +1375,7 @@ void PowerTabEditor::editAlterationOfPace(bool remove)
             myUndoManager->endMacro();
     }
     else
-        myAlterationOfPaceCommand->setChecked(false);
+        myAlterationOfPaceCommand->setChecked(marker != nullptr);
 }
 
 void PowerTabEditor::insertStandardBarline()
@@ -1450,7 +1450,7 @@ void PowerTabEditor::editRepeatEnding(bool remove)
             myUndoManager->endMacro();
     }
     else
-        myRepeatEndingCommand->setChecked(false);
+        myRepeatEndingCommand->setChecked(current_ending != nullptr);
 }
 
 void PowerTabEditor::updateDynamic(VolumeLevel volume)
@@ -1541,7 +1541,7 @@ PowerTabEditor::editVolumeSwell(bool remove)
             myUndoManager->endMacro();
     }
     else
-        myVolumeSwellCommand->setChecked(false);
+        myVolumeSwellCommand->setChecked(position->hasVolumeSwell());
 }
 
 void PowerTabEditor::editHammerPull()
@@ -1799,7 +1799,7 @@ void PowerTabEditor::editPlayerChange(bool remove)
             myUndoManager->endMacro();
     }
     else
-        myPlayerChangeCommand->setChecked(false);
+        myPlayerChangeCommand->setChecked(existing_change != nullptr);
 }
 
 void PowerTabEditor::editPlayer(int playerIndex, const Player &player,
