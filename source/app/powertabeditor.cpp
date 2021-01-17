@@ -792,6 +792,10 @@ void PowerTabEditor::removeSelectedItem()
             editVolumeSwell(/* remove */ true);
             break;
 
+        case ScoreItem::AlternateEnding:
+            editRepeatEnding(/* remove */ true);
+            break;
+
         case ScoreItem::Staff:
         {
             auto location = getLocation();
@@ -1397,31 +1401,42 @@ void PowerTabEditor::editMusicalDirection()
     }
 }
 
-void PowerTabEditor::editRepeatEnding()
+void PowerTabEditor::editRepeatEnding(bool remove)
 {
-    ScoreLocation &location(getLocation());
-    AlternateEnding *ending = ScoreUtils::findByPosition(
-                location.getSystem().getAlternateEndings(),
-                location.getPositionIndex());
+    const ScoreLocation &location = getLocation();
+    const AlternateEnding *current_ending =
+        ScoreUtils::findByPosition(location.getSystem().getAlternateEndings(),
+                                   location.getPositionIndex());
 
-    if (!ending)
+    if (remove)
     {
-        AlternateEndingDialog dialog(this);
-        if (dialog.exec() == QDialog::Accepted)
-        {
-            AlternateEnding altending(dialog.getAlternateEnding());
-            altending.setPosition(location.getPositionIndex());
-            myUndoManager->push(new AddAlternateEnding(location, altending),
-                                location.getSystemIndex());
-        }
-        else
-            myRepeatEndingCommand->setChecked(false);
-    }
-    else
-    {
+        Q_ASSERT(current_ending);
         myUndoManager->push(new RemoveAlternateEnding(location),
                             location.getSystemIndex());
+        return;
     }
+
+    AlternateEndingDialog dialog(this, current_ending);
+    if (dialog.exec() == QDialog::Accepted)
+    {
+        AlternateEnding ending(dialog.getAlternateEnding());
+        ending.setPosition(location.getPositionIndex());
+
+        if (current_ending)
+        {
+            myUndoManager->beginMacro(tr("Edit Repeat Ending"));
+            myUndoManager->push(new RemoveAlternateEnding(location),
+                                location.getSystemIndex());
+        }
+
+        myUndoManager->push(new AddAlternateEnding(location, ending),
+                            location.getSystemIndex());
+
+        if (current_ending)
+            myUndoManager->endMacro();
+    }
+    else
+        myRepeatEndingCommand->setChecked(false);
 }
 
 void PowerTabEditor::updateDynamic(VolumeLevel volume)
@@ -2535,7 +2550,7 @@ void PowerTabEditor::createCommands()
                     QStringLiteral(u":images/barline_repeatend.png"));
     myRepeatEndingCommand->setCheckable(true);
     connect(myRepeatEndingCommand, &QAction::triggered, this,
-            &PowerTabEditor::editRepeatEnding);
+            [=]() { editRepeatEnding(); });
 
     myDynamicCommand =
         new Command(tr("Dynamic..."), "MusicSymbols.Dynamic", Qt::Key_D, this);
@@ -3375,6 +3390,9 @@ void PowerTabEditor::setupNewTab()
                             case ScoreItem::ScoreInfo:
                                 editFileInformation();
                                 break;
+                            case ScoreItem::AlternateEnding:
+                                editRepeatEnding();
+                                break;
                         }
 
                         // Clear the selection after editing. We may have also
@@ -3458,6 +3476,7 @@ canDeleteItem(ScoreItem item)
 {
     switch (item)
     {
+        case ScoreItem::AlternateEnding:
         case ScoreItem::PlayerChange:
         case ScoreItem::RehearsalSign:
         case ScoreItem::TempoMarker:

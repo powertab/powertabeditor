@@ -78,8 +78,8 @@ private:
     void drawDividerLine(double y);
 
     /// Draws all of the alternate endings in the system.
-    void drawAlternateEndings(const System &system, const LayoutInfo &layout,
-                              double height);
+    void drawAlternateEndings(const ConstScoreLocation &location,
+                              const LayoutInfo &layout, double height);
 
     /// Draws all of the tempo markers in the system.
     void drawTempoMarkers(const ConstScoreLocation &location,

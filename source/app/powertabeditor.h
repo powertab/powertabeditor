@@ -222,7 +222,7 @@ private slots:
     /// Adds or removes a musical direction at the current position.
     void editMusicalDirection();
     /// Adds or removes a repeat ending at the current position.
-    void editRepeatEnding();
+    void editRepeatEnding(bool remove = false);
     /// Adds, removes, or changes a dynamic at the current location.
     void updateDynamic(VolumeLevel volume);
     /// Adds or removes a dynamic at the current location.

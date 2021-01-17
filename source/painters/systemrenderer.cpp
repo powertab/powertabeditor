@@ -440,7 +440,7 @@ void SystemRenderer::drawSystemSymbols(const ConstScoreLocation &location,
 
     if (!system.getAlternateEndings().empty())
     {
-        drawAlternateEndings(system, layout, height);
+        drawAlternateEndings(location, layout, height);
         height += LayoutInfo::SYSTEM_SYMBOL_SPACING;
         drawDividerLine(height);
     }
@@ -483,63 +483,76 @@ void SystemRenderer::drawDividerLine(double y)
     line->setParentItem(myParentSystem);
 }
 
-void SystemRenderer::drawAlternateEndings(const System &system,
-                                          const LayoutInfo &layout,
-                                          double height)
+void
+SystemRenderer::drawAlternateEndings(const ConstScoreLocation &location,
+                                     const LayoutInfo &layout, double height)
 {
-    const double TOP_LINE_OFFSET = 2;
-    const double TEXT_PADDING = 5;
+    static constexpr double TOP_LINE_OFFSET = 2;
+    static constexpr double TEXT_PADDING = 5;
 
+    const System &system = location.getSystem();
     for (const AlternateEnding &ending : system.getAlternateEndings())
     {
-        const double location = layout.getPositionX(ending.getPosition()) +
-                                0.5 * layout.getPositionSpacing();
+        const double start_x = layout.getPositionX(ending.getPosition()) +
+                               0.5 * layout.getPositionSpacing();
+
+        ConstScoreLocation ending_location(location);
+        ending_location.setPositionIndex(ending.getPosition());
+
+        auto group = new ClickableGroup(
+            QObject::tr("Double-click to edit repeat endings."),
+            myScoreArea->getClickEvent(), ending_location,
+            ScoreItem::AlternateEnding);
 
         // Draw the vertical line.
         auto vertLine = new QGraphicsLineItem();
         vertLine->setLine(0, TOP_LINE_OFFSET, 0,
                           LayoutInfo::SYSTEM_SYMBOL_SPACING - TOP_LINE_OFFSET);
-        vertLine->setPos(location, height);
+        vertLine->setPos(start_x, height);
         vertLine->setPen(myPalette.text().color());
-        vertLine->setParentItem(myParentSystem);
+        group->addToGroup(vertLine);
 
         // Draw the text indicating the repeat numbers.
         auto text = new SimpleTextItem(
-            QString::fromStdString(Util::toString(ending)), myPlainTextFont, TextAlignment::Top ,QPen(myPalette.text().color()));
-        text->setPos(location + TEXT_PADDING, height + TEXT_PADDING / 2.0);
-        text->setParentItem(myParentSystem);
+            QString::fromStdString(Util::toString(ending)), myPlainTextFont,
+            TextAlignment::Top, QPen(myPalette.text().color()));
+        text->setPos(start_x + TEXT_PADDING, height + TEXT_PADDING / 2.0);
+        group->addToGroup(text);
 
         // The horizontal line either stretches to the next repeat end bar
         // in the system, or just to the next bar.
-        double endX = 0;
+        double end_x = 0;
         for (const Barline &barline : system.getBarlines())
         {
             // Look for the next repeat end bar.
             if (barline.getPosition() > ending.getPosition() &&
                 barline.getBarType() == Barline::RepeatEnd)
             {
-                endX = layout.getPositionX(barline.getPosition());
+                end_x = layout.getPositionX(barline.getPosition());
             }
         }
 
         // Otherwise, if there is no repeat bar just go to the next barline.
-        if (endX == 0)
+        if (end_x == 0)
         {
-            endX = layout.getPositionX(system.getNextBarline(
-                                    ending.getPosition())->getPosition());
+            end_x = layout.getPositionX(
+                system.getNextBarline(ending.getPosition())->getPosition());
         }
 
         // Draw to the center of the barline's position.
-        endX += 0.5 * layout.getPositionSpacing();
+        end_x += 0.5 * layout.getPositionSpacing();
 
         // Ensure that the line doesn't extend past the edge of the system.
-        endX = std::clamp(endX, 0.0, LayoutInfo::STAFF_WIDTH);
+        end_x = std::clamp(end_x, 0.0, LayoutInfo::STAFF_WIDTH);
 
         auto horizLine = new QGraphicsLineItem();
-        horizLine->setLine(0, TOP_LINE_OFFSET, endX - location, TOP_LINE_OFFSET);
-        horizLine->setPos(location, height);
+        horizLine->setLine(0, TOP_LINE_OFFSET, end_x - start_x,
+                           TOP_LINE_OFFSET);
+        horizLine->setPos(start_x, height);
         horizLine->setPen(myPalette.text().color());
-        horizLine->setParentItem(myParentSystem);
+        group->addToGroup(horizLine);
+
+        group->setParentItem(myParentSystem);
     }
 }
 
