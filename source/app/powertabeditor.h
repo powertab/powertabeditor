@@ -226,7 +226,7 @@ private slots:
     /// Adds, removes, or changes a dynamic at the current location.
     void updateDynamic(VolumeLevel volume);
     /// Adds or removes a dynamic at the current location.
-    void editDynamic();
+    void editDynamic(bool remove = false);
     /// Adds or removes a volume swell at the current location.
     void editVolumeSwell(bool remove = false);
 

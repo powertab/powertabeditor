@@ -1209,12 +1209,7 @@ SystemRenderer::drawSymbolsAboveTabStaff(const ConstScoreLocation &location,
             break;
         case SymbolGroup::Dynamic:
         {
-            const Dynamic *dynamic =
-                ScoreUtils::findByPosition(location.getStaff().getDynamics(),
-                                           symbolGroup.getLeftPosition());
-            Q_ASSERT(dynamic);
-
-            renderedSymbol = createDynamic(*dynamic);
+            renderedSymbol = createDynamic(location, symbolGroup);
             break;
         }
         case SymbolGroup::ArtificialHarmonic:
@@ -1440,10 +1435,16 @@ QGraphicsItem *SystemRenderer::createTrill(const LayoutInfo& layout)
     return group;
 }
 
-QGraphicsItem *SystemRenderer::createDynamic(const Dynamic &dynamic)
+QGraphicsItem *
+SystemRenderer::createDynamic(const ConstScoreLocation &location,
+                              const SymbolGroup &symbol_group)
 {
+    const Dynamic *dynamic = ScoreUtils::findByPosition(
+        location.getStaff().getDynamics(), symbol_group.getLeftPosition());
+    Q_ASSERT(dynamic);
+
     QString text;
-    switch (dynamic.getVolume())
+    switch (dynamic->getVolume())
     {
         case VolumeLevel::Off:
             text = QStringLiteral("off");
@@ -1475,12 +1476,17 @@ QGraphicsItem *SystemRenderer::createDynamic(const Dynamic &dynamic)
     }
 
     auto textItem =
-	new SimpleTextItem(text, myMusicNotationFont, TextAlignment::Baseline, QPen(myPalette.text().color()));
+        new SimpleTextItem(text, myMusicNotationFont, TextAlignment::Baseline,
+                           QPen(myPalette.text().color()));
     textItem->setY(0.5 * LayoutInfo::TAB_SYMBOL_SPACING);
 
     // Sticking the text in a QGraphicsItemGroup allows us to offset the
     // position of the text from its default location.
-    auto group = new QGraphicsItemGroup();
+    ConstScoreLocation item_location(location);
+    item_location.setPositionIndex(dynamic->getPosition());
+    auto group = new ClickableGroup(
+        QObject::tr("Double-click to edit dynamic."),
+        myScoreArea->getClickEvent(), item_location, ScoreItem::Dynamic);
     group->addToGroup(textItem);
     return group;
 }

@@ -29,6 +29,7 @@ enum class ScoreItem
     AlternateEnding,
     Barline,
     Clef,
+    Dynamic,
     KeySignature,
     PlayerChange,
     RehearsalSign,

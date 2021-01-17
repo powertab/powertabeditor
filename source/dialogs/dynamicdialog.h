@@ -30,7 +30,7 @@ namespace Ui {
 class DynamicDialog : public QDialog
 {
 public:
-    explicit DynamicDialog(QWidget *parent);
+    DynamicDialog(QWidget *parent, const Dynamic *current_dynamic);
     ~DynamicDialog();
 
     VolumeLevel getVolumeLevel() const;

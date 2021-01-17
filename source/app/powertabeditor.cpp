@@ -800,6 +800,10 @@ void PowerTabEditor::removeSelectedItem()
             editRepeatEnding(/* remove */ true);
             break;
 
+        case ScoreItem::Dynamic:
+            editDynamic(/* remove */ true);
+            break;
+
         case ScoreItem::Staff:
         {
             auto location = getLocation();
@@ -1471,39 +1475,52 @@ void PowerTabEditor::updateDynamic(VolumeLevel volume)
               checkedAction->setChecked(false);
         }
         else
-            myUndoManager->push(new EditDynamic(location, *currentDynamic, newDynamic),
-                                location.getSystemIndex());
+        {
+            myUndoManager->push(
+                new EditDynamic(location, *currentDynamic, newDynamic),
+                location.getSystemIndex());
+        }
     }
     else
         myUndoManager->push(new AddDynamic(location, newDynamic),
                             location.getSystemIndex());
 }
 
-void PowerTabEditor::editDynamic()
+void
+PowerTabEditor::editDynamic(bool remove)
 {
     ScoreLocation &location = getLocation();
     const Dynamic *dynamic = ScoreUtils::findByPosition(
-                location.getStaff().getDynamics(), location.getPositionIndex());
+        location.getStaff().getDynamics(), location.getPositionIndex());
 
-    if (dynamic)
+    if (remove)
     {
+        Q_ASSERT(dynamic);
         myUndoManager->push(new RemoveDynamic(location),
                             location.getSystemIndex());
+        return;
     }
-    else
+
+    DynamicDialog dialog(this, dynamic);
+    if (dialog.exec() == QDialog::Accepted)
     {
-        DynamicDialog dialog(this);
-        if (dialog.exec() == QDialog::Accepted)
-        {
-            Dynamic dynamic(location.getPositionIndex(),
+        Dynamic new_dynamic(location.getPositionIndex(),
                             dialog.getVolumeLevel());
 
-            myUndoManager->push(new AddDynamic(location, dynamic),
-                                location.getSystemIndex());
+        if (dynamic)
+        {
+            myUndoManager->push(
+                new EditDynamic(location, *dynamic, new_dynamic),
+                location.getSystemIndex());
         }
         else
-            myDynamicCommand->setChecked(false);
+        {
+            myUndoManager->push(new AddDynamic(location, new_dynamic),
+                                location.getSystemIndex());
+        }
     }
+    else
+        myDynamicCommand->setChecked(dynamic != nullptr);
 }
 
 void
@@ -2569,7 +2586,8 @@ void PowerTabEditor::createCommands()
     myDynamicCommand =
         new Command(tr("Dynamic..."), "MusicSymbols.Dynamic", Qt::Key_D, this);
     myDynamicCommand->setCheckable(true);
-    connect(myDynamicCommand, &QAction::triggered, this, &PowerTabEditor::editDynamic);
+    connect(myDynamicCommand, &QAction::triggered, this,
+            [=]() { editDynamic(); });
 
     myDynamicGroup = new QActionGroup(this);
 
@@ -3410,6 +3428,9 @@ void PowerTabEditor::setupNewTab()
                             case ScoreItem::AlternateEnding:
                                 editRepeatEnding();
                                 break;
+                            case ScoreItem::Dynamic:
+                                editDynamic();
+                                break;
                         }
 
                         // Clear the selection after editing. We may have also
@@ -3495,6 +3516,7 @@ canDeleteItem(ScoreItem item)
     {
         case ScoreItem::AlterationOfPace:
         case ScoreItem::AlternateEnding:
+        case ScoreItem::Dynamic:
         case ScoreItem::PlayerChange:
         case ScoreItem::RehearsalSign:
         case ScoreItem::TempoMarker:

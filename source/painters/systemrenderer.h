@@ -149,7 +149,8 @@ private:
     QGraphicsItem *createArtificialHarmonicText(const Position &position);
 
     /// Creates a dynamic symbol.
-    QGraphicsItem *createDynamic(const Dynamic &dynamic);
+    QGraphicsItem *createDynamic(const ConstScoreLocation &location,
+                                 const SymbolGroup &symbol_group);
 
     /// Creates a volume swell.
     QGraphicsItem *createVolumeSwell(const ConstScoreLocation &location,
