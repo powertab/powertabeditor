@@ -77,14 +77,7 @@ jobs:
     steps:
     - uses: actions/checkout@v1
     - name: Install Dependencies
-      # Update to the latest revision. This should be removed once the issue
-      # reference in
-      # https://github.com/powertab/powertabeditor/pull/300#issuecomment-667685298
-      # is fixed
-      run: |
-        cd "${env:VCPKG_INSTALLATION_ROOT}"
-        git pull
-        vcpkg install --triplet ${{ matrix.arch }}-windows boost-algorithm boost-date-time boost-endian boost-filesystem boost-functional boost-iostreams boost-range boost-rational boost-signals2 boost-stacktrace doctest minizip pugixml rapidjson
+      run: vcpkg install --triplet ${{ matrix.arch }}-windows boost-algorithm boost-date-time boost-endian boost-filesystem boost-functional boost-iostreams boost-range boost-rational boost-signals2 boost-stacktrace doctest minizip pugixml rapidjson
 
     # Building Qt via vcpkg would take a while ...
     - name: Install Qt
