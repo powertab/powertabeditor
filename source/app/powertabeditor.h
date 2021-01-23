@@ -203,7 +203,7 @@ private slots:
     /// Inserts a rest at the current location.
     void addRest();
     /// Adds or removes a multibar rest at the current location.
-    void editMultiBarRest();
+    void editMultiBarRest(bool remove = false);
 
     /// Adds or removes a rehearsal sign at the current barline.
     void editRehearsalSign(bool remove = false);

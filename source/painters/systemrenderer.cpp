@@ -171,7 +171,7 @@ QGraphicsItem *SystemRenderer::operator()(const System &system,
         drawSymbolsBelowTabStaff(*layout);
 
         drawPlayerChanges(location, *layout);
-        drawStdNotation(system, staff, *layout);
+        drawStdNotation(location, *layout);
 
         ++i;
     }
@@ -1491,9 +1491,13 @@ SystemRenderer::createDynamic(const ConstScoreLocation &location,
     return group;
 }
 
-void SystemRenderer::drawStdNotation(const System &system, const Staff &staff,
-                                     const LayoutInfo &layout)
+void
+SystemRenderer::drawStdNotation(const ConstScoreLocation &location,
+                                const LayoutInfo &layout)
 {
+    const System &system = location.getSystem();
+    const Staff &staff = location.getStaff();
+
     // Draw rests.
     for (const Voice &voice : staff.getVoices())
     {
@@ -1507,7 +1511,9 @@ void SystemRenderer::drawStdNotation(const System &system, const Staff &staff,
 
             if (pos.hasMultiBarRest())
             {
-                drawMultiBarRest(system, *prevBar, layout,
+                ConstScoreLocation rest_location(location);
+                rest_location.setPositionIndex(pos.getPosition());
+                drawMultiBarRest(rest_location, *prevBar, layout,
                                  pos.getMultiBarRestCount());
             }
             else if (pos.isRest())
@@ -1804,51 +1810,60 @@ void SystemRenderer::drawIrregularGroups(const Voice &voice,
     }
 }
 
-void SystemRenderer::drawMultiBarRest(const System &system,
-                                      const Barline &leftBar,
-                                      const LayoutInfo &layout,
-                                      int measureCount)
+void
+SystemRenderer::drawMultiBarRest(const ConstScoreLocation &location,
+                                 const Barline &leftBar,
+                                 const LayoutInfo &layout, int measureCount)
 {
-    const Barline *rightBar = system.getNextBarline(leftBar.getPosition());
+    const Barline *rightBar =
+        location.getSystem().getNextBarline(leftBar.getPosition());
     Q_ASSERT(rightBar);
 
-    const double leftX = (leftBar.getPosition() == 0) ?
-                layout.getPositionX(leftBar.getPosition()) :
-                layout.getPositionX(leftBar.getPosition() + 1);
+    const double leftX = (leftBar.getPosition() == 0)
+                             ? layout.getPositionX(leftBar.getPosition())
+                             : layout.getPositionX(leftBar.getPosition() + 1);
 
-    const double rightX = std::clamp(
-                layout.getPositionX(rightBar->getPosition()), 0.0,
-                LayoutInfo::STAFF_WIDTH - layout.getPositionSpacing() / 2.0);
+    const double rightX =
+        std::clamp(layout.getPositionX(rightBar->getPosition()), 0.0,
+                   LayoutInfo::STAFF_WIDTH - layout.getPositionSpacing() / 2.0);
+
+    auto group = new ClickableGroup(
+        QObject::tr("Double-click to edit multi-bar rest."),
+        myScoreArea->getClickEvent(), location, ScoreItem::MultiBarRest);
 
     // Draw the measure count.
-    auto measureCountText =
-        new SimpleTextItem(QString::number(measureCount), myMusicNotationFont, TextAlignment::Baseline, QPen(myPalette.text().color()));
+    auto measureCountText = new SimpleTextItem(
+        QString::number(measureCount), myMusicNotationFont,
+        TextAlignment::Baseline, QPen(myPalette.text().color()));
 
     centerHorizontally(*measureCountText, leftX, rightX);
     measureCountText->setY(layout.getTopStdNotationLine());
-    measureCountText->setParentItem(myParentStaff);
+    group->addToGroup(measureCountText);
 
     // Draw symbol across std. notation staff.
     auto vertLineLeft =
         new QGraphicsLineItem(leftX, layout.getStdNotationLine(2), leftX,
                               layout.getStdNotationLine(4));
     vertLineLeft->setPen(myPalette.text().color());
-    vertLineLeft->setParentItem(myParentStaff);
+    group->addToGroup(vertLineLeft);
 
     auto vertLineRight =
         new QGraphicsLineItem(rightX, layout.getStdNotationLine(2), rightX,
                               layout.getStdNotationLine(4));
     vertLineRight->setPen(myPalette.text().color());
-    vertLineRight->setParentItem(myParentStaff);
+    group->addToGroup(vertLineRight);
 
     auto horizontalLine = new QGraphicsRectItem(
-        leftX, layout.getStdNotationLine(2) +
-                   0.5 * LayoutInfo::STD_NOTATION_LINE_SPACING,
+        leftX,
+        layout.getStdNotationLine(2) +
+            0.5 * LayoutInfo::STD_NOTATION_LINE_SPACING,
         rightX - leftX, LayoutInfo::STD_NOTATION_LINE_SPACING * 0.9);
 
     horizontalLine->setPen(myPalette.text().color());
     horizontalLine->setBrush(myPalette.text().color());
-    horizontalLine->setParentItem(myParentStaff);
+    group->addToGroup(horizontalLine);
+
+    group->setParentItem(myParentStaff);
 }
 
 void

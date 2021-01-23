@@ -29,7 +29,7 @@ class MultiBarRestDialog : public QDialog
     Q_OBJECT
 
 public:
-    explicit MultiBarRestDialog(QWidget *parent);
+    explicit MultiBarRestDialog(QWidget *parent, int initial_count);
     ~MultiBarRestDialog();
 
     int getBarCount() const;

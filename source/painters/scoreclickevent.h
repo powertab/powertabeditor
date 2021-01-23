@@ -31,6 +31,7 @@ enum class ScoreItem
     Clef,
     Dynamic,
     KeySignature,
+    MultiBarRest,
     PlayerChange,
     RehearsalSign,
     ScoreInfo,

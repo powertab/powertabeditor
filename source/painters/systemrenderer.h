@@ -165,8 +165,8 @@ private:
     void createBend(QGraphicsItemGroup *group, double left, double right,
                     double yStart, double yEnd, int pitch, bool prebend);
 
-    /// Draws notes, beams, and rests.
-    void drawStdNotation(const System &system, const Staff &staff,
+    /// Draws notes, beams, and rests for a staff.
+    void drawStdNotation(const ConstScoreLocation &location,
                          const LayoutInfo &layout);
 
     /// Draws all ties in the voice.
@@ -178,8 +178,9 @@ private:
                              const std::vector<NoteStem> &stems);
 
     /// Draws a multi-bar rest symbol.
-    void drawMultiBarRest(const System &system, const Barline &leftBar,
-                          const LayoutInfo &layout, int measureCount);
+    void drawMultiBarRest(const ConstScoreLocation &location,
+                          const Barline &leftBar, const LayoutInfo &layout,
+                          int measureCount);
 
     /// Draws a rest symbol.
     void drawRest(const Position &pos, double x, const LayoutInfo &layout);

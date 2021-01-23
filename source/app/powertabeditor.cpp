@@ -804,6 +804,10 @@ void PowerTabEditor::removeSelectedItem()
             editDynamic(/* remove */ true);
             break;
 
+        case ScoreItem::MultiBarRest:
+            editMultiBarRest(/* remove */ true);
+            break;
+
         case ScoreItem::Staff:
         {
             auto location = getLocation();
@@ -1220,53 +1224,69 @@ void PowerTabEditor::addRest()
                         location.getSystemIndex());
 }
 
-void PowerTabEditor::editMultiBarRest()
+void PowerTabEditor::editMultiBarRest(bool remove)
 {
     const ScoreLocation &location = getLocation();
+    const Position *position = location.getPosition();
 
-    if (location.getPosition() && location.getPosition()->hasMultiBarRest())
+    if (remove)
     {
+        Q_ASSERT(position);
+        Q_ASSERT(position->hasMultiBarRest());
         myUndoManager->push(
             new RemovePosition(location, tr("Remove Multi-Bar Rest")),
             location.getSystemIndex());
+        return;
+    }
+
+    // Verify that the bar is empty if adding a new rest.
+    if (!position)
+    {
+        const System &system = location.getSystem();
+        const Barline *prevBar =
+            system.getPreviousBarline(location.getPositionIndex());
+        if (!prevBar)
+            prevBar = &system.getBarlines().front();
+        const Barline *nextBar =
+            system.getNextBarline(location.getPositionIndex());
+
+        if (ScoreUtils::findInRange(location.getVoice().getPositions(),
+                                     prevBar->getPosition(),
+                                     nextBar->getPosition()).empty())
+        {
+            QMessageBox message(this);
+            message.setText(
+                tr("Cannot add a multi-bar rest to a non-empty measure."));
+            message.exec();
+
+            myMultibarRestCommand->setChecked(false);
+            return;
+        }
     }
     else
     {
-        // Verify that the bar is empty.
-        {
-            const System &system = location.getSystem();
-            const Barline *prevBar =
-                system.getPreviousBarline(location.getPositionIndex());
-            if (!prevBar)
-                prevBar = &system.getBarlines().front();
-            const Barline *nextBar =
-                system.getNextBarline(location.getPositionIndex());
-
-            if (!ScoreUtils::findInRange(location.getVoice().getPositions(),
-                                         prevBar->getPosition(),
-                                         nextBar->getPosition()).empty())
-            {
-                QMessageBox message(this);
-                message.setText(
-                    tr("Cannot add a multi-bar rest to a non-empty measure."));
-                message.exec();
-
-                myMultibarRestCommand->setChecked(false);
-                return;
-            }
-        }
-
-        MultiBarRestDialog dialog(this);
-
-        if (dialog.exec() == QDialog::Accepted)
-        {
-            myUndoManager->push(
-                new AddMultiBarRest(location, dialog.getBarCount()),
-                location.getSystemIndex());
-        }
-        else
-            myMultibarRestCommand->setChecked(false);
+        Q_ASSERT(position->hasMultiBarRest());
     }
+
+    MultiBarRestDialog dialog(this,
+                              position ? position->getMultiBarRestCount() : 2);
+    if (dialog.exec() == QDialog::Accepted)
+    {
+        if (position)
+        {
+            myUndoManager->beginMacro(tr("Edit Multi-Bar Rest"));
+            myUndoManager->push(new RemovePosition(location),
+                                location.getSystemIndex());
+        }
+
+        myUndoManager->push(new AddMultiBarRest(location, dialog.getBarCount()),
+                            location.getSystemIndex());
+
+        if (position)
+            myUndoManager->endMacro();
+    }
+    else
+        myMultibarRestCommand->setChecked(false);
 }
 
 void
@@ -2517,7 +2537,7 @@ void PowerTabEditor::createCommands()
         QStringLiteral(u":images/rest_multibar.png"));
     myMultibarRestCommand->setCheckable(true);
     connect(myMultibarRestCommand, &QAction::triggered, this,
-            &PowerTabEditor::editMultiBarRest);
+            [=]() { editMultiBarRest(); });
 
     // Music Symbol Actions
     myRehearsalSignCommand =
@@ -3431,6 +3451,9 @@ void PowerTabEditor::setupNewTab()
                             case ScoreItem::Dynamic:
                                 editDynamic();
                                 break;
+                            case ScoreItem::MultiBarRest:
+                                editMultiBarRest();
+                                break;
                         }
 
                         // Clear the selection after editing. We may have also
@@ -3517,6 +3540,7 @@ canDeleteItem(ScoreItem item)
         case ScoreItem::AlterationOfPace:
         case ScoreItem::AlternateEnding:
         case ScoreItem::Dynamic:
+        case ScoreItem::MultiBarRest:
         case ScoreItem::PlayerChange:
         case ScoreItem::RehearsalSign:
         case ScoreItem::TempoMarker:
