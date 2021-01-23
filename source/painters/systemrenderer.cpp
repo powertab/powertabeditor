@@ -1847,6 +1847,7 @@ void SystemRenderer::drawMultiBarRest(const System &system,
         rightX - leftX, LayoutInfo::STD_NOTATION_LINE_SPACING * 0.9);
 
     horizontalLine->setPen(myPalette.text().color());
+    horizontalLine->setBrush(myPalette.text().color());
     horizontalLine->setParentItem(myParentStaff);
 }
 
