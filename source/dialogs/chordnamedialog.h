@@ -34,7 +34,7 @@ class ChordNameDialog : public QDialog
     Q_OBJECT
     
 public:
-    explicit ChordNameDialog(QWidget *parent);
+    explicit ChordNameDialog(QWidget *parent, const ChordName &initial_chord);
     ~ChordNameDialog();
 
     const ChordName &getChordName() const;
@@ -46,7 +46,7 @@ private slots:
     void onTonicChanged();
     
 private:
-    void initCheckBox(QCheckBox *checkbox);
+    void initCheckBox(QCheckBox *checkbox, bool value);
 
     Ui::ChordNameDialog *ui;
     QButtonGroup *myTonicVariations;

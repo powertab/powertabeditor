@@ -460,7 +460,7 @@ void SystemRenderer::drawSystemSymbols(const ConstScoreLocation &location,
 
     if (!system.getChords().empty())
     {
-        drawChordText(system, layout, height);
+        drawChordText(location, layout, height);
         height += LayoutInfo::SYSTEM_SYMBOL_SPACING;
         drawDividerLine(height);
     }
@@ -726,19 +726,29 @@ SystemRenderer::drawTempoMarkers(const ConstScoreLocation &location,
     }
 }
 
-void SystemRenderer::drawChordText(const System &system,
-                                   const LayoutInfo &layout, double height)
+void
+SystemRenderer::drawChordText(const ConstScoreLocation &location,
+                              const LayoutInfo &layout, double height)
 {
-    for (const ChordText &chord : system.getChords())
+    for (const ChordText &chord : location.getSystem().getChords())
     {
         const double x = layout.getPositionX(chord.getPosition());
-        const std::string text = Util::toString(chord.getChordName());
 
-        auto textItem =
-            new SimpleTextItem(QString::fromStdString(text), myPlainTextFont, TextAlignment::Top, QPen(myPalette.text().color()));
+        ConstScoreLocation item_location(location);
+        item_location.setPositionIndex(chord.getPosition());
+        auto group = new ClickableGroup(
+            QObject::tr("Double-click to edit chord text."),
+            myScoreArea->getClickEvent(), item_location, ScoreItem::ChordText);
+
+        const std::string text = Util::toString(chord.getChordName());
+        auto textItem = new SimpleTextItem(QString::fromStdString(text),
+                                           myPlainTextFont, TextAlignment::Top,
+                                           QPen(myPalette.text().color()));
         textItem->setX(x);
         centerSymbolVertically(*textItem, height);
-        textItem->setParentItem(myParentSystem);
+        group->addToGroup(textItem);
+
+        group->setParentItem(myParentSystem);
     }
 }
 

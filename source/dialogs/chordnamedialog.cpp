@@ -21,16 +21,17 @@
 #include <QButtonGroup>
 #include <util/tostring.h>
 
-ChordNameDialog::ChordNameDialog(QWidget *parent)
-    : QDialog(parent), ui(new Ui::ChordNameDialog)
+ChordNameDialog::ChordNameDialog(QWidget *parent,
+                                 const ChordName &initial_chord)
+    : QDialog(parent), ui(new Ui::ChordNameDialog), myChord(initial_chord)
 {
     ui->setupUi(this);
 
     connect(ui->buttonBox, &QDialogButtonBox::accepted, this, &QDialog::accept);
     connect(ui->buttonBox, &QDialogButtonBox::rejected, this, &QDialog::reject);
 
-    initCheckBox(ui->noChordCheckBox);
-    initCheckBox(ui->bracketsCheckBox);
+    initCheckBox(ui->noChordCheckBox, myChord.isNoChord());
+    initCheckBox(ui->bracketsCheckBox, myChord.hasBrackets());
 
     myTonicVariations = new QButtonGroup(this);
     myTonicVariations->addButton(ui->tonicFlatButton);
@@ -42,6 +43,11 @@ ChordNameDialog::ChordNameDialog(QWidget *parent)
             qOverload<QAbstractButton *>(&QButtonGroup::buttonClicked), this,
             &ChordNameDialog::onTonicVariationClicked);
 
+    ui->tonicSharpButton->setChecked(myChord.getTonicVariation() ==
+                                     ChordName::Sharp);
+    ui->tonicFlatButton->setChecked(myChord.getTonicVariation() ==
+                                    ChordName::Flat);
+
     myBassVariations = new QButtonGroup(this);
     myBassVariations->addButton(ui->bassFlatButton);
     myBassVariations->addButton(ui->bassSharpButton);
@@ -49,6 +55,11 @@ ChordNameDialog::ChordNameDialog(QWidget *parent)
     connect(myBassVariations,
             qOverload<QAbstractButton *>(&QButtonGroup::buttonClicked), this,
             &ChordNameDialog::onBassVariationClicked);
+
+    ui->bassSharpButton->setChecked(myChord.getBassVariation() ==
+                                    ChordName::Sharp);
+    ui->bassFlatButton->setChecked(myChord.getBassVariation() ==
+                                   ChordName::Flat);
 
     myTonicKeys = new QButtonGroup(this);
     myTonicKeys->addButton(ui->tonicCButton, ChordName::C);
@@ -66,6 +77,8 @@ ChordNameDialog::ChordNameDialog(QWidget *parent)
 #endif
             this, &ChordNameDialog::onTonicChanged);
 
+    myTonicKeys->button(myChord.getTonicKey())->setChecked(true);
+
     myBassKeys = new QButtonGroup(this);
     myBassKeys->addButton(ui->bassCButton, ChordName::C);
     myBassKeys->addButton(ui->bassDButton, ChordName::D);
@@ -82,32 +95,47 @@ ChordNameDialog::ChordNameDialog(QWidget *parent)
 #endif
             this, &ChordNameDialog::updateState);
 
+    myBassKeys->button(myChord.getBassKey())->setChecked(true);
+
+    ui->formulaListWidget->setCurrentRow(myChord.getFormula());
     connect(ui->formulaListWidget, &QListWidget::currentRowChanged, this,
             &ChordNameDialog::updateState);
 
-    initCheckBox(ui->add2CheckBox);
-    initCheckBox(ui->add4CheckBox);
-    initCheckBox(ui->add6CheckBox);
-    initCheckBox(ui->add9CheckBox);
-    initCheckBox(ui->add11CheckBox);
+    initCheckBox(ui->add2CheckBox,
+                 myChord.hasModification(ChordName::Added2nd));
+    initCheckBox(ui->add4CheckBox,
+                 myChord.hasModification(ChordName::Added4th));
+    initCheckBox(ui->add6CheckBox,
+                 myChord.hasModification(ChordName::Added6th));
+    initCheckBox(ui->add9CheckBox,
+                 myChord.hasModification(ChordName::Added9th));
+    initCheckBox(ui->add11CheckBox,
+                 myChord.hasModification(ChordName::Added11th));
 
-    initCheckBox(ui->extend9CheckBox);
-    initCheckBox(ui->extend11CheckBox);
-    initCheckBox(ui->extend13CheckBox);
+    initCheckBox(ui->extend9CheckBox,
+                 myChord.hasModification(ChordName::Extended9th));
+    initCheckBox(ui->extend11CheckBox,
+                 myChord.hasModification(ChordName::Extended11th));
+    initCheckBox(ui->extend13CheckBox,
+                 myChord.hasModification(ChordName::Extended13th));
 
-    initCheckBox(ui->flat5CheckBox);
-    initCheckBox(ui->raised5CheckBox);
-    initCheckBox(ui->flat9CheckBox);
-    initCheckBox(ui->raised9CheckBox);
-    initCheckBox(ui->raised11CheckBox);
-    initCheckBox(ui->flat13CheckBox);
-    initCheckBox(ui->sus2CheckBox);
-    initCheckBox(ui->sus4CheckBox);
+    initCheckBox(ui->flat5CheckBox,
+                 myChord.hasModification(ChordName::Flatted5th));
+    initCheckBox(ui->raised5CheckBox,
+                 myChord.hasModification(ChordName::Raised5th));
+    initCheckBox(ui->flat9CheckBox,
+                 myChord.hasModification(ChordName::Flatted9th));
+    initCheckBox(ui->raised9CheckBox,
+                 myChord.hasModification(ChordName::Raised9th));
+    initCheckBox(ui->raised11CheckBox,
+                 myChord.hasModification(ChordName::Raised11th));
+    initCheckBox(ui->flat13CheckBox,
+                 myChord.hasModification(ChordName::Flatted13th));
+    initCheckBox(ui->sus2CheckBox,
+                 myChord.hasModification(ChordName::Suspended2nd));
+    initCheckBox(ui->sus4CheckBox,
+                 myChord.hasModification(ChordName::Suspended4th));
 
-    // Set up the initial state.
-    ui->tonicCButton->setChecked(true);
-    ui->bassCButton->setChecked(true);
-    ui->formulaListWidget->setCurrentRow(0);
     updateState();
 }
 
@@ -214,7 +242,8 @@ void ChordNameDialog::onTonicChanged()
     updateState();
 }
 
-void ChordNameDialog::initCheckBox(QCheckBox *checkbox)
+void ChordNameDialog::initCheckBox(QCheckBox *checkbox, bool value)
 {
+    checkbox->setChecked(value);
     connect(checkbox, &QCheckBox::clicked, this, &ChordNameDialog::updateState);
 }

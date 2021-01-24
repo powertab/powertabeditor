@@ -90,8 +90,8 @@ private:
                           double height);
 
     /// Draws all of the chord names in the system.
-    void drawChordText(const System &system, const LayoutInfo &layout,
-                       double height);
+    void drawChordText(const ConstScoreLocation &location,
+                       const LayoutInfo &layout, double height);
 
     /// Draws all of the text items in the system.
     void drawTextItems(const ConstScoreLocation &location,

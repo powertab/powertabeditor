@@ -808,6 +808,10 @@ void PowerTabEditor::removeSelectedItem()
             editMultiBarRest(/* remove */ true);
             break;
 
+        case ScoreItem::ChordText:
+            editChordName(/* remove */ true);
+            break;
+
         case ScoreItem::Staff:
         {
             auto location = getLocation();
@@ -889,30 +893,41 @@ void PowerTabEditor::gotoRehearsalSign()
     }
 }
 
-void PowerTabEditor::editChordName()
+void
+PowerTabEditor::editChordName(bool remove)
 {
     ScoreLocation &location(getLocation());
+    const ChordText *text = ScoreUtils::findByPosition(
+        location.getSystem().getChords(), location.getPositionIndex());
 
-    if (!ScoreUtils::findByPosition(location.getSystem().getChords(),
-                                    location.getPositionIndex()))
+    if (remove)
     {
-        ChordNameDialog dialog(this);
-        if (dialog.exec() == QDialog::Accepted)
-        {
-            ChordText text(location.getPositionIndex(),
-                           dialog.getChordName());
-
-            myUndoManager->push(new AddChordText(location, text),
-                                location.getSystemIndex());
-        }
-        else
-            myChordNameCommand->setChecked(false);
-    }
-    else
-    {
+        Q_ASSERT(text);
         myUndoManager->push(new RemoveChordText(location),
                             location.getSystemIndex());
+        return;
     }
+
+    ChordNameDialog dialog(this, text ? text->getChordName() : ChordName());
+    if (dialog.exec() == QDialog::Accepted)
+    {
+        ChordText new_text(location.getPositionIndex(), dialog.getChordName());
+
+        if (text)
+        {
+            myUndoManager->beginMacro(tr("Edit Chord Text"));
+            myUndoManager->push(new RemoveChordText(location),
+                                location.getSystemIndex());
+        }
+
+        myUndoManager->push(new AddChordText(location, new_text),
+                            location.getSystemIndex());
+
+        if (text)
+            myUndoManager->endMacro();
+    }
+    else
+        myChordNameCommand->setChecked(text != nullptr);
 }
 
 void
@@ -1286,7 +1301,10 @@ void PowerTabEditor::editMultiBarRest(bool remove)
             myUndoManager->endMacro();
     }
     else
-        myMultibarRestCommand->setChecked(false);
+    {
+        myMultibarRestCommand->setChecked(position &&
+                                          position->hasMultiBarRest());
+    }
 }
 
 void
@@ -2297,7 +2315,7 @@ void PowerTabEditor::createCommands()
                                      Qt::Key_C, this);
     myChordNameCommand->setCheckable(true);
     connect(myChordNameCommand, &QAction::triggered, this,
-            &PowerTabEditor::editChordName);
+            [=]() { editChordName(); });
 
     myTextCommand = new Command(tr("Text..."), "Text.TextItem",
                                 QKeySequence(), this,
@@ -3454,6 +3472,9 @@ void PowerTabEditor::setupNewTab()
                             case ScoreItem::MultiBarRest:
                                 editMultiBarRest();
                                 break;
+                            case ScoreItem::ChordText:
+                                editChordName();
+                                break;
                         }
 
                         // Clear the selection after editing. We may have also
@@ -3539,6 +3560,7 @@ canDeleteItem(ScoreItem item)
     {
         case ScoreItem::AlterationOfPace:
         case ScoreItem::AlternateEnding:
+        case ScoreItem::ChordText:
         case ScoreItem::Dynamic:
         case ScoreItem::MultiBarRest:
         case ScoreItem::PlayerChange:

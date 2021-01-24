@@ -167,7 +167,7 @@ private slots:
     void gotoRehearsalSign();
 
     /// Adds or removes a chord name at the current position.
-    void editChordName();
+    void editChordName(bool remove = false);
     /// Adds or removes a text item at the current position.
     void editTextItem(bool remove = false);
 
