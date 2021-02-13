@@ -17,14 +17,26 @@
   
 #include "viewoptions.h"
 
-static constexpr double MIN_ZOOM = 25;
-static constexpr double MAX_ZOOM = 300;
-
 ViewOptions::ViewOptions() : myZoom(100.0)
 {
 }
 
-void ViewOptions::setZoom(double percent)
+bool ViewOptions::setZoom(double percent)
 {
-    myZoom = std::max(MIN_ZOOM, std::min(MAX_ZOOM, percent));
+    myZoom = std::clamp(percent, MIN_ZOOM, MAX_ZOOM);
+    return myZoom == percent;
+}
+
+bool ViewOptions::increaseZoom()
+{
+    short nextZoom = *std::upper_bound(ZOOM_LEVELS.begin(), ZOOM_LEVELS.end() - 1, getZoom());
+
+    return setZoom(nextZoom);
+}
+
+bool ViewOptions::decreaseZoom()
+{
+    short prevZoom = *std::upper_bound(ZOOM_LEVELS.rbegin(), ZOOM_LEVELS.rend() - 1, getZoom(), std::greater<short>());
+
+    return setZoom(prevZoom);
 }

@@ -57,6 +57,7 @@ signals:
     void zoomChanged(double zoom);
 
 private:
+    void setupZoomComboBox();
     void onSettingChanged(const std::string &setting);
 
     Ui::PlaybackWidget *ui;

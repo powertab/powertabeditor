@@ -1762,22 +1762,6 @@ void PowerTabEditor::editViewFilters()
     }
 }
 
-void PowerTabEditor::zoomInScore()
-{
-    const int ZOOM_CHANGE_COEFITIENT = 25;
-    auto currentZoom = myDocumentManager->getCurrentDocument().getViewOptions().getZoom();
-
-    updateZoom(currentZoom + ZOOM_CHANGE_COEFITIENT);
-}
-
-void PowerTabEditor::zoomOutScore()
-{
-    const int ZOOM_CHANGE_COEFITIENT = 25;
-    auto currentZoom = myDocumentManager->getCurrentDocument().getViewOptions().getZoom();
-
-    updateZoom(currentZoom - ZOOM_CHANGE_COEFITIENT);
-}
-
 bool PowerTabEditor::eventFilter(QObject *object, QEvent *event)
 {
     // Don't handle key presses during playback.
@@ -3205,7 +3189,7 @@ void PowerTabEditor::createTabArea()
             &PowerTabEditor::updateActiveFilter);
 
     connect(myPlaybackWidget, &PlaybackWidget::zoomChanged, this, [=](int percent) {
-        updateZoom(percent, true);
+        setScoreZoom(percent, true);
     });
 
     auto update_metronome_state = [&]() {
@@ -3722,15 +3706,32 @@ void PowerTabEditor::updateActiveFilter(int filter)
     redrawScore();
 }
 
-void PowerTabEditor::updateZoom(double percent, bool pb_widget_update)
+void PowerTabEditor::applyZoomChange(bool playback_widget_update)
 {
-    myDocumentManager->getCurrentDocument().getViewOptions().setZoom(percent);
     getScoreArea()->refreshZoom();
 
-    if (!pb_widget_update)
+    if (!playback_widget_update)
     {
         myPlaybackWidget->reset(myDocumentManager->getCurrentDocument());
     }
+}
+
+void PowerTabEditor::zoomInScore()
+{
+    myDocumentManager->getCurrentDocument().getViewOptions().increaseZoom();
+    applyZoomChange();
+}
+
+void PowerTabEditor::zoomOutScore()
+{
+    myDocumentManager->getCurrentDocument().getViewOptions().decreaseZoom();
+    applyZoomChange();
+}
+
+void PowerTabEditor::setScoreZoom(double percent, bool playback_widget_update)
+{
+    myDocumentManager->getCurrentDocument().getViewOptions().setZoom(percent);
+    applyZoomChange(playback_widget_update);
 }
 
 void PowerTabEditor::updateLocationLabel()

@@ -18,18 +18,17 @@
 #include "playbackwidget.h"
 #include "ui_playbackwidget.h"
 
+#include <app/viewoptions.h>
 #include <app/documentmanager.h>
 #include <score/score.h>
 #include <score/staff.h>
 #include <widgets/common.h>
 
 #include <algorithm>
+#include <string>
 
 #include <QAction>
 #include <QButtonGroup>
-
-static constexpr double MIN_ZOOM = 25;
-static constexpr double MAX_ZOOM = 300;
 
 static QString getShortcutHint(const QAction &action)
 {
@@ -67,7 +66,7 @@ public:
         QLocale locale;
         double percent = locale.toDouble(number);
         parent()->setProperty("acceptableInput",
-                              (percent >= MIN_ZOOM && percent <= MAX_ZOOM));
+                              (percent >= ViewOptions::MIN_ZOOM && percent <= ViewOptions::MAX_ZOOM));
         return state;
     }
 
@@ -127,8 +126,6 @@ PlaybackWidget::PlaybackWidget(const QAction &play_pause_command,
                 .arg(getShortcutHint(metronome_command)));
     });
 
-    ui->zoomComboBox->setValidator(new PercentageValidator(ui->zoomComboBox));
-
     connect(myVoices, qOverload<int>(&QButtonGroup::buttonClicked), this,
             &PlaybackWidget::activeVoiceChanged);
     connect(ui->speedSpinner,qOverload<int>(&QSpinBox::valueChanged), this,
@@ -140,22 +137,7 @@ PlaybackWidget::PlaybackWidget(const QAction &play_pause_command,
     connectButtonToAction(ui->rewindToStartButton, &rewind_command);
     connectButtonToAction(ui->stopButton, &stop_command);
 
-    connect(ui->zoomComboBox, &QComboBox::currentTextChanged,
-            [=](const QString &text) {
-                // Trigger an update for the stylesheet.
-                ui->zoomComboBox->style()->unpolish(ui->zoomComboBox);
-                ui->zoomComboBox->style()->polish(ui->zoomComboBox);
-
-                QLocale locale;
-                double percentage =
-                    std::clamp(locale.toDouble(extractPercent(text, locale)),
-                               MIN_ZOOM, MAX_ZOOM);
-                emit zoomChanged(percentage);
-            });
-    // Display a different style for invalid zoom values.
-    ui->zoomComboBox->setStyleSheet(
-        QStringLiteral("QComboBox[acceptableInput=false] { color: red; }"));
-
+    setupZoomComboBox();
 }
 
 PlaybackWidget::~PlaybackWidget()
@@ -215,3 +197,33 @@ void PlaybackWidget::updateLocationLabel(const std::string &location)
 {
     ui->locationLabel->setText(QString::fromStdString(location));
 }
+
+void PlaybackWidget::setupZoomComboBox ()
+{
+    // Add zoom options
+    for(auto const& zoom: ViewOptions::ZOOM_LEVELS)
+    {
+        std::string zoomOptionLabel = std::to_string(zoom) + "%";
+        ui->zoomComboBox->addItem(tr(zoomOptionLabel.c_str()));
+    }
+
+    // Display a different style for invalid zoom values.
+    ui->zoomComboBox->setStyleSheet(
+        QStringLiteral("QComboBox[acceptableInput=false] { color: red; }"));
+
+    ui->zoomComboBox->setValidator(new PercentageValidator(ui->zoomComboBox));
+
+    connect(ui->zoomComboBox, &QComboBox::currentTextChanged,
+            [=](const QString &text) {
+                // Trigger an update for the stylesheet.
+                ui->zoomComboBox->style()->unpolish(ui->zoomComboBox);
+                ui->zoomComboBox->style()->polish(ui->zoomComboBox);
+
+                QLocale locale;
+                double percentage =
+                    std::clamp(locale.toDouble(extractPercent(text, locale)),
+                               ViewOptions::MIN_ZOOM, ViewOptions::MAX_ZOOM);
+                emit zoomChanged(percentage);
+            });
+}
+

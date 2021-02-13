@@ -19,12 +19,18 @@
 #define APP_VIEWOPTIONS_H
 
 #include <optional>
+#include <array>
 #include <algorithm>
 
 /// Stores any view options that are not saved with the score (e.g. the current
 /// zoom level or the active score filter).
 class ViewOptions
 {
+public:
+    static constexpr double MIN_ZOOM = 25;
+    static constexpr double MAX_ZOOM = 300;
+    static constexpr std::array<unsigned short, 14> ZOOM_LEVELS = { 25, 50, 70, 80, 90, 100, 110, 125, 150, 175, 200, 225, 250, 300 };
+
 public:
     ViewOptions();
 
@@ -33,7 +39,14 @@ public:
     void clearFilter() { myFilter.reset(); }
 
     double getZoom() const { return myZoom; }
-    void setZoom(double percent);
+
+    /// Fixates the zoom level. Note that we support two types of zoom
+    /// changes - explicit level or one from a list
+    bool setZoom(double percent);
+    /// Increases to the next possible zoom level.
+    bool increaseZoom();
+    /// Increases to the previous possible zoom level.
+    bool decreaseZoom();
 
 private:
     std::optional<int> myFilter;
