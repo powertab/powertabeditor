@@ -18,20 +18,22 @@
 #ifndef PAINTERS_KEYSIGNATUREPAINTER_H
 #define PAINTERS_KEYSIGNATUREPAINTER_H
 
+#include "clickableitem.h"
+
 #include <memory>
 #include <QFont>
 #include <QGraphicsItem>
 #include <painters/layoutinfo.h>
 #include <score/scorelocation.h>
 
-class ClickPubSub;
+class ScoreClickEvent;
 
-class KeySignaturePainter : public QGraphicsItem
+class KeySignaturePainter : public ClickableItem
 {
 public:
     KeySignaturePainter(const LayoutConstPtr &layout, const KeySignature &key,
-                        const ScoreLocation &location,
-                        const std::shared_ptr<ClickPubSub> &pubsub);
+                        const ConstScoreLocation &location,
+                        const ScoreClickEvent &click_event);
 
     virtual void paint(QPainter *painter, const QStyleOptionGraphicsItem *,
                        QWidget *) override;
@@ -41,15 +43,8 @@ public:
     }
 
 private:
-    virtual void mousePressEvent(QGraphicsSceneMouseEvent *event) override;
-    virtual void mouseReleaseEvent(QGraphicsSceneMouseEvent *event) override;
-    virtual void hoverEnterEvent(QGraphicsSceneHoverEvent *) override;
-    virtual void hoverLeaveEvent(QGraphicsSceneHoverEvent *) override;
-
     LayoutConstPtr myLayout;
     const KeySignature &myKeySignature;
-    const ScoreLocation myLocation;
-    std::shared_ptr<ClickPubSub> myPubSub;
     QFont myMusicFont;
     const QRectF myBounds;
     QVector<double> myFlatPositions;

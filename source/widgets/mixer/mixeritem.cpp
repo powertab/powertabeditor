@@ -18,23 +18,18 @@
 #include "mixeritem.h"
 #include "ui_mixeritem.h"
 
-#include <app/pubsub/playerpubsub.h>
 #include <dialogs/tuningdialog.h>
 #include <score/player.h>
 #include <util/tostring.h>
 
 #include <QStyle>
+#include <memory>
 
 MixerItem::MixerItem(QWidget *parent, int playerIndex, const Player &player,
-                     const TuningDictionary &dictionary,
-                     const PlayerEditPubSub &editPubSub,
-                     const PlayerRemovePubSub &removePubSub)
+                     const TuningDictionary &dictionary)
     : QWidget(parent),
       ui(new Ui::MixerItem),
       myDictionary(dictionary),
-      myEditPubSub(editPubSub),
-      myRemovePubSub(removePubSub),
-      myPlayerIndex(playerIndex),
       myTuning(player.getTuning())
 {
     ui->setupUi(this);
@@ -74,9 +69,8 @@ MixerItem::MixerItem(QWidget *parent, int playerIndex, const Player &player,
     connect(ui->playerTuning, &ClickableLabel::clicked, this,
             &MixerItem::editTuning);
 
-    connect(ui->removeButton, &QPushButton::clicked, [&]() {
-        myRemovePubSub.publish(myPlayerIndex);
-    });
+    connect(ui->removeButton, &QPushButton::clicked, this,
+            &MixerItem::playerRemoved);
 }
 
 MixerItem::~MixerItem()
@@ -120,5 +114,5 @@ void MixerItem::onEdited(bool undoable)
     player.setPan(ui->playerPan->value());
     player.setTuning(myTuning);
 
-    myEditPubSub.publish(myPlayerIndex, player, undoable);
+    playerEdited(player, undoable);
 }

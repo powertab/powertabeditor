@@ -69,6 +69,8 @@ FileInformationDialog::FileInformationDialog(
         const SongData &song = info.getSongData();
         // Initialize song information.
         ui->songTitleValue->setText(QString::fromStdString(song.getTitle()));
+        ui->songSubtitleValue->setText(
+            QString::fromStdString(song.getSubtitle()));
         ui->songArtistValue->setText(
             QString::fromStdString(song.getArtist()));
 

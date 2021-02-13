@@ -17,15 +17,11 @@ set( srcs
     actions/test_addnote.cpp
     actions/test_addnoteproperty.cpp
     actions/test_addplayer.cpp
-    actions/test_addplayerchange.cpp
     actions/test_addpositionproperty.cpp
-    actions/test_addrehearsalsign.cpp
     actions/test_addrest.cpp
     actions/test_addstaff.cpp
     actions/test_addsystem.cpp
     actions/test_addtappedharmonic.cpp
-    actions/test_addtempomarker.cpp
-    actions/test_addtextitem.cpp
     actions/test_addtrill.cpp
     actions/test_adjustlinespacing.cpp
     actions/test_editbarline.cpp
@@ -36,8 +32,12 @@ set( srcs
     actions/test_editkeysignature.cpp
     actions/test_editnoteduration.cpp
     actions/test_editplayer.cpp
+    actions/test_editplayerchange.cpp
+    actions/test_editrehearsalsign.cpp
     actions/test_editstaff.cpp
     actions/test_edittabnumber.cpp
+    actions/test_edittempomarker.cpp
+    actions/test_edittextitem.cpp
     actions/test_edittimesignature.cpp
     actions/test_editviewfilters.cpp
     actions/test_removealternateending.cpp
@@ -53,15 +53,11 @@ set( srcs
     actions/test_removenote.cpp
     actions/test_removenoteproperty.cpp
     actions/test_removeplayer.cpp
-    actions/test_removeplayerchange.cpp
     actions/test_removeposition.cpp
     actions/test_removepositionproperty.cpp
-    actions/test_removerehearsalsign.cpp
     actions/test_removestaff.cpp
     actions/test_removesystem.cpp
     actions/test_removetappedharmonic.cpp
-    actions/test_removetempomarker.cpp
-    actions/test_removetextitem.cpp
     actions/test_removetrill.cpp
     actions/test_shiftstring.cpp
     actions/test_volumeswell.cpp

@@ -12,7 +12,10 @@ on:
 jobs:
   build-ubuntu:
 
-    runs-on: ubuntu-latest
+    strategy:
+      matrix:
+        platform: [ubuntu-18.04, ubuntu-20.04]
+    runs-on: ${{ matrix.platform }}
 
     steps:
     - uses: actions/checkout@v1
@@ -66,37 +69,31 @@ jobs:
         include:
           - arch: x64
             cmake_arch: x64
-            qt_arch: win64_msvc2017_64
+            qt_arch: win64_msvc2019_64
           - arch: x86
             cmake_arch: Win32
-            qt_arch: win32_msvc2017
+            qt_arch: win32_msvc2019
 
     steps:
     - uses: actions/checkout@v1
     - name: Install Dependencies
-      # Update to the latest revision. This should be removed once the issue
-      # reference in
-      # https://github.com/powertab/powertabeditor/pull/300#issuecomment-667685298
-      # is fixed
-      run: |
-        cd "${env:VCPKG_INSTALLATION_ROOT}"
-        git pull
-        vcpkg install --triplet ${{ matrix.arch }}-windows boost-algorithm boost-date-time boost-endian boost-filesystem boost-functional boost-iostreams boost-range boost-rational boost-signals2 boost-stacktrace doctest minizip pugixml rapidjson
+      run: vcpkg install --triplet ${{ matrix.arch }}-windows boost-algorithm boost-date-time boost-endian boost-filesystem boost-functional boost-iostreams boost-range boost-rational boost-signals2 boost-stacktrace doctest minizip pugixml rapidjson
 
     # Building Qt via vcpkg would take a while ...
     - name: Install Qt
       uses: jurplel/install-qt-action@v2
       with:
         arch: ${{ matrix.qt_arch }}
+        version: 5.15.2
 
     - name: Generate Project
-      run: cmake -A ${{ matrix.cmake_arch }} -B ./build -DCMAKE_TOOLCHAIN_FILE="${env:VCPKG_INSTALLATION_ROOT}/scripts/buildsystems/vcpkg.cmake"
+      run: cmake -A ${{ matrix.cmake_arch }} -B ./build -DPTE_ENABLE_PCH=1 -DCMAKE_TOOLCHAIN_FILE="${env:VCPKG_INSTALLATION_ROOT}/scripts/buildsystems/vcpkg.cmake"
     - name: Build
       run: cmake --build ./build --config Release
     - name: Test
       run: ./build/bin/pte_tests.exe
 
-    - uses: microsoft/setup-msbuild@v1.0.0
+    - uses: microsoft/setup-msbuild@v1.0.2
 
     - name: Fetch VC redist
       run: |

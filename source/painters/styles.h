@@ -1,5 +1,5 @@
 /*
-  * Copyright (C) 2012 Cameron White
+  * Copyright (C) 2020 Cameron White
   *
   * This program is free software: you can redistribute it and/or modify
   * it under the terms of the GNU General Public License as published by
@@ -15,26 +15,14 @@
   * along with this program.  If not, see <http://www.gnu.org/licenses/>.
 */
 
-#include "addtempomarker.h"
+#ifndef PAINTERS_STYLES_H
+#define PAINTERS_STYLES_H
 
-#include <score/system.h>
+#include <QColor>
 
-AddTempoMarker::AddTempoMarker(const ScoreLocation &location,
-                               const TempoMarker &marker)
-    : QUndoCommand(marker.getMarkerType() == TempoMarker::AlterationOfPace
-                       ? QObject::tr("Add Alteration of Pace")
-                       : QObject::tr("Add Tempo Marker")),
-      myLocation(location),
-      myMarker(marker)
+namespace Styles
 {
+extern const QColor SelectionColor;
 }
 
-void AddTempoMarker::redo()
-{
-    myLocation.getSystem().insertTempoMarker(myMarker);
-}
-
-void AddTempoMarker::undo()
-{
-    myLocation.getSystem().removeTempoMarker(myMarker);
-}
+#endif

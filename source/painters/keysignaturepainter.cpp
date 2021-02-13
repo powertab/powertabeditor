@@ -16,53 +16,37 @@
 */
   
 #include "keysignaturepainter.h"
-#include "score/staff.h"
 
-#include <app/pubsub/clickpubsub.h>
-#include <painters/musicfont.h>
+#include "musicfont.h"
+#include "scoreclickevent.h"
+
 #include <QCursor>
 #include <QPainter>
 #include <score/keysignature.h>
+#include <score/staff.h>
 
-KeySignaturePainter::KeySignaturePainter(
-    const LayoutConstPtr &layout, const KeySignature &key,
-    const ScoreLocation &location, const std::shared_ptr<ClickPubSub> &pubsub)
-    : myLayout(layout),
+KeySignaturePainter::KeySignaturePainter(const LayoutConstPtr &layout,
+                                         const KeySignature &key,
+                                         const ConstScoreLocation &location,
+                                         const ScoreClickEvent &click_event)
+    : ClickableItem(QObject::tr("Double-click to edit key signature."),
+            click_event, location, ScoreItem::KeySignature)
+            , myLayout(layout),
       myKeySignature(key),
-      myLocation(location),
-      myPubSub(pubsub),
       myMusicFont(MusicFont::getFont(MusicFont::DEFAULT_FONT_SIZE)),
       myBounds(0, -10, LayoutInfo::getWidth(myKeySignature),
                layout->getStdNotationStaffHeight())
 {
-    setAcceptHoverEvents(true);
-    setToolTip(QObject::tr("Click to edit key signature."));
     initAccidentalPositions();
 }
 
-void KeySignaturePainter::mousePressEvent(QGraphicsSceneMouseEvent *)
+void
+KeySignaturePainter::paint(QPainter *painter,
+                           const QStyleOptionGraphicsItem *option,
+                           QWidget *widget)
 {
-    // No action is needed here, but this will let us grab future mouse events.
-}
+    ClickableItem::paint(painter, option, widget);
 
-void KeySignaturePainter::mouseReleaseEvent(QGraphicsSceneMouseEvent *)
-{
-    myPubSub->publish(ClickType::KeySignature, myLocation);
-}
-
-void KeySignaturePainter::hoverEnterEvent(QGraphicsSceneHoverEvent *)
-{
-    setCursor(Qt::PointingHandCursor);
-}
-
-void KeySignaturePainter::hoverLeaveEvent(QGraphicsSceneHoverEvent *)
-{
-    unsetCursor();
-}
-
-void KeySignaturePainter::paint(QPainter *painter,
-                                const QStyleOptionGraphicsItem*, QWidget*)
-{
     painter->setFont(myMusicFont);
 
     // Draw the appropriate accidentals.

@@ -97,7 +97,7 @@ private:
 
 struct LayoutInfo
 {
-    LayoutInfo(const ScoreLocation &location);
+    LayoutInfo(const ConstScoreLocation &location);
 
     int getStringCount() const;
 
@@ -211,7 +211,7 @@ private:
     static int getMaxHeight(const std::vector<SymbolGroup> &groups);
 
     /// Stores the system / staff indices.
-    const ScoreLocation myLocation;
+    const ConstScoreLocation myLocation;
     int myLineSpacing;
     double myPositionSpacing;
     int myNumPositions;

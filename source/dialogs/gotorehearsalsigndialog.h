@@ -8,7 +8,7 @@ class GoToRehearsalSignDialog;
 }
 
 class Score;
-class ScoreLocation;
+class ConstScoreLocation;
 
 class GoToRehearsalSignDialog : public QDialog
 {
@@ -19,7 +19,7 @@ public:
     ~GoToRehearsalSignDialog();
 
     /// Returns the location of the selected rehearsal sign.
-    ScoreLocation getLocation() const;
+    ConstScoreLocation getLocation() const;
 
 public slots:
     virtual void accept() override;

@@ -128,6 +128,14 @@ PlaybackWidget::PlaybackWidget(const QAction &play_pause_command,
 
     connect(myVoices, qOverload<int>(&QButtonGroup::buttonClicked), this,
             &PlaybackWidget::activeVoiceChanged);
+        
+    connect(myVoices,
+#if (QT_VERSION >= QT_VERSION_CHECK(5,15,0))
+            &QButtonGroup::idClicked,
+#else
+            qOverload<int>(&QButtonGroup::buttonClicked),
+#endif
+            this, &PlaybackWidget::activeVoiceChanged);
     connect(ui->speedSpinner,qOverload<int>(&QSpinBox::valueChanged), this,
             &PlaybackWidget::playbackSpeedChanged);
     connect(ui->filterComboBox, qOverload<int>(&QComboBox::currentIndexChanged),

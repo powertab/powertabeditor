@@ -20,18 +20,17 @@
 
 #include <QWidget>
 
-class PlayerEditPubSub;
-class PlayerRemovePubSub;
+class Player;
 class QVBoxLayout;
 class Score;
 class TuningDictionary;
 
 class Mixer : public QWidget
 {
+    Q_OBJECT
+
 public:
-    Mixer(QWidget *parent, const TuningDictionary &dictionary,
-          const PlayerEditPubSub &editPubSub,
-          const PlayerRemovePubSub &removePubSub);
+    Mixer(QWidget *parent, const TuningDictionary &dictionary);
 
     /// Clear and then populate the mixer.
     void reset(const Score &score);
@@ -39,11 +38,13 @@ public:
     /// Removes all items from the mixer.
     void clear();
 
+signals:
+    void playerEdited(int index, const Player &player, bool undoable);
+    void playerRemoved(int index);
+
 private:
     QVBoxLayout *myLayout;
     const TuningDictionary &myDictionary;
-    const PlayerEditPubSub &myEditPubSub;
-    const PlayerRemovePubSub &myRemovePubSub;
 };
 
 #endif

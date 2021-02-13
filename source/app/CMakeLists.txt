@@ -52,10 +52,6 @@ set( headers
     settingsmanager.h
     tuningdictionary.h
     viewoptions.h
-
-    pubsub/playerpubsub.h
-    pubsub/pubsub.h
-    pubsub/clickpubsub.h
 )
 
 
@@ -63,6 +59,7 @@ set( moc_headers
     command.h
     powertabeditor.h
     recentfiles.h
+    scorearea.h
 )
 
 pte_library(

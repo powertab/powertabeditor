@@ -17,9 +17,27 @@
   
 #include <doctest/doctest.h>
 
-#include <actions/removeplayerchange.h>
+#include <actions/editplayerchange.h>
 #include <score/score.h>
 #include <score/scorelocation.h>
+
+TEST_CASE("Actions/AddPlayerChange")
+{
+    Score score;
+    System system;
+    score.insertSystem(system);
+    PlayerChange change;
+    change.insertActivePlayer(1, ActivePlayer(0, 2));
+
+    AddPlayerChange action(ScoreLocation(score, 0, 0, 3), change);
+
+    action.redo();
+    REQUIRE(score.getSystems()[0].getPlayerChanges().size() == 1);
+    REQUIRE(score.getSystems()[0].getPlayerChanges()[0].getPosition() == 3);
+
+    action.undo();
+    REQUIRE(score.getSystems()[0].getPlayerChanges().size() == 0);
+}
 
 TEST_CASE("Actions/RemovePlayerChange")
 {

@@ -29,7 +29,8 @@ class AlternateEndingDialog : public QDialog
     Q_OBJECT
 
 public:
-    AlternateEndingDialog(QWidget *parent);
+    AlternateEndingDialog(QWidget *parent,
+                          const AlternateEnding *current_ending);
 
     AlternateEnding getAlternateEnding() const;
 

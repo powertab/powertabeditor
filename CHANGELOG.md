@@ -5,7 +5,26 @@ All notable changes to this project will be documented in this file.
 
 Thanks to the following contributors who worked on this release:
 - @cameronwhite
+
+### Added
+- Many behavior changes to improve the workflow of editing symbols such as tempo markers (#23, #192, #220).
+  - These items can now be clicked on and selected, and Delete can then be pressed to remove the selected item.
+  - Double-clicking an item will now launch the edit dialog. Previously, it was required to remove and then re-create the item.
+
+### Changed
+- On macOS, the `Delete` key can now be used to remove notes rather than having to press `Fn+Delete`.
+
+### Fixed
+- Fixed a MIDI playback bug where adjacent repeated sections resulted in an empty bar being played (#289).
+- Fixed a bug where the score's existing subtitle did not show up when opening the file information dialog.
+- Fixed a bug where multi-bar rests were not drawn as a filled rectangle.
+
+## [Alpha 14] - 2020-11-24
+
+Thanks to the following contributors who worked on this release:
+- @cameronwhite
 - @psyomn
+- @mostafa-nabil
 
 ### Added
 - Added a bulk file conversion tool (#288, #212).
@@ -15,6 +34,7 @@ Thanks to the following contributors who worked on this release:
 ### Changed
 
 ### Fixed
+- Fixed issues with adjusting player volumes during MIDI playback (#276, #303).
 - Fixed an issue where starting MIDI playback later in the score could prevent bends from being played (#311).
 - Closing a tab that has modifications and isn't the active tab now works correctly (#304).
 - Fixed multiple issues that could cause the Windows installer to fail (#305).
@@ -295,7 +315,8 @@ Thanks to the following contributors who worked on this release:
 ## [Alpha 1] - 2014-07-27
 * The first alpha release!
 
-[Unreleased]: https://github.com/powertab/powertabeditor/compare/2.0.0-alpha13...HEAD
+[Unreleased]: https://github.com/powertab/powertabeditor/compare/2.0.0-alpha14...HEAD
+[Alpha 14]: https://github.com/powertab/powertabeditor/releases/tag/2.0.0-alpha14
 [Alpha 13]: https://github.com/powertab/powertabeditor/releases/tag/2.0.0-alpha13
 [Alpha 12]: https://github.com/powertab/powertabeditor/releases/tag/2.0.0-alpha12
 [Alpha 11]: https://github.com/powertab/powertabeditor/releases/tag/2.0.0-alpha11

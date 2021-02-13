@@ -216,7 +216,7 @@ bool Caret::moveToSystem(int system, bool keepStaff)
         return false;
 }
 
-void Caret::moveToLocation(const ScoreLocation &location)
+void Caret::moveToLocation(const ConstScoreLocation &location)
 {
     myLocation.setSystemIndex(location.getSystemIndex());
     myLocation.setStaffIndex(location.getStaffIndex());
@@ -232,4 +232,16 @@ void Caret::moveToValidPosition()
     moveToSystem(myLocation.getSystemIndex(), true);
     moveToStaff(myLocation.getStaffIndex());
     moveToPosition(myLocation.getPositionIndex());
+}
+
+ScoreItem
+Caret::getSelectedItem() const
+{
+    return mySelectedItem;
+}
+
+void
+Caret::setSelectedItem(ScoreItem item)
+{
+    mySelectedItem = item;
 }

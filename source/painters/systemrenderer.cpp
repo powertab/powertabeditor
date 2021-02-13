@@ -17,14 +17,13 @@
 
 #include "systemrenderer.h"
 
-#include <app/pubsub/clickpubsub.h>
 #include <app/scorearea.h>
 #include <app/viewoptions.h>
 #include <boost/range/adaptor/map.hpp>
 #include <boost/range/algorithm/find_if.hpp>
 #include <painters/antialiasedpathitem.h>
 #include <painters/barlinepainter.h>
-#include <painters/clickablegroup.h>
+#include <painters/clickableitem.h>
 #include <painters/keysignaturepainter.h>
 #include <painters/layoutinfo.h>
 #include <painters/simpletextitem.h>
@@ -104,12 +103,12 @@ QGraphicsItem *SystemRenderer::operator()(const System &system,
         }
 
         const bool isFirstStaff = (height == 0);
-        const ScoreLocation location(myScore, systemIndex, i);
+        const ConstScoreLocation location(myScore, systemIndex, i);
         LayoutConstPtr layout = std::make_shared<LayoutInfo>(location);
 
         if (isFirstStaff)
         {
-            drawSystemSymbols(system, *layout);
+            drawSystemSymbols(location, *layout);
             height += layout->getSystemSymbolSpacing();
         }
 
@@ -132,10 +131,8 @@ QGraphicsItem *SystemRenderer::operator()(const System &system,
                     g2*avgWeight+g1*(1-avgWeight), 
                     b2*avgWeight+b1*(1-avgWeight));
 
-        myParentStaff = new StaffPainter(layout,
-                                         ScoreLocation(myScore, systemIndex, i),
-                                         myScoreArea->getClickPubSub(),
-                                         staffColor);
+        myParentStaff = new StaffPainter(
+            layout, location, myScoreArea->getClickEvent(), staffColor);
         myParentStaff->setPos(0, height);
         myParentStaff->setParentItem(myParentSystem);
         height += layout->getStaffHeight();
@@ -149,34 +146,32 @@ QGraphicsItem *SystemRenderer::operator()(const System &system,
         const double clef_y = (staff.getClefType() == Staff::TrebleClef)
                                   ? layout->getStdNotationLine(4)
                                   : layout->getStdNotationLine(2);
-        auto pubsub = myScoreArea->getClickPubSub();
         auto clef = new SimpleTextItem(staff.getClefType() == Staff::TrebleClef
                                            ? QChar(MusicFont::TrebleClef)
                                            : QChar(MusicFont::BassClef),
                                            clef_font, TextAlignment::Baseline,
                                            QPen(myPalette.text().color()));
         auto group = new ClickableGroup(
-            QObject::tr("Click to change clef type."), [=]() {
-            pubsub->publish(ClickType::Clef, location);
-        });
+            QObject::tr("Double-click to change clef type."),
+            myScoreArea->getClickEvent(), location, ScoreItem::Clef);
         group->addToGroup(clef);
         group->setPos(LayoutInfo::CLEF_PADDING, clef_y);
         group->setParentItem(myParentStaff);
 
         drawTabClef(LayoutInfo::CLEF_PADDING, *layout, location);
 
-        drawBarlines(system, systemIndex, layout, location.getStaffIndex());
+        drawBarlines(location, layout);
         drawTabNotes(staff, layout);
         drawLegato(staff, *layout);
         drawSlides(staff, *layout, location);
 
         drawSymbolsAboveStdNotationStaff(*layout);
         drawSymbolsBelowStdNotationStaff(*layout);
-        drawSymbolsAboveTabStaff(staff, *layout);
+        drawSymbolsAboveTabStaff(location, *layout);
         drawSymbolsBelowTabStaff(*layout);
 
-        drawPlayerChanges(system, i, *layout);
-        drawStdNotation(system, staff, *layout);
+        drawPlayerChanges(location, *layout);
+        drawStdNotation(location, *layout);
 
         ++i;
     }
@@ -186,7 +181,7 @@ QGraphicsItem *SystemRenderer::operator()(const System &system,
 }
 
 void SystemRenderer::drawTabClef(double x, const LayoutInfo &layout,
-                                 const ScoreLocation &location)
+                                 const ConstScoreLocation &location)
 {
     // Determine the size of the clef symbol based on the number of strings and
     // the line spacing.
@@ -198,11 +193,9 @@ void SystemRenderer::drawTabClef(double x, const LayoutInfo &layout,
 
     auto clef = new SimpleTextItem(QChar(MusicFont::TabClef), font, TextAlignment::Baseline, QPen(myPalette.text().color()));
 
-    auto pubsub = myScoreArea->getClickPubSub();
     auto group = new ClickableGroup(
-        QObject::tr("Click to edit the number of strings."), [=]() {
-        pubsub->publish(ClickType::TabClef, location);
-    });
+        QObject::tr("Double-click to edit the number of strings."),
+        myScoreArea->getClickEvent(), location, ScoreItem::Clef);
     group->addToGroup(clef);
 
     // Position the clef symbol. The middle of the 'A' is aligned with the
@@ -226,20 +219,22 @@ void SystemRenderer::drawBarNumber(int systemIndex, const LayoutInfo &layout)
     text->setParentItem(myParentStaff);
 }
 
-void SystemRenderer::drawBarlines(const System &system, int systemIndex,
-                                  const LayoutConstPtr &layout,
-                                  int staffIndex)
+void
+SystemRenderer::drawBarlines(const ConstScoreLocation &location,
+                             const LayoutConstPtr &layout)
 {
+    const System &system = location.getSystem();
     for (const Barline &barline : system.getBarlines())
     {
-        const ScoreLocation location(myScore, systemIndex, staffIndex,
-                                     barline.getPosition());
+        ConstScoreLocation bar_location(location);
+        bar_location.setPositionIndex(barline.getPosition());
 
         const KeySignature &keySig = barline.getKeySignature();
         const TimeSignature &timeSig = barline.getTimeSignature();
 
-        BarlinePainter *barlinePainter = new BarlinePainter(layout, barline,
-                location, myScoreArea->getClickPubSub(), myPalette.text().color());
+        BarlinePainter *barlinePainter = new BarlinePainter(
+            layout, barline, bar_location, myScoreArea->getClickEvent(),
+            myPalette.text().color());
 
         double x = layout->getPositionX(barline.getPosition());
         double keySigX = x + barlinePainter->boundingRect().width() - 1;
@@ -284,9 +279,8 @@ void SystemRenderer::drawBarlines(const System &system, int systemIndex,
 
         if (keySig.isVisible())
         {
-            KeySignaturePainter *keySigPainter = new KeySignaturePainter(
-                        layout, keySig, location,
-                        myScoreArea->getClickPubSub());
+            auto keySigPainter = new KeySignaturePainter(
+                layout, keySig, bar_location, myScoreArea->getClickEvent());
 
             keySigPainter->setPos(keySigX, layout->getTopStdNotationLine());
             keySigPainter->setParentItem(myParentStaff);
@@ -294,26 +288,33 @@ void SystemRenderer::drawBarlines(const System &system, int systemIndex,
 
         if (timeSig.isVisible())
         {
-            TimeSignaturePainter *timeSigPainter = new TimeSignaturePainter(
-                        layout, timeSig, location,
-                        myScoreArea->getClickPubSub());
+            auto timeSigPainter = new TimeSignaturePainter(
+                layout, timeSig, bar_location, myScoreArea->getClickEvent());
 
             timeSigPainter->setPos(timeSigX, layout->getTopStdNotationLine());
             timeSigPainter->setParentItem(myParentStaff);
         }
 
-        if (barline.hasRehearsalSign() && staffIndex == 0)
+        if (barline.hasRehearsalSign() && location.getStaffIndex() == 0)
         {
             const RehearsalSign &sign = barline.getRehearsalSign();
-            const int RECTANGLE_OFFSET = 4;
+            static constexpr int RECTANGLE_OFFSET = 4;
+
+            auto group = new ClickableGroup(
+                QObject::tr("Double-click to edit rehearsal sign."),
+                myScoreArea->getClickEvent(), bar_location,
+                ScoreItem::RehearsalSign);
 
             auto signLetters = new SimpleTextItem(
-                QString::fromStdString(sign.getLetters()), myRehearsalSignFont, TextAlignment::Top, QPen(myPalette.text().color()));
+                QString::fromStdString(sign.getLetters()), myRehearsalSignFont,
+                TextAlignment::Top, QPen(myPalette.text().color()));
             signLetters->setX(rehearsalSignX + RECTANGLE_OFFSET);
             centerSymbolVertically(*signLetters, 0);
+            group->addToGroup(signLetters);
 
             QFontMetricsF metrics(myRehearsalSignFont);
-            const Barline *nextBar = system.getNextBarline(barline.getPosition());
+            const Barline *nextBar =
+                system.getNextBarline(barline.getPosition());
             Q_ASSERT(nextBar);
             const double signTextX =
                 signLetters->x() + signLetters->boundingRect().width() + 7;
@@ -323,12 +324,14 @@ void SystemRenderer::drawBarlines(const System &system, int systemIndex,
                 layout->getPositionX(nextBar->getPosition()) - signTextX -
                     RECTANGLE_OFFSET);
 
-            auto signText =
-                new SimpleTextItem(shortenedSignText, myRehearsalSignFont, TextAlignment::Top, QPen(myPalette.text().color()));
+            auto signText = new SimpleTextItem(
+                shortenedSignText, myRehearsalSignFont, TextAlignment::Top,
+                QPen(myPalette.text().color()));
             signText->setX(signTextX);
             centerSymbolVertically(*signText, 0);
             // The tooltip should contain the full description.
             signText->setToolTip(QString::fromStdString(sign.getDescription()));
+            group->addToGroup(signText);
 
             // Draw rectangle around rehearsal sign letters.
             QRectF boundingRect = signLetters->boundingRect();
@@ -336,10 +339,9 @@ void SystemRenderer::drawBarlines(const System &system, int systemIndex,
             auto rect = new QGraphicsRectItem(boundingRect);
             rect->setX(rehearsalSignX);
             centerSymbolVertically(*rect, 0);
+            group->addToGroup(rect);
 
-            rect->setParentItem(myParentSystem);
-            signText->setParentItem(myParentSystem);
-            signLetters->setParentItem(myParentSystem);
+            group->setParentItem(myParentSystem);
         }
     }
 }
@@ -418,9 +420,10 @@ void SystemRenderer::drawArpeggio(const Position &position, double x,
     endPoint->setParentItem(myParentStaff);
 }
 
-void SystemRenderer::drawSystemSymbols(const System &system,
+void SystemRenderer::drawSystemSymbols(const ConstScoreLocation &location,
                                        const LayoutInfo& layout)
 {
+    const System &system = location.getSystem();
     double height = 0;
 
     // Allocate space for any rehearsal signs - they are drawn at the same
@@ -437,14 +440,14 @@ void SystemRenderer::drawSystemSymbols(const System &system,
 
     if (!system.getAlternateEndings().empty())
     {
-        drawAlternateEndings(system, layout, height);
+        drawAlternateEndings(location, layout, height);
         height += LayoutInfo::SYSTEM_SYMBOL_SPACING;
         drawDividerLine(height);
     }
 
     if (!system.getTempoMarkers().empty())
     {
-        drawTempoMarkers(system, layout, height);
+        drawTempoMarkers(location, layout, height);
         height += LayoutInfo::SYSTEM_SYMBOL_SPACING;
         drawDividerLine(height);
     }
@@ -457,14 +460,14 @@ void SystemRenderer::drawSystemSymbols(const System &system,
 
     if (!system.getChords().empty())
     {
-        drawChordText(system, layout, height);
+        drawChordText(location, layout, height);
         height += LayoutInfo::SYSTEM_SYMBOL_SPACING;
         drawDividerLine(height);
     }
 
     if (!system.getTextItems().empty())
     {
-        drawTextItems(system, layout, height);
+        drawTextItems(location, layout, height);
         height += LayoutInfo::SYSTEM_SYMBOL_SPACING;
         drawDividerLine(height);
     }
@@ -480,63 +483,76 @@ void SystemRenderer::drawDividerLine(double y)
     line->setParentItem(myParentSystem);
 }
 
-void SystemRenderer::drawAlternateEndings(const System &system,
-                                          const LayoutInfo &layout,
-                                          double height)
+void
+SystemRenderer::drawAlternateEndings(const ConstScoreLocation &location,
+                                     const LayoutInfo &layout, double height)
 {
-    const double TOP_LINE_OFFSET = 2;
-    const double TEXT_PADDING = 5;
+    static constexpr double TOP_LINE_OFFSET = 2;
+    static constexpr double TEXT_PADDING = 5;
 
+    const System &system = location.getSystem();
     for (const AlternateEnding &ending : system.getAlternateEndings())
     {
-        const double location = layout.getPositionX(ending.getPosition()) +
-                                0.5 * layout.getPositionSpacing();
+        const double start_x = layout.getPositionX(ending.getPosition()) +
+                               0.5 * layout.getPositionSpacing();
+
+        ConstScoreLocation ending_location(location);
+        ending_location.setPositionIndex(ending.getPosition());
+
+        auto group = new ClickableGroup(
+            QObject::tr("Double-click to edit repeat endings."),
+            myScoreArea->getClickEvent(), ending_location,
+            ScoreItem::AlternateEnding);
 
         // Draw the vertical line.
         auto vertLine = new QGraphicsLineItem();
         vertLine->setLine(0, TOP_LINE_OFFSET, 0,
                           LayoutInfo::SYSTEM_SYMBOL_SPACING - TOP_LINE_OFFSET);
-        vertLine->setPos(location, height);
+        vertLine->setPos(start_x, height);
         vertLine->setPen(myPalette.text().color());
-        vertLine->setParentItem(myParentSystem);
+        group->addToGroup(vertLine);
 
         // Draw the text indicating the repeat numbers.
         auto text = new SimpleTextItem(
-            QString::fromStdString(Util::toString(ending)), myPlainTextFont, TextAlignment::Top ,QPen(myPalette.text().color()));
-        text->setPos(location + TEXT_PADDING, height + TEXT_PADDING / 2.0);
-        text->setParentItem(myParentSystem);
+            QString::fromStdString(Util::toString(ending)), myPlainTextFont,
+            TextAlignment::Top, QPen(myPalette.text().color()));
+        text->setPos(start_x + TEXT_PADDING, height + TEXT_PADDING / 2.0);
+        group->addToGroup(text);
 
         // The horizontal line either stretches to the next repeat end bar
         // in the system, or just to the next bar.
-        double endX = 0;
+        double end_x = 0;
         for (const Barline &barline : system.getBarlines())
         {
             // Look for the next repeat end bar.
             if (barline.getPosition() > ending.getPosition() &&
                 barline.getBarType() == Barline::RepeatEnd)
             {
-                endX = layout.getPositionX(barline.getPosition());
+                end_x = layout.getPositionX(barline.getPosition());
             }
         }
 
         // Otherwise, if there is no repeat bar just go to the next barline.
-        if (endX == 0)
+        if (end_x == 0)
         {
-            endX = layout.getPositionX(system.getNextBarline(
-                                    ending.getPosition())->getPosition());
+            end_x = layout.getPositionX(
+                system.getNextBarline(ending.getPosition())->getPosition());
         }
 
         // Draw to the center of the barline's position.
-        endX += 0.5 * layout.getPositionSpacing();
+        end_x += 0.5 * layout.getPositionSpacing();
 
         // Ensure that the line doesn't extend past the edge of the system.
-        endX = std::clamp(endX, 0.0, LayoutInfo::STAFF_WIDTH);
+        end_x = std::clamp(end_x, 0.0, LayoutInfo::STAFF_WIDTH);
 
         auto horizLine = new QGraphicsLineItem();
-        horizLine->setLine(0, TOP_LINE_OFFSET, endX - location, TOP_LINE_OFFSET);
-        horizLine->setPos(location, height);
+        horizLine->setLine(0, TOP_LINE_OFFSET, end_x - start_x,
+                           TOP_LINE_OFFSET);
+        horizLine->setPos(start_x, height);
         horizLine->setPen(myPalette.text().color());
-        horizLine->setParentItem(myParentSystem);
+        group->addToGroup(horizLine);
+
+        group->setParentItem(myParentSystem);
     }
 }
 
@@ -599,10 +615,11 @@ static QString getTripletFeelImage(const TempoMarker &tempo)
     }
 }
 
-void SystemRenderer::drawTempoMarkers(const System &system,
-                                      const LayoutInfo &layout,
-                                      double height)
+void
+SystemRenderer::drawTempoMarkers(const ConstScoreLocation &location,
+                                 const LayoutInfo &layout, double height)
 {
+    const System &system = location.getSystem();
     for (const TempoMarker &tempo : system.getTempoMarkers())
     {
         if (tempo.getMarkerType() == TempoMarker::NotShown)
@@ -610,13 +627,14 @@ void SystemRenderer::drawTempoMarkers(const System &system,
 
         const double x = layout.getPositionX(tempo.getPosition());
 
-#if 0
-        auto group = new ClickableGroup([]() {
-            // TODO - allow editing a tempo marker by clicking on it.
-        });
-#else
-        auto group = new QGraphicsItemGroup();
-#endif
+        ConstScoreLocation marker_location(location);
+        marker_location.setPositionIndex(tempo.getPosition());
+        auto group = new ClickableGroup(
+            QObject::tr("Double-click to edit tempo marker."),
+            myScoreArea->getClickEvent(), marker_location,
+            tempo.getMarkerType() == TempoMarker::AlterationOfPace
+                ? ScoreItem::AlterationOfPace
+                : ScoreItem::TempoMarker);
 
         QFont font = myPlainTextFont;
         if (tempo.getMarkerType() == TempoMarker::AlterationOfPace)
@@ -708,28 +726,45 @@ void SystemRenderer::drawTempoMarkers(const System &system,
     }
 }
 
-void SystemRenderer::drawChordText(const System &system,
-                                   const LayoutInfo &layout, double height)
+void
+SystemRenderer::drawChordText(const ConstScoreLocation &location,
+                              const LayoutInfo &layout, double height)
 {
-    for (const ChordText &chord : system.getChords())
+    for (const ChordText &chord : location.getSystem().getChords())
     {
         const double x = layout.getPositionX(chord.getPosition());
-        const std::string text = Util::toString(chord.getChordName());
 
-        auto textItem =
-            new SimpleTextItem(QString::fromStdString(text), myPlainTextFont, TextAlignment::Top, QPen(myPalette.text().color()));
+        ConstScoreLocation item_location(location);
+        item_location.setPositionIndex(chord.getPosition());
+        auto group = new ClickableGroup(
+            QObject::tr("Double-click to edit chord text."),
+            myScoreArea->getClickEvent(), item_location, ScoreItem::ChordText);
+
+        const std::string text = Util::toString(chord.getChordName());
+        auto textItem = new SimpleTextItem(QString::fromStdString(text),
+                                           myPlainTextFont, TextAlignment::Top,
+                                           QPen(myPalette.text().color()));
         textItem->setX(x);
         centerSymbolVertically(*textItem, height);
-        textItem->setParentItem(myParentSystem);
+        group->addToGroup(textItem);
+
+        group->setParentItem(myParentSystem);
     }
 }
 
-void SystemRenderer::drawTextItems(const System &system,
-                                   const LayoutInfo &layout, double height)
+void
+SystemRenderer::drawTextItems(const ConstScoreLocation &location,
+                              const LayoutInfo &layout, double height)
 {
-    for (const TextItem &text : system.getTextItems())
+    for (const TextItem &text : location.getSystem().getTextItems())
     {
         const QString &contents = QString::fromStdString(text.getContents());
+
+        ConstScoreLocation item_location(location);
+        item_location.setPositionIndex(text.getPosition());
+        auto group = new ClickableGroup(
+            QObject::tr("Double-click to edit text."),
+            myScoreArea->getClickEvent(), item_location, ScoreItem::TextItem);
 
         // Note: the SimpleTextItem class is not used here since multi-line
         // support is needed.
@@ -740,7 +775,9 @@ void SystemRenderer::drawTextItems(const System &system,
 
         text_item->setX(layout.getPositionX(text.getPosition()));
         centerSymbolVertically(*text_item, height);
-        text_item->setParentItem(myParentSystem);
+        group->addToGroup(text_item);
+
+        group->setParentItem(myParentSystem);
     }
 }
 
@@ -884,13 +921,21 @@ void SystemRenderer::drawLegato(const Staff &staff, const LayoutInfo &layout)
     }
 }
 
-void SystemRenderer::drawPlayerChanges(const System &system, int staffIndex,
-                                       const LayoutInfo &layout)
+void
+SystemRenderer::drawPlayerChanges(const ConstScoreLocation &location,
+                                  const LayoutInfo &layout)
 {
-    for (const PlayerChange &change : system.getPlayerChanges())
+    for (const PlayerChange &change : location.getSystem().getPlayerChanges())
     {
         const std::vector<ActivePlayer> activePlayers =
-                change.getActivePlayers(staffIndex);
+                change.getActivePlayers(location.getStaffIndex());
+
+        ConstScoreLocation change_location(location);
+        change_location.setPositionIndex(change.getPosition());
+        auto group = new ClickableGroup(
+            QObject::tr("Double-click to edit the active players."),
+            myScoreArea->getClickEvent(), change_location,
+            ScoreItem::PlayerChange);
 
         QString description;
         if (!activePlayers.empty())
@@ -908,18 +953,22 @@ void SystemRenderer::drawPlayerChanges(const System &system, int staffIndex,
         else
             description = QStringLiteral("(No Players)");
 
-        auto text = new SimpleTextItem(description, myPlainTextFont, TextAlignment::Top,QPen(myPalette.text().color()));
+        auto text =
+            new SimpleTextItem(description, myPlainTextFont, TextAlignment::Top,
+                               QPen(myPalette.text().color()));
         text->setPos(layout.getPositionX(change.getPosition()),
                      layout.getBottomStdNotationLine() +
                      LayoutInfo::STAFF_BORDER_SPACING +
                      layout.getStdNotationStaffBelowSpacing());
-        text->setParentItem(myParentStaff);
+        group->addToGroup(text);
+
+        group->setParentItem(myParentStaff);
     }
 }
 
 void
 SystemRenderer::drawSlides(const Staff &staff, const LayoutInfo &layout,
-                           ScoreLocation location)
+                           ConstScoreLocation location)
 {
     location.setVoiceIndex(0);
     for (const Voice &voice : staff.getVoices())
@@ -1128,8 +1177,9 @@ QGraphicsItem* SystemRenderer::createArtificialHarmonicText(
                                  QFont::StyleNormal);
 }
 
-void SystemRenderer::drawSymbolsAboveTabStaff(const Staff &staff,
-                                              const LayoutInfo& layout)
+void
+SystemRenderer::drawSymbolsAboveTabStaff(const ConstScoreLocation &location,
+                                         const LayoutInfo &layout)
 {
     for (const SymbolGroup &symbolGroup : layout.getTabStaffAboveSymbols())
     {
@@ -1169,11 +1219,7 @@ void SystemRenderer::drawSymbolsAboveTabStaff(const Staff &staff,
             break;
         case SymbolGroup::Dynamic:
         {
-            const Dynamic *dynamic = ScoreUtils::findByPosition(
-                staff.getDynamics(), symbolGroup.getLeftPosition());
-            Q_ASSERT(dynamic);
-
-            renderedSymbol = createDynamic(*dynamic);
+            renderedSymbol = createDynamic(location, symbolGroup);
             break;
         }
         case SymbolGroup::ArtificialHarmonic:
@@ -1181,7 +1227,7 @@ void SystemRenderer::drawSymbolsAboveTabStaff(const Staff &staff,
                 QStringLiteral("A.H."), QFont::StyleNormal, width, layout);
             break;
         case SymbolGroup::VolumeSwell:
-            renderedSymbol = createVolumeSwell(symbolGroup, layout);
+            renderedSymbol = createVolumeSwell(location, symbolGroup, layout);
             break;
 #if 0
         case Layout::SymbolTremoloBar:
@@ -1314,13 +1360,17 @@ void SystemRenderer::createDashedLine(QGraphicsItemGroup *group, double left,
 }
 
 QGraphicsItem *
-SystemRenderer::createVolumeSwell(const SymbolGroup &group,
+SystemRenderer::createVolumeSwell(const ConstScoreLocation &location,
+                                  const SymbolGroup &group,
                                   const LayoutInfo &layout)
 {
     const Position *pos = ScoreUtils::findByPosition(
         group.getVoice().getPositions(), group.getLeftPosition());
     assert(pos && pos->hasVolumeSwell());
     const VolumeSwell &swell = pos->getVolumeSwell();
+
+    ConstScoreLocation swell_location(location);
+    swell_location.setPositionIndex(pos->getPosition());
 
     // The width of the symbol rectangle is the number of positions that the
     // volume swell spans.
@@ -1337,7 +1387,10 @@ SystemRenderer::createVolumeSwell(const SymbolGroup &group,
     path.lineTo(start_x, LayoutInfo::TAB_SYMBOL_SPACING * 0.5);
     path.lineTo(end_x, (1.0 - padding) * LayoutInfo::TAB_SYMBOL_SPACING);
 
-    auto path_item = new QGraphicsPathItem(path);
+    auto path_item = new ClickableItemT<QGraphicsPathItem>(
+        QObject::tr("Double-click to edit volume swell."),
+        myScoreArea->getClickEvent(), swell_location, ScoreItem::VolumeSwell);
+    path_item->setPath(path);
     path_item->setPen(myPalette.text().color());
     return path_item;
 }
@@ -1392,10 +1445,16 @@ QGraphicsItem *SystemRenderer::createTrill(const LayoutInfo& layout)
     return group;
 }
 
-QGraphicsItem *SystemRenderer::createDynamic(const Dynamic &dynamic)
+QGraphicsItem *
+SystemRenderer::createDynamic(const ConstScoreLocation &location,
+                              const SymbolGroup &symbol_group)
 {
+    const Dynamic *dynamic = ScoreUtils::findByPosition(
+        location.getStaff().getDynamics(), symbol_group.getLeftPosition());
+    Q_ASSERT(dynamic);
+
     QString text;
-    switch (dynamic.getVolume())
+    switch (dynamic->getVolume())
     {
         case VolumeLevel::Off:
             text = QStringLiteral("off");
@@ -1427,19 +1486,28 @@ QGraphicsItem *SystemRenderer::createDynamic(const Dynamic &dynamic)
     }
 
     auto textItem =
-	new SimpleTextItem(text, myMusicNotationFont, TextAlignment::Baseline, QPen(myPalette.text().color()));
+        new SimpleTextItem(text, myMusicNotationFont, TextAlignment::Baseline,
+                           QPen(myPalette.text().color()));
     textItem->setY(0.5 * LayoutInfo::TAB_SYMBOL_SPACING);
 
     // Sticking the text in a QGraphicsItemGroup allows us to offset the
     // position of the text from its default location.
-    auto group = new QGraphicsItemGroup();
+    ConstScoreLocation item_location(location);
+    item_location.setPositionIndex(dynamic->getPosition());
+    auto group = new ClickableGroup(
+        QObject::tr("Double-click to edit dynamic."),
+        myScoreArea->getClickEvent(), item_location, ScoreItem::Dynamic);
     group->addToGroup(textItem);
     return group;
 }
 
-void SystemRenderer::drawStdNotation(const System &system, const Staff &staff,
-                                     const LayoutInfo &layout)
+void
+SystemRenderer::drawStdNotation(const ConstScoreLocation &location,
+                                const LayoutInfo &layout)
 {
+    const System &system = location.getSystem();
+    const Staff &staff = location.getStaff();
+
     // Draw rests.
     for (const Voice &voice : staff.getVoices())
     {
@@ -1453,7 +1521,9 @@ void SystemRenderer::drawStdNotation(const System &system, const Staff &staff,
 
             if (pos.hasMultiBarRest())
             {
-                drawMultiBarRest(system, *prevBar, layout,
+                ConstScoreLocation rest_location(location);
+                rest_location.setPositionIndex(pos.getPosition());
+                drawMultiBarRest(rest_location, *prevBar, layout,
                                  pos.getMultiBarRestCount());
             }
             else if (pos.isRest())
@@ -1750,50 +1820,60 @@ void SystemRenderer::drawIrregularGroups(const Voice &voice,
     }
 }
 
-void SystemRenderer::drawMultiBarRest(const System &system,
-                                      const Barline &leftBar,
-                                      const LayoutInfo &layout,
-                                      int measureCount)
+void
+SystemRenderer::drawMultiBarRest(const ConstScoreLocation &location,
+                                 const Barline &leftBar,
+                                 const LayoutInfo &layout, int measureCount)
 {
-    const Barline *rightBar = system.getNextBarline(leftBar.getPosition());
+    const Barline *rightBar =
+        location.getSystem().getNextBarline(leftBar.getPosition());
     Q_ASSERT(rightBar);
 
-    const double leftX = (leftBar.getPosition() == 0) ?
-                layout.getPositionX(leftBar.getPosition()) :
-                layout.getPositionX(leftBar.getPosition() + 1);
+    const double leftX = (leftBar.getPosition() == 0)
+                             ? layout.getPositionX(leftBar.getPosition())
+                             : layout.getPositionX(leftBar.getPosition() + 1);
 
-    const double rightX = std::clamp(
-                layout.getPositionX(rightBar->getPosition()), 0.0,
-                LayoutInfo::STAFF_WIDTH - layout.getPositionSpacing() / 2.0);
+    const double rightX =
+        std::clamp(layout.getPositionX(rightBar->getPosition()), 0.0,
+                   LayoutInfo::STAFF_WIDTH - layout.getPositionSpacing() / 2.0);
+
+    auto group = new ClickableGroup(
+        QObject::tr("Double-click to edit multi-bar rest."),
+        myScoreArea->getClickEvent(), location, ScoreItem::MultiBarRest);
 
     // Draw the measure count.
-    auto measureCountText =
-        new SimpleTextItem(QString::number(measureCount), myMusicNotationFont, TextAlignment::Baseline, QPen(myPalette.text().color()));
+    auto measureCountText = new SimpleTextItem(
+        QString::number(measureCount), myMusicNotationFont,
+        TextAlignment::Baseline, QPen(myPalette.text().color()));
 
     centerHorizontally(*measureCountText, leftX, rightX);
     measureCountText->setY(layout.getTopStdNotationLine());
-    measureCountText->setParentItem(myParentStaff);
+    group->addToGroup(measureCountText);
 
     // Draw symbol across std. notation staff.
     auto vertLineLeft =
         new QGraphicsLineItem(leftX, layout.getStdNotationLine(2), leftX,
                               layout.getStdNotationLine(4));
     vertLineLeft->setPen(myPalette.text().color());
-    vertLineLeft->setParentItem(myParentStaff);
+    group->addToGroup(vertLineLeft);
 
     auto vertLineRight =
         new QGraphicsLineItem(rightX, layout.getStdNotationLine(2), rightX,
                               layout.getStdNotationLine(4));
     vertLineRight->setPen(myPalette.text().color());
-    vertLineRight->setParentItem(myParentStaff);
+    group->addToGroup(vertLineRight);
 
     auto horizontalLine = new QGraphicsRectItem(
-        leftX, layout.getStdNotationLine(2) +
-                   0.5 * LayoutInfo::STD_NOTATION_LINE_SPACING,
+        leftX,
+        layout.getStdNotationLine(2) +
+            0.5 * LayoutInfo::STD_NOTATION_LINE_SPACING,
         rightX - leftX, LayoutInfo::STD_NOTATION_LINE_SPACING * 0.9);
 
     horizontalLine->setPen(myPalette.text().color());
-    horizontalLine->setParentItem(myParentStaff);
+    horizontalLine->setBrush(myPalette.text().color());
+    group->addToGroup(horizontalLine);
+
+    group->setParentItem(myParentStaff);
 }
 
 void

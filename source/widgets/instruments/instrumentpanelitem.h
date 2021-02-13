@@ -26,19 +26,21 @@ class InstrumentPanelItem;
 }
 
 class Instrument;
-class InstrumentEditPubSub;
-class InstrumentRemovePubSub;
 
 class InstrumentPanelItem : public QWidget
 {
+    Q_OBJECT
+
 public:
     explicit InstrumentPanelItem(QWidget *parent, int instrumentIndex,
-                                 const Instrument &instrument,
-                                 const InstrumentEditPubSub &editPubSub,
-                                 const InstrumentRemovePubSub &removePubSub);
+                                 const Instrument &instrument);
     ~InstrumentPanelItem();
 
     void update(const Instrument &instrument);
+
+signals:
+    void instrumentEdited(const Instrument &instrument);
+    void instrumentRemoved();
 
 private:
     void onInstrumentNameEdited();
@@ -46,8 +48,6 @@ private:
 
     Ui::InstrumentPanelItem *ui;
     const int myInstrumentIndex;
-    const InstrumentEditPubSub &myEditPubSub;
-    const InstrumentRemovePubSub &myRemovePubSub;
 };
 
 #endif

@@ -17,7 +17,6 @@
   
 #include "timesignaturepainter.h"
 
-#include <app/pubsub/clickpubsub.h>
 #include <painters/musicfont.h>
 #include <QCursor>
 #include <QPainter>
@@ -25,27 +24,24 @@
 
 TimeSignaturePainter::TimeSignaturePainter(const LayoutConstPtr &layout,
                                            const TimeSignature &time,
-                                           const ScoreLocation &location,
-                                           const std::shared_ptr<ClickPubSub> &pubsub)
-    : myLayout(layout),
+                                           const ConstScoreLocation &location,
+                                           const ScoreClickEvent &click_event)
+    : ClickableItem(QObject::tr("Click to edit time signature."), click_event,
+                    location, ScoreItem::TimeSignature),
+      myLayout(layout),
       myTimeSignature(time),
-      myLocation(location),
-      myPubSub(pubsub),
       myBounds(0, 0, LayoutInfo::getWidth(myTimeSignature),
                myLayout->getStdNotationStaffHeight())
 {
-    setAcceptHoverEvents(true);
-    setToolTip(QObject::tr("Click to edit time signature."));
 }
 
-void TimeSignaturePainter::mouseReleaseEvent(QGraphicsSceneMouseEvent *)
+void
+TimeSignaturePainter::paint(QPainter *painter,
+                            const QStyleOptionGraphicsItem *option,
+                            QWidget *widget)
 {
-    myPubSub->publish(ClickType::TimeSignature, myLocation);
-}
+    ClickableItem::paint(painter, option, widget);
 
-void TimeSignaturePainter::paint(QPainter *painter,
-                                 const QStyleOptionGraphicsItem *, QWidget *)
-{
     const TimeSignature::MeterType meterType = myTimeSignature.getMeterType();
     if (meterType == TimeSignature::CommonTime ||
         meterType == TimeSignature::CutTime)
@@ -63,21 +59,6 @@ void TimeSignaturePainter::paint(QPainter *painter,
         drawNumber(painter, 4 * LayoutInfo::STD_NOTATION_LINE_SPACING,
                    myTimeSignature.getBeatValue());
     }
-}
-
-void TimeSignaturePainter::mousePressEvent(QGraphicsSceneMouseEvent *)
-{
-    // No action is needed here, but this will let us grab future mouse events.
-}
-
-void TimeSignaturePainter::hoverEnterEvent(QGraphicsSceneHoverEvent *)
-{
-    setCursor(Qt::PointingHandCursor);
-}
-
-void TimeSignaturePainter::hoverLeaveEvent(QGraphicsSceneHoverEvent *)
-{
-    unsetCursor();
 }
 
 void TimeSignaturePainter::drawNumber(QPainter* painter, const double y,

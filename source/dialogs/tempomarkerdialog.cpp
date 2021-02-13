@@ -21,7 +21,8 @@
 #include <QButtonGroup>
 #include <QCompleter>
 
-TempoMarkerDialog::TempoMarkerDialog(QWidget *parent)
+TempoMarkerDialog::TempoMarkerDialog(QWidget *parent,
+                                     const TempoMarker *marker)
     : QDialog(parent),
       ui(new Ui::TempoMarkerDialog),
       myBeatTypes(new QButtonGroup(this)),
@@ -50,7 +51,14 @@ TempoMarkerDialog::TempoMarkerDialog(QWidget *parent)
     auto completer = new QCompleter(descriptions, this);
     completer->setCaseSensitivity(Qt::CaseInsensitive);
     ui->descriptionComboBox->setCompleter(completer);
-    ui->descriptionComboBox->clearEditText();
+
+    if (marker)
+    {
+        ui->descriptionComboBox->setCurrentText(
+            QString::fromStdString(marker->getDescription()));
+    }
+    else
+        ui->descriptionComboBox->clearEditText();
 
     // Prevent multiple beat types from being selected at once.
     myBeatTypes->addButton(ui->note2Button, TempoMarker::Half);
@@ -64,12 +72,14 @@ TempoMarkerDialog::TempoMarkerDialog(QWidget *parent)
     myBeatTypes->addButton(ui->note32Button, TempoMarker::ThirtySecond);
     myBeatTypes->addButton(ui->dottedNote32Button,
                            TempoMarker::ThirtySecondDotted);
-    ui->note4Button->setChecked(true);
+    auto beat_type = marker ? marker->getBeatType() : TempoMarker::Quarter;
+    myBeatTypes->button(beat_type)->setChecked(true);
 
     // Set the bpm range.
     ui->bpmSpinBox->setMinimum(TempoMarker::MIN_BEATS_PER_MINUTE);
     ui->bpmSpinBox->setMaximum(TempoMarker::MAX_BEATS_PER_MINUTE);
-    ui->bpmSpinBox->setValue(TempoMarker::DEFAULT_BEATS_PER_MINUTE);
+    ui->bpmSpinBox->setValue(marker ? marker->getBeatsPerMinute()
+                                    : TempoMarker::DEFAULT_BEATS_PER_MINUTE);
 
     // Prevent multiple listesso beat types from being selected at once.
     myListessoBeatTypes->addButton(ui->listessoNote2Button, TempoMarker::Half);
@@ -89,7 +99,9 @@ TempoMarkerDialog::TempoMarkerDialog(QWidget *parent)
                                  TempoMarker::ThirtySecond);
     myListessoBeatTypes->addButton(ui->listessoDottedNote32Button,
                                  TempoMarker::ThirtySecondDotted);
-    ui->listessoNote2Button->setChecked(true);
+    const auto listesso_type =
+        marker ? marker->getListessoBeatType() : TempoMarker::Half;
+    myListessoBeatTypes->button(listesso_type)->setChecked(true);
 
     // Prevent triplet feel types from being selected at once.
     myTripletFeelTypes->addButton(ui->tripletFeelNoneCheckBox,
@@ -102,16 +114,21 @@ TempoMarkerDialog::TempoMarkerDialog(QWidget *parent)
                                 TempoMarker::TripletFeelSixteenth);
     myTripletFeelTypes->addButton(ui->tripletFeel16thOffCheckBox,
                                 TempoMarker::TripletFeelSixteenthOff);
-    ui->tripletFeelNoneCheckBox->setChecked(true);
+    const auto triplet_feel =
+        marker ? marker->getTripletFeel() : TempoMarker::NoTripletFeel;
+    myTripletFeelTypes->button(triplet_feel)->setChecked(true);
 
     connect(ui->enableListessoCheckBox, &QCheckBox::clicked, this,
             &TempoMarkerDialog::onListessoChanged);
-    ui->enableListessoCheckBox->setChecked(false);
-    onListessoChanged(false);
+    const bool listesso =
+        marker ? marker->getMarkerType() == TempoMarker::ListessoMarker : false;
+    ui->enableListessoCheckBox->setChecked(listesso);
+    onListessoChanged(listesso);
 
     connect(ui->showMetronomeMarkerCheckBox, &QCheckBox::clicked, this,
             &TempoMarkerDialog::onShowMetronomeMarkerChanged);
-    ui->showMetronomeMarkerCheckBox->setChecked(true);
+    ui->showMetronomeMarkerCheckBox->setChecked(
+        marker ? marker->getMarkerType() != TempoMarker::NotShown : true);
 
     ui->descriptionComboBox->setFocus();
 }

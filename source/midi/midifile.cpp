@@ -215,11 +215,17 @@ void MidiFile::load(const Score &score, const LoadOptions &options)
             }
         }
 
-        // Generate metronome events.
-        current_tick = std::max(current_tick,
-                                generateMetronome(metronome_track, start_tick,
-                                                  system, current_bar, next_bar,
-                                                  location, options));
+        // Generate metronome events, unless there aren't actually any notes
+        // between the two bars (this typically occurs between adjacent repeat
+        // sections, where a repeat end is immediately followed by a repeat
+        // start).
+        if (current_tick != start_tick)
+        {
+            current_tick = std::max(
+                current_tick,
+                generateMetronome(metronome_track, start_tick, system,
+                                  current_bar, next_bar, location, options));
+        }
 
         location = moveToNextBar(
             metronome_track, current_tick, options.myRecordPositionChanges,
@@ -762,7 +768,7 @@ MidiFile::addEventsForBar(std::vector<MidiEventList> &tracks,
                           const Voice &voice, int voice_index, int bar_start,
                           int bar_end, const LoadOptions &options)
 {
-    ScoreLocation location(score, system_index, staff_index, voice_index);
+    ConstScoreLocation location(score, system_index, staff_index, voice_index);
     const Voice *prev_voice = VoiceUtils::getAdjacentVoice(location, -1);
     const Voice *next_voice = VoiceUtils::getAdjacentVoice(location, 1);
     bool let_ring_active = false;

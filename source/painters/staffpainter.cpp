@@ -17,17 +17,18 @@
   
 #include "staffpainter.h"
 
-#include <app/pubsub/clickpubsub.h>
+#include "scoreclickevent.h"
+
 #include <cmath>
 #include <QGraphicsSceneMouseEvent>
 #include <QPainter>
 
 StaffPainter::StaffPainter(const LayoutConstPtr &layout,
-                           const ScoreLocation &location,
-                           const std::shared_ptr<ClickPubSub> &pubsub,
+                           const ConstScoreLocation &location,
+                           const ScoreClickEvent &click_event,
                            const QColor staffColor)
     : myLayout(layout),
-      myPubSub(pubsub),
+      myClickEvent(click_event),
       myLocation(location),
       myBounds(0, 0, LayoutInfo::STAFF_WIDTH, layout->getStaffHeight()),
       myStaffColor(staffColor)
@@ -53,7 +54,8 @@ void StaffPainter::mousePressEvent(QGraphicsSceneMouseEvent *event)
         myLocation.setSelectionStart(position);
         myLocation.setString(string);
 
-        myPubSub->publish(ClickType::Selection, myLocation);
+        myClickEvent.signal(ScoreItem::Staff, myLocation,
+                            ScoreItemAction::Selected);
     }
 }
 
@@ -61,7 +63,8 @@ void StaffPainter::mouseMoveEvent(QGraphicsSceneMouseEvent *event)
 {
     const double x = event->pos().x();
     myLocation.setPositionIndex(myLayout->getPositionFromX(x));
-    myPubSub->publish(ClickType::Selection, myLocation);
+    myClickEvent.signal(ScoreItem::Staff, myLocation,
+                        ScoreItemAction::Selected);
 }
 
 void StaffPainter::paint(QPainter *painter, const QStyleOptionGraphicsItem *,

@@ -18,7 +18,8 @@
 #include "alterationofpacedialog.h"
 #include "ui_alterationofpacedialog.h"
 
-AlterationOfPaceDialog::AlterationOfPaceDialog(QWidget *parent)
+AlterationOfPaceDialog::AlterationOfPaceDialog(
+    QWidget *parent, const TempoMarker *current_marker)
     : QDialog(parent), ui(new Ui::AlterationOfPaceDialog)
 {
     ui->setupUi(this);
@@ -30,6 +31,13 @@ AlterationOfPaceDialog::AlterationOfPaceDialog(QWidget *parent)
                               TempoMarker::Accelerando);
     ui->typeComboBox->addItem(QStringLiteral("Ritardando (rit.)"),
                               TempoMarker::Ritardando);
+
+    if (current_marker)
+    {
+        ui->typeComboBox->setCurrentIndex(
+            current_marker->getAlterationOfPace() == TempoMarker::Ritardando
+                ? 1 : 0);
+    }
 }
 
 AlterationOfPaceDialog::~AlterationOfPaceDialog()

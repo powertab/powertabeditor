@@ -45,11 +45,11 @@ public:
 private:
     /// Draws the tab clef.
     void drawTabClef(double x, const LayoutInfo &layout,
-                     const ScoreLocation &location);
+                     const ConstScoreLocation &location);
 
     /// Draws barlines, along with time signatures, rehearsal signs, etc.
-    void drawBarlines(const System &system, int systemIndex,
-                      const LayoutConstPtr &layout, int staffIndex);
+    void drawBarlines(const ConstScoreLocation &location,
+                      const LayoutConstPtr &layout);
 
     /// Draws the tab notes for all notes in the staff.
     void drawTabNotes(const Staff &staff, const LayoutConstPtr &layout);
@@ -68,7 +68,8 @@ private:
                       const LayoutInfo &layout);
 
     /// Draws system-level symbols such as alternate endings and tempo markers.
-    void drawSystemSymbols(const System &system, const LayoutInfo &layout);
+    void drawSystemSymbols(const ConstScoreLocation &location,
+                           const LayoutInfo &layout);
 
     /// Draws the bar number for the first bar in the system.
     void drawBarNumber(int systemIndex, const LayoutInfo &layout);
@@ -77,24 +78,24 @@ private:
     void drawDividerLine(double y);
 
     /// Draws all of the alternate endings in the system.
-    void drawAlternateEndings(const System &system, const LayoutInfo &layout,
-                              double height);
+    void drawAlternateEndings(const ConstScoreLocation &location,
+                              const LayoutInfo &layout, double height);
 
     /// Draws all of the tempo markers in the system.
-    void drawTempoMarkers(const System &system, const LayoutInfo &layout,
-                          double height);
+    void drawTempoMarkers(const ConstScoreLocation &location,
+                          const LayoutInfo &layout, double height);
 
     /// Draws all of the directions in the system.
     double drawDirections(const System &system, const LayoutInfo &layout,
                           double height);
 
     /// Draws all of the chord names in the system.
-    void drawChordText(const System &system, const LayoutInfo &layout,
-                       double height);
+    void drawChordText(const ConstScoreLocation &location,
+                       const LayoutInfo &layout, double height);
 
     /// Draws all of the text items in the system.
-    void drawTextItems(const System &system, const LayoutInfo &layout,
-                       double height);
+    void drawTextItems(const ConstScoreLocation &location,
+                       const LayoutInfo &layout, double height);
 
     /// Draws the text symbols that appear below the tab staff
     /// (hammerons, slides, etc).
@@ -128,11 +129,12 @@ private:
     void drawLegato(const Staff &staff, const LayoutInfo &layout);
 
     /// Draws player changes for the given staff.
-    void drawPlayerChanges(const System &system, int staffIndex,
+    void drawPlayerChanges(const ConstScoreLocation &location,
                            const LayoutInfo &layout);
 
     /// Draws the symbols that appear above the tab staff (e.g. vibrato).
-    void drawSymbolsAboveTabStaff(const Staff &staff, const LayoutInfo &layout);
+    void drawSymbolsAboveTabStaff(const ConstScoreLocation &location,
+                                  const LayoutInfo &layout);
 
     /// Draws a sequence of continuous music symbols (e.g. vibrato).
     QGraphicsItem *drawContinuousFontSymbols(QChar symbol, int width);
@@ -147,10 +149,12 @@ private:
     QGraphicsItem *createArtificialHarmonicText(const Position &position);
 
     /// Creates a dynamic symbol.
-    QGraphicsItem *createDynamic(const Dynamic &dynamic);
+    QGraphicsItem *createDynamic(const ConstScoreLocation &location,
+                                 const SymbolGroup &symbol_group);
 
     /// Creates a volume swell.
-    QGraphicsItem *createVolumeSwell(const SymbolGroup &group,
+    QGraphicsItem *createVolumeSwell(const ConstScoreLocation &location,
+                                     const SymbolGroup &group,
                                      const LayoutInfo &layout);
 
     /// Draws a group of bends.
@@ -161,8 +165,8 @@ private:
     void createBend(QGraphicsItemGroup *group, double left, double right,
                     double yStart, double yEnd, int pitch, bool prebend);
 
-    /// Draws notes, beams, and rests.
-    void drawStdNotation(const System &system, const Staff &staff,
+    /// Draws notes, beams, and rests for a staff.
+    void drawStdNotation(const ConstScoreLocation &location,
                          const LayoutInfo &layout);
 
     /// Draws all ties in the voice.
@@ -174,8 +178,9 @@ private:
                              const std::vector<NoteStem> &stems);
 
     /// Draws a multi-bar rest symbol.
-    void drawMultiBarRest(const System &system, const Barline &leftBar,
-                          const LayoutInfo &layout, int measureCount);
+    void drawMultiBarRest(const ConstScoreLocation &location,
+                          const Barline &leftBar, const LayoutInfo &layout,
+                          int measureCount);
 
     /// Draws a rest symbol.
     void drawRest(const Position &pos, double x, const LayoutInfo &layout);
@@ -188,7 +193,7 @@ private:
 
     /// Draws all slides in a staff.
     void drawSlides(const Staff &staff, const LayoutInfo &layout,
-                    ScoreLocation location);
+                    ConstScoreLocation location);
 
     /// Draws a single slide between the given positions.
     void drawSlide(const LayoutInfo &layout, int string, bool slideUp,
@@ -208,7 +213,6 @@ private:
     QFont myRehearsalSignFont;
 
     QPalette myPalette;
-
 };
 
 #endif

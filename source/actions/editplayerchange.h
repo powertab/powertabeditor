@@ -14,27 +14,38 @@
   * You should have received a copy of the GNU General Public License
   * along with this program.  If not, see <http://www.gnu.org/licenses/>.
 */
-  
-#include "removeplayerchange.h"
 
-#include <score/system.h>
-#include <score/utils.h>
+#ifndef ACTIONS_EDITPLAYERCHANGE_H
+#define ACTIONS_EDITPLAYERCHANGE_H
 
-RemovePlayerChange::RemovePlayerChange(const ScoreLocation &location)
-    : QUndoCommand(QObject::tr("Remove Player Change")),
-      myLocation(location),
-      myPlayerChange(*ScoreUtils::findByPosition(
-                         location.getSystem().getPlayerChanges(),
-                         location.getPositionIndex()))
+#include <QUndoCommand>
+#include <score/playerchange.h>
+#include <score/scorelocation.h>
+
+class AddPlayerChange : public QUndoCommand
 {
-}
+public:
+    AddPlayerChange(const ScoreLocation &location, const PlayerChange &change);
 
-void RemovePlayerChange::redo()
-{
-    myLocation.getSystem().removePlayerChange(myPlayerChange);
-}
+    virtual void redo() override;
+    virtual void undo() override;
 
-void RemovePlayerChange::undo()
+private:
+    ScoreLocation myLocation;
+    PlayerChange myPlayerChange;
+};
+
+class RemovePlayerChange : public QUndoCommand
 {
-    myLocation.getSystem().insertPlayerChange(myPlayerChange);
-}
+public:
+    RemovePlayerChange(const ScoreLocation &location);
+
+    virtual void redo() override;
+    virtual void undo() override;
+
+private:
+    ScoreLocation myLocation;
+    const PlayerChange myPlayerChange;
+};
+
+#endif

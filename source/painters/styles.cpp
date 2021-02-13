@@ -1,5 +1,5 @@
 /*
-  * Copyright (C) 2012 Cameron White
+  * Copyright (C) 2020 Cameron White
   *
   * This program is free software: you can redistribute it and/or modify
   * it under the terms of the GNU General Public License as published by
@@ -15,26 +15,11 @@
   * along with this program.  If not, see <http://www.gnu.org/licenses/>.
 */
 
-#ifndef APP_CLICKPUBSUB_H
-#define APP_CLICKPUBSUB_H
+#include "styles.h"
 
-#include <app/pubsub/pubsub.h>
-#include <score/scorelocation.h>
+#include <QColor>
 
-enum class ClickType
+namespace Styles
 {
-    Barline,
-    KeySignature,
-    TimeSignature,
-    TabClef,
-    Clef,
-    Selection
-};
-
-/// Provides a way to subscribe to or publish notifications about events at
-/// a score location (e.g. a mouse click on a particular symbol).
-class ClickPubSub : public PubSub<void (ClickType, const ScoreLocation&)>
-{
-};
-
-#endif
+const QColor SelectionColor(168, 205, 241, 125);
+}

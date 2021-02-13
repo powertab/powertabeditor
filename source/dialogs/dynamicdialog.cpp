@@ -20,7 +20,7 @@
 
 #include <QButtonGroup>
 
-DynamicDialog::DynamicDialog(QWidget *parent)
+DynamicDialog::DynamicDialog(QWidget *parent, const Dynamic *current_dynamic)
     : QDialog(parent),
       ui(new Ui::DynamicDialog),
       myVolumeLevels(new QButtonGroup(this))
@@ -52,8 +52,8 @@ DynamicDialog::DynamicDialog(QWidget *parent)
     myVolumeLevels->addButton(ui->fffButton,
                               static_cast<uint8_t>(VolumeLevel::fff));
 
-    auto default_button =
-        myVolumeLevels->button(static_cast<uint8_t>(VolumeLevel::f));
+    auto default_button = myVolumeLevels->button(static_cast<uint8_t>(
+        current_dynamic ? current_dynamic->getVolume() : VolumeLevel::f));
     default_button->setChecked(true);
 }
 

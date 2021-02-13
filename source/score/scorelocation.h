@@ -30,49 +30,41 @@ class Staff;
 class System;
 class Voice;
 
-class ScoreLocation
+/// Location within a const Score.
+class ConstScoreLocation
 {
 public:
-    explicit ScoreLocation(const Score &score, int system = 0, int staff = 0,
-                           int position = 0, int voice = 0, int string = 0);
-    explicit ScoreLocation(Score &score, int system = 0, int staff = 0,
-                           int position = 0, int voice = 0, int string = 0);
+    explicit ConstScoreLocation(const Score &score, int system = 0,
+                                int staff = 0, int position = 0, int voice = 0,
+                                int string = 0);
 
-    Score &getScore();
     const Score &getScore() const;
 
     int getSystemIndex() const;
     void setSystemIndex(int system);
 
     const System &getSystem() const;
-    System &getSystem();
 
     const Barline *getBarline() const;
-    Barline *getBarline();
-    std::vector<Barline *> getSelectedBarlines();
 
     int getStaffIndex() const;
     void setStaffIndex(int staff);
 
     const Staff &getStaff() const;
-    Staff &getStaff();
 
     int getPositionIndex() const;
     void setPositionIndex(int position);
 
     const Position *getPosition() const;
-    Position *getPosition();
     const Position *findMultiBarRest() const;
     bool isEmptyBar() const;
 
     int getSelectionStart() const;
     void setSelectionStart(int position);
     bool hasSelection() const;
-    std::vector<Position *> getSelectedPositions();
     std::vector<const Position *> getSelectedPositions() const;
 
     const Voice &getVoice() const;
-    Voice &getVoice();
     int getVoiceIndex() const;
     void setVoiceIndex(int voice);
 
@@ -84,12 +76,9 @@ public:
     void setString(int string);
 
     const Note *getNote() const;
-    Note *getNote();
-    std::vector<Note *> getSelectedNotes();
 
-private:
+protected:
     const Score &myScore;
-    Score *myWriteableScore;
 
     int mySystemIndex;
     int myStaffIndex;
@@ -99,6 +88,44 @@ private:
     int mySelectionStart;
     int myVoiceIndex;
     int myString;
+};
+
+/// Location within a non-const Score.
+class ScoreLocation : public ConstScoreLocation
+{
+public:
+    explicit ScoreLocation(Score &score, int system = 0, int staff = 0,
+                           int position = 0, int voice = 0, int string = 0);
+    /// Convert to a writeable score location.
+    ScoreLocation(Score &score, const ConstScoreLocation &src_location);
+
+    using ConstScoreLocation::getScore;
+    Score &getScore();
+
+    using ConstScoreLocation::getSystem;
+    System &getSystem();
+
+    using ConstScoreLocation::getBarline;
+    Barline *getBarline();
+    std::vector<Barline *> getSelectedBarlines();
+
+    using ConstScoreLocation::getStaff;
+    Staff &getStaff();
+
+    using ConstScoreLocation::getPosition;
+    Position *getPosition();
+    using ConstScoreLocation::getSelectedPositions;
+    std::vector<Position *> getSelectedPositions();
+
+    using ConstScoreLocation::getVoice;
+    Voice &getVoice();
+
+    using ConstScoreLocation::getNote;
+    Note *getNote();
+    std::vector<Note *> getSelectedNotes();
+
+private:
+    Score &myWriteableScore;
 };
 
 std::ostream &operator<<(std::ostream &os, const ScoreLocation &location);

@@ -21,6 +21,8 @@
 #include <QDialog>
 #include <string>
 
+class TextItem;
+
 namespace Ui {
 class TextItemDialog;
 }
@@ -30,7 +32,7 @@ class TextItemDialog : public QDialog
     Q_OBJECT
 
 public:
-    explicit TextItemDialog(QWidget *parent);
+    explicit TextItemDialog(QWidget *parent, const TextItem *current_item);
     ~TextItemDialog();
 
     std::string getContents() const;

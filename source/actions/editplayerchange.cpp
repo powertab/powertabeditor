@@ -14,10 +14,11 @@
   * You should have received a copy of the GNU General Public License
   * along with this program.  If not, see <http://www.gnu.org/licenses/>.
 */
-  
-#include "addplayerchange.h"
+
+#include "editplayerchange.h"
 
 #include <score/system.h>
+#include <score/utils.h>
 
 AddPlayerChange::AddPlayerChange(const ScoreLocation &location,
                                  const PlayerChange &change)
@@ -28,12 +29,34 @@ AddPlayerChange::AddPlayerChange(const ScoreLocation &location,
     myPlayerChange.setPosition(location.getPositionIndex());
 }
 
-void AddPlayerChange::redo()
+void
+AddPlayerChange::redo()
 {
     myLocation.getSystem().insertPlayerChange(myPlayerChange);
 }
 
-void AddPlayerChange::undo()
+void
+AddPlayerChange::undo()
 {
     myLocation.getSystem().removePlayerChange(myPlayerChange);
+}
+
+RemovePlayerChange::RemovePlayerChange(const ScoreLocation &location)
+    : QUndoCommand(QObject::tr("Remove Player Change")),
+      myLocation(location),
+      myPlayerChange(*ScoreUtils::findByPosition(
+          location.getSystem().getPlayerChanges(), location.getPositionIndex()))
+{
+}
+
+void
+RemovePlayerChange::redo()
+{
+    myLocation.getSystem().removePlayerChange(myPlayerChange);
+}
+
+void
+RemovePlayerChange::undo()
+{
+    myLocation.getSystem().insertPlayerChange(myPlayerChange);
 }

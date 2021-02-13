@@ -18,11 +18,11 @@
 #include "scorearea.h"
 
 #include <app/documentmanager.h>
-#include <app/pubsub/clickpubsub.h>
 #include <app/settings.h>
 #include <chrono>
 #include <future>
 #include <painters/caretpainter.h>
+#include <painters/scoreclickevent.h>
 #include <painters/scoreinforenderer.h>
 #include <painters/systemrenderer.h>
 #include <QDebug>
@@ -45,7 +45,6 @@ ScoreArea::ScoreArea(SettingsManager &settings_manager, QWidget *parent)
       myCaretPainter(nullptr),
       myDefaultPalette(&parent->palette()),
       myActivePalette(nullptr),
-      myClickPubSub(std::make_shared<ClickPubSub>()),
       myDisableRedraw(false)
 {
     setScene(&myScene);
@@ -67,6 +66,11 @@ ScoreArea::ScoreArea(SettingsManager &settings_manager, QWidget *parent)
     loadTheme(settings_manager, /* redraw */ false);
     mySettingsListener = settings_manager.subscribeToChanges(
         [&]() { loadTheme(settings_manager); });
+
+    // Connect the click event handler to our public signals.
+    myClickEvent.connect(
+        [&](ScoreItem item, const ConstScoreLocation &location,
+            ScoreItemAction action) { itemClicked(item, location, action); });
 }
 
 void ScoreArea::renderDocument(const Document &document)
@@ -85,7 +89,8 @@ void ScoreArea::renderDocument(const Document &document)
         adjustScroll();
     });
 
-    myScoreInfoBlock = ScoreInfoRenderer::render(score.getScoreInfo(), myActivePalette->text().color());
+    myScoreInfoBlock = ScoreInfoRenderer::render(
+        score, myActivePalette->text().color(), myClickEvent);
 
     myRenderedSystems.reserve(static_cast<int>(score.getSystems().size()));
     for (unsigned int i = 0; i < score.getSystems().size(); ++i)
@@ -245,11 +250,6 @@ void ScoreArea::print(QPrinter &printer)
     // Revert to the original app palette and re-render the document
     myActivePalette = orig_palette;
     renderDocument(*myDocument);
-}
-
-std::shared_ptr<ClickPubSub> ScoreArea::getClickPubSub() const
-{
-    return myClickPubSub;
 }
 
 void ScoreArea::adjustScroll()

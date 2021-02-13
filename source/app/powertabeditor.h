@@ -20,8 +20,6 @@
 
 #include <QMainWindow>
 
-#include <app/pubsub/instrumentpubsub.h>
-#include <app/pubsub/playerpubsub.h>
 #include <memory>
 #include <score/dynamic.h>
 #include <score/position.h>
@@ -32,11 +30,13 @@ class Caret;
 class Command;
 class DocumentManager;
 class FileFormatManager;
+class Instrument;
 class InstrumentPanel;
 class ToolBox;
 class MidiPlayer;
 class Mixer;
 class PlaybackWidget;
+class Player;
 class QActionGroup;
 class RecentFiles;
 class ScoreArea;
@@ -157,8 +157,8 @@ private slots:
     void shiftForward();
     /// Moves all positions after the current location backwards.
     void shiftBackward();
-    /// Deletes the current note.
-    void removeCurrentPosition();
+    /// Deletes the selected note (or items like tempo markers).
+    void removeSelectedItem();
     /// Deletes the currently-selected positions.
     void removeSelectedPositions();
     /// Moves the caret to a specific barline.
@@ -167,9 +167,9 @@ private slots:
     void gotoRehearsalSign();
 
     /// Adds or removes a chord name at the current position.
-    void editChordName();
+    void editChordName(bool remove = false);
     /// Adds or removes a text item at the current position.
-    void editTextItem();
+    void editTextItem(bool remove = false);
 
     /// Inserts a new system at the end of the score.
     void insertSystemAtEnd();
@@ -203,32 +203,32 @@ private slots:
     /// Inserts a rest at the current location.
     void addRest();
     /// Adds or removes a multibar rest at the current location.
-    void editMultiBarRest();
+    void editMultiBarRest(bool remove = false);
 
     /// Adds or removes a rehearsal sign at the current barline.
-    void editRehearsalSign();
+    void editRehearsalSign(bool remove = false);
     /// Adds or removes a tempo marker at the current position.
-    void editTempoMarker();
+    void editTempoMarker(bool remove = false);
     /// Adds or removes an accel/rit symbol at the current position.
-    void editAlterationOfPace();
+    void editAlterationOfPace(bool remove = false);
     /// Edits the key signature at the caret's current location.
-    void editKeySignatureFromCaret();
+    void editKeySignature();
     /// Edits the time signature at the caret's current location.
-    void editTimeSignatureFromCaret();
+    void editTimeSignature();
     /// Inserts a single barline at the current location.
     void insertStandardBarline();
     /// Edits or inserts a barline at the current location.
-    void editBarlineFromCaret();
+    void editBarline();
     /// Adds or removes a musical direction at the current position.
     void editMusicalDirection();
     /// Adds or removes a repeat ending at the current position.
-    void editRepeatEnding();
+    void editRepeatEnding(bool remove = false);
     /// Adds, removes, or changes a dynamic at the current location.
     void updateDynamic(VolumeLevel volume);
     /// Adds or removes a dynamic at the current location.
-    void editDynamic();
+    void editDynamic(bool remove = false);
     /// Adds or removes a volume swell at the current location.
-    void editVolumeSwell();
+    void editVolumeSwell(bool remove = false);
 
     /// Adds or removes a hammeron/pulloff for the current note.
     void editHammerPull();
@@ -248,7 +248,7 @@ private slots:
     /// Adds a new instrument to the score.
     void addInstrument();
     /// Adds or removes a player change at the current location.
-    void editPlayerChange();
+    void editPlayerChange(bool remove = false);
     /// Edits the properties of a player.
     void editPlayer(int playerIndex, const Player &player, bool undoable);
     /// Removes the specified player.
@@ -389,15 +389,6 @@ private:
     /// Adds or removes a rest at the current location.
     void editRest(Position::DurationType duration);
 
-    /// Edits the key signature at the given location.
-    void editKeySignature(const ScoreLocation &keyLocation);
-    /// Edits the time signature at the given location.
-    void editTimeSignature(const ScoreLocation &timeLocation);
-    /// Edits the barline at the given location.
-    void editBarline(const ScoreLocation &barLocation);
-    /// Edits the clef at the given location.
-    void editClef(int system, int staff);
-
     /// Toggles a simple position property.
     void editSimplePositionProperty(Command *command,
                                     Position::SimpleProperty property);
@@ -410,7 +401,7 @@ private:
     void insertSystem(int index);
     /// Helper function to insert a staff at the given index in a system.
     void insertStaff(int index);
-    /// Edits the number of strings for the current staff.
+    /// Edits the clef and number of strings for the current staff.
     void editStaff(int system, int staff);
     /// Increases or decreases the line spacing by the given amount.
     void adjustLineSpacing(int amount);
@@ -428,12 +419,10 @@ private:
     std::unique_ptr<UndoManager> myUndoManager;
     std::unique_ptr<MidiPlayer> myMidiPlayer;
     std::unique_ptr<TuningDictionary> myTuningDictionary;
-    PlayerEditPubSub myPlayerEditPubSub;
-    PlayerRemovePubSub myPlayerRemovePubSub;
-    InstrumentEditPubSub myInstrumentEditPubSub;
-    InstrumentRemovePubSub myInstrumentRemovePubSub;
     /// Tracks whether we are currently in playback mode.
     bool myIsPlaying;
+    /// Flag for whether a score click event is being handled.
+    bool myIsHandlingClick = false;
     /// Tracks the last directory that a file was opened from.
     QString myPreviousDirectory;
     RecentFiles *myRecentFiles;
@@ -499,7 +488,7 @@ private:
     Command *myPrevBarCommand;
     Command *myInsertSpaceCommand;
     Command *myRemoveSpaceCommand;
-    Command *myRemoveNoteCommand;
+    Command *myRemoveItemCommand;
     Command *myRemovePositionCommand;
     Command *myGoToBarlineCommand;
     Command *myGoToRehearsalSignCommand;

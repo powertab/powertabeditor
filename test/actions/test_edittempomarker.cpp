@@ -17,7 +17,7 @@
   
 #include <doctest/doctest.h>
 
-#include <actions/addtempomarker.h>
+#include <actions/edittempomarker.h>
 #include <score/score.h>
 
 TEST_CASE("Actions/AddTempoMarker")
@@ -36,4 +36,24 @@ TEST_CASE("Actions/AddTempoMarker")
 
     action.undo();
     REQUIRE(location.getSystem().getTempoMarkers().size() == 0);
+}
+
+TEST_CASE("Actions/RemoveTempoMarker")
+{
+    Score score;
+    System system;
+    TempoMarker marker(6);
+    marker.setBeatsPerMinute(160);
+    system.insertTempoMarker(marker);
+    score.insertSystem(system);
+
+    ScoreLocation location(score, 0, 0, 6);
+    RemoveTempoMarker action(location);
+
+    action.redo();
+    REQUIRE(location.getSystem().getTempoMarkers().empty());
+
+    action.undo();
+    REQUIRE(location.getSystem().getTempoMarkers().size() == 1);
+    REQUIRE(location.getSystem().getTempoMarkers().front() == marker);
 }

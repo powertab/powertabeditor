@@ -59,6 +59,9 @@ private:
     void setIsPlaying(bool set);
     bool isPlaying() const;
 
+    // gets the player index for a specific channel
+    static int getPlayerFromChannel(const int channel);
+
     SettingsManager &mySettingsManager;
     const Score &myScore;
     ScoreLocation myStartLocation;

@@ -15,13 +15,46 @@
   * along with this program.  If not, see <http://www.gnu.org/licenses/>.
 */
 
-#ifndef ACTIONS_REMOVEREHEARSALSIGN_H
-#define ACTIONS_REMOVEREHEARSALSIGN_H
+#ifndef ACTIONS_EDITREHEARSALSIGN_H
+#define ACTIONS_EDITREHEARSALSIGN_H
 
 #include <QUndoCommand>
 #include <score/rehearsalsign.h>
 #include <score/scorelocation.h>
 
+/// Adds a new rehearsal sign.
+class AddRehearsalSign : public QUndoCommand
+{
+public:
+    AddRehearsalSign(const ScoreLocation &location,
+                     const std::string &description);
+
+    virtual void redo() override;
+    virtual void undo() override;
+
+private:
+    ScoreLocation myLocation;
+    const std::string myDescription;
+};
+
+/// Edits an existing rehearsal sign. This doesn't need to re-assign letters to
+/// subsequent signs.
+class EditRehearsalSign : public QUndoCommand
+{
+public:
+    EditRehearsalSign(const ScoreLocation &location,
+                      const std::string &new_description);
+
+    virtual void redo() override;
+    virtual void undo() override;
+
+private:
+    ScoreLocation myLocation;
+    const std::string myNewDescription;
+    RehearsalSign myOrigSign;
+};
+
+/// Removes a rehearsal sign.
 class RemoveRehearsalSign : public QUndoCommand
 {
 public:

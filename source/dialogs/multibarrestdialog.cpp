@@ -18,7 +18,7 @@
 #include "multibarrestdialog.h"
 #include "ui_multibarrestdialog.h"
 
-MultiBarRestDialog::MultiBarRestDialog(QWidget *parent)
+MultiBarRestDialog::MultiBarRestDialog(QWidget *parent, int initial_value)
     : QDialog(parent), ui(new Ui::MultiBarRestDialog)
 {
     ui->setupUi(this);
@@ -27,6 +27,7 @@ MultiBarRestDialog::MultiBarRestDialog(QWidget *parent)
     connect(ui->buttonBox, &QDialogButtonBox::rejected, this, &QDialog::reject);
 
     ui->numberOfBarsSpinBox->setMinimum(2);
+    ui->numberOfBarsSpinBox->setValue(initial_value);
 }
 
 MultiBarRestDialog::~MultiBarRestDialog()

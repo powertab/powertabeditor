@@ -1,5 +1,5 @@
-option( ENABLE_ASAN "Enable address sanitizer." OFF )
-option( ENABLE_TSAN "Enable thread sanitizer." OFF )
+option( PTE_ENABLE_ASAN "Enable address sanitizer." OFF )
+option( PTE_ENABLE_TSAN "Enable thread sanitizer." OFF )
 
 function ( pte_add_compile_flags target )
     # Always warn about using deprecated Qt functions.
@@ -15,7 +15,7 @@ function ( pte_add_compile_flags target )
     if ( PLATFORM_WIN )
         target_compile_definitions( ${target} PRIVATE -DNOMINMAX -D_SCL_SECURE_NO_WARNINGS )
     else ()
-        target_compile_options( ${target} PRIVATE -Wall -Wnon-virtual-dtor -Wextra )
+        target_compile_options( ${target} PRIVATE -Wall -Wnon-virtual-dtor -Wextra -Werror=switch )
 
         if ( PLATFORM_OSX )
             target_compile_options( ${target} PRIVATE -stdlib=libc++ )
@@ -31,7 +31,7 @@ function ( pte_add_compile_flags target )
         endif ()
     endif ()
 
-    if ( ENABLE_ASAN )
+    if ( PTE_ENABLE_ASAN )
         target_compile_options( ${target} PRIVATE
             -fsanitize=address
             -fno-omit-frame-pointer
@@ -39,7 +39,7 @@ function ( pte_add_compile_flags target )
         target_link_options( ${target} PRIVATE
             -fsanitize=address
         )
-    elseif ( ENABLE_TSAN )
+    elseif ( PTE_ENABLE_TSAN )
         target_compile_options( ${target} PRIVATE
             -fsanitize=thread
         )

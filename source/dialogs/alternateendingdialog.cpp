@@ -17,13 +17,15 @@
   
 #include "alternateendingdialog.h"
 
+#include <algorithm>
 #include <functional>
 #include <QCheckBox>
 #include <QDialogButtonBox>
 #include <QMessageBox>
 #include <QVBoxLayout>
 
-AlternateEndingDialog::AlternateEndingDialog(QWidget *parent)
+AlternateEndingDialog::AlternateEndingDialog(
+    QWidget *parent, const AlternateEnding *current_ending)
     : QDialog(parent)
 {
     const int LAYOUT_SPACING = 15;
@@ -43,12 +45,25 @@ AlternateEndingDialog::AlternateEndingDialog(QWidget *parent)
         QCheckBox *checkBox = new QCheckBox(QString::number(i), this);
         myCheckBoxes.push_back(checkBox);
         rowLayouts.back()->addWidget(checkBox);
+
+        if (current_ending)
+        {
+            auto &&numbers = current_ending->getNumbers();
+            if (std::binary_search(numbers.begin(), numbers.end(), i))
+                checkBox->setChecked(true);
+        }
     }
 
     // Set up the Da Capo, Dal Segno, and Dal Segno Segno checkboxes.
     myDaCapoCheckbox = new QCheckBox(tr("D.C."), this);
+    myDaCapoCheckbox->setChecked(current_ending ? current_ending->hasDaCapo()
+                                                : false);
     myDalSegnoCheckbox = new QCheckBox(tr("D.S."), this);
+    myDalSegnoCheckbox->setChecked(
+        current_ending ? current_ending->hasDalSegno() : false);
     myDalSegnoSegnoCheckbox = new QCheckBox(tr("D.S.S."), this);
+    myDalSegnoSegnoCheckbox->setChecked(
+        current_ending ? current_ending->hasDalSegnoSegno() : false);
     auto layout = new QHBoxLayout();
     layout->addWidget(myDaCapoCheckbox);
     layout->addWidget(myDalSegnoCheckbox);

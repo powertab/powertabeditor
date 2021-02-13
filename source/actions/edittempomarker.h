@@ -1,5 +1,5 @@
 /*
-  * Copyright (C) 2013 Cameron White
+  * Copyright (C) 2012 Cameron White
   *
   * This program is free software: you can redistribute it and/or modify
   * it under the terms of the GNU General Public License as published by
@@ -15,24 +15,37 @@
   * along with this program.  If not, see <http://www.gnu.org/licenses/>.
 */
 
-#ifndef ACTIONS_ADDREHEARSALSIGN_H
-#define ACTIONS_ADDREHEARSALSIGN_H
+#ifndef ACTIONS_EDITTEMPOMARKER_H
+#define ACTIONS_EDITTEMPOMARKER_H
 
 #include <QUndoCommand>
 #include <score/scorelocation.h>
+#include <score/tempomarker.h>
 
-class AddRehearsalSign : public QUndoCommand
+class AddTempoMarker : public QUndoCommand
 {
 public:
-    AddRehearsalSign(const ScoreLocation &location,
-                     const std::string &description);
+    AddTempoMarker(const ScoreLocation &location, const TempoMarker &marker);
 
     virtual void redo() override;
     virtual void undo() override;
 
 private:
     ScoreLocation myLocation;
-    const std::string myDescription;
+    const TempoMarker myMarker;
+};
+
+class RemoveTempoMarker : public QUndoCommand
+{
+public:
+    RemoveTempoMarker(const ScoreLocation &location);
+
+    virtual void redo() override;
+    virtual void undo() override;
+
+private:
+    ScoreLocation myLocation;
+    const TempoMarker myOriginalTempo;
 };
 
 #endif

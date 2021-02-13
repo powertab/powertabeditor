@@ -20,6 +20,7 @@
 
 #include <boost/signals2/signal.hpp>
 #include <score/scorelocation.h>
+#include <painters/scoreclickevent.h>
 
 class ViewOptions;
 
@@ -31,6 +32,13 @@ public:
 
     ScoreLocation &getLocation();
     const ScoreLocation &getLocation() const;
+
+    /// @{
+    /// The currently selected score item. If nothing is selected, the staff is
+    /// "selected".
+    ScoreItem getSelectedItem() const;
+    void setSelectedItem(ScoreItem item);
+    /// @}
 
     /// Returns whether the caret is in playback mode.
     bool isInPlaybackMode() const;
@@ -77,7 +85,7 @@ public:
     void moveToPrevBar();
 
     /// Moves to the specified location.
-    void moveToLocation(const ScoreLocation &location);
+    void moveToLocation(const ConstScoreLocation &location);
 
     /// Ensures that the caret is still at a valid position.
     void moveToValidPosition();
@@ -96,6 +104,7 @@ private:
     int getLastSystemIndex() const;
 
     ScoreLocation myLocation;
+    ScoreItem mySelectedItem = ScoreItem::Staff;
     const ViewOptions &myViewOptions;
     bool myInPlaybackMode;
 
