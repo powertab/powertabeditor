@@ -36,6 +36,8 @@ enum class ScoreTheme : int
 namespace Settings
 {
     extern const Setting<std::string> PreviousDirectory;
+    extern const Setting<int> LastZoomLevel;
+
     extern const Setting<QByteArray> WindowState;
     extern const Setting<std::vector<std::string>> RecentFiles;
     extern const Setting<ScoreTheme> Theme;

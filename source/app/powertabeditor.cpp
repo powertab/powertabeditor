@@ -274,7 +274,7 @@ void PowerTabEditor::openFile(QString filename)
 
     try
     {
-        Document &doc = myDocumentManager->addDocument();
+        Document &doc = myDocumentManager->addDocument(*mySettingsManager);
         myFileFormatManager->importFile(doc.getScore(), path, *format);
         auto end = std::chrono::high_resolution_clock::now();
         qDebug() << "File loaded in"
@@ -3976,6 +3976,10 @@ void PowerTabEditor::applyZoomChange(bool playback_widget_update)
     {
         myPlaybackWidget->reset(myDocumentManager->getCurrentDocument());
     }
+
+    auto settings = mySettingsManager->getWriteHandle();
+    settings->set(Settings::LastZoomLevel,
+            myDocumentManager->getCurrentDocument().getViewOptions().getZoom());
 }
 
 void PowerTabEditor::zoomInScore()

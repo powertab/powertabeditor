@@ -30,6 +30,8 @@ namespace Settings
 const Setting<std::string> PreviousDirectory(
     "app/previous_directory", Paths::getHomeDir().generic_string());
 
+const Setting<int> LastZoomLevel("app/last_zoom_level", 100);
+
 const Setting<QByteArray> WindowState("app/window_state", QByteArray());
 
 const Setting<std::vector<std::string>> RecentFiles("app/recent_files", {});

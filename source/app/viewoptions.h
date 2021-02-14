@@ -29,7 +29,7 @@ class ViewOptions
 public:
     static constexpr double MIN_ZOOM = 25;
     static constexpr double MAX_ZOOM = 300;
-    static constexpr std::array<unsigned short, 14> ZOOM_LEVELS = { 25, 50, 70, 80, 90, 100, 110, 125, 150, 175, 200, 225, 250, 300 };
+    static constexpr std::array<unsigned short, 13> ZOOM_LEVELS = { 25, 50, 70, 80, 90, 100, 110, 125, 150, 175, 200, 250, 300 };
 
 public:
     ViewOptions();
@@ -38,7 +38,7 @@ public:
     void setFilter(int filter) { myFilter = filter; }
     void clearFilter() { myFilter.reset(); }
 
-    double getZoom() const { return myZoom; }
+    int getZoom() const { return myZoom; }
 
     /// Fixates the zoom level. Note that we support two types of zoom
     /// changes - explicit level or one from a list

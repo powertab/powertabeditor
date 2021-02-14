@@ -68,7 +68,7 @@ public:
     DocumentManager();
 
     /// Add a new, blank document.
-    Document &addDocument();
+    Document &addDocument(const SettingsManager &settings_manager);
     /// Add a new document, and initialize it with a staff, player, etc.
     Document &addDefaultDocument(const SettingsManager &settings_manager);
 
