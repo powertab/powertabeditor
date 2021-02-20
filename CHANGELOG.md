@@ -18,6 +18,7 @@ Thanks to the following contributors who worked on this release:
 - Fixed a MIDI playback bug where adjacent repeated sections resulted in an empty bar being played (#289).
 - Fixed a bug where the score's existing subtitle did not show up when opening the file information dialog.
 - Fixed a bug where multi-bar rests were not drawn as a filled rectangle.
+- Fixed a bug where the pan controls in the mixer had no effect (#276).
 
 ## [Alpha 14] - 2020-11-24
 

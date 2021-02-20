@@ -197,13 +197,14 @@ void MidiPlayer::run()
         if (!event->isMetaMessage())
         {
             const int channel = event->getChannel();
-            const int player = getPlayerFromChannel(channel);
+            const int player_idx = getPlayerFromChannel(channel);
             // If the channel corresponds to a valid player, set its maximum
             // volume
-            if (player >= 0)
+            if (player_idx >= 0)
             {
-                device.setChannelMaxVolume(
-                    channel, myScore.getPlayers()[player].getMaxVolume());
+                const Player &player = myScore.getPlayers()[player_idx];
+                device.setChannelMaxVolume(channel, player.getMaxVolume());
+                device.setPan(channel, player.getPan());
             }
 
             // handle volume change events
