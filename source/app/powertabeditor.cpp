@@ -101,6 +101,7 @@
 #include <dialogs/fileinformationdialog.h>
 #include <dialogs/gotobarlinedialog.h>
 #include <dialogs/gotorehearsalsigndialog.h>
+#include <dialogs/infodialog.h>
 #include <dialogs/irregulargroupingdialog.h>
 #include <dialogs/keyboardsettingsdialog.h>
 #include <dialogs/keysignaturedialog.h>
@@ -1913,6 +1914,11 @@ void PowerTabEditor::editViewFilters()
     }
 }
 
+void PowerTabEditor::info()
+{
+    InfoDialog(this).exec();
+}
+
 bool PowerTabEditor::eventFilter(QObject *object, QEvent *event)
 {
     // Don't handle key presses during playback.
@@ -2846,6 +2852,11 @@ void PowerTabEditor::createCommands()
         QDesktopServices::openUrl(QUrl(AppInfo::BUG_TRACKER_URL));
     });
 
+    myInfoCommand = new Command(tr("App Info"), "Help.Info",
+                                QKeySequence(), this);
+
+    connect(myInfoCommand, &QAction::triggered, this, &PowerTabEditor::info);
+
     myMixerDockWidgetCommand =
         createCommandWrapper(myMixerDockWidget->toggleViewAction(),
                              "Window.Mixer", QKeySequence(), this);
@@ -3240,6 +3251,7 @@ void PowerTabEditor::createMenus()
     // Help menu.
     myHelpMenu = menuBar()->addMenu(tr("&Help"));
     myHelpMenu->addAction(myReportBugCommand);
+    myHelpMenu->addAction(myInfoCommand);
 }
 
 void PowerTabEditor::createToolBox()
