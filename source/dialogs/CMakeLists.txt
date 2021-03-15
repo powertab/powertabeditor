@@ -15,6 +15,7 @@ set( srcs
     filterrulewidget.cpp
     gotobarlinedialog.cpp
     gotorehearsalsigndialog.cpp
+    infodialog.cpp
     irregulargroupingdialog.cpp
     lefthandfingeringdialog.cpp
     keyboardsettingsdialog.cpp
@@ -51,6 +52,7 @@ set( headers
     filterrulewidget.h
     gotobarlinedialog.h
     gotorehearsalsigndialog.h
+    infodialog.h
     irregulargroupingdialog.h
     keyboardsettingsdialog.h
     keysignaturedialog.h
@@ -85,6 +87,7 @@ set( moc_headers
     fileinformationdialog.h
     filterrulewidget.h
     gotorehearsalsigndialog.h
+    infodialog.h
     keyboardsettingsdialog.h
     keysignaturedialog.h
     lefthandfingeringdialog.h
@@ -116,6 +119,7 @@ set( forms
     filterrulewidget.ui
     gotobarlinedialog.ui
     gotorehearsalsigndialog.ui
+    infodialog.ui
     irregulargroupingdialog.ui
     keyboardsettingsdialog.ui
     keysignaturedialog.ui
