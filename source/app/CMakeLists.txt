@@ -1,27 +1,5 @@
 project( pteapp )
 
-set( _version ${PTE_VERSION} )
-
-# Get a version number for development builds.
-include( FindGit )
-if ( GIT_FOUND )
-    execute_process(
-        COMMAND ${GIT_EXECUTABLE} describe --tags --long --always
-        WORKING_DIRECTORY ${PROJECT_SOURCE_DIR}
-        OUTPUT_VARIABLE git_revision
-        ERROR_VARIABLE error_var
-        RESULT_VARIABLE result_var
-    )
-
-    if ( result_var EQUAL 0 )
-        string( STRIP "${git_revision}" git_revision )
-        set( _version ${git_revision} )
-    endif ()
-endif ()
-
-message( STATUS "Version number: ${_version}" )
-add_definitions( -DVERSION=${_version} )
-
 set( srcs
     appinfo.cpp
     caret.cpp
