@@ -145,6 +145,7 @@
 #include <score/voiceutils.h>
 
 #include <util/tostring.h>
+#include <util/version.h>
 
 #include <widgets/instruments/instrumentpanel.h>
 #include <widgets/mixer/mixer.h>
@@ -1914,7 +1915,7 @@ void PowerTabEditor::editViewFilters()
     }
 }
 
-void PowerTabEditor::info()
+void PowerTabEditor::info(void)
 {
     InfoDialog(this).exec();
 }
@@ -2012,9 +2013,7 @@ QString PowerTabEditor::getApplicationName() const
                 AppInfo::APPLICATION_NAME,
                 AppInfo::APPLICATION_VERSION);
 
-#ifdef VERSION
-    name += QString(" (v") + BOOST_STRINGIZE(VERSION) + ")";
-#endif
+    name += QString::fromStdString(Version::get());
 
     return name;
 }

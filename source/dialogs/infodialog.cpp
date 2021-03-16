@@ -40,19 +40,6 @@ InfoDialog::InfoDialog(QWidget *parent) :
 
 void InfoDialog::setInfo()
 {
-  // TODO: this is copied from powertabeditor.cpp
-  // might be a good idea to have a util function
-  // to make the name
-  auto name = QString("%1 %2 Beta").arg(
-      AppInfo::APPLICATION_NAME,
-      AppInfo::APPLICATION_VERSION
-  );
-
-  // This should probably be in utils as well, so that we can get the
-  // version number that way, anywhere in the application
-#ifdef VERSION
-    name += QString(" (v") + BOOST_STRINGIZE(VERSION) + ")";
-#endif
-
-  ui->appInfo->setText(name);
+    auto name = AppInfo::makeApplicationName();
+    ui->appInfo->setText(name);
 }

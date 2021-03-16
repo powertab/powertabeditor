@@ -262,7 +262,7 @@ private slots:
     /// Shows a dialog to edit the score's view filters.
     void editViewFilters();
     /// Opens the info dialog
-    void info();
+    void info(void);
 
 protected:
     /// Handle key presses for 0-9 when entering tab numbers.
