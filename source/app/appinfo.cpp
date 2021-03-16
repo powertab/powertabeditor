@@ -17,6 +17,8 @@
 
 #include "appinfo.h"
 
+#include <util/version.h>
+
 #include <QCoreApplication>
 #include <QtGlobal>
 
@@ -41,5 +43,15 @@ namespace AppInfo
         path += "/";
         path += relative_path;
         return path;
+    }
+
+    QString makeApplicationName(void)
+    {
+        auto name = QString("%1 %2 Beta").arg(
+            APPLICATION_NAME,
+            APPLICATION_VERSION
+        );
+
+        return name + QString::fromStdString(Version::get());
     }
 }
