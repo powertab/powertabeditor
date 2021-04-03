@@ -23,8 +23,10 @@
 namespace Version {
     std::string get() {
         std::string ret;
-#ifdef VERSION
+#ifdef PTE_VERSION
         ret = " (v" + std::string(BOOST_STRINGIZE(VERSION)) + ")";
+#else
+#error A PTE_VERSION must be set. Make sure nothing has broken in the build process.
 #endif
         return ret;
     }
