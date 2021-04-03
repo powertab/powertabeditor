@@ -20,7 +20,7 @@ if ( GIT_FOUND )
 endif ()
 
 message( STATUS "Version number: ${_version}" )
-add_definitions( -DVERSION=${_version} )
+add_definitions( -DPTE_VERSION=${_version} )
 
 set( platform_srcs )
 if ( PLATFORM_OSX )
