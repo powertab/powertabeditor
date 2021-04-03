@@ -26,10 +26,10 @@
     <item row="0" column="0">
      <widget class="QTextEdit" name="appInfo">
       <property name="enabled">
-       <bool>false</bool>
+       <bool>true</bool>
       </property>
       <property name="readOnly">
-       <bool>false</bool>
+       <bool>true</bool>
       </property>
      </widget>
     </item>
