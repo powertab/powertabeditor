@@ -44,8 +44,8 @@ void InfoDialog::setInfo()
     const QString qname = QString::fromStdString(name);
 
     const auto developmentBinaryLocation =
-      QString("You can grab development binaries here:\n"
-              "  https://github.com/powertab/powertabeditor/actions");
+        QString(QObject::tr("You can grab development binaries here:\n"
+                            "  https://github.com/powertab/powertabeditor/actions"));
 
     const auto message = QString("%1\n\n%2").arg(
         qname,
