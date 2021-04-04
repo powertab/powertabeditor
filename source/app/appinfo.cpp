@@ -15,6 +15,8 @@
   * along with this program.  If not, see <http://www.gnu.org/licenses/>.
 */
 
+#include <sstream>
+
 #include "appinfo.h"
 
 #include <util/version.h>
@@ -45,13 +47,15 @@ namespace AppInfo
         return path;
     }
 
-    QString makeApplicationName(void)
+    std::string makeApplicationName(void)
     {
-        auto name = QString("%1 %2 Beta").arg(
-            APPLICATION_NAME,
-            APPLICATION_VERSION
-        );
+        std::stringstream ss;
 
-        return name + QString::fromStdString(Version::get());
+        ss << APPLICATION_NAME << " "
+           << APPLICATION_VERSION << " "
+           << "Beta "
+           << Version::get();
+
+        return ss.str();
     }
 }

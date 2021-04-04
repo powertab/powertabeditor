@@ -19,7 +19,6 @@
 #define APP_APPINFO_H
 
 #include <string>
-#include <QString>
 
 namespace AppInfo
 {
@@ -37,7 +36,7 @@ namespace AppInfo
     std::string getAbsolutePath(const char *relative_path);
 
     /// Make application name with version
-    QString makeApplicationName(void);
+    std::string makeApplicationName(void);
 }
 
 #endif
