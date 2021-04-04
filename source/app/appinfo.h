@@ -34,6 +34,9 @@ namespace AppInfo
     /// Given a path relative to the location of the executable, return the full
     /// path.
     std::string getAbsolutePath(const char *relative_path);
+
+    /// Make application name with version
+    std::string makeApplicationName(void);
 }
 
 #endif

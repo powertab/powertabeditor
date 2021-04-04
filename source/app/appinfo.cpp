@@ -15,7 +15,11 @@
   * along with this program.  If not, see <http://www.gnu.org/licenses/>.
 */
 
+#include <sstream>
+
 #include "appinfo.h"
+
+#include <util/version.h>
 
 #include <QCoreApplication>
 #include <QtGlobal>
@@ -41,5 +45,17 @@ namespace AppInfo
         path += "/";
         path += relative_path;
         return path;
+    }
+
+    std::string makeApplicationName(void)
+    {
+        std::stringstream ss;
+
+        ss << APPLICATION_NAME << " "
+           << APPLICATION_VERSION << " "
+           << "Beta "
+           << Version::get();
+
+        return ss.str();
     }
 }

@@ -101,6 +101,7 @@
 #include <dialogs/fileinformationdialog.h>
 #include <dialogs/gotobarlinedialog.h>
 #include <dialogs/gotorehearsalsigndialog.h>
+#include <dialogs/infodialog.h>
 #include <dialogs/irregulargroupingdialog.h>
 #include <dialogs/keyboardsettingsdialog.h>
 #include <dialogs/keysignaturedialog.h>
@@ -144,6 +145,7 @@
 #include <score/voiceutils.h>
 
 #include <util/tostring.h>
+#include <util/version.h>
 
 #include <widgets/instruments/instrumentpanel.h>
 #include <widgets/mixer/mixer.h>
@@ -1913,6 +1915,11 @@ void PowerTabEditor::editViewFilters()
     }
 }
 
+void PowerTabEditor::info(void)
+{
+    InfoDialog(this).exec();
+}
+
 bool PowerTabEditor::eventFilter(QObject *object, QEvent *event)
 {
     // Don't handle key presses during playback.
@@ -2006,9 +2013,7 @@ QString PowerTabEditor::getApplicationName() const
                 AppInfo::APPLICATION_NAME,
                 AppInfo::APPLICATION_VERSION);
 
-#ifdef VERSION
-    name += QString(" (v") + BOOST_STRINGIZE(VERSION) + ")";
-#endif
+    name += QString::fromStdString(Version::get());
 
     return name;
 }
@@ -2846,6 +2851,11 @@ void PowerTabEditor::createCommands()
         QDesktopServices::openUrl(QUrl(AppInfo::BUG_TRACKER_URL));
     });
 
+    myInfoCommand = new Command(tr("App Info"), "Help.Info",
+                                QKeySequence(), this);
+
+    connect(myInfoCommand, &QAction::triggered, this, &PowerTabEditor::info);
+
     myMixerDockWidgetCommand =
         createCommandWrapper(myMixerDockWidget->toggleViewAction(),
                              "Window.Mixer", QKeySequence(), this);
@@ -3240,6 +3250,7 @@ void PowerTabEditor::createMenus()
     // Help menu.
     myHelpMenu = menuBar()->addMenu(tr("&Help"));
     myHelpMenu->addAction(myReportBugCommand);
+    myHelpMenu->addAction(myInfoCommand);
 }
 
 void PowerTabEditor::createToolBox()
