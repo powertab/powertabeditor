@@ -5,11 +5,13 @@ All notable changes to this project will be documented in this file.
 
 Thanks to the following contributors who worked on this release:
 - @cameronwhite
+- @pysomn
 
 ### Added
 - Many behavior changes to improve the workflow of editing symbols such as tempo markers (#23, #192, #220).
   - These items can now be clicked on and selected, and Delete can then be pressed to remove the selected item.
   - Double-clicking an item will now launch the edit dialog. Previously, it was required to remove and then re-create the item.
+- New menu item `Help` -> `App Info` which contains information about the installation. This can be useful to include when reporting bugs (#329)
 
 ### Changed
 - On macOS, the `Delete` key can now be used to remove notes rather than having to press `Fn+Delete`.
