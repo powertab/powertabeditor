@@ -5,7 +5,8 @@
 ### Users
 * New user? Read the [intro page](https://github.com/powertab/powertabeditor/wiki/Power-Tab-Editor-2.0,-Here-at-last!) to learn more about the project!
 * You can get the latest releases from our [downloads page](https://github.com/powertab/powertabeditor/releases).
-* You can report bugs or suggest features on our [issue tracker](https://github.com/powertab/powertabeditor/issues).
+* You can report bugs or suggest features on our [issue tracker](https://github.com/powertab/powertabeditor/issues), or discuss ideas on the [discussions forum](https://github.com/powertab/powertabeditor/discussions)
+* Join the [Discord community](https://discord.gg/mpXfquuzxe)
 
 ### Developers
 
