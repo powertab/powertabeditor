@@ -454,7 +454,7 @@ void SystemRenderer::drawSystemSymbols(const ConstScoreLocation &location,
 
     if (!system.getDirections().empty())
     {
-        height += drawDirections(system, layout, height);
+        height += drawDirections(location, layout, height);
         drawDividerLine(height);
     }
 

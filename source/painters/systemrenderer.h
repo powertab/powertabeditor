@@ -86,8 +86,8 @@ private:
                           const LayoutInfo &layout, double height);
 
     /// Draws all of the directions in the system.
-    double drawDirections(const System &system, const LayoutInfo &layout,
-                          double height);
+    double drawDirections(const ConstScoreLocation &location,
+                          const LayoutInfo &layout, double height);
 
     /// Draws all of the chord names in the system.
     void drawChordText(const ConstScoreLocation &location,

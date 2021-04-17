@@ -30,6 +30,7 @@ enum class ScoreItem
     Barline,
     ChordText,
     Clef,
+    Direction,
     Dynamic,
     KeySignature,
     MultiBarRest,

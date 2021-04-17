@@ -220,7 +220,7 @@ private slots:
     /// Edits or inserts a barline at the current location.
     void editBarline();
     /// Adds or removes a musical direction at the current position.
-    void editMusicalDirection();
+    void editMusicalDirection(bool remove = false);
     /// Adds or removes a repeat ending at the current position.
     void editRepeatEnding(bool remove = false);
     /// Adds, removes, or changes a dynamic at the current location.

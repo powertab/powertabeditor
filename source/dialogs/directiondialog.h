@@ -30,7 +30,7 @@ class DirectionDialog : public QDialog
     Q_OBJECT
     
 public:
-    explicit DirectionDialog(QWidget *parent);
+    explicit DirectionDialog(QWidget *parent, const Direction *current_dir);
     ~DirectionDialog();
 
     Direction getDirection() const;

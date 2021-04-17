@@ -30,18 +30,13 @@ static QString theDirectionText[DirectionSymbol::NumSymbolTypes] =
     "Dal Segno Segno al Fine"
 };
 
-DirectionDialog::DirectionDialog(QWidget *parent)
-    : QDialog(parent),
-      ui(new Ui::DirectionDialog),
-      myCurrentSymbol(0)
+DirectionDialog::DirectionDialog(QWidget *parent, const Direction *current_dir)
+    : QDialog(parent), ui(new Ui::DirectionDialog), myCurrentSymbol(0)
 {
     ui->setupUi(this);
 
     connect(ui->buttonBox, &QDialogButtonBox::accepted, this, &QDialog::accept);
     connect(ui->buttonBox, &QDialogButtonBox::rejected, this, &QDialog::reject);
-
-    // Add the initial symbol.
-    myDirection.insertSymbol(DirectionSymbol(DirectionSymbol::Coda));
 
     for (int i = DirectionSymbol::Coda;
          i < DirectionSymbol::NumSymbolTypes; ++i)
@@ -55,11 +50,22 @@ DirectionDialog::DirectionDialog(QWidget *parent)
     ui->activeSymbolComboBox->addItem(QStringLiteral("D.S.S."));
 
     ui->repeatNumberSpinBox->setMinimum(0);
-    ui->repeatNumberSpinBox->setValue(0);
 
-    ui->directionComboBox->addItem(QStringLiteral("1"));
+    // Initialize with the current symbol's values.
+    if (current_dir)
+        myDirection = *current_dir;
+    else
+        myDirection.insertSymbol(DirectionSymbol(DirectionSymbol::Coda));
 
-    ui->removeDirectionButton->setDisabled(true);
+    for (unsigned long i = 0; i < myDirection.getSymbols().size(); ++i)
+        ui->directionComboBox->addItem(QString::number(i + 1));
+
+    const DirectionSymbol &symbol = myDirection.getSymbols()[myCurrentSymbol];
+    ui->symbolComboBox->setCurrentIndex(symbol.getSymbolType());
+    ui->activeSymbolComboBox->setCurrentIndex(symbol.getActiveSymbolType());
+    ui->repeatNumberSpinBox->setValue(symbol.getRepeatNumber());
+
+    ui->removeDirectionButton->setDisabled(myDirection.getSymbols().size() < 2);
 
     connect(ui->addDirectionButton, &QPushButton::clicked,
             this, &DirectionDialog::onAddDirection);

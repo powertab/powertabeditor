@@ -802,6 +802,10 @@ void PowerTabEditor::removeSelectedItem()
             editRepeatEnding(/* remove */ true);
             break;
 
+        case ScoreItem::Direction:
+            editMusicalDirection(/* remove */ true);
+            break;
+
         case ScoreItem::Dynamic:
             editDynamic(/* remove */ true);
             break;
@@ -1431,32 +1435,42 @@ void PowerTabEditor::insertStandardBarline()
                         location.getSystemIndex());
 }
 
-void PowerTabEditor::editMusicalDirection()
+void
+PowerTabEditor::editMusicalDirection(bool remove)
 {
     const ScoreLocation &location = getLocation();
     const Direction *direction = ScoreUtils::findByPosition(
-                location.getSystem().getDirections(),
-                location.getPositionIndex());
+        location.getSystem().getDirections(), location.getPositionIndex());
 
-    if (direction)
+    if (remove)
     {
+        Q_ASSERT(direction);
         myUndoManager->push(new RemoveDirection(location),
                             location.getSystemIndex());
+        return;
     }
-    else
-    {
-        DirectionDialog dialog(this);
-        if (dialog.exec() == QDialog::Accepted)
-        {
-            Direction direction(dialog.getDirection());
-            direction.setPosition(location.getPositionIndex());
 
-            myUndoManager->push(new AddDirection(location, direction),
+    DirectionDialog dialog(this, direction);
+    if (dialog.exec() == QDialog::Accepted)
+    {
+        Direction new_direction(dialog.getDirection());
+        new_direction.setPosition(location.getPositionIndex());
+
+        if (direction)
+        {
+            myUndoManager->beginMacro(tr("Edit Musical Direction"));
+            myUndoManager->push(new RemoveDirection(location),
                                 location.getSystemIndex());
         }
-        else
-            myDirectionCommand->setChecked(false);
+
+        myUndoManager->push(new AddDirection(location, new_direction),
+                            location.getSystemIndex());
+
+        if (direction)
+            myUndoManager->endMacro();
     }
+    else
+        myDirectionCommand->setChecked(direction != nullptr);
 }
 
 void PowerTabEditor::editRepeatEnding(bool remove)
@@ -2616,7 +2630,7 @@ void PowerTabEditor::createCommands()
                     QStringLiteral(u":images/coda.png"));
     myDirectionCommand->setCheckable(true);
     connect(myDirectionCommand, &QAction::triggered, this,
-            &PowerTabEditor::editMusicalDirection);
+            [=]() { editMusicalDirection(); });
 
     myRepeatEndingCommand =
         new Command(tr("Repeat Ending..."), "MusicSymbols.RepeatEnding",
@@ -3477,6 +3491,9 @@ void PowerTabEditor::setupNewTab()
                             case ScoreItem::AlternateEnding:
                                 editRepeatEnding();
                                 break;
+                            case ScoreItem::Direction:
+                                editMusicalDirection();
+                                break;
                             case ScoreItem::Dynamic:
                                 editDynamic();
                                 break;
@@ -3572,6 +3589,7 @@ canDeleteItem(ScoreItem item)
         case ScoreItem::AlterationOfPace:
         case ScoreItem::AlternateEnding:
         case ScoreItem::ChordText:
+        case ScoreItem::Direction:
         case ScoreItem::Dynamic:
         case ScoreItem::MultiBarRest:
         case ScoreItem::PlayerChange:

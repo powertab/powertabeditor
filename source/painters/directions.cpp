@@ -17,6 +17,8 @@
   
 #include "systemrenderer.h"
 
+#include <app/scorearea.h>
+#include <painters/clickableitem.h>
 #include <painters/musicfont.h>
 #include <painters/simpletextitem.h>
 #include <score/system.h>
@@ -34,15 +36,23 @@ static const QString theDirectionText[] = {
     QStringLiteral("D.S.S. al Fine")
 };
 
-double SystemRenderer::drawDirections(const System &system,
-                                      const LayoutInfo &layout, double height)
+double
+SystemRenderer::drawDirections(const ConstScoreLocation &location,
+                               const LayoutInfo &layout, double height)
 {
     double maxHeight = 0;
 
-    for (const Direction &direction : system.getDirections())
+    for (const Direction &direction : location.getSystem().getDirections())
     {
         double localHeight = 0;
         const double x = layout.getPositionX(direction.getPosition());
+
+        ConstScoreLocation dir_location(location);
+        dir_location.setPositionIndex(direction.getPosition());
+        auto group = new ClickableGroup(
+            QObject::tr("Double-click to edit musical direction."),
+            myScoreArea->getClickEvent(), dir_location, ScoreItem::Direction);
+        group->setParentItem(myParentSystem);
 
         for (const DirectionSymbol &symbol : direction.getSymbols())
         {
@@ -88,7 +98,7 @@ double SystemRenderer::drawDirections(const System &system,
             centerHorizontally(*item, x, x + layout.getPositionSpacing());
             item->setY(y);
 
-            item->setParentItem(myParentSystem);
+            group->addToGroup(item);
             localHeight += LayoutInfo::SYSTEM_SYMBOL_SPACING;
         }
 
