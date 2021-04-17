@@ -818,6 +818,10 @@ void PowerTabEditor::removeSelectedItem()
             editChordName(/* remove */ true);
             break;
 
+        case ScoreItem::Bend:
+            editBend(/* remove */ true);
+            break;
+
         case ScoreItem::Staff:
         {
             auto location = getLocation();
@@ -1680,28 +1684,40 @@ void PowerTabEditor::editTappedHarmonic()
     }
 }
 
-void PowerTabEditor::editBend()
+void
+PowerTabEditor::editBend(bool remove)
 {
     const ScoreLocation &location = getLocation();
     const Note *note = location.getNote();
     Q_ASSERT(note);
 
-    if (note->hasBend())
+    if (remove)
     {
+        Q_ASSERT(note->hasBend());
         myUndoManager->push(new RemoveBend(location),
                             location.getSystemIndex());
+        return;
     }
-    else
+
+    BendDialog dialog(this, note->hasBend() ? &note->getBend() : nullptr);
+    if (dialog.exec() == QDialog::Accepted)
     {
-        BendDialog dialog(this);
-        if (dialog.exec() == QDialog::Accepted)
+        const bool is_edit = note->hasBend();
+        if (is_edit)
         {
-            myUndoManager->push(new AddBend(location, dialog.getBend()),
+            myUndoManager->beginMacro(tr("Edit Bend"));
+            myUndoManager->push(new RemoveBend(location),
                                 location.getSystemIndex());
         }
-        else
-            myBendCommand->setChecked(false);
+
+        myUndoManager->push(new AddBend(location, dialog.getBend()),
+                            location.getSystemIndex());
+
+        if (is_edit)
+            myUndoManager->endMacro();
     }
+    else
+        myBendCommand->setChecked(note->hasBend());
 }
 
 void PowerTabEditor::editTrill()
@@ -2723,7 +2739,7 @@ void PowerTabEditor::createCommands()
                     QStringLiteral(u":images/bend"));
     myBendCommand->setCheckable(true);
     connect(myBendCommand, &QAction::triggered, this,
-            &PowerTabEditor::editBend);
+            [=]() { editBend(); });
 
     createPositionPropertyCommand(myVibratoCommand, tr("Vibrato"),
                                   "TabSymbols.Vibrato", Qt::Key_V,
@@ -3503,6 +3519,9 @@ void PowerTabEditor::setupNewTab()
                             case ScoreItem::ChordText:
                                 editChordName();
                                 break;
+                            case ScoreItem::Bend:
+                                editBend();
+                                break;
                         }
 
                         // Clear the selection after editing. We may have also
@@ -3588,6 +3607,7 @@ canDeleteItem(ScoreItem item)
     {
         case ScoreItem::AlterationOfPace:
         case ScoreItem::AlternateEnding:
+        case ScoreItem::Bend:
         case ScoreItem::ChordText:
         case ScoreItem::Direction:
         case ScoreItem::Dynamic:

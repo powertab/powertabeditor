@@ -158,9 +158,9 @@ private:
                                      const LayoutInfo &layout);
 
     /// Draws a group of bends.
-    QGraphicsItem *createBendGroup(const SymbolGroup &group,
-                                   const LayoutInfo &layout);
-    
+    void createBendGroup(const ConstScoreLocation &location,
+                         const SymbolGroup &group, const LayoutInfo &layout);
+
     /// Draws a single bend.
     void createBend(QGraphicsItemGroup *group, double left, double right,
                     double yStart, double yEnd, int pitch, bool prebend);

@@ -34,7 +34,7 @@ class BendDialog : public QDialog
     Q_OBJECT
 
 public:
-    BendDialog(QWidget *parent);
+    BendDialog(QWidget *parent, const Bend *current_bend);
     ~BendDialog();
 
     Bend getBend() const;

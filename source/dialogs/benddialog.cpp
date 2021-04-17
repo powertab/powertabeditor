@@ -22,7 +22,7 @@
 
 #include <QButtonGroup>
 
-BendDialog::BendDialog(QWidget *parent)
+BendDialog::BendDialog(QWidget *parent, const Bend *current_bend)
     : QDialog(parent), ui(new Ui::BendDialog)
 {
     ui->setupUi(this);
@@ -45,6 +45,29 @@ BendDialog::BendDialog(QWidget *parent)
 
     initDrawPoints(ui->vertStartingPointComboBox);
     initDrawPoints(ui->vertEndingPointComboBox);
+
+    if (current_bend)
+    {
+        ui->bendTypeComboBox->setCurrentIndex(current_bend->getType());
+        ui->bentPitchComboBox->setCurrentIndex(
+            ui->bentPitchComboBox->findData(current_bend->getBentPitch()));
+        ui->releasePitchComboBox->setCurrentIndex(
+            ui->releasePitchComboBox->findData(
+                current_bend->getReleasePitch()));
+
+        if (current_bend->getDuration() == 0)
+            ui->defaultDurationButton->setChecked(true);
+        else
+        {
+            ui->customDurationButton->setChecked(true);
+            ui->bendDurationSpinBox->setValue(current_bend->getDuration() - 1);
+        }
+
+        ui->vertStartingPointComboBox->setCurrentIndex(
+            current_bend->getStartPoint());
+        ui->vertEndingPointComboBox->setCurrentIndex(
+            current_bend->getEndPoint());
+    }
 
     connect(ui->bendTypeComboBox,
             qOverload<int>(&QComboBox::currentIndexChanged), this,

@@ -28,6 +28,7 @@ enum class ScoreItem
     AlterationOfPace,
     AlternateEnding,
     Barline,
+    Bend,
     ChordText,
     Clef,
     Direction,

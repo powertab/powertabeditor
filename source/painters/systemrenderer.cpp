@@ -1189,7 +1189,7 @@ SystemRenderer::drawSymbolsAboveTabStaff(const ConstScoreLocation &location,
         switch(symbolGroup.getSymbolType())
         {
         case SymbolGroup::Bend:
-            renderedSymbol = createBendGroup(symbolGroup, layout);
+            createBendGroup(location, symbolGroup, layout);
             break;
         case SymbolGroup::LetRing:
             renderedSymbol = createConnectedSymbolGroup(
@@ -1251,7 +1251,8 @@ SystemRenderer::drawSymbolsAboveTabStaff(const ConstScoreLocation &location,
                     symbolGroup.getHeight() * LayoutInfo::TAB_SYMBOL_SPACING);
         }
 
-        renderedSymbol->setParentItem(myParentStaff);
+        if (renderedSymbol)
+            renderedSymbol->setParentItem(myParentStaff);
     }
 }
 
@@ -2067,10 +2068,11 @@ void SystemRenderer::createBend(QGraphicsItemGroup *group, double left,
     }
 }
 
-QGraphicsItem *SystemRenderer::createBendGroup(const SymbolGroup &group,
-                                               const LayoutInfo &layout)
+void
+SystemRenderer::createBendGroup(const ConstScoreLocation &location,
+                                const SymbolGroup &group,
+                                const LayoutInfo &layout)
 {
-    auto itemGroup = new QGraphicsItemGroup();
     double prevX = 0.0;
 
     for (int i = group.getLeftPosition(); i < group.getRightPosition(); ++i)
@@ -2084,7 +2086,15 @@ QGraphicsItem *SystemRenderer::createBendGroup(const SymbolGroup &group,
         {
             if (!note.hasBend())
                 continue;
-            
+
+            ConstScoreLocation bend_location(location);
+            bend_location.setPositionIndex(pos->getPosition());
+            bend_location.setString(note.getString());
+
+            auto bend_group = new ClickableGroup(
+                QObject::tr("Double-click to edit bend."),
+                myScoreArea->getClickEvent(), bend_location, ScoreItem::Bend);
+
             const Bend &bend = note.getBend();
             const Bend::BendType type = bend.getType();
             
@@ -2123,24 +2133,24 @@ QGraphicsItem *SystemRenderer::createBendGroup(const SymbolGroup &group,
             const double yRelease = yEnd - 0.5 * layout.getTabLineSpacing();
             
             if (type == Bend::ImmediateRelease)
-                createDashedLine(itemGroup, prevX, rightX, yStart);
+                createDashedLine(bend_group, prevX, rightX, yStart);
             else if (type == Bend::GradualRelease)
             {
                 // Draw a dashed line to the original bend.
                 auto line = new QGraphicsLineItem(
                     prevX, yStart, x + layout.getPositionSpacing(), yStart);
                 line->setPen(QPen(myPalette.text().color(), 1, Qt::DashLine));
-                itemGroup->addToGroup(line);
+                bend_group->addToGroup(line);
 
                 // Draw the bend down to the new pitch.
-                createBend(itemGroup, x + layout.getPositionSpacing(), rightX,
+                createBend(bend_group, x + layout.getPositionSpacing(), rightX,
                            yStart, yRelease, bend.getReleasePitch(), false);
             }
             else if (type == Bend::NormalBend || type == Bend::BendAndHold ||
                      type == Bend::PreBend || type == Bend::PreBendAndHold)
             {
                 createBend(
-                    itemGroup, leftX, rightX, yStart, yEnd, bend.getBentPitch(),
+                    bend_group, leftX, rightX, yStart, yEnd, bend.getBentPitch(),
                     type == Bend::PreBend || type == Bend::PreBendAndHold);
             }
             else if (type == Bend::BendAndRelease ||
@@ -2159,19 +2169,19 @@ QGraphicsItem *SystemRenderer::createBendGroup(const SymbolGroup &group,
                 }
 
                 const double yMiddle = getBendHeight(drawPoint, note, layout);
-                createBend(itemGroup, leftX, middleX, yStart, yMiddle,
+                createBend(bend_group, leftX, middleX, yStart, yMiddle,
                            bend.getBentPitch(),
                            type == Bend::PreBendAndRelease);
 
                 // Draw the second part of the bend.
-                createBend(itemGroup, middleX, rightX, yMiddle, yRelease,
+                createBend(bend_group, middleX, rightX, yMiddle, yRelease,
                            bend.getReleasePitch(), false);
+
+                bend_group->setParentItem(myParentStaff);
             }
 
             prevX = rightX;
             break;
         }
     }
-
-    return itemGroup;
 }

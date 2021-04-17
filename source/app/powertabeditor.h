@@ -237,7 +237,7 @@ private slots:
     /// Adds or removes a tapped harmonic for the current note.
     void editTappedHarmonic();
 	/// Adds or removes a bend for the current note.
-	void editBend();
+	void editBend(bool remove = false);
     /// Adds or removes a trill for the current note.
     void editTrill();
     /// Adds or removes left hand fingering for the current note.
