@@ -2176,9 +2176,9 @@ SystemRenderer::createBendGroup(const ConstScoreLocation &location,
                 // Draw the second part of the bend.
                 createBend(bend_group, middleX, rightX, yMiddle, yRelease,
                            bend.getReleasePitch(), false);
-
-                bend_group->setParentItem(myParentStaff);
             }
+
+            bend_group->setParentItem(myParentStaff);
 
             prevX = rightX;
             break;
