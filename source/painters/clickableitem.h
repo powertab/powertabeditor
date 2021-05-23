@@ -33,6 +33,7 @@ public:
     virtual void mouseDoubleClickEvent(
         QGraphicsSceneMouseEvent *event) override;
     virtual void hoverEnterEvent(QGraphicsSceneHoverEvent *event) override;
+    virtual void hoverMoveEvent(QGraphicsSceneHoverEvent *event) override;
     virtual void hoverLeaveEvent(QGraphicsSceneHoverEvent *event) override;
 
     virtual QVariant itemChange(QGraphicsItem::GraphicsItemChange change,
@@ -43,6 +44,11 @@ public:
                        QWidget *widget) override;
 
 protected:
+    virtual bool filterMousePosition(const QPointF &) const
+    {
+        return true;
+    }
+
     const ScoreClickEvent &myClickEvent;
     const ConstScoreLocation myLocation;
     const ScoreItem myItem;

@@ -18,6 +18,8 @@
 #ifndef PAINTERS_BARLINEPAINTER_H
 #define PAINTERS_BARLINEPAINTER_H
 
+#include "clickableitem.h"
+
 #include <QGraphicsItem>
 #include <memory>
 #include <painters/layoutinfo.h>
@@ -26,7 +28,7 @@
 class Barline;
 class ScoreClickEvent;
 
-class BarlinePainter : public QGraphicsItem
+class BarlinePainter : public ClickableItem
 {
 public:
     BarlinePainter(const LayoutConstPtr &layout, const Barline &barline,
@@ -43,20 +45,15 @@ public:
         return myBounds;
     }
 
-private:
-    virtual void mousePressEvent(QGraphicsSceneMouseEvent *event) override;
-    virtual void mouseReleaseEvent(QGraphicsSceneMouseEvent *event) override;
-    virtual void hoverMoveEvent(QGraphicsSceneHoverEvent *) override;
-    virtual void hoverLeaveEvent(QGraphicsSceneHoverEvent *) override;
+protected:
+    bool filterMousePosition(const QPointF &pos) const override;
 
-    bool isInStdNotationStaff(double y);
+private:
     void drawVerticalLines(QPainter *painter, double myX);
 
     LayoutConstPtr myLayout;
     const Barline &myBarline;
     QRectF myBounds;
-    ConstScoreLocation myLocation;
-    const ScoreClickEvent &myClickEvent;
     double myX;
     double myWidth;
     const QColor &myBarlineColor;

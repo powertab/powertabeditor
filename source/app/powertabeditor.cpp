@@ -766,12 +766,15 @@ void PowerTabEditor::removeSelectedItem()
 {
     switch (getCaret().getSelectedItem())
     {
-        case ScoreItem::Barline:
         case ScoreItem::Clef:
         case ScoreItem::KeySignature:
         case ScoreItem::ScoreInfo:
         case ScoreItem::TimeSignature:
             // Do nothing.
+            break;
+
+        case ScoreItem::Barline:
+            removeSelectedPositions();
             break;
 
         case ScoreItem::TempoMarker:
@@ -3607,6 +3610,7 @@ canDeleteItem(ScoreItem item)
     {
         case ScoreItem::AlterationOfPace:
         case ScoreItem::AlternateEnding:
+        case ScoreItem::Barline:
         case ScoreItem::Bend:
         case ScoreItem::ChordText:
         case ScoreItem::Direction:
@@ -3618,7 +3622,6 @@ canDeleteItem(ScoreItem item)
         case ScoreItem::TextItem:
         case ScoreItem::VolumeSwell:
             return true;
-        case ScoreItem::Barline:
         case ScoreItem::Clef:
         case ScoreItem::KeySignature:
         case ScoreItem::ScoreInfo:
@@ -3668,9 +3671,9 @@ void PowerTabEditor::updateCommands()
     myRemoveSpaceCommand->setEnabled(!pos && (position == 0 || !barline) &&
                                      !tempoMarker && !altEnding && !dynamic);
     myRemoveItemCommand->setEnabled(
-        pos || barline || positions_selected ||
+        pos || positions_selected ||
         canDeleteItem(getCaret().getSelectedItem()));
-    myRemovePositionCommand->setEnabled(pos || barline || positions_selected);
+    myRemovePositionCommand->setEnabled(pos || positions_selected);
 
     myChordNameCommand->setChecked(
         ScoreUtils::findByPosition(system.getChords(), position) != nullptr);

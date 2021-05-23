@@ -19,6 +19,7 @@
 #include "styles.h"
 
 #include <QCursor>
+#include <QGraphicsSceneMouseEvent>
 #include <QPainter>
 #include <QStyleOptionGraphicsItem>
 #include <type_traits>
@@ -42,17 +43,36 @@ ClickableItemT<GraphicsItemT>::ClickableItemT(
 
 template <typename GraphicsItemT>
 void
-ClickableItemT<GraphicsItemT>::mouseDoubleClickEvent(QGraphicsSceneMouseEvent *)
+ClickableItemT<GraphicsItemT>::mouseDoubleClickEvent(
+    QGraphicsSceneMouseEvent *event)
 {
+    if (!filterMousePosition(event->pos()))
+    {
+        event->ignore();
+        return;
+    }
+
     myClickEvent.signal(myItem, myLocation, ScoreItemAction::DoubleClicked);
 }
 
 template <typename GraphicsItemT>
 void
-ClickableItemT<GraphicsItemT>::hoverEnterEvent(QGraphicsSceneHoverEvent *)
+ClickableItemT<GraphicsItemT>::hoverEnterEvent(QGraphicsSceneHoverEvent *event)
 {
-    this->setCursor(Qt::PointingHandCursor);
+    if (filterMousePosition(event->pos()))
+        this->setCursor(Qt::PointingHandCursor);
+
     ++myPendingHoverLeaveEvents;
+}
+
+template <typename GraphicsItemT>
+void
+ClickableItemT<GraphicsItemT>::hoverMoveEvent(QGraphicsSceneHoverEvent *event)
+{
+    if (filterMousePosition(event->pos()))
+        this->setCursor(Qt::PointingHandCursor);
+    else
+        this->unsetCursor();
 }
 
 template <typename GraphicsItemT>

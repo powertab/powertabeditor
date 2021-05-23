@@ -31,17 +31,14 @@ BarlinePainter::BarlinePainter(const LayoutConstPtr &layout,
                                const ConstScoreLocation &location,
                                const ScoreClickEvent &click_event,
                                const QColor &barlineColor)
-    : myLayout(layout),
+    : ClickableItem(QObject::tr("Click to edit barline."), click_event,
+                    location, ScoreItem::Barline),
+      myLayout(layout),
       myBarline(barline),
-      myLocation(location),
-      myClickEvent(click_event),
       myX(0),
       myWidth(0),
       myBarlineColor(barlineColor)
 {
-    setAcceptHoverEvents(true);
-    setToolTip(QObject::tr("Click to edit barline."));
-
     switch (barline.getBarType())
     {
     case Barline::SingleBar:
@@ -75,42 +72,21 @@ BarlinePainter::BarlinePainter(const LayoutConstPtr &layout,
                       layout->getStaffHeight());
 }
 
-void BarlinePainter::mousePressEvent(QGraphicsSceneMouseEvent *event)
+bool
+BarlinePainter::filterMousePosition(const QPointF &pos) const
 {
-    // Only handle clicks that occur in the standard notation staff.
-    if (!isInStdNotationStaff(event->pos().y()))
-        event->ignore();
-}
-
-void BarlinePainter::mouseReleaseEvent(QGraphicsSceneMouseEvent *)
-{
-    // TODO - unify selection / click behaviour with other selectable items.
-    myClickEvent.signal(ScoreItem::Barline, myLocation,
-                        ScoreItemAction::DoubleClicked);
-}
-
-void BarlinePainter::hoverMoveEvent(QGraphicsSceneHoverEvent *event)
-{
-    if (isInStdNotationStaff(event->pos().y()))
-        setCursor(Qt::PointingHandCursor);
-    else
-        unsetCursor();
-}
-
-void BarlinePainter::hoverLeaveEvent(QGraphicsSceneHoverEvent *)
-{
-    unsetCursor();
-}
-
-bool BarlinePainter::isInStdNotationStaff(double y)
-{
+    // Only allow clicking within the standard notation staff.
+    const double y = pos.y();
     return (y <= myLayout->getBottomStdNotationLine()) &&
            (y >= myLayout->getTopStdNotationLine());
 }
 
-void BarlinePainter::paint(QPainter *painter, const QStyleOptionGraphicsItem *,
-                           QWidget *)
+void
+BarlinePainter::paint(QPainter *painter, const QStyleOptionGraphicsItem *option,
+                      QWidget *widget)
 {
+    ClickableItem::paint(painter, option, widget);
+
     painter->setPen(QPen(myBarlineColor, 0.75));
     painter->setBrush(myBarlineColor);
 
