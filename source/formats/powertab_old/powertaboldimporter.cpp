@@ -185,12 +185,18 @@ void PowerTabOldImporter::convert(const PowerTabDocument::Guitar &guitar,
 
     score.insertPlayer(player);
 
+    // It seems possible to get an invalid preset number of 255 here (Bug #332).
+    // In v1.7 this shows up as the acoustic grand instrument.
+    uint8_t preset = guitar.GetPreset();
+    if (preset > Midi::LAST_MIDI_PRESET)
+        preset = Midi::MIDI_PRESET_ACOUSTIC_GRAND;
+
     Instrument instrument;
-    instrument.setMidiPreset(guitar.GetPreset());
+    instrument.setMidiPreset(preset);
 
     // Use the MIDI preset name as the description.
     const std::vector<std::string> presetNames = Midi::getPresetNames();
-    instrument.setDescription(presetNames.at(guitar.GetPreset()));
+    instrument.setDescription(presetNames.at(preset));
 
     score.insertInstrument(instrument);
 }

@@ -21,6 +21,7 @@ Thanks to the following contributors who worked on this release:
 - Fixed a bug where the score's existing subtitle did not show up when opening the file information dialog.
 - Fixed a bug where multi-bar rests were not drawn as a filled rectangle.
 - Fixed a bug where the pan controls in the mixer had no effect (#276).
+- Fixed a rare error when importing .ptb files (#332).
 
 ## [Alpha 14] - 2020-11-24
 
