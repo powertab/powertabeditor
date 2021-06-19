@@ -192,6 +192,8 @@ PowerTabEditor::PowerTabEditor()
     myTuningDictionary->loadInBackground();
     mySettingsManager->load(Paths::getConfigDir());
 
+    createMidiThread();
+
     createMixer();
     createInstrumentPanel();
     createCommands();
@@ -583,6 +585,33 @@ void PowerTabEditor::editFileInformation()
     }
 }
 
+void
+PowerTabEditor::createMidiThread()
+{
+    myMidiThread = std::make_unique<QThread>();
+
+    myMidiPlayer = new MidiPlayer(*mySettingsManager);
+    myMidiPlayer->moveToThread(myMidiThread.get());
+    connect(myMidiThread.get(), &QThread::finished, myMidiPlayer,
+            &QObject::deleteLater);
+
+    connect(myMidiPlayer, &MidiPlayer::error, this,
+            [=](const QString &msg)
+            { QMessageBox::critical(this, tr("Midi Error"), msg); });
+
+    connect(myMidiPlayer, &MidiPlayer::playbackSystemChanged, this,
+            &PowerTabEditor::moveCaretToSystem);
+    connect(myMidiPlayer, &MidiPlayer::playbackPositionChanged, this,
+            &PowerTabEditor::moveCaretToPosition);
+    connect(myMidiPlayer, &MidiPlayer::playbackFinished, this,
+            [this]() { startStopPlayback(); });
+
+    // Start the thread and setup the MIDI device in the background.
+    myMidiThread->start();
+    QMetaObject::invokeMethod(myMidiPlayer, &MidiPlayer::init,
+                              Qt::QueuedConnection);
+}
+
 void PowerTabEditor::startStopPlayback(bool from_measure_start)
 {
     myIsPlaying = !myIsPlaying;
@@ -603,35 +632,25 @@ void PowerTabEditor::startStopPlayback(bool from_measure_start)
         myPlaybackWidget->setPlaybackMode(true);
         enableEditing(false);
 
-        const ScoreLocation &location = getLocation();
-        myMidiPlayer.reset(
-            new MidiPlayer(*mySettingsManager, location,
-                           myPlaybackWidget->getPlaybackSpeed()));
+        connect(
+            myPlaybackWidget, &PlaybackWidget::playbackSpeedChanged,
+            myMidiPlayer, &MidiPlayer::liveChangePlaybackSpeed,
+            Qt::ConnectionType(Qt::UniqueConnection | Qt::DirectConnection));
 
-        connect(myMidiPlayer.get(), &MidiPlayer::playbackSystemChanged, this,
-                &PowerTabEditor::moveCaretToSystem);
-        connect(myMidiPlayer.get(), &MidiPlayer::playbackPositionChanged, this,
-                &PowerTabEditor::moveCaretToPosition);
-        connect(myMidiPlayer.get(), &MidiPlayer::finished, this,
-                [this]() { startStopPlayback(); });
-        connect(myPlaybackWidget, &PlaybackWidget::playbackSpeedChanged,
-                myMidiPlayer.get(), &MidiPlayer::changePlaybackSpeed);
-
-        connect(myMidiPlayer.get(), &MidiPlayer::error, this, [=](const QString &msg) {
-            QMessageBox::critical(this, tr("Midi Error"), msg);
-        });
-
-        myMidiPlayer->start();
+        // Notify the MIDI thread to start playing.
+        QMetaObject::invokeMethod(
+            myMidiPlayer,
+            [&]()
+            {
+                myMidiPlayer->playScore(getLocation(),
+                                        myPlaybackWidget->getPlaybackSpeed());
+            },
+            Qt::QueuedConnection);
     }
     else
     {
-        // If we manually stop playback, tell the midi thread to finish.
-        if (myMidiPlayer && myMidiPlayer->isRunning())
-        {
-            // Avoid recursion from the finished() signal being called.
-            myMidiPlayer->disconnect(this);
-            myMidiPlayer.reset();
-        }
+        // Ensure playback has finished.
+        myMidiPlayer->stopPlayback();
 
         myPlayPauseCommand->setText(tr("Play"));
         getCaret().setIsInPlaybackMode(false);
@@ -2006,6 +2025,12 @@ void PowerTabEditor::closeEvent(QCloseEvent *event)
             return;
         }
     }
+
+    // Clean up the midi thread.
+    Q_ASSERT(myMidiThread);
+    myMidiThread->quit();
+    myMidiThread->wait();
+    myMidiThread.reset();
 
     myTuningDictionary->save();
 
@@ -3981,10 +4006,8 @@ void PowerTabEditor::rewindPlaybackToStart()
 void PowerTabEditor::stopPlayback()
 {
     assert(myIsPlaying);
-    const ScoreLocation start_location = myMidiPlayer->getStartLocation();
-
     startStopPlayback();
-    getCaret().moveToLocation(start_location);
+    getCaret().moveToLocation(myMidiPlayer->getStartLocation());
 }
 
 void PowerTabEditor::toggleMetronome()

@@ -29,7 +29,6 @@
 #include <thread>
 
 #ifdef _WIN32
-#include <util/scopeexit.h>
 #include <objbase.h>
 #endif
 
@@ -37,54 +36,102 @@ static const int METRONOME_CHANNEL = 9;
 
 using DurationType = std::chrono::duration<int, std::micro>;
 
-MidiPlayer::MidiPlayer(SettingsManager &settings_manager,
-                       const ScoreLocation &start_location, int speed)
-    : mySettingsManager(settings_manager),
-      myScore(start_location.getScore()),
-      myStartLocation(start_location),
-      myIsPlaying(false),
-      myPlaybackSpeed(speed)
+static int
+getPlayerFromChannel(const int channel)
 {
+    if (channel < METRONOME_CHANNEL)
+        return channel;
+    else if (channel == METRONOME_CHANNEL)
+        return -1;
+    else
+        return channel - 1;
+}
+
+MidiPlayer::MidiPlayer(SettingsManager &settings_manager)
+    : mySettingsManager(settings_manager)
+{
+    mySettingsListener = settings_manager.subscribeToChanges(
+        [&]()
+        {
+            // Always immediately perform any live settings updates if e.g.
+            // playback is already running.
+            QMetaObject::invokeMethod(this, &MidiPlayer::updateLiveSettings,
+                                      Qt::DirectConnection);
+
+            // Add a queued event to update the device settings.
+            QMetaObject::invokeMethod(this, &MidiPlayer::updateDeviceSettings);
+        });
 }
 
 MidiPlayer::~MidiPlayer()
 {
-    setIsPlaying(false);
-    wait();
+    // Matches the CoInitializeEx() call in init().
+#ifdef _WIN32
+    CoUninitialize();
+#endif
 }
 
-void MidiPlayer::run()
+void
+MidiPlayer::init()
 {
 	// Workaround to fix errors with the Microsoft GS Wavetable Synth on
 	// Windows 10 - see http://stackoverflow.com/a/32553208/586978
 #ifdef _WIN32
     CoInitializeEx(nullptr, COINIT_MULTITHREADED);
-    Util::ScopeExit on_exit([]() {
-        CoUninitialize();
-    });
 #endif
 
-    boost::signals2::scoped_connection connection(
-        mySettingsManager.subscribeToChanges([&]() {
-            auto settings = mySettingsManager.getReadHandle();
-            myMetronomeEnabled = settings->get(Settings::MetronomeEnabled);
-        }));
+    updateLiveSettings();
+    updateDeviceSettings();
+}
 
-    setIsPlaying(true);
-
-    MidiFile::LoadOptions options;
-    options.myEnableMetronome = true;
-    options.myRecordPositionChanges = true;
-
+void
+MidiPlayer::updateDeviceSettings()
+{
     // Load MIDI settings.
     int api;
     int port;
     {
         auto settings = mySettingsManager.getReadHandle();
-        myMetronomeEnabled = settings->get(Settings::MetronomeEnabled);
-
         api = settings->get(Settings::MidiApi);
         port = settings->get(Settings::MidiPort);
+    }
+
+    // Initialize RtMidi and set the port.
+    myDevice = std::make_unique<MidiOutputDevice>();
+    if (!myDevice->initialize(api, port))
+    {
+        myDevice.reset();
+        emit error(tr("Error initializing MIDI output device."));
+        return;
+    }
+}
+
+void
+MidiPlayer::updateLiveSettings()
+{
+    auto settings = mySettingsManager.getReadHandle();
+    myMetronomeEnabled = settings->get(Settings::MetronomeEnabled);
+}
+
+void
+MidiPlayer::liveChangePlaybackSpeed(int speed)
+{
+    myPlaybackSpeed = speed;
+}
+
+void
+MidiPlayer::playScore(const ConstScoreLocation &start_score_location, int speed)
+{
+    myIsPlaying = true;
+    myPlaybackSpeed = speed;
+    myStartLocation.emplace(start_score_location);
+    const Score &score = start_score_location.getScore();
+
+    MidiFile::LoadOptions options;
+    options.myEnableMetronome = true;
+    options.myRecordPositionChanges = true;
+    {
+        auto settings = mySettingsManager.getReadHandle();
 
         options.myMetronomePreset = settings->get(Settings::MetronomePreset) +
                                     Midi::MIDI_PERCUSSION_PRESET_OFFSET;
@@ -97,7 +144,7 @@ void MidiPlayer::run()
     }
 
     MidiFile file;
-    file.load(myScore, options);
+    file.load(score, options);
 
     const int ticks_per_beat = file.getTicksPerBeat();
 
@@ -114,26 +161,18 @@ void MidiPlayer::run()
     std::stable_sort(events.begin(), events.end());
     events.convertToDeltaTicks();
 
-    // Initialize RtMidi and set the port.
-    MidiOutputDevice device;
-    if (!device.initialize(api, port))
-    {
-        emit error(tr("Error initializing MIDI output device."));
-        return;
-    }
-
     bool started = false;
     Midi::Tempo beat_duration = Midi::BEAT_DURATION_120_BPM;
-    const SystemLocation start_location(myStartLocation.getSystemIndex(),
-                                        myStartLocation.getPositionIndex());
+    const SystemLocation start_location(myStartLocation->getSystemIndex(),
+                                        myStartLocation->getPositionIndex());
     SystemLocation current_location = start_location;
 
     DurationType clock_drift(0);
 
     for (auto event = events.begin(); event != events.end(); ++event)
     {
-        if (!isPlaying())
-            break;
+        if (!myIsPlaying)
+            return;
 
         if (event->isTempoChange())
             beat_duration = event->getTempo();
@@ -147,13 +186,14 @@ void MidiPlayer::run()
             if (event->getLocation() < start_location)
             {
                 if (!event->isNoteOnOff() && !event->isTempoChange())
-                    device.sendMessage(event->getData());
+                    myDevice->sendMessage(event->getData());
 
                 continue;
             }
             else
             {
-                performCountIn(device, event->getLocation(), beat_duration);
+                performCountIn(*myDevice, score, event->getLocation(),
+                               beat_duration);
 
                 started = true;
             }
@@ -191,7 +231,7 @@ void MidiPlayer::run()
             !event->isTrackEnd() &&
             !event->isVolumeChange())
         {
-            device.sendMessage(event->getData());
+            myDevice->sendMessage(event->getData());
         }
 
         if (!event->isMetaMessage())
@@ -202,16 +242,16 @@ void MidiPlayer::run()
             // volume
             if (player_idx >= 0)
             {
-                const Player &player = myScore.getPlayers()[player_idx];
-                device.setChannelMaxVolume(channel, player.getMaxVolume());
-                device.setPan(channel, player.getPan());
+                const Player &player = score.getPlayers()[player_idx];
+                myDevice->setChannelMaxVolume(channel, player.getMaxVolume());
+                myDevice->setPan(channel, player.getPan());
             }
 
             // handle volume change events
             // using device.setVolume() ensures that the maximum volume
             // threshold is taken into consideration
             if (event->isVolumeChange())
-                device.setVolume(channel, event->getVolume());
+                myDevice->setVolume(channel, event->getVolume());
         }
 
         // Notify listeners of the current playback position.
@@ -238,11 +278,15 @@ void MidiPlayer::run()
             end_timestamp - start_timestamp);
         clock_drift += actual_duration - sleep_duration;
     }
+
+    myIsPlaying = false;
+    emit playbackFinished();
 }
 
-void MidiPlayer::performCountIn(MidiOutputDevice &device,
-                                const SystemLocation &location,
-                                Midi::Tempo beat_duration)
+void
+MidiPlayer::performCountIn(MidiOutputDevice &device, const Score &score,
+                           const SystemLocation &location,
+                           Midi::Tempo beat_duration)
 {
     // Load preferences.
     uint8_t velocity;
@@ -259,7 +303,7 @@ void MidiPlayer::performCountIn(MidiOutputDevice &device,
     }
 
     // Figure out the time signature where playback is starting.
-    const System &system = myScore.getSystems()[location.getSystem()];
+    const System &system = score.getSystems()[location.getSystem()];
     const Barline *barline = system.getPreviousBarline(location.getPosition());
     if (!barline)
         barline = &system.getBarlines().front();
@@ -280,8 +324,8 @@ void MidiPlayer::performCountIn(MidiOutputDevice &device,
 
     for (int i = 0; i < time_sig.getNumPulses(); ++i)
     {
-        if (!isPlaying())
-            break;
+        if (!myIsPlaying)
+            return;
 
         device.playNote(METRONOME_CHANNEL, preset, velocity);
         std::this_thread::sleep_for(tick_duration);
@@ -289,28 +333,15 @@ void MidiPlayer::performCountIn(MidiOutputDevice &device,
     }
 }
 
-void MidiPlayer::changePlaybackSpeed(int new_speed)
+void MidiPlayer::stopPlayback()
 {
-    myPlaybackSpeed = new_speed;
-}
+    if (myIsPlaying)
+    {
+        myIsPlaying = false;
+        // Wait for playback to actually finish.
+        QMetaObject::invokeMethod(
+            this, []() { /* Do nothing */ }, Qt::BlockingQueuedConnection);
+    }
 
-void MidiPlayer::setIsPlaying(bool set)
-{
-    myIsPlaying = set;
-}
-
-bool MidiPlayer::isPlaying() const
-{
-    return myIsPlaying;
-}
-
-int
-MidiPlayer::getPlayerFromChannel(const int channel)
-{
-    if (channel < METRONOME_CHANNEL)
-        return channel;
-    else if (channel == METRONOME_CHANNEL)
-        return -1;
-    else
-        return channel - 1;
+    myDevice->stopAllNotes();
 }

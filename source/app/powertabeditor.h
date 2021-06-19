@@ -38,6 +38,7 @@ class Mixer;
 class PlaybackWidget;
 class Player;
 class QActionGroup;
+class QThread;
 class RecentFiles;
 class ScoreArea;
 class ScoreLocation;
@@ -290,6 +291,9 @@ private:
     /// Build the instrument panel.
     void createInstrumentPanel();
 
+    /// Set up the MIDI thread.
+    void createMidiThread();
+
     /// Load any custom keyboard shortcuts.
     void loadKeyboardShortcuts();
     /// Save any custom keyboard shortcuts.
@@ -413,7 +417,8 @@ private:
     std::unique_ptr<DocumentManager> myDocumentManager;
     std::unique_ptr<FileFormatManager> myFileFormatManager;
     std::unique_ptr<UndoManager> myUndoManager;
-    std::unique_ptr<MidiPlayer> myMidiPlayer;
+    std::unique_ptr<QThread> myMidiThread;
+    MidiPlayer *myMidiPlayer = nullptr;
     std::unique_ptr<TuningDictionary> myTuningDictionary;
     /// Tracks whether we are currently in playback mode.
     bool myIsPlaying;

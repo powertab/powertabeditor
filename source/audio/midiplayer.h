@@ -19,8 +19,9 @@
 #define AUDIO_MIDIPLAYER_H
 
 #include <atomic>
-#include <QThread>
+#include <boost/signals2/connection.hpp>
 #include <midi/midievent.h>
+#include <QObject>
 #include <score/scorelocation.h>
 
 class MidiFile;
@@ -29,46 +30,62 @@ class Score;
 class SettingsManager;
 class SystemLocation;
 
-class MidiPlayer : public QThread
+class MidiPlayer : public QObject
 {
     Q_OBJECT
 
 public:
-    MidiPlayer(SettingsManager &settings_manager,
-               const ScoreLocation &start_location, int speed);
+    MidiPlayer(SettingsManager &settings_manager);
     ~MidiPlayer();
 
-    void changePlaybackSpeed(int new_speed);
+    /// Location where playback began. Only valid after calling playScore().
+    const ConstScoreLocation &getStartLocation() const
+    {
+        return *myStartLocation;
+    }
 
-    const ScoreLocation &getStartLocation() const { return myStartLocation; }
+    void stopPlayback();
+
+public slots:
+    void init();
+    void playScore(const ConstScoreLocation &start_score_location, int speed);
+
+    /// Thread-safe, Qt::DirectConnection may be used to invoke from another
+    /// thread immediately while playback is running.
+    void liveChangePlaybackSpeed(int speed);
 
 signals:
-    // These signals are used to move the caret when a position change is
-    // necessary
+    /// These signals are used to move the caret when a position change is
+    /// necessary.
     void playbackSystemChanged(int system);
     void playbackPositionChanged(int position);
+    void playbackFinished();
+
     void error(const QString &msg);
 
-private:
-    virtual void run() override;
+private slots:
+    void updateDeviceSettings();
+    /// Thread-safe, Qt::DirectConnection may be used to invoke from another
+    /// thread immediately while playback is running.
+    void updateLiveSettings();
 
-    void performCountIn(MidiOutputDevice &device,
+private:
+    void performCountIn(MidiOutputDevice &device, const Score &score,
                         const SystemLocation &location,
                         Midi::Tempo beat_duration);
 
-    void setIsPlaying(bool set);
-    bool isPlaying() const;
+    const SettingsManager &mySettingsManager;
+    boost::signals2::scoped_connection mySettingsListener;
 
-    // gets the player index for a specific channel
-    static int getPlayerFromChannel(const int channel);
+    std::unique_ptr<MidiOutputDevice> myDevice;
+    std::atomic<bool> myMetronomeEnabled = false;
 
-    SettingsManager &mySettingsManager;
-    const Score &myScore;
-    ScoreLocation myStartLocation;
-    std::atomic<bool> myIsPlaying;
-    std::atomic<bool> myMetronomeEnabled;
+    /// Flag used to terminate playback.
+    std::atomic<bool> myIsPlaying = false;
     /// The current playback speed (percent).
-    std::atomic<int> myPlaybackSpeed;
+    std::atomic<int> myPlaybackSpeed = 100;
+    /// Location where playback began.
+    std::optional<ConstScoreLocation> myStartLocation;
 };
 
 #endif

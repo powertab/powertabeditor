@@ -86,6 +86,9 @@ public:
 
     void sendMessage(const std::vector<uint8_t> &data);
 
+    // Stops notes on all channels. Useful if playback was interrupted.
+    void stopAllNotes();
+
 private:
     bool sendMidiMessage(unsigned char a, unsigned char b, unsigned char c);
 

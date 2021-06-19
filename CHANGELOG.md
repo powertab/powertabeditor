@@ -15,6 +15,7 @@ Thanks to the following contributors who worked on this release:
 
 ### Changed
 - On macOS, the `Delete` key can now be used to remove notes rather than having to press `Fn+Delete`.
+- The MIDI device is now initialized in the background, which should avoid some lag the first time playback is activated (#47).
 
 ### Fixed
 - Fixed a MIDI playback bug where adjacent repeated sections resulted in an empty bar being played (#289).
