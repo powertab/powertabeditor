@@ -24,7 +24,7 @@
   * rational
   * signals2
   * stacktrace
-* [Qt](http://qt-project.org/) >= 5.9 version or greater
+* [Qt](http://qt-project.org/) >= 5.10 version or greater
 * [RapidJSON](https://rapidjson.org/)
 * [RtMidi](https://www.music.mcgill.ca/~gary/rtmidi/)
 * [pugixml](https://pugixml.org/)
