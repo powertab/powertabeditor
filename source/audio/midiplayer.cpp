@@ -27,6 +27,7 @@
 #include <score/generalmidi.h>
 #include <score/score.h>
 #include <thread>
+#include <util/scopeexit.h>
 
 #ifdef _WIN32
 #include <objbase.h>
@@ -119,35 +120,24 @@ MidiPlayer::liveChangePlaybackSpeed(int speed)
     myPlaybackSpeed = speed;
 }
 
-void
-MidiPlayer::playScore(const ConstScoreLocation &start_score_location, int speed)
+static void
+loadMidiSettings(const SettingsManager &settings_manager,
+                 MidiFile::LoadOptions &options)
 {
-    myIsPlaying = true;
-    myPlaybackSpeed = speed;
-    myStartLocation.emplace(start_score_location);
-    const Score &score = start_score_location.getScore();
+    auto settings = settings_manager.getReadHandle();
 
-    MidiFile::LoadOptions options;
-    options.myEnableMetronome = true;
-    options.myRecordPositionChanges = true;
-    {
-        auto settings = mySettingsManager.getReadHandle();
+    options.myMetronomePreset = settings->get(Settings::MetronomePreset) +
+                                Midi::MIDI_PERCUSSION_PRESET_OFFSET;
+    options.myStrongAccentVel = settings->get(Settings::MetronomeStrongAccent);
+    options.myWeakAccentVel = settings->get(Settings::MetronomeWeakAccent);
+    options.myVibratoStrength = settings->get(Settings::MidiVibratoLevel);
+    options.myWideVibratoStrength =
+        settings->get(Settings::MidiWideVibratoLevel);
+}
 
-        options.myMetronomePreset = settings->get(Settings::MetronomePreset) +
-                                    Midi::MIDI_PERCUSSION_PRESET_OFFSET;
-        options.myStrongAccentVel =
-            settings->get(Settings::MetronomeStrongAccent);
-        options.myWeakAccentVel = settings->get(Settings::MetronomeWeakAccent);
-        options.myVibratoStrength = settings->get(Settings::MidiVibratoLevel);
-        options.myWideVibratoStrength =
-            settings->get(Settings::MidiWideVibratoLevel);
-    }
-
-    MidiFile file;
-    file.load(score, options);
-
-    const int ticks_per_beat = file.getTicksPerBeat();
-
+static MidiEventList
+mergeMidiEvents(MidiFile &file)
+{
     // Merge the MIDI evvents for each track.
     MidiEventList events;
     for (MidiEventList &track : file.getTracks())
@@ -161,18 +151,30 @@ MidiPlayer::playScore(const ConstScoreLocation &start_score_location, int speed)
     std::stable_sort(events.begin(), events.end());
     events.convertToDeltaTicks();
 
+    return events;
+}
+
+bool
+MidiPlayer::playEvents(MidiFile &file, const Score &score,
+                       const SystemLocation &start_location)
+{
+    myIsPlaying = true;
+    Util::ScopeExit on_exit([&]() {
+        myIsPlaying = false;
+    });
+
+    MidiEventList events = mergeMidiEvents(file);
+    const int ticks_per_beat = file.getTicksPerBeat();
+
     bool started = false;
     Midi::Tempo beat_duration = Midi::BEAT_DURATION_120_BPM;
-    const SystemLocation start_location(myStartLocation->getSystemIndex(),
-                                        myStartLocation->getPositionIndex());
     SystemLocation current_location = start_location;
-
     DurationType clock_drift(0);
 
     for (auto event = events.begin(); event != events.end(); ++event)
     {
         if (!myIsPlaying)
-            return;
+            return false;
 
         if (event->isTempoChange())
             beat_duration = event->getTempo();
@@ -192,8 +194,7 @@ MidiPlayer::playScore(const ConstScoreLocation &start_score_location, int speed)
             }
             else
             {
-                performCountIn(*myDevice, score, event->getLocation(),
-                               beat_duration);
+                performCountIn(score, event->getLocation(), beat_duration);
 
                 started = true;
             }
@@ -279,13 +280,33 @@ MidiPlayer::playScore(const ConstScoreLocation &start_score_location, int speed)
         clock_drift += actual_duration - sleep_duration;
     }
 
-    myIsPlaying = false;
-    emit playbackFinished();
+    return true;
 }
 
 void
-MidiPlayer::performCountIn(MidiOutputDevice &device, const Score &score,
-                           const SystemLocation &location,
+MidiPlayer::playScore(const ConstScoreLocation &start_score_location, int speed)
+{
+    myPlaybackSpeed = speed;
+    myStartLocation.emplace(start_score_location);
+    const Score &score = start_score_location.getScore();
+
+    MidiFile::LoadOptions options;
+    options.myEnableMetronome = true;
+    options.myRecordPositionChanges = true;
+    loadMidiSettings(mySettingsManager, options);
+
+    MidiFile file;
+    file.load(score, options);
+
+    const SystemLocation start_location(myStartLocation->getSystemIndex(),
+                                        myStartLocation->getPositionIndex());
+
+    if (playEvents(file, score, start_location))
+        emit playbackFinished();
+}
+
+void
+MidiPlayer::performCountIn(const Score &score, const SystemLocation &location,
                            Midi::Tempo beat_duration)
 {
     // Load preferences.
@@ -319,7 +340,7 @@ MidiPlayer::performCountIn(MidiOutputDevice &device, const Score &score,
         100.0 / myPlaybackSpeed));
 
     // Play the count-in.
-    device.setChannelMaxVolume(METRONOME_CHANNEL,
+    myDevice->setChannelMaxVolume(METRONOME_CHANNEL,
                                Midi::MAX_MIDI_CHANNEL_VOLUME);
 
     for (int i = 0; i < time_sig.getNumPulses(); ++i)
@@ -327,9 +348,9 @@ MidiPlayer::performCountIn(MidiOutputDevice &device, const Score &score,
         if (!myIsPlaying)
             return;
 
-        device.playNote(METRONOME_CHANNEL, preset, velocity);
+        myDevice->playNote(METRONOME_CHANNEL, preset, velocity);
         std::this_thread::sleep_for(tick_duration);
-        device.stopNote(METRONOME_CHANNEL, preset);
+        myDevice->stopNote(METRONOME_CHANNEL, preset);
     }
 }
 

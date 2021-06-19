@@ -70,9 +70,11 @@ private slots:
     void updateLiveSettings();
 
 private:
-    void performCountIn(MidiOutputDevice &device, const Score &score,
+    void performCountIn(const Score &score,
                         const SystemLocation &location,
                         Midi::Tempo beat_duration);
+    bool playEvents(MidiFile &file, const Score &score,
+                    const SystemLocation &start_location);
 
     const SettingsManager &mySettingsManager;
     boost::signals2::scoped_connection mySettingsListener;
