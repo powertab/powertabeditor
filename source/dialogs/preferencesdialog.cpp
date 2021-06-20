@@ -102,6 +102,9 @@ void PreferencesDialog::loadCurrentSettings()
     ui->wideVibratoStrengthSpinBox->setValue(
         settings->get(Settings::MidiWideVibratoLevel));
 
+    ui->playNotesWhileEditingCheckBox->setChecked(
+        settings->get(Settings::PlayNotesWhileEditing));
+
     ui->metronomeEnabledCheckBox->setChecked(
         settings->get(Settings::MetronomeEnabled));
 
@@ -156,6 +159,9 @@ void PreferencesDialog::accept()
 
     settings->set(Settings::MidiWideVibratoLevel,
                   ui->wideVibratoStrengthSpinBox->value());
+
+    settings->set(Settings::PlayNotesWhileEditing,
+                  ui->playNotesWhileEditingCheckBox->isChecked());
 
     settings->set(Settings::MetronomeEnabled,
                   ui->metronomeEnabledCheckBox->isChecked());

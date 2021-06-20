@@ -29,6 +29,9 @@ const Setting<int> MidiVibratoLevel("midi/vibrato_level", 85);
 
 const Setting<int> MidiWideVibratoLevel("midi/wide_vibrato_level", 127);
 
+const Setting<bool> PlayNotesWhileEditing("midi/play_notes_while_editing",
+                                          false);
+
 const Setting<bool> MetronomeEnabled("midi/metronome_enabled", true);
 
 const Setting<int> MetronomePreset("midi/metronome_preset",

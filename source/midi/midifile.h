@@ -24,6 +24,7 @@
 #include <vector>
 
 class Barline;
+class ConstScoreLocation;
 class RepeatController;
 class Score;
 class Staff;
@@ -59,6 +60,8 @@ public:
     MidiFile();
 
     void load(const Score &score, const LoadOptions &options);
+    void loadSingleNote(const Score &score, const ConstScoreLocation &location,
+                        const LoadOptions &options);
 
     int getTicksPerBeat() const { return myTicksPerBeat; }
     std::vector<MidiEventList> &getTracks() { return myTracks; }

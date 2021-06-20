@@ -2006,6 +2006,15 @@ bool PowerTabEditor::eventFilter(QObject *object, QEvent *event)
                                 location.getSystemIndex());
                 }
 
+                auto settings = mySettingsManager->getReadHandle();
+                if (settings->get(Settings::PlayNotesWhileEditing))
+                {
+                    QMetaObject::invokeMethod(
+                        myMidiPlayer,
+                        [&]() { myMidiPlayer->playSingleNote(getLocation()); },
+                        Qt::QueuedConnection);
+                }
+
                 return true;
             }
         }

@@ -156,7 +156,8 @@ mergeMidiEvents(MidiFile &file)
 
 bool
 MidiPlayer::playEvents(MidiFile &file, const Score &score,
-                       const SystemLocation &start_location)
+                       const SystemLocation &start_location,
+                       bool allow_count_in)
 {
     myIsPlaying = true;
     Util::ScopeExit on_exit([&]() {
@@ -171,13 +172,13 @@ MidiPlayer::playEvents(MidiFile &file, const Score &score,
     SystemLocation current_location = start_location;
     DurationType clock_drift(0);
 
-    for (auto event = events.begin(); event != events.end(); ++event)
+    for (const MidiEvent &event : events)
     {
         if (!myIsPlaying)
             return false;
 
-        if (event->isTempoChange())
-            beat_duration = event->getTempo();
+        if (event.isTempoChange())
+            beat_duration = event.getTempo();
 
         // Skip note on / off events before the start location, but send events
         // such as instrument changes, pitch wheels, etc.
@@ -185,16 +186,17 @@ MidiPlayer::playEvents(MidiFile &file, const Score &score,
         // CoreMidi on OSX complains about them.
         if (!started)
         {
-            if (event->getLocation() < start_location)
+            if (event.getLocation() < start_location)
             {
-                if (!event->isNoteOnOff() && !event->isTempoChange())
-                    myDevice->sendMessage(event->getData());
+                if (!event.isNoteOnOff() && !event.isTempoChange())
+                    myDevice->sendMessage(event.getData());
 
                 continue;
             }
             else
             {
-                performCountIn(score, event->getLocation(), beat_duration);
+                if (allow_count_in)
+                    performCountIn(score, event.getLocation(), beat_duration);
 
                 started = true;
             }
@@ -202,7 +204,7 @@ MidiPlayer::playEvents(MidiFile &file, const Score &score,
 
         auto start_timestamp = std::chrono::high_resolution_clock::now();
 
-        const int delta = event->getTicks();
+        const int delta = event.getTicks();
         assert(delta >= 0);
 
 		// Compute the time in microseconds that we should sleep for, and then
@@ -225,19 +227,19 @@ MidiPlayer::playEvents(MidiFile &file, const Score &score,
         // Tempo change events also don't need to be sent since they are
         // handled in this loop. CoreMidi on OSX also complains about them.
         // Similarly, ALSA complains about the meta "track end" events.
-        if (!(event->isNoteOnOff() &&
-              event->getChannel() == METRONOME_CHANNEL &&
+        if (!(event.isNoteOnOff() &&
+              event.getChannel() == METRONOME_CHANNEL &&
               !myMetronomeEnabled) &&
-            !event->isTempoChange() &&
-            !event->isTrackEnd() &&
-            !event->isVolumeChange())
+            !event.isTempoChange() &&
+            !event.isTrackEnd() &&
+            !event.isVolumeChange())
         {
-            myDevice->sendMessage(event->getData());
+            myDevice->sendMessage(event.getData());
         }
 
-        if (!event->isMetaMessage())
+        if (!event.isMetaMessage())
         {
-            const int channel = event->getChannel();
+            const int channel = event.getChannel();
             const int player_idx = getPlayerFromChannel(channel);
             // If the channel corresponds to a valid player, set its maximum
             // volume
@@ -251,17 +253,17 @@ MidiPlayer::playEvents(MidiFile &file, const Score &score,
             // handle volume change events
             // using device.setVolume() ensures that the maximum volume
             // threshold is taken into consideration
-            if (event->isVolumeChange())
-                myDevice->setVolume(channel, event->getVolume());
+            if (event.isVolumeChange())
+                myDevice->setVolume(channel, event.getVolume());
         }
 
         // Notify listeners of the current playback position.
-        if (event->getLocation() != current_location)
+        if (event.getLocation() != current_location)
         {
-            const SystemLocation &new_location = event->getLocation();
+            const SystemLocation &new_location = event.getLocation();
 
             // Don't move backwards unless a repeat occurred.
-            if (new_location >= current_location || event->isPositionChange())
+            if (new_location >= current_location || event.isPositionChange())
             {
                 if (new_location.getSystem() != current_location.getSystem())
                     emit playbackSystemChanged(new_location.getSystem());
@@ -303,6 +305,27 @@ MidiPlayer::playScore(const ConstScoreLocation &start_score_location, int speed)
 
     if (playEvents(file, score, start_location))
         emit playbackFinished();
+}
+
+void
+MidiPlayer::playSingleNote(const ConstScoreLocation &location)
+{
+    myPlaybackSpeed = 100;
+    const Score &score = location.getScore();
+
+    MidiFile::LoadOptions options;
+    options.myEnableMetronome = false;
+    options.myRecordPositionChanges = false;
+    loadMidiSettings(mySettingsManager, options);
+
+    MidiFile file;
+    file.loadSingleNote(score, location, options);
+
+    const SystemLocation start_location(location.getSystemIndex(),
+                                        location.getPositionIndex());
+
+    playEvents(file, score, start_location, /* allow_count_in */ false);
+    myDevice->stopAllNotes();
 }
 
 void

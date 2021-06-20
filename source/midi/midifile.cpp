@@ -169,7 +169,6 @@ void MidiFile::load(const Score &score, const LoadOptions &options)
         {
             regular_tracks[i].append(event);
         }
-
     }
 
     SystemLocation location(0, 0);
@@ -1114,4 +1113,77 @@ MidiFile::addEventsForBar(std::vector<MidiEventList> &tracks,
     }
 
     return current_tick;
+}
+
+void
+MidiFile::loadSingleNote(const Score &score,
+                         const ConstScoreLocation &location,
+                         const LoadOptions &)
+{
+    myTicksPerBeat = DEFAULT_PPQ;
+
+    // Find the active players in the staff at this location.
+    const PlayerChange *current_players = ScoreUtils::getCurrentPlayers(
+        score, location.getSystemIndex(), location.getPositionIndex());
+    if (!current_players)
+        return;
+
+    const std::vector<ActivePlayer> &staff_players =
+        current_players->getActivePlayers(location.getStaffIndex());
+    if (staff_players.empty())
+        return;
+
+    const SystemLocation system_location(location.getSystemIndex(),
+                                         location.getPositionIndex());
+
+    const Position *pos = location.getPosition();
+    assert(pos);
+    assert(!pos->isRest());
+    const int duration =
+        getDurationTicks(location.getVoice(), *pos, myTicksPerBeat);
+
+    // TODO - search for prior tempo markers, dynamics, etc? We should also
+    // reuse the normal code for generating notes, e.g. including vibrato.
+
+    myTracks.resize(staff_players.size());
+    for (size_t i = 0; i < staff_players.size(); ++i)
+    {
+        const int player_index = staff_players[i].getPlayerNumber();
+        const int channel = getChannel(player_index);
+        MidiEventList &track = myTracks[i];
+
+        // Reset the channel volume, pitch bend range, and instrument.
+        track.append(MidiEvent::volumeChange(
+            0, channel, static_cast<uint8_t>(VolumeLevel::fff)));
+
+        for (const MidiEvent &event :
+             MidiEvent::pitchWheelRange(0, channel, PITCH_BEND_RANGE))
+        {
+            track.append(event);
+        }
+
+        const Instrument &instrument =
+            score.getInstruments()[staff_players[i].getInstrumentNumber()];
+        track.append(
+            MidiEvent::programChange(0, channel, instrument.getMidiPreset()));
+
+        // Play the notes at this position.
+        const Tuning &tuning = score.getPlayers()[player_index].getTuning();
+        for (const Note &note : pos->getNotes())
+        {
+            int pitch = getActualNotePitch(note, tuning);
+            const Velocity velocity = getNoteVelocity(*pos, note);
+
+            track.append(MidiEvent::noteOn(0, channel, pitch, velocity,
+                                           system_location));
+            track.append(
+                MidiEvent::noteOff(duration, channel, pitch, system_location));
+        }
+    }
+
+    for (MidiEventList &track : myTracks)
+    {
+        track.append(MidiEvent::endOfTrack(duration));
+        track.convertToDeltaTicks();
+    }
 }

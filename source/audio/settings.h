@@ -29,6 +29,8 @@ namespace Settings
     extern const Setting<int> MidiVibratoLevel;
     extern const Setting<int> MidiWideVibratoLevel;
 
+    extern const Setting<bool> PlayNotesWhileEditing;
+
     extern const Setting<bool> MetronomeEnabled;
     extern const Setting<int> MetronomePreset;
     extern const Setting<int> MetronomeStrongAccent;

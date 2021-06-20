@@ -49,6 +49,7 @@ public:
 public slots:
     void init();
     void playScore(const ConstScoreLocation &start_score_location, int speed);
+    void playSingleNote(const ConstScoreLocation &location);
 
     /// Thread-safe, Qt::DirectConnection may be used to invoke from another
     /// thread immediately while playback is running.
@@ -74,7 +75,8 @@ private:
                         const SystemLocation &location,
                         Midi::Tempo beat_duration);
     bool playEvents(MidiFile &file, const Score &score,
-                    const SystemLocation &start_location);
+                    const SystemLocation &start_location,
+                    bool allow_count_in = true);
 
     const SettingsManager &mySettingsManager;
     boost::signals2::scoped_connection mySettingsListener;
