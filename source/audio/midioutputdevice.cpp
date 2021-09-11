@@ -76,6 +76,9 @@ MidiOutputDevice::stopAllNotes()
     for (uint8_t channel = 0; channel < Midi::NUM_MIDI_CHANNELS_PER_PORT;
          ++channel)
     {
+        // Turn off the pedal in case a "let ring" event was active.
+        sendMidiMessage(ControlChange + channel, HoldPedal, 0);
+        // Stop all notes.
         sendMidiMessage(ControlChange + channel, AllNotesOff, 0);
     }
 }
