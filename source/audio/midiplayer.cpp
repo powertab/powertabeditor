@@ -188,7 +188,14 @@ MidiPlayer::playEvents(MidiFile &file, const Score &score,
         {
             if (event.getLocation() < start_location)
             {
-                if (!event.isNoteOnOff() && !event.isTempoChange())
+                if (event.isVolumeChange())
+                {
+                    // Use MidiOutputDevice::setVolume() so that the volume is
+                    // updated when the channel's max volume changes (see
+                    // below).
+                    myDevice->setVolume(event.getChannel(), event.getVolume());
+                }
+                else if (!event.isNoteOnOff() && !event.isTempoChange())
                     myDevice->sendMessage(event.getData());
 
                 continue;
