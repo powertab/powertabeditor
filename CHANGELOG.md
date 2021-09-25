@@ -13,6 +13,7 @@ Thanks to the following contributors who worked on this release:
 ### Fixed
 - Fixed an issue where stopping MIDI playback while a "let ring" was active could incorrectly keep the "let ring" active when restarting playback from the beginning (#337).
 - Fixed a bug where the mixer's volume settings could be ignored when starting MIDI playback partway through the score (#335).
+- Fixed an issue where the score's title could be scaled incorrectly when printed (#338).
 
 ## [Alpha 15] - 2021-07-24
 

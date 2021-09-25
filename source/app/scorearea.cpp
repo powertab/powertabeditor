@@ -200,8 +200,11 @@ void ScoreArea::print(QPrinter &printer)
     //render the document after the palette has been set to print colors
     this->renderDocument(*myDocument);
 
+    // Scale the score based on the ratio between the device's width and our
+    // normal staff width in the UI.
     QRectF target_rect(0, 0, painter.device()->width(),
                        painter.device()->height());
+    const double ratio = target_rect.width() / LayoutInfo::STAFF_WIDTH;
 
     QList<QGraphicsItem*> items;
     items.append(myScoreInfoBlock);
@@ -215,10 +218,6 @@ void ScoreArea::print(QPrinter &printer)
         // division by zero and other issues.
         if (source_rect.height() == 0.0)
             continue;
-
-        const float ratio =
-            std::min(target_rect.width() / source_rect.width(),
-                     target_rect.height() / source_rect.height());
 
         if (i > 0)
         {
@@ -238,6 +237,9 @@ void ScoreArea::print(QPrinter &printer)
         }
 
         // Draw the system on the page.
+        target_rect.setLeft(source_rect.left() * ratio);
+        target_rect.setWidth(source_rect.width() * ratio);
+        target_rect.setHeight(source_rect.height() * ratio);
         scene()->render(&painter, target_rect, source_rect);
 
         // Set the location for the next item.
