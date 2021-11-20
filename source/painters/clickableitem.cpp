@@ -101,7 +101,7 @@ template <typename GraphicsItemT>
 void
 ClickableItemT<GraphicsItemT>::paint(QPainter *painter,
                                      const QStyleOptionGraphicsItem *option,
-                                     QWidget *widget)
+                                     [[maybe_unused]] QWidget *widget)
 {
     // Override how the selection is drawn (default is to draw a black border).
     if (option->state & QStyle::State_Selected)

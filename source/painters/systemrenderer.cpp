@@ -1609,8 +1609,8 @@ SystemRenderer::drawStdNotation(const ConstScoreLocation &location,
             static const double y_right = note_head_width + 3;
             static constexpr double y_above = -4;
             static constexpr double y_below = 12;
-            double numberX;
-            double numberY;
+            double numberX = 0;
+            double numberY = 0;
             switch (fingering.getDisplayPosition())
             {
                 case LeftHandFingering::DisplayPosition::Left:
