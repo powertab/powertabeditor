@@ -21,6 +21,7 @@
 #include <app/paths.h>
 #include <boost/filesystem/fstream.hpp>
 #include <boost/filesystem/operations.hpp>
+#include <iostream>
 #include <score/serialization.h>
 #include <stdexcept>
 
