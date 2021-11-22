@@ -41,6 +41,12 @@ std::vector<Tuning> TuningDictionary::load()
         return tunings;
     }
 
+    std::cerr << "Could not locate tuning dictionary." << std::endl;
+    std::cerr << "Candidate paths:" << std::endl;
+
+    for (boost::filesystem::path dir : Paths::getDataDirs())
+        std::cerr << dir << std::endl;
+
     throw std::runtime_error("Could not locate tuning dictionary.");
 }
 
