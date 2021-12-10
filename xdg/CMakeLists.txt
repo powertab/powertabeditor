@@ -6,6 +6,11 @@ install(
 )
 
 install(
+    FILES powertabeditor.metainfo.xml
+    DESTINATION ${PTE_XDG_METAINFO_INSTALL_DIR}
+)
+
+install(
     FILES mimeinfo.xml
     RENAME powertabeditor.xml
     DESTINATION ${PTE_XDG_MIME_INSTALL_DIR}

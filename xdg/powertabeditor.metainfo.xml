@@ -1,0 +1,33 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<component type="desktop-application">
+  <id>powertabeditor</id>
+  
+  <name>Power Tab Editor</name>
+  <summary>View and edit guitar tablature</summary>
+  
+  <metadata_license>FSFAP</metadata_license>
+  <project_license>GPL-3.0-only</project_license>
+  
+  <description>
+    <p>
+      Power Tab Editor is an easy to use cross-platform guitar tablature editor and viewer.
+      It is an open source, community-driven successor to the original Power Tab Editor 1.7.
+      A variety of file formats are supported, including .pt2, .ptb, .gp3, .gp4, .gp5, .gpx, and .gp
+    </p>
+  </description>
+  
+  <launchable type="desktop-id">powertabeditor.desktop</launchable>
+  
+  <icon type="stock">powertabeditor</icon>
+  
+  <categories>
+    <category>AudioVideo</category>
+    <category>Music</category>
+  </categories>
+
+  <url type="homepage">https://github.com/powertab/powertabeditor</url>
+  
+  <provides>
+    <binary>powertabeditor</binary>
+  </provides>
+</component>

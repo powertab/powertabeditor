@@ -2,7 +2,7 @@
 Name=Power Tab Editor
 Type=Application
 Comment=View and edit guitar tablature
-Categories=AudioVideo;Audio
+Categories=AudioVideo;Music;
 Exec=powertabeditor %F
 Icon=powertabeditor
 MimeType=audio/x-pt2;audio/x-ptb;audio/x-gtp
