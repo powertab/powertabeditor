@@ -7,6 +7,7 @@ Thanks to the following contributors who worked on this release:
 - @cameronwhite
 
 ### Added
+- The macOS installers are now signed and notarized.
 
 ### Changed
 
