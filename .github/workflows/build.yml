@@ -46,10 +46,18 @@ jobs:
       run: cmake --build ${{runner.workspace}}/build
     - name: Test
       run: ${{runner.workspace}}/build/bin/pte_tests
+
     - name: Build Installer
       env:
         MAC_DEV_PASSWORD: ${{ secrets.MAC_DEV_PASSWORD }}
       run: cmake --build ${{runner.workspace}}/build --target package
+
+    - name: Add Certificates to Keychain
+      uses: apple-actions/import-codesign-certs@v1
+      with:
+        p12-file-base64: ${{ secrets.MAC_CERTS_BASE64 }}
+        p12-password: ${{ secrets.MAC_CERTS_PASSWORD }}
+
     - name: Upload Installer
       uses: actions/upload-artifact@v2
       with:
