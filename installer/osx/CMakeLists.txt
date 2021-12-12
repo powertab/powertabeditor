@@ -36,4 +36,15 @@ install( CODE
     "
 )
 
+# https://codingflamingo.com/blog/how-to-code-sign-and-notarize-net-console-app-for-mac is a good reference...
+# Sign the .app bundle before the .dmg is created.
+install( SCRIPT
+    ${CMAKE_CURRENT_LIST_DIR}/sign_bundle.cmake
+)
+
+# Sign and notarize the .dmg after it is created.
+set( CPACK_POST_BUILD_SCRIPTS
+    ${CMAKE_CURRENT_LIST_DIR}/sign_dmg.cmake
+)
+
 include( CPack )

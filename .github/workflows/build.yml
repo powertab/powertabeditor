@@ -47,6 +47,8 @@ jobs:
     - name: Test
       run: ${{runner.workspace}}/build/bin/pte_tests
     - name: Build Installer
+      env:
+        MAC_DEV_PASSWORD: ${{ secrets.MAC_DEV_PASSWORD }}
       run: cmake --build ${{runner.workspace}}/build --target package
     - name: Upload Installer
       uses: actions/upload-artifact@v2
