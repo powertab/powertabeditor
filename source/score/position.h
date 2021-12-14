@@ -82,6 +82,9 @@ public:
     int getPitch() const { return myPitch; }
     int getDuration() const { return myDuration; }
 
+    /// Returns a text version of the pitch (e.g. "3/4" or "1 1/2").
+    static std::string getPitchText(int pitch);
+
     template <class Archive>
     void serialize(Archive &ar, const FileVersion /*version*/)
     {

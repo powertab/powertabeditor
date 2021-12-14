@@ -172,6 +172,16 @@ TEST_CASE("Score/Position/TremoloBar")
     REQUIRE(!pos.hasTremoloBar());
 }
 
+TEST_CASE("Score/Position/TremoloBar/GetPitchText")
+{
+    REQUIRE(TremoloBar::getPitchText(0) == "Standard");
+    REQUIRE(TremoloBar::getPitchText(4) == "1");
+    REQUIRE(TremoloBar::getPitchText(2) == "1/2");
+    REQUIRE(TremoloBar::getPitchText(3) == "3/4");
+    REQUIRE(TremoloBar::getPitchText(7) == "1 3/4");
+    REQUIRE(TremoloBar::getPitchText(8) == "2");
+}
+
 TEST_CASE("Score/Position/Serialization")
 {
     Position position;

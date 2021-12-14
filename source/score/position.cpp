@@ -44,6 +44,40 @@ TremoloBar::operator==(const TremoloBar &other) const
            myDuration == other.myDuration;
 }
 
+std::string
+TremoloBar::getPitchText(int pitch)
+{
+    if (pitch == 0)
+        return "Standard";
+
+    std::ostringstream text;
+
+    // Display a fraction.
+    const int quotient = pitch / 4;
+    const int remainder = pitch % 4;
+
+    // Handle whole numbers.
+    if (quotient != 0)
+    {
+        text << quotient;
+
+        if (remainder != 0)
+            text << " ";
+    }
+
+    // Fractional part.
+    if (remainder != 0)
+    {
+        // Reduce the fraction.
+        if (remainder == 1 || remainder == 3)
+            text << remainder << "/" << 4;
+        else
+            text << "1/2";
+    }
+
+    return text.str();
+}
+
 Position::Position()
     : myPosition(0),
       myDurationType(EighthNote),
