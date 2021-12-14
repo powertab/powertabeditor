@@ -21,6 +21,7 @@
 #include <atomic>
 #include <boost/signals2/connection.hpp>
 #include <midi/midievent.h>
+#include <optional>
 #include <QObject>
 #include <score/scorelocation.h>
 
