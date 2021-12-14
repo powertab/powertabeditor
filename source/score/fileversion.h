@@ -36,7 +36,9 @@ enum class FileVersion : int
     SONG_SUBTITLE = 6,
     /// Added volume swells.
     VOLUME_SWELLS = 7,
-    LATEST_VERSION = VOLUME_SWELLS
+    /// Added tremolo bar.
+    TREMOLO_BAR = 8,
+    LATEST_VERSION = TREMOLO_BAR
 };
 
 #endif

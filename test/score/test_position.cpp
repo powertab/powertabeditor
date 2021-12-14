@@ -155,6 +155,23 @@ TEST_CASE("Score/Position/VolumeSwell")
     REQUIRE(!pos.hasVolumeSwell());
 }
 
+TEST_CASE("Score/Position/TremoloBar")
+{
+    Position pos;
+
+    REQUIRE(!pos.hasTremoloBar());
+
+    const TremoloBar bar(TremoloBar::Type::Release, 7,  5);
+    pos.setTremoloBar(bar);
+    REQUIRE(pos.hasTremoloBar());
+    REQUIRE(pos.getTremoloBar().getDuration() == 5);
+    REQUIRE(pos.getTremoloBar().getPitch() == 7);
+    REQUIRE(pos.getTremoloBar().getType() == TremoloBar::Type::Release);
+
+    pos.clearTremoloBar();
+    REQUIRE(!pos.hasTremoloBar());
+}
+
 TEST_CASE("Score/Position/Serialization")
 {
     Position position;

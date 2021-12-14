@@ -59,6 +59,43 @@ VolumeSwell::serialize(Archive &ar, const FileVersion /*version*/)
     ar("duration", myDuration);
 }
 
+class TremoloBar
+{
+public:
+    enum class Type
+    {
+        Dip,
+        DiveAndRelease,
+        DiveAndHold,
+        Release,
+        ReturnAndRelease,
+        ReturnAndHold,
+        InvertedDip
+    };
+
+    TremoloBar() = default;
+    TremoloBar(Type type, int pitch, int duration = 0);
+
+    bool operator==(const TremoloBar &other) const;
+
+    Type getType() const { return myType; }
+    int getPitch() const { return myPitch; }
+    int getDuration() const { return myDuration; }
+
+    template <class Archive>
+    void serialize(Archive &ar, const FileVersion /*version*/)
+    {
+        ar("type", myType);
+        ar("pitch", myPitch);
+        ar("duration", myDuration);
+    }
+
+private:
+    Type myType = Type::Dip;
+    int myPitch = 4;
+    int myDuration = 0;
+};
+
 class Position
 {
 public:
@@ -148,6 +185,15 @@ public:
     /// Removes the volume swell for this position.
     void clearVolumeSwell();
 
+    /// Returns whether the position has a tremolo bar event.
+    bool hasTremoloBar() const;
+    /// Returns the tremolo bar event for this position.
+    const TremoloBar &getTremoloBar() const;
+    /// Adds a tremolo bar event for this position.
+    void setTremoloBar(const TremoloBar &bar);
+    /// Removes the tremolo bar for this position.
+    void clearTremoloBar();
+
     /// Returns the set of notes in the position.
     boost::iterator_range<NoteIterator> getNotes();
     /// Returns the set of notes in the position.
@@ -167,6 +213,7 @@ private:
     std::bitset<NumSimpleProperties> mySimpleProperties;
     int myMultiBarRestCount;
     std::optional<VolumeSwell> myVolumeSwell;
+    std::optional<TremoloBar> myTremoloBar;
     std::vector<Note> myNotes;
 };
 
@@ -180,6 +227,9 @@ void Position::serialize(Archive &ar, const FileVersion version)
 
     if (version >= FileVersion::VOLUME_SWELLS)
         ar("volume_swell", myVolumeSwell);
+
+    if (version >= FileVersion::TREMOLO_BAR)
+        ar("tremolo_bar", myTremoloBar);
 
     ar("notes", myNotes);
 }

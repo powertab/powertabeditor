@@ -32,6 +32,18 @@ VolumeSwell::operator==(const VolumeSwell &other) const
            myEndVolume == other.myEndVolume && myDuration == other.myDuration;
 }
 
+TremoloBar::TremoloBar(Type type, int pitch, int duration)
+    : myType(type), myPitch(pitch), myDuration(duration)
+{
+}
+
+bool
+TremoloBar::operator==(const TremoloBar &other) const
+{
+    return myType == other.myType && myPitch == other.myPitch &&
+           myDuration == other.myDuration;
+}
+
 Position::Position()
     : myPosition(0),
       myDurationType(EighthNote),
@@ -53,6 +65,7 @@ bool Position::operator==(const Position &other) const
            mySimpleProperties == other.mySimpleProperties &&
            myMultiBarRestCount == other.myMultiBarRestCount &&
            myVolumeSwell == other.myVolumeSwell &&
+           myTremoloBar == other.myTremoloBar &&
            myNotes == other.myNotes;
 }
 
@@ -181,6 +194,30 @@ void
 Position::clearVolumeSwell()
 {
     myVolumeSwell.reset();
+}
+
+bool
+Position::hasTremoloBar() const
+{
+    return myTremoloBar.has_value();
+}
+
+const TremoloBar &
+Position::getTremoloBar() const
+{
+    return *myTremoloBar;
+}
+
+void
+Position::setTremoloBar(const TremoloBar &bar)
+{
+    myTremoloBar = bar;
+}
+
+void
+Position::clearTremoloBar()
+{
+    myTremoloBar.reset();
 }
 
 boost::iterator_range<Position::NoteIterator> Position::getNotes()
