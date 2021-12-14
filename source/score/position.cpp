@@ -18,6 +18,7 @@
 #include "position.h"
 
 #include <algorithm>
+#include <sstream>
 #include <stdexcept>
 
 VolumeSwell::VolumeSwell(VolumeLevel start, VolumeLevel end, int duration)
