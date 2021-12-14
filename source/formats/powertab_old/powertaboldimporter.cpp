@@ -718,6 +718,15 @@ void PowerTabOldImporter::convert(const PowerTabDocument::Position &oldPosition,
                         static_cast<VolumeLevel>(end_volume), duration));
     }
 
+    if (oldPosition.HasTremoloBar())
+    {
+        uint8_t type, duration, pitch;
+        oldPosition.GetTremoloBar(type, duration, pitch);
+
+        position.setTremoloBar(
+            TremoloBar(static_cast<TremoloBar::Type>(type), pitch, duration));
+    }
+
     // Import notes.
     for (size_t i = 0; i < oldPosition.GetNoteCount(); ++i)
     {

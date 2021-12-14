@@ -129,6 +129,7 @@ set( data_files
     formats/powertab_old/data/song_header.ptb
     formats/powertab_old/data/staves.ptb
     formats/powertab_old/data/tempo_markers.ptb
+    formats/powertab_old/data/tremolo_bars.ptb
     formats/powertab_old/data/volume_swells.ptb
 
     formats/guitar_pro/data/alt_endings.gp5

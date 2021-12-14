@@ -394,3 +394,18 @@ TEST_CASE("Formats/PowerTabOldImport/VolumeSwells")
     REQUIRE(swell.getEndVolume() == VolumeLevel::fff);
     REQUIRE(swell.getDuration() == 2);
 }
+
+TEST_CASE("Formats/PowerTabOldImport/TremoloBars")
+{
+    Score score;
+    PowerTabOldImporter importer;
+    loadTest(importer, "data/tremolo_bars.ptb", score);
+
+    const Voice &voice = score.getSystems()[0].getStaves()[0].getVoices()[0];
+    const Position &pos = voice.getPositions()[1];
+    REQUIRE(pos.hasTremoloBar());
+    const TremoloBar &bar = pos.getTremoloBar();
+    REQUIRE(bar.getType() == TremoloBar::Type::DiveAndRelease);
+    REQUIRE(bar.getPitch() == 6);
+    REQUIRE(bar.getDuration() == 1);
+}
