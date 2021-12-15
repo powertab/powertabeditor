@@ -7,7 +7,9 @@ Thanks to the following contributors who worked on this release:
 - @cameronwhite
 
 ### Added
-- The macOS installers are now signed and notarized.
+- Added support for tremolo bars (#8).
+- For Linux users, the application can now be easily installed as a Snap package (https://snapcraft.io/powertabeditor).
+- The macOS installers are now signed and notarized. This resolves the "developer cannot be verified" warnings when running for the first time.
 
 ### Changed
 
