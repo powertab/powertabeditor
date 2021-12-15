@@ -640,16 +640,52 @@ static void generateBends(std::vector<BendEventInfo> &bends,
     }
 }
 
+static int
+getDurationTicks(const Voice &voice, const Position &position,
+                 int ticks_per_beat)
+{
+    return boost::rational_cast<int>(
+        ticks_per_beat * VoiceUtils::getDurationTime(voice, position));
+}
+
+/// Add in the duration for any extra notes following the current note. Used
+/// for e.g. volume swells, tremolo bars etc.
+static int
+computeFollowingNotesDuration(const Voice &voice, int start_idx, int num_notes,
+                              int ticks_per_beat)
+{
+    int duration = 0;
+    for (int i = 1; i <= num_notes; ++i)
+    {
+        int idx = start_idx + i;
+        if (idx >= static_cast<int>(voice.getPositions().size()))
+            break;
+
+        duration +=
+            getDurationTicks(voice, voice.getPositions()[idx], ticks_per_beat);
+    }
+
+    return duration;
+}
+
 static void
 generateTremoloBar(std::vector<BendEventInfo> &bends, uint8_t &active_bend,
-                   int start_tick, int duration, int ppq, const Position &pos)
+                   int start_tick, int note_duration, int ticks_per_beat,
+                   const Voice &voice, const Position &pos)
 {
     const TremoloBar &trem = pos.getTremoloBar();
 
     int resultant_pitch = boost::rational_cast<int>(
         DEFAULT_BEND - trem.getPitch() * BEND_QUARTER_TONE);
 
-    // TODO - implement events that stretch over multiple notes.
+    // Add in the duration for any extra notes the event is held over.
+    const int start_idx = ScoreUtils::findIndexByPosition(
+        voice.getPositions(), pos.getPosition());
+    const int duration =
+        note_duration + computeFollowingNotesDuration(voice, start_idx,
+                                                      trem.getDuration(),
+                                                      ticks_per_beat);
+
     switch (trem.getType())
     {
         case TremoloBar::Type::DiveAndHold:
@@ -676,7 +712,8 @@ generateTremoloBar(std::vector<BendEventInfo> &bends, uint8_t &active_bend,
         case TremoloBar::Type::Dip:
         {
             // Dip for a 32nd note, or half the note duration.
-            const int dip_duration = std::min(ppq / 8, duration / 2);
+            const int dip_duration =
+                std::min(ticks_per_beat / 8, note_duration / 2);
 
             generateGradualBend(bends, start_tick, dip_duration, DEFAULT_BEND,
                                 resultant_pitch);
@@ -770,14 +807,6 @@ static void generateSlides(std::vector<BendEventInfo> &bends, int start_tick,
     }
 }
 
-static int
-getDurationTicks(const Voice &voice, const Position &position,
-                 int ticks_per_beat)
-{
-    return boost::rational_cast<int>(
-        ticks_per_beat * VoiceUtils::getDurationTime(voice, position));
-}
-
 namespace
 {
 struct VolumeSwellEvent
@@ -803,15 +832,8 @@ generateVolumeSwell(const int start_tick, int duration,
         voice.getPositions(), start_pos.getPosition());
 
     // Add in the duration for any extra notes the swell is held over.
-    for (int i = 1; i <= swell.getDuration(); ++i)
-    {
-        int idx = start_idx + i;
-        if (idx >= static_cast<int>(voice.getPositions().size()))
-            break;
-
-        duration +=
-            getDurationTicks(voice, voice.getPositions()[idx], ticks_per_beat);
-    }
+    duration += computeFollowingNotesDuration(
+        voice, start_idx, swell.getDuration(), ticks_per_beat);
 
     const auto start_vol = static_cast<int>(swell.getStartVolume());
     const auto end_vol = static_cast<int>(swell.getEndVolume());
@@ -948,7 +970,7 @@ MidiFile::addEventsForBar(std::vector<MidiEventList> &tracks,
         {
             std::vector<BendEventInfo> bend_events;
             generateTremoloBar(bend_events, active_bend, current_tick, duration,
-                               myTicksPerBeat, *pos);
+                               myTicksPerBeat, voice, *pos);
 
             for (const BendEventInfo &event : bend_events)
             {
