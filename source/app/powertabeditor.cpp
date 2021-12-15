@@ -3316,6 +3316,7 @@ void PowerTabEditor::createMenus()
     myTabSymbolsMenu->addSeparator();
 
 	myTabSymbolsMenu->addAction(myBendCommand);
+	myTabSymbolsMenu->addAction(myTremoloBarCommand);
 	myTabSymbolsMenu->addSeparator();
 
     mySlideIntoMenu = myTabSymbolsMenu->addMenu(tr("Slide Into"));

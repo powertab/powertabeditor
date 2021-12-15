@@ -723,7 +723,7 @@ generateTremoloBar(std::vector<BendEventInfo> &bends, uint8_t &active_bend,
         break;
 
         case TremoloBar::Type::Release:
-            bends.push_back(BendEventInfo(start_tick + duration, DEFAULT_BEND));
+            bends.push_back(BendEventInfo(start_tick + note_duration, DEFAULT_BEND));
             break;
     }
 

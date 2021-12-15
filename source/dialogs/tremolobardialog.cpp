@@ -67,7 +67,7 @@ TremoloBarDialog::getTremoloBar() const
 void
 TremoloBarDialog::initPitches()
 {
-    for (int i = 0; i <= 12; ++i)
+    for (int i = 0; i <= 28; ++i)
     {
         ui->pitchComboBox->addItem(
             QString::fromStdString(TremoloBar::getPitchText(i)), i);
@@ -84,6 +84,7 @@ TremoloBarDialog::handleTypeChanged()
         static_cast<TremoloBar::Type>(ui->typeComboBox->currentIndex());
 
     ui->durationSpinBox->setEnabled(type != TremoloBar::Type::Dip &&
-                                    type != TremoloBar::Type::InvertedDip);
+                                    type != TremoloBar::Type::InvertedDip &&
+                                    type != TremoloBar::Type::Release);
     ui->pitchComboBox->setEnabled(type != TremoloBar::Type::Release);
 }
