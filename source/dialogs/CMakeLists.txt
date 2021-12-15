@@ -29,6 +29,7 @@ set( srcs
     tempomarkerdialog.cpp
     textitemdialog.cpp
     timesignaturedialog.cpp
+    tremolobardialog.cpp
     trilldialog.cpp
     tuningdialog.cpp
     tuningdictionarydialog.cpp
@@ -66,6 +67,7 @@ set( headers
     tempomarkerdialog.h
     textitemdialog.h
     timesignaturedialog.h
+    tremolobardialog.h
     trilldialog.h
     tuningdialog.h
     tuningdictionarydialog.h
@@ -99,6 +101,7 @@ set( moc_headers
     tempomarkerdialog.h
     textitemdialog.h
     timesignaturedialog.h
+    tremolobardialog.h
     trilldialog.h
     tuningdialog.h
     tuningdictionarydialog.h
@@ -133,6 +136,7 @@ set( forms
     tempomarkerdialog.ui
     textitemdialog.ui
     timesignaturedialog.ui
+    tremolobardialog.ui
     trilldialog.ui
     tuningdialog.ui
     tuningdictionarydialog.ui

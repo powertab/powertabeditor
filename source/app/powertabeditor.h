@@ -230,6 +230,8 @@ private slots:
     void editDynamic(bool remove = false);
     /// Adds or removes a volume swell at the current location.
     void editVolumeSwell(bool remove = false);
+    /// Adds or removes a tremolo bar symbol at the current location.
+    void editTremoloBar(bool remove = false);
 
     /// Adds or removes a hammeron/pulloff for the current note.
     void editHammerPull();
@@ -592,6 +594,7 @@ private:
     Command *myArtificialHarmonicCommand;
     Command *myTappedHarmonicCommand;
     Command *myBendCommand;
+    Command *myTremoloBarCommand;
 
     QMenu *mySlideIntoMenu;
     Command *mySlideIntoFromAboveCommand;

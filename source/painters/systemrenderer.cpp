@@ -1403,15 +1403,11 @@ SystemRenderer::createTremoloBar(const ConstScoreLocation &location,
     assert(pos && pos->hasTremoloBar());
     const TremoloBar &trem = pos->getTremoloBar();
 
-#if 0 // TODO - support editing.
     ConstScoreLocation trem_location(location);
     trem_location.setPositionIndex(pos->getPosition());
     auto group = new ClickableGroup(
         QObject::tr("Double-click to edit tremolo bar."),
         myScoreArea->getClickEvent(), trem_location, ScoreItem::TremoloBar);
-#else
-    auto group = new QGraphicsItemGroup();
-#endif
 
     double x_start = 0;
     double x_end = symbol_group.getWidth();

@@ -42,6 +42,7 @@ enum class ScoreItem
     TempoMarker,
     TextItem,
     TimeSignature,
+    TremoloBar,
     VolumeSwell,
 };
 

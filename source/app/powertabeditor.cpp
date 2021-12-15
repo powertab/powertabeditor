@@ -68,6 +68,7 @@
 #include <actions/removesystem.h>
 #include <actions/shiftpositions.h>
 #include <actions/shiftstring.h>
+#include <actions/tremolobar.h>
 #include <actions/undomanager.h>
 #include <actions/volumeswell.h>
 
@@ -115,6 +116,7 @@
 #include <dialogs/tempomarkerdialog.h>
 #include <dialogs/textitemdialog.h>
 #include <dialogs/timesignaturedialog.h>
+#include <dialogs/tremolobardialog.h>
 #include <dialogs/trilldialog.h>
 #include <dialogs/tuningdictionarydialog.h>
 #include <dialogs/viewfilterdialog.h>
@@ -814,6 +816,10 @@ void PowerTabEditor::removeSelectedItem()
 
         case ScoreItem::PlayerChange:
             editPlayerChange(/* remove */ true);
+            break;
+
+        case ScoreItem::TremoloBar:
+            editTremoloBar(/* remove */ true);
             break;
 
         case ScoreItem::VolumeSwell:
@@ -1639,6 +1645,42 @@ PowerTabEditor::editVolumeSwell(bool remove)
     }
     else
         myVolumeSwellCommand->setChecked(position->hasVolumeSwell());
+}
+
+void
+PowerTabEditor::editTremoloBar(bool remove)
+{
+    const ScoreLocation &location = getLocation();
+    const Position *position = location.getPosition();
+    assert(position);
+
+    if (remove)
+    {
+        Q_ASSERT(position->hasTremoloBar());
+        myUndoManager->push(new RemoveTremoloBar(location),
+                            location.getSystemIndex());
+        return;
+    }
+
+    TremoloBarDialog dialog(
+        this, position->hasTremoloBar() ? &position->getTremoloBar() : nullptr);
+    if (dialog.exec() == QDialog::Accepted)
+    {
+        const bool editing = position->hasTremoloBar();
+        if (editing)
+        {
+            myUndoManager->beginMacro(tr("Edit Tremolo Bar"));
+            myUndoManager->push(new RemoveTremoloBar(location),
+                                location.getSystemIndex());
+        }
+        myUndoManager->push(new AddTremoloBar(location, dialog.getTremoloBar()),
+                            location.getSystemIndex());
+
+        if (editing)
+            myUndoManager->endMacro();
+    }
+    else
+        myTremoloBarCommand->setChecked(position->hasTremoloBar());
 }
 
 void PowerTabEditor::editHammerPull()
@@ -2778,6 +2820,12 @@ void PowerTabEditor::createCommands()
     connect(myBendCommand, &QAction::triggered, this,
             [=]() { editBend(); });
 
+    myTremoloBarCommand =
+        new Command(tr("Tremolo Bar..."), "TabSymbols.TremoloBar", QKeySequence(), this);
+    myTremoloBarCommand->setCheckable(true);
+    connect(myTremoloBarCommand, &QAction::triggered, this,
+            [=]() { editTremoloBar(); });
+
     createPositionPropertyCommand(myVibratoCommand, tr("Vibrato"),
                                   "TabSymbols.Vibrato", Qt::Key_V,
                                   Position::Vibrato,
@@ -3535,6 +3583,9 @@ void PowerTabEditor::setupNewTab()
                             case ScoreItem::PlayerChange:
                                 editPlayerChange();
                                 break;
+                            case ScoreItem::TremoloBar:
+                                editTremoloBar();
+                                break;
                             case ScoreItem::VolumeSwell:
                                 editVolumeSwell();
                                 break;
@@ -3654,6 +3705,7 @@ canDeleteItem(ScoreItem item)
         case ScoreItem::RehearsalSign:
         case ScoreItem::TempoMarker:
         case ScoreItem::TextItem:
+        case ScoreItem::TremoloBar:
         case ScoreItem::VolumeSwell:
             return true;
         case ScoreItem::Clef:
