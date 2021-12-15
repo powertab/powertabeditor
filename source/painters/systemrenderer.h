@@ -157,6 +157,11 @@ private:
                                      const SymbolGroup &group,
                                      const LayoutInfo &layout);
 
+    /// Creates a tremolo bar symbol.
+    QGraphicsItem *createTremoloBar(const ConstScoreLocation &location,
+                                    const SymbolGroup &group,
+                                    const LayoutInfo &layout);
+
     /// Draws a group of bends.
     void createBendGroup(const ConstScoreLocation &location,
                          const SymbolGroup &group, const LayoutInfo &layout);

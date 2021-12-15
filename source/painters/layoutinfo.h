@@ -58,6 +58,7 @@ public:
 
         // Above tab staff.
         Bend,
+        TremoloBar,
         VolumeSwell,
         LetRing,
         Vibrato,
@@ -203,6 +204,9 @@ private:
 
     /// Computes the layout for bends in the staff.
     void calculateBendLayout(VerticalLayout &layout);
+
+    /// Computes the layout for tremolo bars in the staff.
+    void calculateTremoloBarLayout(VerticalLayout &layout);
 
     /// Computes the layout for volume swells in the staff.
     void calculateVolumeSwellLayout(VerticalLayout &layout);

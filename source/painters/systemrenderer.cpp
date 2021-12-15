@@ -1229,12 +1229,9 @@ SystemRenderer::drawSymbolsAboveTabStaff(const ConstScoreLocation &location,
         case SymbolGroup::VolumeSwell:
             renderedSymbol = createVolumeSwell(location, symbolGroup, layout);
             break;
-#if 0
-        case Layout::SymbolTremoloBar:
-            renderedSymbol = new TremoloBarPainter(staff->GetPosition(0, symbolGroup.leftPosIndex),
-                                                   width);
-            break;        
-#endif
+        case SymbolGroup::TremoloBar:
+            renderedSymbol = createTremoloBar(location, symbolGroup, layout);
+            break;
 
         default:
             Q_ASSERT(false);
@@ -1394,6 +1391,98 @@ SystemRenderer::createVolumeSwell(const ConstScoreLocation &location,
     path_item->setPath(path);
     path_item->setPen(myPalette.text().color());
     return path_item;
+}
+
+QGraphicsItem *
+SystemRenderer::createTremoloBar(const ConstScoreLocation &location,
+                                 const SymbolGroup &symbol_group,
+                                 const LayoutInfo &layout)
+{
+    const Position *pos = ScoreUtils::findByPosition(
+        symbol_group.getVoice().getPositions(), symbol_group.getLeftPosition());
+    assert(pos && pos->hasTremoloBar());
+    const TremoloBar &trem = pos->getTremoloBar();
+
+#if 0 // TODO - support editing.
+    ConstScoreLocation trem_location(location);
+    trem_location.setPositionIndex(pos->getPosition());
+    auto group = new ClickableGroup(
+        QObject::tr("Double-click to edit tremolo bar."),
+        myScoreArea->getClickEvent(), trem_location, ScoreItem::TremoloBar);
+#else
+    auto group = new QGraphicsItemGroup();
+#endif
+
+    double x_start = 0;
+    double x_end = symbol_group.getWidth();
+    if (trem.getType() == TremoloBar::Type::Dip ||
+        trem.getType() == TremoloBar::Type::InvertedDip)
+    {
+        // Draw dips as a fixed size.
+        x_start = layout.getPositionSpacing() * 0.2;
+        x_end = layout.getPositionSpacing() * 0.8;
+    }
+
+    const double y_top = LayoutInfo::TAB_SYMBOL_SPACING * 0.5;
+    const double y_bottom = LayoutInfo::TAB_SYMBOL_SPACING;
+    const double x_middle = (x_end + x_start) * 0.5;
+
+    QPainterPath path;
+    switch(trem.getType())
+    {
+        case TremoloBar::Type::Dip:
+            path.moveTo(x_start, y_top);
+            path.lineTo(x_middle, y_bottom);
+            path.moveTo(x_middle, y_bottom);
+            path.lineTo(x_end, y_top);
+            break;
+
+        case TremoloBar::Type::InvertedDip:
+            path.moveTo(x_start, y_bottom);
+            path.lineTo(x_middle, y_top);
+            path.moveTo(x_middle, y_top);
+            path.lineTo(x_end, y_bottom);
+            break;
+
+        case TremoloBar::Type::DiveAndHold:
+        case TremoloBar::Type::DiveAndRelease:
+            path.moveTo(x_start, y_top);
+            path.lineTo(x_end, y_bottom);
+            break;
+
+        case TremoloBar::Type::ReturnAndHold:
+        case TremoloBar::Type::ReturnAndRelease:
+            path.moveTo(x_start, y_bottom);
+            path.lineTo(x_end, y_top);
+            break;
+
+        case TremoloBar::Type::Release:
+            createDashedLine(group, x_start, x_end, y_bottom);
+            break;
+    }
+
+    if (!path.isEmpty())
+    {
+        auto path_item = new QGraphicsPathItem(path);
+        path_item->setPath(path);
+        path_item->setPen(myPalette.text().color());
+        group->addToGroup(path_item);
+    }
+
+    // Draw the pitch text.
+    if (trem.getType() != TremoloBar::Type::Release)
+    {
+        mySymbolTextFont.setStyle(QFont::StyleNormal);
+
+        auto text = new SimpleTextItem(
+            QString::fromStdString(TremoloBar::getPitchText(trem.getPitch())),
+            mySymbolTextFont, TextAlignment::Baseline, QPen(myPalette.text().color()));
+        centerHorizontally(*text, x_start, x_end);
+        text->setY(y_top - 1);
+        group->addToGroup(text);
+    }
+
+    return group;
 }
 
 QGraphicsItem *SystemRenderer::drawContinuousFontSymbols(QChar symbol,

@@ -569,8 +569,6 @@ void LayoutInfo::calculateTabStaffAboveLayout()
             if (pos.hasProperty(Position::TremoloPicking))
                 set.insert(SymbolGroup::TremoloPicking);
 
-            // TODO - handle tremolo bars.
-
             if (Utils::hasNoteWithTrill(pos))
                 set.insert(SymbolGroup::Trill);
             if (Utils::hasNoteWithProperty(pos, Note::NaturalHarmonic))
@@ -601,6 +599,7 @@ void LayoutInfo::calculateTabStaffAboveLayout()
     // Handle bends separately, since they have different rules for determining
     // how nearby bends are grouped together.
     calculateBendLayout(layout);
+    calculateTremoloBarLayout(layout);
 
     // Handle volume swells separately, since they are a bit different (can
     // stretch over several notes, but adjacent volume swells aren't merged).
@@ -766,6 +765,32 @@ void LayoutInfo::calculateBendLayout(VerticalLayout &layout)
             const int y = layout.addBox(leftPos, rightPos, groupHeight);
             myTabStaffAboveSymbols.emplace_back(SymbolGroup::Bend, leftPos,
                                                 rightPos, voice, 0, y);
+        }
+    }
+}
+
+void LayoutInfo::calculateTremoloBarLayout(VerticalLayout &layout)
+{
+    for (const Voice &voice : myLocation.getStaff().getVoices())
+    {
+        for (unsigned int i = 0; i < voice.getPositions().size(); ++i)
+        {
+            const Position &pos = voice.getPositions()[i];
+            if (!pos.hasTremoloBar())
+                continue;
+
+            const TremoloBar &trem = pos.getTremoloBar();
+
+            const int start_pos = pos.getPosition();
+            const int end_pos = getClampedPositionByIndex(
+                voice, i + trem.getDuration() + 1, getNumPositions());
+
+            const int y = layout.addBox(start_pos, end_pos, 1);
+            const double start_x = getPositionX(start_pos);
+            const double end_x = getPositionX(end_pos);
+            myTabStaffAboveSymbols.emplace_back(SymbolGroup::TremoloBar,
+                                                start_pos, end_pos, voice,
+                                                end_x - start_x, y);
         }
     }
 }
