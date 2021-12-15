@@ -51,6 +51,7 @@ set( srcs
     removesystem.cpp
     shiftpositions.cpp
     shiftstring.cpp
+    tremolobar.cpp
     undomanager.cpp
     volumeswell.cpp
 )
@@ -108,6 +109,7 @@ set( headers
     removesystem.h
     shiftpositions.h
     shiftstring.h
+    tremolobar.h
     undomanager.h
     volumeswell.h
 )
