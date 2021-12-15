@@ -640,6 +640,79 @@ static void generateBends(std::vector<BendEventInfo> &bends,
     }
 }
 
+static void
+generateTremoloBar(std::vector<BendEventInfo> &bends, uint8_t &active_bend,
+                   int start_tick, int duration, int ppq, const Position &pos)
+{
+    const TremoloBar &trem = pos.getTremoloBar();
+
+    int resultant_pitch = boost::rational_cast<int>(
+        DEFAULT_BEND - trem.getPitch() * BEND_QUARTER_TONE);
+
+    // TODO - implement events that stretch over multiple notes.
+    switch (trem.getType())
+    {
+        case TremoloBar::Type::DiveAndHold:
+        case TremoloBar::Type::DiveAndRelease:
+            // Drop the pitch over the note duration.
+            generateGradualBend(bends, start_tick, duration, DEFAULT_BEND,
+                                resultant_pitch);
+            break;
+
+        case TremoloBar::Type::ReturnAndHold:
+        case TremoloBar::Type::ReturnAndRelease:
+            // Move from active pitch to target over the note duration.
+            generateGradualBend(bends, start_tick, duration, active_bend,
+                                resultant_pitch);
+            break;
+
+        case TremoloBar::Type::InvertedDip:
+            // Invert the pitch.
+            resultant_pitch = boost::rational_cast<int>(
+                DEFAULT_BEND + trem.getPitch() * BEND_QUARTER_TONE);
+
+            [[fallthrough]];
+
+        case TremoloBar::Type::Dip:
+        {
+            // Dip for a 32nd note, or half the note duration.
+            const int dip_duration = std::min(ppq / 8, duration / 2);
+
+            generateGradualBend(bends, start_tick, dip_duration, DEFAULT_BEND,
+                                resultant_pitch);
+            generateGradualBend(bends, start_tick + dip_duration, dip_duration,
+                                resultant_pitch, DEFAULT_BEND);
+        }
+        break;
+
+        case TremoloBar::Type::Release:
+            bends.push_back(BendEventInfo(start_tick + duration, DEFAULT_BEND));
+            break;
+    }
+
+    switch (trem.getType())
+    {
+        case TremoloBar::Type::DiveAndHold:
+        case TremoloBar::Type::ReturnAndHold:
+            active_bend = resultant_pitch;
+            break;
+
+        case TremoloBar::Type::DiveAndRelease:
+        case TremoloBar::Type::ReturnAndRelease:
+        case TremoloBar::Type::Release:
+            // Always return to the default bend, regardless of the release
+            // pitch.
+            assert(!bends.empty());
+            bends.back().myBendAmount = DEFAULT_BEND;
+
+            [[fallthrough]];
+
+        default:
+            active_bend = DEFAULT_BEND;
+            break;
+    }
+}
+
 static void generateSlides(std::vector<BendEventInfo> &bends, int start_tick,
                            int note_duration, int ppq, const Note &note,
                            const Note *next_note)
@@ -867,6 +940,23 @@ MidiFile::addEventsForBar(std::vector<MidiEventList> &tracks,
                     tracks[player.getPlayerNumber()].append(
                         MidiEvent::volumeChange(
                             event.myTick, getChannel(player), event.myVolume));
+                }
+            }
+        }
+
+        if (pos->hasTremoloBar())
+        {
+            std::vector<BendEventInfo> bend_events;
+            generateTremoloBar(bend_events, active_bend, current_tick, duration,
+                               myTicksPerBeat, *pos);
+
+            for (const BendEventInfo &event : bend_events)
+            {
+                for (const ActivePlayer &player : active_players)
+                {
+                    tracks[player.getPlayerNumber()].append(
+                        MidiEvent::pitchWheel(event.myTick, getChannel(player),
+                                              event.myBendAmount));
                 }
             }
         }
