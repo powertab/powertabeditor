@@ -152,7 +152,6 @@ struct Note
 private:
     void loadNoteEffects(InputStream &stream, const Track &track);
     void loadNoteEffectsGp3(InputStream &stream);
-    Bend loadBend(InputStream &stream);
     void loadSlide(InputStream &stream);
     void loadHarmonic(InputStream &stream, const Track &track);
 };
@@ -170,6 +169,7 @@ struct Beat
     std::optional<std::string> myText;
     std::optional<int> myTempoChange;
     std::string myTempoChangeName;
+    std::optional<Bend> myTremoloBar;
     bool myIsVibrato;
     bool myIsWideVibrato;
     bool myIsNaturalHarmonic;
@@ -188,7 +188,7 @@ private:
     void loadChordDiagram(InputStream &stream);
     void loadOldChordDiagram(InputStream &stream);
     void loadBeatEffects(InputStream &stream);
-    void loadTremoloBar(InputStream &stream);
+    Bend loadTremoloBar(InputStream &stream);
     void loadMixTableChangeEvent(InputStream &stream);
     void loadNotes(InputStream &stream, const Track &track);
 };

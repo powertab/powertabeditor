@@ -384,6 +384,29 @@ void Note::load(InputStream &stream, const Track &track)
     }
 }
 
+static Bend
+loadBend(InputStream &stream)
+{
+    Bend bend;
+    bend.myBendType = stream.read<int8_t>();
+    bend.myBendValue = stream.read<int32_t>();
+
+    const int num_points = stream.read<int32_t>();
+    for (int i = 0; i < num_points; ++i)
+    {
+        Bend::Point point;
+        // Convert from 0-60 to a percentage.
+        point.myOffset = (stream.read<int32_t>() * 100.0) / 60.0;
+        point.myValue = stream.read<int32_t>();
+        bend.myPoints.push_back(point);
+
+        // Bend vibrato - ignore.
+        stream.skip(1);
+    }
+
+    return bend;
+}
+
 void Note::loadNoteEffects(InputStream &stream, const Track &track)
 {
     const Flags header1 = stream.read<uint8_t>();
@@ -451,29 +474,6 @@ void Note::loadNoteEffectsGp3(InputStream &stream)
         note.load(stream);
         myGraceNote = note;
     }
-}
-
-Bend
-Note::loadBend(InputStream &stream)
-{
-    Bend bend;
-    bend.myBendType = stream.read<int8_t>();
-    bend.myBendValue = stream.read<int32_t>();
-
-    const int num_points = stream.read<int32_t>();
-    for (int i = 0; i < num_points; ++i)
-    {
-        Bend::Point point;
-        // Convert from 0-60 to a percentage.
-        point.myOffset = (stream.read<int32_t>() * 100.0) / 60.0;
-        point.myValue = stream.read<int32_t>();
-        bend.myPoints.push_back(point);
-
-        // Bend vibrato - ignore.
-        stream.skip(1);
-    }
-
-    return bend;
 }
 
 void Note::loadSlide(InputStream &stream)
@@ -763,7 +763,7 @@ void Beat::loadBeatEffects(InputStream &stream)
 
         // In GP3, a value of 0 indicates a tremolo bar.
         if (type == TapType::TremoloBarGp3 && stream.version() == Version3)
-            loadTremoloBar(stream);
+            myTremoloBar = loadTremoloBar(stream);
         else
         {
             // Ignore slapping and popping.
@@ -779,7 +779,7 @@ void Beat::loadBeatEffects(InputStream &stream)
     if (stream.version() >= Version4 &&
         flags2.test(BeatEffects::HasTremoloBarEvent))
     {
-        loadTremoloBar(stream);
+        myTremoloBar = loadTremoloBar(stream);
     }
 
     if (flags1.test(BeatEffects::HasStrokeEffect))
@@ -804,23 +804,25 @@ void Beat::loadBeatEffects(InputStream &stream)
     }
 }
 
-void Beat::loadTremoloBar(InputStream &stream)
+Bend
+Beat::loadTremoloBar(InputStream &stream)
 {
-    // TODO - implement tremolo bar support.
-    if (stream.version() != Version3)
-        stream.skip(1);
-
-    stream.skip(4);
-
-    if (stream.version() >= Version4)
+    if (stream.version() == Version3)
     {
-        const int numPoints = stream.read<int32_t>();
-        for (int i = 0; i < numPoints; i++)
-        {
-            stream.skip(4); // time relative to the previous point
-            stream.skip(4); // bend value
-            stream.skip(1); // vibrato (used for bend, not for tremolo bar)
-        }
+        // Just import as a dip.
+        Bend bend;
+        bend.myBendType = 6; // Dip
+        bend.myBendValue = stream.read<int32_t>();
+        bend.myPoints.push_back(Bend::Point{ 0, 0 });
+        bend.myPoints.push_back(Bend::Point{ 50, bend.myBendValue });
+        bend.myPoints.push_back(Bend::Point{ 100, 0 });
+
+        return bend;
+    }
+    else
+    {
+        // Otherwise, the format exactly matches that of a bend.
+        return loadBend(stream);
     }
 }
 

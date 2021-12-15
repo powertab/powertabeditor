@@ -502,3 +502,49 @@ TEST_CASE("Formats/GuitarPro/Bends")
         REQUIRE(note.getBend().getBentPitch() == 4);
     }
 }
+
+TEST_CASE("Formats/GuitarPro/TremoloBars")
+{
+    Score score;
+    GuitarProImporter importer;
+    importer.load(AppInfo::getAbsolutePath("data/tremolo_bars.gp5"), score);
+
+    const Voice &voice = score.getSystems()[0].getStaves()[0].getVoices()[0];
+    {
+        const Position &pos = voice.getPositions()[0];
+        REQUIRE(pos.hasTremoloBar());
+        REQUIRE(pos.getTremoloBar().getType() == TremoloBar::Type::DiveAndRelease);
+        REQUIRE(pos.getTremoloBar().getPitch() == 10);
+        REQUIRE(pos.getTremoloBar().getDuration() == 0);
+    }
+    {
+        const Position &pos = voice.getPositions()[1];
+        REQUIRE(pos.hasTremoloBar());
+        REQUIRE(pos.getTremoloBar().getType() == TremoloBar::Type::ReturnAndRelease);
+        REQUIRE(pos.getTremoloBar().getPitch() == 10);
+    }
+    {
+        const Position &pos = voice.getPositions()[2];
+        REQUIRE(pos.hasTremoloBar());
+        REQUIRE(pos.getTremoloBar().getType() == TremoloBar::Type::ReturnAndRelease);
+        REQUIRE(pos.getTremoloBar().getPitch() == 0);
+    }
+    {
+        const Position &pos = voice.getPositions()[3];
+        REQUIRE(pos.hasTremoloBar());
+        REQUIRE(pos.getTremoloBar().getType() == TremoloBar::Type::DiveAndRelease);
+        REQUIRE(pos.getTremoloBar().getPitch() == 6);
+    }
+    {
+        const Position &pos = voice.getPositions()[5];
+        REQUIRE(pos.hasTremoloBar());
+        REQUIRE(pos.getTremoloBar().getType() == TremoloBar::Type::InvertedDip);
+        REQUIRE(pos.getTremoloBar().getPitch() == 6);
+    }
+    {
+        const Position &pos = voice.getPositions()[7];
+        REQUIRE(pos.hasTremoloBar());
+        REQUIRE(pos.getTremoloBar().getType() == TremoloBar::Type::Dip);
+        REQUIRE(pos.getTremoloBar().getPitch() == 6);
+    }
+}

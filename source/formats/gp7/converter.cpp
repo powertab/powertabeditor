@@ -209,6 +209,14 @@ keyAndVariationFromPitch(int midi_pitch)
     return theNotes[midi_pitch];
 }
 
+/// Convert Guitar Pro's bend values (a float providing the percentage of full
+/// steps) to our bend values, which just store the number of quarter steps.
+static int
+convertPitchToQuarterStep(double value)
+{
+    return static_cast<int>(value * 0.04);
+}
+
 static Note
 convertNote(Position &position, const Gp7::Beat &gp_beat,
             const Gp7::Note &gp_note, const Tuning &tuning)
@@ -353,19 +361,12 @@ convertNote(Position &position, const Gp7::Beat &gp_beat,
 
     if (gp_note.myBend)
     {
-        const Gp7::Note::Bend &gp_bend = *gp_note.myBend;
-
-        // Convert Guitar Pro's bend values (a float providing the percentage
-        // of full steps) to our bend values, which just store the number of
-        // quarter steps.
-        auto toQuarterStep = [](double value) {
-            return static_cast<int>(value * 0.04);
-        };
+        const Gp7::Bend &gp_bend = *gp_note.myBend;
 
         Bend::BendType bend_type = Bend::NormalBend;
-        int start_pitch = toQuarterStep(gp_bend.myOriginValue);
-        int end_pitch = toQuarterStep(gp_bend.myDestValue);
-        int middle_pitch = toQuarterStep(gp_bend.myMiddleValue);
+        int start_pitch = convertPitchToQuarterStep(gp_bend.myOriginValue);
+        int end_pitch = convertPitchToQuarterStep(gp_bend.myDestValue);
+        int middle_pitch = convertPitchToQuarterStep(gp_bend.myMiddleValue);
         const bool has_middle_pitch =
             (gp_bend.myMiddleOffset1 != gp_bend.myMiddleOffset2);
 
@@ -436,6 +437,41 @@ convertPosition(const Gp7::Beat &gp_beat, const Gp7::Rhythm &gp_rhythm)
 
     pos.setProperty(Position::ArpeggioUp, gp_beat.myArpeggioUp);
     pos.setProperty(Position::ArpeggioDown, gp_beat.myArpeggioDown);
+
+    if (gp_beat.myWhammy)
+    {
+        const Gp7::Bend &whammy = *gp_beat.myWhammy;
+
+        TremoloBar::Type type = TremoloBar::Type::DiveAndRelease;
+        int start_pitch = convertPitchToQuarterStep(whammy.myOriginValue);
+        int end_pitch = convertPitchToQuarterStep(whammy.myDestValue);
+        int middle_pitch = convertPitchToQuarterStep(whammy.myMiddleValue);
+        const bool is_dip =
+            (middle_pitch < start_pitch && end_pitch > middle_pitch) ||
+            (middle_pitch > start_pitch && end_pitch < middle_pitch);
+
+        int pitch = -1;
+        if (!is_dip)
+        {
+            // TODO - this can probably be improved to find "hold" events,
+            // perhaps by checking if the next beat has a whammy.
+            pitch = std::abs(end_pitch);
+            if (end_pitch < start_pitch)
+                type = TremoloBar::Type::DiveAndRelease;
+            else
+                type = TremoloBar::Type::ReturnAndRelease;
+        }
+        else
+        {
+            pitch = std::abs(middle_pitch);
+            if (middle_pitch < end_pitch)
+                type = TremoloBar::Type::Dip;
+            else
+                type = TremoloBar::Type::InvertedDip;
+        }
+
+        pos.setTremoloBar(TremoloBar(type, pitch, 0));
+    }
 
     return pos;
 }

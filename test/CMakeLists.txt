@@ -147,6 +147,7 @@ set( data_files
     formats/guitar_pro/data/tempos.gp5
     formats/guitar_pro/data/text.gp5
     formats/guitar_pro/data/time_signatures.gp5
+    formats/guitar_pro/data/tremolo_bars.gp5
 
     formats/gp7/data/alternate_endings.gp
     formats/gp7/data/bars.gp
@@ -159,9 +160,11 @@ set( data_files
     formats/gp7/data/score_info.gp
     formats/gp7/data/text.gp
     formats/gp7/data/tracks.gp
+    formats/gp7/data/tremolo_bars.gp
     formats/gp7/data/words_and_music.gp
 
     formats/gpx/data/text.gpx
+    formats/gpx/data/tremolo_bars.gpx
 
     score/data/reordered.pt2
     score/data/test_viewfilter.pt2

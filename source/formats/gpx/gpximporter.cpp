@@ -49,6 +49,11 @@ GpxImporter::load(const boost::filesystem::path &filename, Score &score)
     if (!result)
         throw FileFormatException(result.description());
 
+    // Enable this to print out the contents for debugging.
+#if 0
+    xml_doc.print(std::cerr);
+#endif
+
     Gp7::Document doc = Gp7::parse(xml_doc, Gp7::Version::V6);
     Gp7::convert(doc, score);
 }

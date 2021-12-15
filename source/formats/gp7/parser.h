@@ -241,6 +241,20 @@ struct Voice
     std::vector<int> myBeatIds;
 };
 
+/// A bend or whammy event (both have the same data).
+struct Bend
+{
+    double myOriginValue = 0;
+    double myOriginOffset = 0;
+
+    double myMiddleValue = 0;
+    double myMiddleOffset1 = 0;
+    double myMiddleOffset2 = 0;
+
+    double myDestValue = 0;
+    double myDestOffset = 0;
+};
+
 struct Beat
 {
     enum class Ottavia
@@ -263,6 +277,7 @@ struct Beat
     bool myArpeggioDown = false;
     bool myArpeggioUp = false;
     std::string myFreeText;
+    std::optional<Bend> myWhammy;
 };
 
 /// A duration, which is shared across many beats.
@@ -317,19 +332,6 @@ struct Note
         M,
         I,
         P
-    };
-
-    struct Bend
-    {
-        double myOriginValue = 0;
-        double myOriginOffset = 0;
-
-        double myMiddleValue = 0;
-        double myMiddleOffset1 = 0;
-        double myMiddleOffset2 = 0;
-
-        double myDestValue = 0;
-        double myDestOffset = 0;
     };
 
     int myString = 0;

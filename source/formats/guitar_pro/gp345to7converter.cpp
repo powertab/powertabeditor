@@ -183,13 +183,12 @@ findTiedNoteOrigin(Gp7::Document &doc, const Gp7::Voice &current_voice,
     return nullptr;
 }
 
-static void
-convertBend(Gp7::Note &gp7_note, const Gp::Note &note)
+static Gp7::Bend
+convertBend(const Gp::Bend &bend)
 {
     using Point = Gp::Bend::Point;
 
-    Gp7::Note::Bend gp7_bend;
-    const Gp::Bend &bend = *note.myBend;
+    Gp7::Bend gp7_bend;
     const std::vector<Point> &points = bend.myPoints;
     assert(points.size() >= 2);
 
@@ -230,8 +229,17 @@ convertBend(Gp7::Note &gp7_note, const Gp::Note &note)
             gp7_bend.myDestOffset = dest->myOffset;
         }
     }
+    else
+    {
+        // Otherwise, fill in a dummy middle region. This makes it simpler to
+        // detect whammy bar dips.
+        gp7_bend.myMiddleOffset1 = gp7_bend.myMiddleOffset2 =
+            0.5 * (gp7_bend.myOriginOffset + gp7_bend.myDestOffset);
+        gp7_bend.myMiddleValue =
+            0.5 * (gp7_bend.myOriginValue + gp7_bend.myDestValue);
+    }
 
-    gp7_note.myBend = gp7_bend;
+    return gp7_bend;
 }
 
 static void
@@ -272,6 +280,9 @@ convertBeat(const Gp::Beat &beat, const Gp::Track &track,
     gp7_beat.myBrushDown = beat.myPickstrokeDown;
     if (beat.myText)
         gp7_beat.myFreeText = *beat.myText;
+
+    if (beat.myTremoloBar)
+        gp7_beat.myWhammy = convertBend(*beat.myTremoloBar);
 
     for (const Gp::Note &note : beat.myNotes)
     {
@@ -382,7 +393,7 @@ convertBeat(const Gp::Beat &beat, const Gp::Track &track,
         }
 
         if (note.myBend)
-            convertBend(gp7_note, note);
+            gp7_note.myBend = convertBend(*note.myBend);
 
         if (note.myIsTremoloPicked)
             gp7_beat.myTremoloPicking = true;

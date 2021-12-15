@@ -500,7 +500,7 @@ parseVoices(const pugi::xml_node &voices_node)
 }
 
 static std::unordered_map<int, Gp7::Beat>
-parseBeats(const pugi::xml_node &beats_node)
+parseBeats(const pugi::xml_node &beats_node, Gp7::Version version)
 {
     std::unordered_map<int, Gp7::Beat> beats;
     for (const pugi::xml_node &node : beats_node.children("Beat"))
@@ -537,11 +537,38 @@ parseBeats(const pugi::xml_node &beats_node)
         if (node.child("Tremolo"))
             beat.myTremoloPicking = true;
 
+        Gp7::Bend whammy;
+        bool has_whammy = false;
         for (const pugi::xml_node &property :
              node.child("Properties").children("Property"))
         {
             const std::string_view name =
                 property.attribute("name").as_string();
+
+            // GP6 whammy bars are stored as properties.
+            if (version == Gp7::Version::V6)
+            {
+                auto read_float = [](const pugi::xml_node &property) {
+                    return property.child("Float").text().as_double();
+                };
+
+                if (name == "WhammyBar")
+                    has_whammy = true;
+                else if (name == "WhammyBarOriginValue")
+                    whammy.myOriginValue = read_float(property);
+                else if (name == "WhammyBarOriginOffset")
+                    whammy.myOriginOffset = read_float(property);
+                else if (name == "WhammyBarMiddleValue")
+                    whammy.myMiddleValue = read_float(property);
+                else if (name == "WhammyBarMiddleOffset1")
+                    whammy.myMiddleOffset1 = read_float(property);
+                else if (name == "WhammyBarMiddleOffset2")
+                    whammy.myMiddleOffset2 = read_float(property);
+                else if (name == "WhammyBarDestinationValue")
+                    whammy.myDestValue = read_float(property);
+                else if (name == "WhammyBarDestinationOffset")
+                    whammy.myDestOffset = read_float(property);
+            }
 
             if (name == "Brush")
             {
@@ -564,6 +591,32 @@ parseBeats(const pugi::xml_node &beats_node)
                 beat.myArpeggioUp = true;
         }
 
+        // GP7 whammy bars
+        if (version != Gp7::Version::V6)
+        {
+            if (auto whammy_node = node.child("Whammy"))
+            {
+                has_whammy = true;
+                whammy.myOriginValue =
+                    whammy_node.attribute("originValue").as_double();
+                whammy.myOriginOffset =
+                    whammy_node.attribute("originOffset").as_double();
+                whammy.myMiddleValue =
+                    whammy_node.attribute("middleValue").as_double();
+                whammy.myMiddleOffset1 =
+                    whammy_node.attribute("middleOffset1").as_double();
+                whammy.myMiddleOffset2 =
+                    whammy_node.attribute("middleOffset2").as_double();
+                whammy.myDestValue =
+                    whammy_node.attribute("destinationValue").as_double();
+                whammy.myDestOffset =
+                    whammy_node.attribute("destinationOffset").as_double();
+            }
+        }
+
+        if (has_whammy)
+            beat.myWhammy = whammy;
+
         const int id = node.attribute("id").as_int();
         beats.emplace(id, beat);
     }
@@ -579,7 +632,7 @@ parseNotes(const pugi::xml_node &notes_node)
     {
         Gp7::Note note;
 
-        Gp7::Note::Bend bend;
+        Gp7::Bend bend;
         bool has_bend = false;
         for (const pugi::xml_node &property :
              node.child("Properties").children("Property"))
@@ -817,7 +870,7 @@ Gp7::parse(const pugi::xml_document &root, Version version)
     doc.myMasterBars = parseMasterBars(gpif.child("MasterBars"));
     doc.myBars = parseBars(gpif.child("Bars"));
     doc.myVoices = parseVoices(gpif.child("Voices"));
-    doc.myBeats = parseBeats(gpif.child("Beats"));
+    doc.myBeats = parseBeats(gpif.child("Beats"), version);
     doc.myNotes = parseNotes(gpif.child("Notes"));
     doc.myRhythms = parseRhythms(gpif.child("Rhythms"));
 
