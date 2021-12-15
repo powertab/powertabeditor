@@ -15,7 +15,13 @@ function ( pte_add_compile_flags target )
     if ( PLATFORM_WIN )
         target_compile_definitions( ${target} PRIVATE -DNOMINMAX -D_SCL_SECURE_NO_WARNINGS )
     else ()
-        target_compile_options( ${target} PRIVATE -Wall -Wnon-virtual-dtor -Wextra -Werror=switch )
+        target_compile_options( ${target} PRIVATE
+            -Wall
+            -Wnon-virtual-dtor
+            -Wextra
+            -Werror=switch
+            -Wimplicit-fallthrough
+        )
 
         if ( PLATFORM_OSX )
             target_compile_options( ${target} PRIVATE -stdlib=libc++ )

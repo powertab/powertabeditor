@@ -130,7 +130,9 @@ void BendDialog::handleBendTypeChanged()
         case Bend::PreBendAndHold:
             for (auto &button : myDurationButtonGroup->buttons())
                 button->setDisabled(true);
-        // FALL THROUGH
+
+            [[fallthrough]];
+
         case Bend::NormalBend:
         case Bend::BendAndHold:
             ui->releasePitchComboBox->setDisabled(true);
@@ -150,7 +152,9 @@ void BendDialog::handleBendTypeChanged()
             for (auto &button : myDurationButtonGroup->buttons())
                 button->setDisabled(true);
             ui->releasePitchComboBox->setDisabled(true);
-        // FALL THROUGH
+
+            [[fallthrough]];
+
         case Bend::GradualRelease:
             ui->bentPitchComboBox->setDisabled(true);
             ui->vertStartingPointComboBox->setCurrentIndex(Bend::MidPoint);
