@@ -61,7 +61,7 @@ TremoloBarDialog::getTremoloBar() const
     return TremoloBar(
         static_cast<TremoloBar::Type>(ui->typeComboBox->currentIndex()),
         ui->pitchComboBox->itemData(ui->pitchComboBox->currentIndex()).toInt(),
-        ui->durationSpinBox->value() + 1);
+        ui->durationSpinBox->value());
 }
 
 void
@@ -74,7 +74,7 @@ TremoloBarDialog::initPitches()
     }
 
     // Default is a full bend.
-    ui->pitchComboBox->setCurrentIndex(3);
+    ui->pitchComboBox->setCurrentIndex(4);
 }
 
 void

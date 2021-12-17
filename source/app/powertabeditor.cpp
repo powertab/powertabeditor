@@ -3956,6 +3956,9 @@ void PowerTabEditor::updateCommands()
     myBendCommand->setEnabled(note != nullptr);
     myBendCommand->setChecked(note && note->hasBend());
 
+    myTremoloBarCommand->setEnabled(pos != nullptr);
+    myTremoloBarCommand->setChecked(pos && pos->hasTremoloBar());
+
     updateNoteProperty(mySlideIntoFromAboveCommand, note,
                        Note::SlideIntoFromAbove);
     updateNoteProperty(mySlideIntoFromBelowCommand, note,
