@@ -739,7 +739,9 @@ generateTremoloBar(std::vector<BendEventInfo> &bends, uint8_t &active_bend,
         case TremoloBar::Type::Release:
             // Always return to the default bend, regardless of the release
             // pitch.
-            assert(!bends.empty());
+            if (bends.empty())
+                bends.emplace_back(start_tick + note_duration, DEFAULT_BEND);
+
             bends.back().myBendAmount = DEFAULT_BEND;
 
             [[fallthrough]];
