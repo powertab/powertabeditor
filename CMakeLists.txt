@@ -6,13 +6,12 @@ set( CMAKE_OSX_DEPLOYMENT_TARGET "10.14"
 )
 
 project( powertabeditor )
+include( CTest )
 
 # Allow using BOOST_ROOT.
 if ( POLICY CMP0074 )
 	cmake_policy( SET CMP0074 NEW )
 endif ()
-
-enable_testing()
 
 set( CMAKE_MODULE_PATH
     ${CMAKE_SOURCE_DIR}/cmake
@@ -31,8 +30,11 @@ include( PTE_Executable )
 include( PTE_Library )
 
 add_subdirectory( source )
-add_subdirectory( test )
 add_subdirectory( installer )
 if ( PLATFORM_LINUX )
     add_subdirectory(xdg)
+endif ()
+
+if ( BUILD_TESTING )
+    add_subdirectory( test )
 endif ()
