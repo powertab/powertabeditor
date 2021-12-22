@@ -17,6 +17,7 @@
 
 #include "tuningdictionary.h"
 
+#include <algorithm>
 #include <app/appinfo.h>
 #include <app/paths.h>
 #include <filesystem>
