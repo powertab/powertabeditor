@@ -95,7 +95,7 @@ void BulkConverterWorker::walkAndConvert()
             }
 
             const bool isRegularFile = std::filesystem::is_regular_file(entry);
-            std::string extension = entry.path().extension();
+            std::string extension = entry.path().extension().string();
             extension.erase(std::remove(extension.begin(), extension.end(), '.'),
                             extension.end());
             const bool isSupportedFormat = myFileFormatManager->extensionImportSupported(extension);
