@@ -13,9 +13,8 @@
 #include "powertabinputstream.h"
 #include "powertaboutputstream.h"
 
-#include <boost/filesystem/fstream.hpp>
-
 #include "score.h"
+#include <fstream>
 
 namespace PowerTabDocument {
 
@@ -178,8 +177,8 @@ Score* Document::GetScore(size_t index) const
 /// @return The output stream
 bool Document::Save(const PathType& fileName) const
 {
-    boost::filesystem::ofstream fileStream(fileName, std::ofstream::out |
-                                                         std::ofstream::binary);
+    std::ofstream fileStream(fileName,
+                             std::ofstream::out | std::ofstream::binary);
     PowerTabOutputStream stream(fileStream);
 
     // Write the header
@@ -217,10 +216,10 @@ bool Document::Save(const PathType& fileName) const
 /// Loads a power tab file.
 /// @param fileName Full path of the file to load.
 /// @throw std::ifstream::failure
-void Document::Load(const boost::filesystem::path& fileName)
+void Document::Load(const std::filesystem::path& fileName)
 {
-    boost::filesystem::ifstream fileStream(fileName, std::ifstream::in |
-                                                         std::ifstream::binary);
+    std::ifstream fileStream(fileName,
+                             std::ifstream::in | std::ifstream::binary);
     PowerTabInputStream stream(fileStream);
 
     DeleteContents();

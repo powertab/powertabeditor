@@ -18,7 +18,7 @@
 #ifndef FORMATS_FILEFORMAT_H
 #define FORMATS_FILEFORMAT_H
 
-#include <boost/filesystem/path.hpp>
+#include <filesystem>
 #include <stdexcept>
 #include <string>
 #include <vector>
@@ -57,7 +57,7 @@ public:
 
     /// Imports the file into the given score.
     /// @throw FileFormatException
-    virtual void load(const boost::filesystem::path &filename,
+    virtual void load(const std::filesystem::path &filename,
                       Score &score) = 0;
 
     /// Returns the file format corresponding to this importer.
@@ -76,7 +76,7 @@ public:
 
     /// Exports the given score to a file.
     /// @throw FileFormatException
-    virtual void save(const boost::filesystem::path &filename,
+    virtual void save(const std::filesystem::path &filename,
                       const Score &score) = 0;
 
     /// Returns the file format corresponding to this exporter.

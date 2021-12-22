@@ -24,7 +24,7 @@
 
 #include <array>
 #include <boost/endian/conversion.hpp>
-#include <boost/filesystem/fstream.hpp>
+#include <fstream>
 #include <cstdint>
 
 template <typename T>
@@ -64,9 +64,9 @@ MidiExporter::MidiExporter(const SettingsManager &settings_manager)
 {
 }
 
-void MidiExporter::save(const boost::filesystem::path &filename, const Score &score)
+void MidiExporter::save(const std::filesystem::path &filename, const Score &score)
 {
-    boost::filesystem::ofstream os(filename, std::ios::out | std::ios::binary);
+    std::ofstream os(filename, std::ios::out | std::ios::binary);
     os.exceptions(std::ios::failbit | std::ios::badbit | std::ios::eofbit);
 
     MidiFile::LoadOptions options;

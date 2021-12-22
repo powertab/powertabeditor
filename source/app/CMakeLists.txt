@@ -53,7 +53,6 @@ pte_library(
         ptepainters
         ptewidgets
         pteutil
-        Boost::filesystem
         Qt5::Widgets
         Qt5::PrintSupport
 )

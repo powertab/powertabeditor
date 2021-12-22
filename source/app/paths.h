@@ -15,13 +15,13 @@
   * along with this program.  If not, see <http://www.gnu.org/licenses/>.
 */
 
-#include <boost/filesystem/path.hpp>
+#include <filesystem>
 #include <vector>
 
 class QString;
 
 namespace Paths {
-    using path = boost::filesystem::path;
+    using path = std::filesystem::path;
 
     /// Return a path to a directory where config files should be written to.
     path getConfigDir();

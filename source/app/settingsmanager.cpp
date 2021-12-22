@@ -17,18 +17,17 @@
 
 #include "settingsmanager.h"
 
-#include <boost/filesystem/fstream.hpp>
-#include <boost/filesystem/operations.hpp>
+#include <fstream>
 #include <iostream>
 
 #ifndef __APPLE__
 static const char *theSettingsFilename = "settings.json";
 #endif
 
-void SettingsManager::load(const boost::filesystem::path &dir)
+void SettingsManager::load(const std::filesystem::path &dir)
 {
 #ifdef __APPLE__
-    if (!boost::filesystem::exists(dir))
+    if (!std::filesystem::exists(dir))
         return;
 
     auto settings = getWriteHandle();
@@ -36,12 +35,12 @@ void SettingsManager::load(const boost::filesystem::path &dir)
 #else
     auto path = dir / theSettingsFilename;
 
-    if (!boost::filesystem::exists(path))
+    if (!std::filesystem::exists(path))
         return;
 
     try
     {
-        boost::filesystem::ifstream is(path);
+        std::ifstream is(path);
 
         auto settings = getWriteHandle();
         settings->loadFromJSON(is);
@@ -53,10 +52,10 @@ void SettingsManager::load(const boost::filesystem::path &dir)
 #endif
 }
 
-void SettingsManager::save(const boost::filesystem::path &dir) const
+void SettingsManager::save(const std::filesystem::path &dir) const
 {
     // Ensure the directory exists.
-    boost::filesystem::create_directories(dir);
+    std::filesystem::create_directories(dir);
 
     auto settings = getReadHandle();
 
@@ -65,7 +64,7 @@ void SettingsManager::save(const boost::filesystem::path &dir) const
 #else
     // Save the settings to disk in JSON format.
     auto path = dir / theSettingsFilename;
-    boost::filesystem::ofstream os(path);
+    std::ofstream os(path);
     os.exceptions(std::ios::failbit | std::ios::badbit);
 
     settings->saveToJSON(os);

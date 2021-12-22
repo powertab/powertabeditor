@@ -78,9 +78,6 @@
 				<RegistryValue Root="HKCU" Key="Software\Power Tab\Power Tab Editor" Name="installed" Type="integer" Value="1" KeyPath="yes" />
 			</Component>
 
-			<Component Id="boost_filesystem" Guid="7CD94800-73CD-4302-A0DA-34FDB3565276">
-				<File Source="$(var.BinDir)/boost_filesystem-vc142-mt-$(var.BoostArch)-1_77.dll" KeyPath="yes" Checksum="yes" />
-			</Component>
 			<Component Id="boost_iostreams" Guid="7C4C5638-3427-42FD-A3BA-4312CECC41D3">
 				<File Source="$(var.BinDir)/boost_iostreams-vc142-mt-$(var.BoostArch)-1_77.dll" KeyPath="yes" Checksum="yes" />
 			</Component>

@@ -54,7 +54,7 @@ struct UnzFileCloser
 using UnzFileHandle = std::unique_ptr<unzFile, UnzFileCloser>;
 
 /// Opens a zip file.
-UnzFileHandle openZipFile(const boost::filesystem::path &filename)
+UnzFileHandle openZipFile(const std::filesystem::path &filename)
 {
     zlib_filefunc64_def ffunc;
 #ifdef _WIN32
@@ -121,7 +121,7 @@ std::vector<std::byte> loadFileFromZip(unzFile zip_file, const char *name)
 
 } // namespace
 
-void Gp7Importer::load(const boost::filesystem::path &filename, Score &score)
+void Gp7Importer::load(const std::filesystem::path &filename, Score &score)
 {
     // The .gp file format is just a zip file with a different extension.
     UnzFileHandle zip_file = openZipFile(filename);

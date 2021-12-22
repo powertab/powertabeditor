@@ -23,10 +23,9 @@
 #include <formats/gp7/converter.h>
 #include <score/score.h>
 
-#include <boost/filesystem/fstream.hpp>
-#include <pugixml.hpp>
-
+#include <fstream>
 #include <iostream>
+#include <pugixml.hpp>
 
 GpxImporter::GpxImporter()
     : FileFormatImporter(FileFormat("Guitar Pro 6", { "gpx" }))
@@ -34,10 +33,10 @@ GpxImporter::GpxImporter()
 }
 
 void
-GpxImporter::load(const boost::filesystem::path &filename, Score &score)
+GpxImporter::load(const std::filesystem::path &filename, Score &score)
 {
     // Load the data, decompress, and open as XML document.
-    boost::filesystem::ifstream file(filename, std::ios::binary | std::ios::in);
+    std::ifstream file(filename, std::ios::binary | std::ios::in);
     Gpx::FileSystem fs(file);
 
     std::vector<std::byte> buffer = fs.getFileContents("score.gpif");

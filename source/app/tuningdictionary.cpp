@@ -19,8 +19,8 @@
 
 #include <app/appinfo.h>
 #include <app/paths.h>
-#include <boost/filesystem/fstream.hpp>
-#include <boost/filesystem/operations.hpp>
+#include <filesystem>
+#include <fstream>
 #include <iostream>
 #include <score/serialization.h>
 #include <stdexcept>
@@ -29,13 +29,13 @@ static const char *theTuningDictFilename = "tunings.json";
 
 std::vector<Tuning> TuningDictionary::load()
 {
-    for (boost::filesystem::path dir : Paths::getDataDirs())
+    for (std::filesystem::path dir : Paths::getDataDirs())
     {
         auto path = dir / theTuningDictFilename;
-        if (!boost::filesystem::exists(path))
+        if (!std::filesystem::exists(path))
             continue;
 
-        boost::filesystem::ifstream file(path);
+        std::ifstream file(path);
 
         std::vector<Tuning> tunings;
         ScoreUtils::load(file, "tunings", tunings);
@@ -45,7 +45,7 @@ std::vector<Tuning> TuningDictionary::load()
     std::cerr << "Could not locate tuning dictionary." << std::endl;
     std::cerr << "Candidate paths:" << std::endl;
 
-    for (boost::filesystem::path dir : Paths::getDataDirs())
+    for (std::filesystem::path dir : Paths::getDataDirs())
         std::cerr << dir << std::endl;
 
     throw std::runtime_error("Could not locate tuning dictionary.");
@@ -54,10 +54,10 @@ std::vector<Tuning> TuningDictionary::load()
 void TuningDictionary::save() const
 {
     auto dir = Paths::getUserDataDir();
-    boost::filesystem::create_directories(dir);
+    std::filesystem::create_directories(dir);
 
     auto path = dir / theTuningDictFilename;
-    boost::filesystem::ofstream file(path);
+    std::ofstream file(path);
     if (!file)
         throw std::runtime_error("Error opening file for writing.");
 

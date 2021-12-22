@@ -25,7 +25,7 @@ class PowerTabExporter : public FileFormatExporter
 public:
     PowerTabExporter();
 
-    virtual void save(const boost::filesystem::path &filename,
+    virtual void save(const std::filesystem::path &filename,
                       const Score &score) override;
 };
 
