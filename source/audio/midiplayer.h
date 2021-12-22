@@ -14,7 +14,7 @@
   * You should have received a copy of the GNU General Public License
   * along with this program.  If not, see <http://www.gnu.org/licenses/>.
 */
-  
+
 #ifndef AUDIO_MIDIPLAYER_H
 #define AUDIO_MIDIPLAYER_H
 
@@ -23,6 +23,7 @@
 #include <midi/midievent.h>
 #include <QObject>
 #include <score/scorelocation.h>
+#include <optional>
 
 class MidiFile;
 class MidiOutputDevice;
