@@ -4,5 +4,4 @@ find_package(
     COMPONENTS
         date_time
         iostreams
-        system
 )
