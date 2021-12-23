@@ -23,15 +23,15 @@ parts:
     build-snaps:
       - kde-frameworks-5-qt-5-15-core20-sdk # For Qt and minizip
     build-packages:
-      - libboost-dev
-      - libboost-date-time-dev
-      - libboost-iostreams-dev
-      - rapidjson-dev
-      - libasound2-dev
-      - librtmidi-dev
-      - libminizip-dev
       - doctest-dev
+      - libasound2-dev
+      - libboost-date-time-dev
+      - libboost-dev
+      - libboost-iostreams-dev
+      - libminizip-dev
       - libpugixml-dev
+      - librtmidi-dev
+      - nlohmann-json3-dev
     stage-packages:
       - libboost-date-time1.71.0
       - libboost-iostreams1.71.0

@@ -13,6 +13,7 @@ Thanks to the following contributors who worked on this release:
 
 ### Changed
 - Removed dependency on boost::filesystem. Instead, std::filesystem (C++17) is now used. See the README for updated build instructions.
+- Removed dependency on RapidJSON with nlohmann-json. See the README for updated build instructions.
 
 ### Fixed
 - Fixed an issue where stopping MIDI playback while a "let ring" was active could incorrectly keep the "let ring" active when restarting playback from the beginning (#337).

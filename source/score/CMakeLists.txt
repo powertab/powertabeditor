@@ -84,5 +84,5 @@ pte_library(
     DEPENDS
         Boost::headers
         Boost::date_time
-        rapidjson::rapidjson
+        nlohmann_json::nlohmann_json
 )

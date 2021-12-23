@@ -54,5 +54,5 @@ pte_library(
     HEADERS ${headers}
     DEPENDS
         PUBLIC Boost::headers
-        PRIVATE rapidjson::rapidjson ${platform_depends}
+        PRIVATE nlohmann_json::nlohmann_json ${platform_depends}
 )
