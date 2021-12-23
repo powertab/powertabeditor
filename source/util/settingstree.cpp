@@ -19,6 +19,7 @@
 
 #include <boost/algorithm/string/classification.hpp>
 #include <boost/algorithm/string/split.hpp>
+#include <iomanip>
 #include <nlohmann/json.hpp>
 
 using SettingValue = SettingsTree::SettingValue;
