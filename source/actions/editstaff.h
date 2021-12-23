@@ -18,7 +18,7 @@
 #ifndef ACTIONS_EDITCLEF_H
 #define ACTIONS_EDITCLEF_H
 
-#include <boost/optional.hpp>
+#include <optional>
 #include <QUndoCommand>
 #include <score/scorelocation.h>
 #include <score/system.h>
