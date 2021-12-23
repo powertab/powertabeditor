@@ -22,7 +22,7 @@
 #include <boost/date_time/gregorian/parsers.hpp>
 #include <iostream>
 
-namespace ScoreUtils
+namespace ScoreUtils::detail
 {
 InputArchive::InputArchive(std::istream &is)
 {

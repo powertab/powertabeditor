@@ -32,294 +32,301 @@
 
 namespace ScoreUtils
 {
-using JSONValue = nlohmann::json;
-
-class InputArchive
+namespace detail
 {
-public:
-    InputArchive(std::istream &is);
+    using JSONValue = nlohmann::json;
 
-    /// The version of the file being read.
-    FileVersion version() const;
-
-    /// Generic function to read a value with the given name.
-    template <typename T>
-    void operator()(const std::string_view &name, T &obj)
+    class InputArchive
     {
-        const JSONValue *parent = myValueStack.top();
-        auto it = parent->find(name);
+    public:
+        InputArchive(std::istream &is);
 
-        // Field does not exist. It might have been removed in a newer file
-        // version.
-        if (it == parent->end())
-            return;
+        /// The version of the file being read.
+        FileVersion version() const;
 
-        myValueStack.push(&*it);
-        read(obj);
-        myValueStack.pop();
+        /// Generic function to read a value with the given name.
+        template <typename T>
+        void operator()(const std::string_view &name, T &obj)
+        {
+            const JSONValue *parent = myValueStack.top();
+            auto it = parent->find(name);
+
+            // Field does not exist. It might have been removed in a newer file
+            // version.
+            if (it == parent->end())
+                return;
+
+            myValueStack.push(&*it);
+            read(obj);
+            myValueStack.pop();
+        }
+
+    private:
+        /// The current JSON value.
+        const JSONValue &value() const
+        {
+            return *myValueStack.top();
+        }
+
+        inline void read(int &val);
+        inline void read(int8_t &val);
+        inline void read(unsigned int &val);
+        inline void read(uint8_t &val);
+        inline void read(bool &val);
+        inline void read(std::string &str);
+
+        template <typename T>
+        void read(std::vector<T> &vec);
+
+        template <typename K, typename V, typename C>
+        void read(std::map<K, V, C> &map);
+
+        template <typename T, size_t N>
+        void read(std::array<T, N> &arr);
+
+        template <size_t N>
+        void read(std::bitset<N> &bits);
+
+        template <typename T>
+        void read(std::optional<T> &val);
+
+        void read(Util::Date &date);
+
+        template <typename T>
+        void read(T &val)
+        {
+            if constexpr (std::is_class_v<T>)
+                val.serialize(*this, myVersion);
+            else if constexpr (std::is_enum_v<T>)
+                val = static_cast<T>(value().get<int>());
+            else
+                assert(false);
+        }
+
+        JSONValue myDocument;
+        FileVersion myVersion;
+
+        std::stack<const JSONValue *> myValueStack;
+    };
+
+    class OutputArchive
+    {
+    public:
+        OutputArchive(FileVersion version) : myVersion(version)
+        {
+        }
+
+        template <typename T>
+        void operator()(const std::string &name, const T &obj)
+        {
+            myValue[name] = convert(obj);
+        }
+
+        const JSONValue &value() const
+        {
+            return myValue;
+        }
+
+    private:
+        template <typename T>
+        JSONValue convert(const std::vector<T> &vec);
+
+        template <typename K, typename V, typename C>
+        JSONValue convert(const std::map<K, V, C> &map);
+
+        template <typename T, size_t N>
+        JSONValue convert(const std::array<T, N> &arr);
+
+        template <size_t N>
+        JSONValue convert(const std::bitset<N> &bits)
+        {
+            return bits.to_string();
+        }
+
+        template <typename T>
+        JSONValue convert(const std::optional<T> &val);
+
+        JSONValue convert(const Util::Date &date);
+
+        template <typename T>
+        JSONValue convert(const T &obj)
+        {
+            if constexpr (std::is_pod_v<T> || std::is_same_v<T, std::string>)
+            {
+                return obj;
+            }
+            else // score objects.
+            {
+                OutputArchive ar(myVersion);
+                const_cast<T &>(obj).serialize(ar, myVersion);
+                return std::move(ar.myValue);
+            }
+        }
+
+        const FileVersion myVersion;
+        JSONValue myValue;
+    };
+
+    void InputArchive::read(int &val)
+    {
+        val = value().get<int>();
     }
 
-private:
-    /// The current JSON value.
-    const JSONValue &value() const
+    void InputArchive::read(int8_t &val)
     {
-        return *myValueStack.top();
+        int int_val = value().get<int>();
+        if (int_val > std::numeric_limits<int8_t>::max())
+            throw std::overflow_error("Invalid int8_t value");
+        val = static_cast<int8_t>(int_val);
     }
 
-    inline void read(int &val);
-    inline void read(int8_t &val);
-    inline void read(unsigned int &val);
-    inline void read(uint8_t &val);
-    inline void read(bool &val);
-    inline void read(std::string &str);
+    void InputArchive::read(unsigned int &val)
+    {
+        val = value().get<unsigned int>();
+    }
+
+    void InputArchive::read(uint8_t &val)
+    {
+        unsigned int uint_val = value().get<unsigned int>();
+        if (uint_val > std::numeric_limits<uint8_t>::max())
+            throw std::overflow_error("Invalid uint8_t value");
+        val = static_cast<uint8_t>(uint_val);
+    }
+
+    void InputArchive::read(bool &val)
+    {
+        val = value().get<bool>();
+    }
+
+    void InputArchive::read(std::string &str)
+    {
+        str = value().get<std::string>();
+    }
 
     template <typename T>
-    void read(std::vector<T> &vec);
+    void InputArchive::read(std::vector<T> &vec)
+    {
+        const JSONValue &json_array = value();
+        vec.resize(json_array.size());
+
+        size_t i = 0;
+        for (const JSONValue &entry : json_array)
+        {
+            myValueStack.push(&entry);
+            read(vec[i++]);
+            myValueStack.pop();
+        }
+    }
 
     template <typename K, typename V, typename C>
-    void read(std::map<K, V, C> &map);
-
-    template <typename T, size_t N>
-    void read(std::array<T, N> &arr);
-
-    template <size_t N>
-    void read(std::bitset<N> &bits);
-
-    template <typename T>
-    void read(std::optional<T> &val);
-
-    void read(Util::Date &date);
-
-    template <typename T>
-    void read(T &val)
+    void InputArchive::read(std::map<K, V, C> &map)
     {
-        if constexpr (std::is_class_v<T>)
-            val.serialize(*this, myVersion);
-        else if constexpr (std::is_enum_v<T>)
-            val = static_cast<T>(value().get<int>());
-        else
-            assert(false);
+        const JSONValue &json_obj = value();
+
+        for (auto &&member : json_obj.items())
+        {
+            static_assert(std::is_same<K, int>::value,
+                          "Only integer keys are currently supported");
+            const K key = std::stoi(member.key());
+
+            myValueStack.push(&member.value());
+
+            V val;
+            read(val);
+            map[key] = val;
+
+            myValueStack.pop();
+        }
     }
 
-    JSONValue myDocument;
-    FileVersion myVersion;
+    template <typename T, size_t N>
+    void InputArchive::read(std::array<T, N> &arr)
+    {
+        for (size_t i = 0; i < N; ++i)
+            (*this)(std::to_string(i), arr[i]);
+    }
 
-    std::stack<const JSONValue *> myValueStack;
-};
+    template <size_t N>
+    void InputArchive::read(std::bitset<N> &bits)
+    {
+        std::string data;
+        read(data);
+        bits = std::bitset<N>(data);
+    }
+
+    template <typename T>
+    void InputArchive::read(std::optional<T> &val)
+    {
+        if (value() == nullptr)
+            val.reset();
+        else
+        {
+            T data;
+            read(data);
+            val = data;
+        }
+    }
+
+    template <typename T>
+    JSONValue OutputArchive::convert(const std::vector<T> &vec)
+    {
+        JSONValue arr;
+
+        for (const T &obj : vec)
+            arr.push_back(convert(obj));
+
+        return arr;
+    }
+
+    template <typename K, typename V, typename C>
+    JSONValue OutputArchive::convert(const std::map<K, V, C> &map)
+    {
+        JSONValue obj;
+
+        for (auto &&[key, value] : map)
+            obj[std::to_string(key)] = convert(value);
+
+        return obj;
+    }
+
+    template <typename T, size_t N>
+    JSONValue OutputArchive::convert(const std::array<T, N> &arr)
+    {
+        JSONValue obj;
+
+        for (size_t i = 0; i < N; ++i)
+            obj[std::to_string(i)] = convert(arr[i]);
+
+        return obj;
+    }
+
+    template <typename T>
+    JSONValue OutputArchive::convert(const std::optional<T> &val)
+    {
+        return val ? convert(*val) : JSONValue(nullptr);
+    }
+} // namespace detail
 
 template <typename T>
-void load(std::istream &input, const std::string &name, T &obj)
+void
+load(std::istream &input, const std::string &name, T &obj)
 {
-    InputArchive archive(input);
+    detail::InputArchive archive(input);
     archive(name, obj);
 }
 
-class OutputArchive
-{
-public:
-    OutputArchive(FileVersion version) : myVersion(version)
-    {
-    }
-
-    template <typename T>
-    void operator()(const std::string &name, const T &obj)
-    {
-        myValue[name] = convert(obj);
-    }
-
-    const JSONValue &value() const { return myValue; }
-
-private:
-    template <typename T>
-    JSONValue convert(const std::vector<T> &vec);
-
-    template <typename K, typename V, typename C>
-    JSONValue convert(const std::map<K, V, C> &map);
-
-    template <typename T, size_t N>
-    JSONValue convert(const std::array<T, N> &arr);
-
-    template <size_t N>
-    JSONValue convert(const std::bitset<N> &bits) { return bits.to_string(); }
-
-    template <typename T>
-    JSONValue convert(const std::optional<T> &val);
-
-    JSONValue convert(const Util::Date &date);
-
-    template <typename T>
-    JSONValue convert(const T &obj)
-    {
-        if constexpr (std::is_pod_v<T> || std::is_same_v<T, std::string>)
-        {
-            return obj;
-        }
-        else // score objects.
-        {
-            OutputArchive ar(myVersion);
-            const_cast<T &>(obj).serialize(ar, myVersion);
-            return std::move(ar.myValue);
-        }
-    }
-
-    const FileVersion myVersion;
-    JSONValue myValue;
-};
-
 template <typename T>
-void save(std::ostream &output, const std::string &name, const T &obj)
+void
+save(std::ostream &output, const std::string &name, const T &obj)
 {
     FileVersion version = FileVersion::LATEST_VERSION;
-    OutputArchive ar(version);
+    detail::OutputArchive ar(version);
     ar("version", version);
     ar(name, obj);
 
     // Pretty print.
     output << std::setw(4) << ar.value();
 }
-
-void InputArchive::read(int &val)
-{
-    val = value().get<int>();
-}
-
-void InputArchive::read(int8_t &val)
-{
-    int int_val = value().get<int>();
-    if (int_val > std::numeric_limits<int8_t>::max())
-        throw std::overflow_error("Invalid int8_t value");
-    val = static_cast<int8_t>(int_val);
-}
-
-void InputArchive::read(unsigned int &val)
-{
-    val = value().get<unsigned int>();
-}
-
-void InputArchive::read(uint8_t &val)
-{
-    unsigned int uint_val = value().get<unsigned int>();
-    if (uint_val > std::numeric_limits<uint8_t>::max())
-        throw std::overflow_error("Invalid uint8_t value");
-    val = static_cast<uint8_t>(uint_val);
-}
-
-void InputArchive::read(bool &val)
-{
-    val = value().get<bool>();
-}
-
-void InputArchive::read(std::string &str)
-{
-    str = value().get<std::string>();
-}
-
-template <typename T>
-void InputArchive::read(std::vector<T> &vec)
-{
-    const JSONValue &json_array = value();
-    vec.resize(json_array.size());
-
-    size_t i = 0;
-    for (const JSONValue &entry : json_array)
-    {
-        myValueStack.push(&entry);
-        read(vec[i++]);
-        myValueStack.pop();
-    }
-}
-
-template <typename K, typename V, typename C>
-void InputArchive::read(std::map<K, V, C> &map)
-{
-    const JSONValue &json_obj = value();
-
-    for (auto &&member : json_obj.items())
-    {
-        static_assert(std::is_same<K, int>::value,
-                      "Only integer keys are currently supported");
-        const K key = std::stoi(member.key());
-
-        myValueStack.push(&member.value());
-
-        V val;
-        read(val);
-        map[key] = val;
-
-        myValueStack.pop();
-    }
-}
-
-template <typename T, size_t N>
-void InputArchive::read(std::array<T, N> &arr)
-{
-    for (size_t i = 0; i < N; ++i)
-        (*this)(std::to_string(i), arr[i]);
-}
-
-template <size_t N>
-void InputArchive::read(std::bitset<N> &bits)
-{
-    std::string data;
-    read(data);
-    bits = std::bitset<N>(data);
-}
-
-template <typename T>
-void InputArchive::read(std::optional<T> &val)
-{
-    if (value() == nullptr)
-        val.reset();
-    else
-    {
-        T data;
-        read(data);
-        val = data;
-    }
-}
-
-template <typename T>
-JSONValue
-OutputArchive::convert(const std::vector<T> &vec)
-{
-    JSONValue arr;
-
-    for (const T &obj : vec)
-        arr.push_back(convert(obj));
-
-    return arr;
-}
-
-template <typename K, typename V, typename C>
-JSONValue
-OutputArchive::convert(const std::map<K, V, C> &map)
-{
-    JSONValue obj;
-
-    for (auto &&[key, value] : map)
-        obj[std::to_string(key)] = convert(value);
-
-    return obj;
-}
-
-template <typename T, size_t N>
-JSONValue
-OutputArchive::convert(const std::array<T, N> &arr)
-{
-    JSONValue obj;
-
-    for (size_t i = 0; i < N; ++i)
-        obj[std::to_string(i)] = convert(arr[i]);
-
-    return obj;
-}
-
-template <typename T>
-JSONValue
-OutputArchive::convert(const std::optional<T> &val)
-{
-    return val ? convert(*val) : JSONValue(nullptr);
-}
-}
+} // namespace ScoreUtils
 
 #endif
