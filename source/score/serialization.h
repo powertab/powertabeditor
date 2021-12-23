@@ -22,6 +22,7 @@
 #include <bitset>
 #include "fileversion.h"
 #include <istream>
+#include <iomanip>
 #include <map>
 #include <nlohmann/json.hpp>
 #include <optional>
