@@ -47,22 +47,29 @@ std::vector<Tuning> TuningDictionary::load()
     std::cerr << "Candidate paths:" << std::endl;
 
     for (std::filesystem::path dir : Paths::getDataDirs())
-        std::cerr << dir << std::endl;
+        std::cerr << (dir / theTuningDictFilename) << std::endl;
 
-    throw std::runtime_error("Could not locate tuning dictionary.");
+    return {};
 }
 
 void TuningDictionary::save() const
 {
+    ensureLoaded();
+
+    // If the tuning dictionary is empty, it presumably failed to load for some
+    // reason. So, we shouldn't be trying to save an empty dictionary in the
+    // config folder.
+    if (myTunings.empty())
+        return;
+
     auto dir = Paths::getUserDataDir();
     std::filesystem::create_directories(dir);
 
     auto path = dir / theTuningDictFilename;
     std::ofstream file(path);
     if (!file)
-        throw std::runtime_error("Error opening file for writing.");
+        throw std::runtime_error("Error opening tuning dictionary for writing.");
 
-    ensureLoaded();
     ScoreUtils::save(file, "tunings", myTunings);
 }
 
