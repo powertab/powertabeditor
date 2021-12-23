@@ -18,12 +18,11 @@
 #include "guitarproimporter.h"
 #include "gp345to7converter.h"
 
-#include <boost/filesystem/fstream.hpp>
-
 #include <formats/gp7/converter.h>
 #include <formats/gp7/parser.h>
 #include <formats/guitar_pro/document.h>
 #include <formats/guitar_pro/inputstream.h>
+#include <fstream>
 
 GuitarProImporter::GuitarProImporter()
     : FileFormatImporter(
@@ -32,9 +31,9 @@ GuitarProImporter::GuitarProImporter()
 }
 
 void
-GuitarProImporter::load(const boost::filesystem::path &filename, Score &score)
+GuitarProImporter::load(const std::filesystem::path &filename, Score &score)
 {
-    boost::filesystem::ifstream in(filename, std::ios::binary | std::ios::in);
+    std::ifstream in(filename, std::ios::binary | std::ios::in);
     Gp::InputStream stream(in);
 
     Gp::Document document;

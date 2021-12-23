@@ -16,7 +16,6 @@
   * algorithm
   * date_time
   * endian
-  * filesystem
   * functional
   * iostreams
   * operators
@@ -36,7 +35,7 @@
 
 #### Windows:
 * Install Git - see https://help.github.com/articles/set-up-git
-* Install [vcpkg](https://github.com/microsoft/vcpkg) and run `vcpkg install --triplet x64-windows boost-algorithm boost-date-time boost-endian boost-filesystem boost-functional boost-iostreams boost-range boost-rational boost-signals2 boost-stacktrace doctest minizip pugixml rapidjson` to install dependencies.
+* Install [vcpkg](https://github.com/microsoft/vcpkg) and run `vcpkg install --triplet x64-windows boost-algorithm boost-date-time boost-endian boost-functional boost-iostreams boost-range boost-rational boost-signals2 boost-stacktrace doctest minizip pugixml rapidjson` to install dependencies.
 * Install Qt by running `vcpkg install --triplet x64-windows qt5-base` (this may take a while), or install a binary release from the Qt website.
 * Open the project folder in Visual Studio and build.
   * If running CMake manually, set `CMAKE_TOOLCHAIN_FILE` to `[vcpkg root]\scripts\buildsystems\vcpkg.cmake`).
@@ -45,7 +44,7 @@
 * These instructions assume a recent Ubuntu/Debian-based system, but the package names should be similar for other package managers.
 * Install dependencies:
   * `sudo apt update`
-  * `sudo apt install cmake qtbase5-dev libboost-dev libboost-date-time-dev libboost-filesystem-dev libboost-iostreams-dev rapidjson-dev libasound2-dev librtmidi-dev libpugixml-dev libminizip-dev doctest-dev`
+  * `sudo apt install cmake qtbase5-dev libboost-dev libboost-date-time-dev libboost-iostreams-dev rapidjson-dev libasound2-dev librtmidi-dev libpugixml-dev libminizip-dev doctest-dev`
   * `sudo apt-get install timidity-daemon` - timidity is not required for building, but is a good sequencer for MIDI playback.
   * Optionally, use [Ninja](http://martine.github.io/ninja/) instead of `make` (`sudo apt install ninja-build`)
 * Build:

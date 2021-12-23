@@ -26,7 +26,7 @@ class GuitarProImporter : public FileFormatImporter
 public:
     GuitarProImporter();
 
-    void load(const boost::filesystem::path &filename, Score &score) override;
+    void load(const std::filesystem::path &filename, Score &score) override;
 };
 
 #endif

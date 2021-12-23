@@ -16,7 +16,7 @@
 #include "fontsetting.h"
 
 #include <array>
-#include <boost/filesystem/path.hpp>
+#include <filesystem>
 #include <vector>
 
 namespace PowerTabDocument {
@@ -48,7 +48,7 @@ public:
         NUM_FONT_SETTINGS                  ///< Number of document wide font settings
     };
 
-    using PathType = boost::filesystem::path;
+    using PathType = std::filesystem::path;
 
     // Member Variables
 private:

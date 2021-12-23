@@ -61,7 +61,7 @@ class PowerTabOldImporter : public FileFormatImporter
 {
 public:
     PowerTabOldImporter();
-    virtual void load(const boost::filesystem::path &filename,
+    virtual void load(const std::filesystem::path &filename,
                       Score &score) override;
 
 private:

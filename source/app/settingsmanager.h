@@ -18,8 +18,8 @@
 #ifndef APP_SETTINGSMANAGER_H
 #define APP_SETTINGSMANAGER_H
 
-#include <boost/filesystem/path.hpp>
 #include <boost/signals2/signal.hpp>
+#include <filesystem>
 #include <mutex>
 #include <util/settingstree.h>
 
@@ -114,10 +114,10 @@ public:
     }
 
     /// Load the settings from the specified directory.
-    void load(const boost::filesystem::path &dir);
+    void load(const std::filesystem::path &dir);
 
     /// Save the settings to the specified directory.
-    void save(const boost::filesystem::path &dir) const;
+    void save(const std::filesystem::path &dir) const;
 
 private:
     template <typename T>

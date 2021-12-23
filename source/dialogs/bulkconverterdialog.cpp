@@ -28,8 +28,8 @@
 #include <QDebug>
 #include <QThread>
 
-std::optional<std::string> convertFile(const boost::filesystem::path& src,
-                                       const boost::filesystem::path& dst,
+std::optional<std::string> convertFile(const std::filesystem::path& src,
+                                       const std::filesystem::path& dst,
                                        std::unique_ptr<FileFormatManager>& ffm)
 {
     QFileInfo fileInfo(QString::fromStdString(src.string()));
@@ -60,8 +60,8 @@ std::optional<std::string> convertFile(const boost::filesystem::path& src,
     return std::nullopt;
 }
 
-BulkConverterWorker::BulkConverterWorker(boost::filesystem::path& source,
-                                         boost::filesystem::path& destination,
+BulkConverterWorker::BulkConverterWorker(std::filesystem::path& source,
+                                         std::filesystem::path& destination,
                                          bool dryRun,
                                          std::unique_ptr<FileFormatManager>& fileFormatManager)
   : QObject(), mySrc(source), myDst(destination), myDryRun(dryRun),
@@ -75,28 +75,27 @@ BulkConverterWorker::~BulkConverterWorker()
 
 void BulkConverterWorker::walkAndConvert()
 {
-    std::vector<boost::filesystem::path> children;
-    const std::string basePath = mySrc.string();
+    std::vector<std::filesystem::path> children;
 
     children.emplace_back(mySrc);
 
     do {
-        boost::filesystem::path p = children.back();
+        std::filesystem::path p = children.back();
         children.pop_back();
 
-        if (!boost::filesystem::is_directory(p)) continue;
+        if (!std::filesystem::is_directory(p)) continue;
 
-        auto dir_it = boost::filesystem::directory_iterator(p);
+        auto dir_it = std::filesystem::directory_iterator(p);
 
         for(auto& entry : boost::make_iterator_range(dir_it, {}))
         {
-            if (boost::filesystem::is_directory(entry)) {
+            if (std::filesystem::is_directory(entry)) {
                children.emplace_back(entry);
                continue;
             }
 
-            const bool isRegularFile = boost::filesystem::is_regular_file(entry);
-            std::string extension = boost::filesystem::extension(entry);
+            const bool isRegularFile = std::filesystem::is_regular_file(entry);
+            std::string extension = entry.path().extension().string();
             extension.erase(std::remove(extension.begin(), extension.end(), '.'),
                             extension.end());
             const bool isSupportedFormat = myFileFormatManager->extensionImportSupported(extension);
@@ -109,19 +108,14 @@ void BulkConverterWorker::walkAndConvert()
 
             myFileCount++;
 
-            auto filePath = entry.path().string();
-            const size_t pos = filePath.find(basePath);
-            if (pos != std::string::npos)
-                filePath.erase(pos, basePath.length());
-
-            auto toPath = myDst / boost::filesystem::path(filePath);
+            auto toPath = myDst / entry.path().lexically_relative(mySrc);
             toPath.replace_extension("pt2");
 
             if (myDryRun) continue;
 
             auto destBaseDir = toPath.parent_path();
-            if (!boost::filesystem::exists(destBaseDir))
-                boost::filesystem::create_directory(destBaseDir);
+            if (!std::filesystem::exists(destBaseDir))
+                std::filesystem::create_directory(destBaseDir);
 
             std::optional<std::string> error = convertFile(entry, toPath, myFileFormatManager);
             if (error != std::nullopt) {
@@ -187,8 +181,8 @@ void BulkConverterDialog::convert()
 {
     ui->convertButton->setEnabled(false);
 
-    boost::filesystem::path src = Paths::fromQString(ui->sourcePathEdit->text());
-    boost::filesystem::path dst = Paths::fromQString(ui->destinationPathEdit->text());
+    std::filesystem::path src = Paths::fromQString(ui->sourcePathEdit->text());
+    std::filesystem::path dst = Paths::fromQString(ui->destinationPathEdit->text());
 
     {
         // set default max.

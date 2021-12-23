@@ -18,7 +18,6 @@
 #include "paths.h"
 
 #include <app/appinfo.h>
-#include <boost/filesystem/detail/utf8_codecvt_facet.hpp>
 #include <QString>
 #include <QStandardPaths>
 
@@ -64,13 +63,11 @@ path getHomeDir()
 
 path fromQString(const QString &str)
 {
-	boost::filesystem::detail::utf8_codecvt_facet utf8;
-    return boost::filesystem::path(str.toStdString(), utf8);
+    return std::filesystem::u8path(str.toStdString());
 }
 
 QString toQString(const path &str)
 {
-	boost::filesystem::detail::utf8_codecvt_facet utf8;
-    return QString::fromStdString(str.string(utf8));
+    return QString::fromStdString(str.u8string());
 }
 }

@@ -23,7 +23,7 @@
 #include <QObject>
 #include <QThread>
 
-#include <boost/filesystem.hpp>
+#include <filesystem>
 #include <boost/range/iterator_range.hpp>
 
 #include <formats/fileformatmanager.h>
@@ -39,8 +39,8 @@ class BulkConverterWorker : public QObject
     Q_OBJECT
 
 public:
-    explicit BulkConverterWorker(boost::filesystem::path& source,
-                                 boost::filesystem::path& destination,
+    explicit BulkConverterWorker(std::filesystem::path& source,
+                                 std::filesystem::path& destination,
                                  bool dryRun,
                                  std::unique_ptr<FileFormatManager>& fileFormatManager);
     ~BulkConverterWorker();
@@ -57,8 +57,8 @@ signals:
     void message(QString error);
 
 private:
-    boost::filesystem::path mySrc;
-    boost::filesystem::path myDst;
+    std::filesystem::path mySrc;
+    std::filesystem::path myDst;
     bool myDryRun;
     std::size_t myFileCount;
     std::unique_ptr<FileFormatManager>& myFileFormatManager;

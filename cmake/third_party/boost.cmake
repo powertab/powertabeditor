@@ -3,7 +3,5 @@ find_package(
     Boost 1.65 REQUIRED
     COMPONENTS
         date_time
-        filesystem
         iostreams
-        system
 )

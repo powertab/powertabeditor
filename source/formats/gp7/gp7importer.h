@@ -25,7 +25,7 @@ class Gp7Importer : public FileFormatImporter
 public:
     Gp7Importer();
 
-    void load(const boost::filesystem::path &filename, Score &score) override;
+    void load(const std::filesystem::path &filename, Score &score) override;
 };
 
 #endif

@@ -20,7 +20,7 @@
 
 #include <app/viewoptions.h>
 #include <app/caret.h>
-#include <boost/filesystem/path.hpp>
+#include <filesystem>
 #include <optional>
 #include <memory>
 #include <score/score.h>
@@ -32,7 +32,7 @@ class SettingsManager;
 class Document
 {
 public:
-    using PathType = boost::filesystem::path;
+    using PathType = std::filesystem::path;
 
     Document();
     Document(const Document &) = delete;
