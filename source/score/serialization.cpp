@@ -21,25 +21,15 @@
 #include <boost/date_time/gregorian/formatters_limited.hpp>
 #include <boost/date_time/gregorian/parsers.hpp>
 #include <iostream>
-#include <rapidjson/error/en.h>
 
 namespace ScoreUtils
 {
-InputArchive::InputArchive(std::istream &is) : myStream(is)
+InputArchive::InputArchive(std::istream &is)
 {
     if (!is)
         throw std::runtime_error("Could not open stream");
 
-    myDocument.ParseStream<0>(myStream);
-
-    if (myDocument.HasParseError())
-    {
-        throw std::runtime_error("Parse error at offset " +
-                                 std::to_string(myDocument.GetErrorOffset()) +
-                                 ": " +
-                                 GetParseError_En(myDocument.GetParseError()));
-    }
-
+    is >> myDocument;
     myValueStack.push(&myDocument);
 
     int version = 0;
@@ -75,23 +65,10 @@ InputArchive::read(Util::Date &date)
     date = Util::Date(greg_date.year(), greg_date.month(), greg_date.day());
 }
 
-OutputArchive::OutputArchive(std::ostream &os, FileVersion version)
-    : myWriteStream(os), myStream(myWriteStream), myVersion(version)
+JSONValue
+OutputArchive::convert(const Util::Date &date)
 {
-    myStream.StartObject();
-
-    (*this)("version", myVersion);
-}
-
-OutputArchive::~OutputArchive()
-{
-    myStream.EndObject();
-}
-
-void
-OutputArchive::write(const Util::Date &date)
-{
-    write(boost::gregorian::to_iso_string(
+    return convert(boost::gregorian::to_iso_string(
         boost::gregorian::date(date.year(), date.month(), date.day())));
 }
 }

@@ -19,21 +19,13 @@
 
 #include <boost/algorithm/string/classification.hpp>
 #include <boost/algorithm/string/split.hpp>
-
-// Workaround for RapidJSON on MSVC 2019.
-// vcpkg has an old version since there hasn't been an official release since
-// 2016.
-#include <istream>
-
-#include <rapidjson/document.h>
-#include <rapidjson/error/en.h>
-#include <rapidjson/istreamwrapper.h>
-#include <rapidjson/ostreamwrapper.h>
-#include <rapidjson/prettywriter.h>
+#include <nlohmann/json.hpp>
 
 using SettingValue = SettingsTree::SettingValue;
 using SettingList = SettingsTree::SettingList;
 using SettingMap = SettingsTree::SettingMap;
+
+using JSONValue = nlohmann::json;
 
 struct Inserter
 {
@@ -142,36 +134,36 @@ private:
     size_t myIndex;
 };
 
-static void parseValue(SettingValue &value, const rapidjson::Value &json_val)
+static void parseValue(SettingValue &value, const JSONValue &json_val)
 {
-    if (json_val.IsInt())
-        value = json_val.GetInt();
-    else if (json_val.IsString())
-        value = std::string(json_val.GetString(), json_val.GetStringLength());
-    else if (json_val.IsBool())
-        value = json_val.GetBool();
-    else if (json_val.IsArray())
+    if (json_val.is_number())
+        value = json_val.get<int>();
+    else if (json_val.is_string())
+        value = json_val.get<std::string>();
+    else if (json_val.is_boolean())
+        value = json_val.get<bool>();
+    else if (json_val.is_array())
     {
         SettingList value_list;
 
-        for (auto it = json_val.Begin(); it != json_val.End(); ++it)
+        for (auto child_json_val : json_val)
         {
             SettingValue child_val;
-            parseValue(child_val, *it);
+            parseValue(child_val, child_json_val);
             value_list.values.push_back(child_val);
         }
 
         value = value_list;
     }
-    else if (json_val.IsObject())
+    else if (json_val.is_object())
     {
         SettingMap value_map;
 
-        for (auto it = json_val.MemberBegin(); it != json_val.MemberEnd(); ++it)
+        for (auto &&[key, child_json_val] : json_val.items())
         {
             SettingValue child_val;
-            parseValue(child_val, it->value);
-            value_map.values[it->name.GetString()] = child_val;
+            parseValue(child_val, child_json_val);
+            value_map.values[key] = child_val;
         }
 
         value = value_map;
@@ -182,58 +174,32 @@ static void parseValue(SettingValue &value, const rapidjson::Value &json_val)
 
 struct JSONSerializer
 {
-    JSONSerializer(std::ostream &os) : myStream(os), myWriter(myStream)
+    // Default implementation for int, std::string, etc.
+    template <typename T>
+    JSONValue operator()(const T &val)
     {
+        return val;
     }
 
-    void operator()(int x)
+    JSONValue operator()(const SettingList &list)
     {
-        myWriter.Int(x);
-    }
+        JSONValue arr;
 
-    void operator()(bool x)
-    {
-        myWriter.Bool(x);
-    }
-
-    void operator()(const std::string &s)
-    {
-        myWriter.String(s.c_str(),
-                        static_cast<rapidjson::SizeType>(s.length()));
-    }
-
-    void operator()(const SettingList &list)
-    {
-        myWriter.StartArray();
         for (auto &&value : list.values)
-            std::visit(*this, value);
-        myWriter.EndArray();
+            arr.push_back(std::visit(*this, value));
+
+        return arr;
     }
 
-    void operator()(const SettingMap &map)
+    JSONValue operator()(const SettingMap &map)
     {
-        myWriter.StartObject();
+        JSONValue obj;
 
-        // Output in sorted order.
-        std::vector<std::string> keys;
-        keys.reserve(map.values.size());
-        for (auto &&pair : map.values)
-            keys.push_back(pair.first);
+        for (auto &&[key, val] : map.values)
+            obj[key] = std::visit(*this, val);
 
-        std::sort(keys.begin(), keys.end());
-
-        for (auto &&key : keys)
-        {
-            myWriter.Key(key.c_str());
-            std::visit(*this, map.values.at(key));
-        }
-
-        myWriter.EndObject();
+        return obj;
     }
-
-private:
-    rapidjson::OStreamWrapper myStream;
-    rapidjson::PrettyWriter<decltype(myStream)> myWriter;
 };
 
 SettingsTree::SettingsTree() : myTree(SettingMap())
@@ -260,24 +226,13 @@ void SettingsTree::remove(const std::string &key)
 
 void SettingsTree::loadFromJSON(std::istream &is)
 {
-    rapidjson::IStreamWrapper stream(is);
-
-    rapidjson::Document document;
-    document.ParseStream(stream);
-
-    if (document.HasParseError())
-    {
-        throw std::runtime_error("Parse error at offset " +
-                                 std::to_string(document.GetErrorOffset()) +
-                                 ": " +
-                                 GetParseError_En(document.GetParseError()));
-    }
-
+    JSONValue document;
+    is >> document;
     parseValue(myTree, document);
 }
 
 void SettingsTree::saveToJSON(std::ostream &os) const
 {
-    JSONSerializer serializer(os);
-    std::visit(serializer, myTree);
+    JSONValue document = std::visit(JSONSerializer{}, myTree);
+    os << std::setw(4) << document;
 }
