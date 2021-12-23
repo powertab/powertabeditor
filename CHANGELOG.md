@@ -8,6 +8,7 @@ Thanks to the following contributors who worked on this release:
 
 ### Added
 - Added support for tremolo bars (#8).
+- .pt2 files are now 3-4x smaller in file size.
 - For Linux users, the application can now be easily installed as a Snap package (https://snapcraft.io/powertabeditor).
 - The macOS installers are now signed and notarized. This resolves the "developer cannot be verified" warnings when running for the first time.
 

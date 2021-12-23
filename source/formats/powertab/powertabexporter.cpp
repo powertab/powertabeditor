@@ -39,5 +39,5 @@ void PowerTabExporter::save(const std::filesystem::path &filename,
     out.push(file);
 
     std::ostream compressed_output(&out);
-    ScoreUtils::save(compressed_output, "score", score);
+    ScoreUtils::save(compressed_output, "score", score, /* pretty */ false);
 }

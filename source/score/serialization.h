@@ -318,7 +318,8 @@ load(std::istream &input, const std::string &name, T &obj)
 
 template <typename T>
 void
-save(std::ostream &output, const std::string &name, const T &obj)
+save(std::ostream &output, const std::string &name, const T &obj,
+     bool pretty = true)
 {
     FileVersion version = FileVersion::LATEST_VERSION;
     detail::OutputArchive ar(version);
@@ -326,7 +327,10 @@ save(std::ostream &output, const std::string &name, const T &obj)
     ar(name, obj);
 
     // Pretty print.
-    output << std::setw(4) << ar.value();
+    if (pretty)
+        output << std::setw(4);
+
+    output << ar.value();
 }
 } // namespace ScoreUtils
 
