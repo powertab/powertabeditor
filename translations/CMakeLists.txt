@@ -1,5 +1,6 @@
 set( languages
     en
+    fr
 )
 
 # Generate the list of translation files.
