@@ -44,7 +44,7 @@
 * These instructions assume a recent Ubuntu/Debian-based system, but the package names should be similar for other package managers.
 * Install dependencies:
   * `sudo apt update`
-  * `sudo apt install cmake qtbase5-dev qttools5-dev-tools libboost-dev libboost-date-time-dev libboost-iostreams-dev nlohmann-json3-dev libasound2-dev librtmidi-dev libpugixml-dev libminizip-dev doctest-dev`
+  * `sudo apt install cmake qtbase5-dev qttools5-dev libboost-dev libboost-date-time-dev libboost-iostreams-dev nlohmann-json3-dev libasound2-dev librtmidi-dev libpugixml-dev libminizip-dev doctest-dev`
   * `sudo apt-get install timidity-daemon` - timidity is not required for building, but is a good sequencer for MIDI playback.
   * Optionally, use [Ninja](http://martine.github.io/ninja/) instead of `make` (`sudo apt install ninja-build`)
 * Build:
