@@ -42,7 +42,7 @@
 #### Windows:
 * Install Git - see https://help.github.com/articles/set-up-git
 * Install [vcpkg](https://github.com/microsoft/vcpkg) and run `vcpkg install --triplet x64-windows boost-algorithm boost-date-time boost-endian boost-functional boost-iostreams boost-range boost-rational boost-signals2 boost-stacktrace doctest minizip nlohmann-json pugixml` to install dependencies.
-* Install Qt by running `vcpkg install --triplet x64-windows qt5-base` (this may take a while), or install a binary release from the Qt website.
+* Install Qt by running `vcpkg install --triplet x64-windows qt5-base` (this may take a while), or install a binary release from the Qt website or https://github.com/miurahr/aqtinstall.
 * Open the project folder in Visual Studio and build.
   * If running CMake manually, set `CMAKE_TOOLCHAIN_FILE` to `[vcpkg root]\scripts\buildsystems\vcpkg.cmake`).
 
