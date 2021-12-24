@@ -21,7 +21,7 @@
 
 RemoveIrregularGrouping::RemoveIrregularGrouping(const ScoreLocation &location,
                                                  const IrregularGrouping &group)
-    : QUndoCommand(QObject::tr("Remove Irregular Grouping")),
+    : QUndoCommand(tr("Remove Irregular Grouping")),
       myLocation(location),
       myGroup(group)
 {

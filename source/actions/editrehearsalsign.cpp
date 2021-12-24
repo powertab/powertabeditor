@@ -22,7 +22,7 @@
 
 AddRehearsalSign::AddRehearsalSign(const ScoreLocation &location,
                                    const std::string &description)
-    : QUndoCommand(QObject::tr("Add Rehearsal Sign")),
+    : QUndoCommand(tr("Add Rehearsal Sign")),
       myLocation(location),
       myDescription(description)
 {
@@ -45,7 +45,7 @@ AddRehearsalSign::undo()
 
 EditRehearsalSign::EditRehearsalSign(const ScoreLocation &location,
                                      const std::string &new_description)
-    : QUndoCommand(QObject::tr("Edit Rehearsal Sign")),
+    : QUndoCommand(tr("Edit Rehearsal Sign")),
       myLocation(location),
       myNewDescription(new_description),
       myOrigSign(location.getBarline()->getRehearsalSign())
@@ -67,7 +67,7 @@ EditRehearsalSign::undo()
 }
 
 RemoveRehearsalSign::RemoveRehearsalSign(const ScoreLocation &location)
-    : QUndoCommand(QObject::tr("Remove Rehearsal Sign")),
+    : QUndoCommand(tr("Remove Rehearsal Sign")),
       myLocation(location),
       myRehearsalSign(location.getBarline()->getRehearsalSign())
 {

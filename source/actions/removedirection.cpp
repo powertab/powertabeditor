@@ -21,7 +21,7 @@
 #include <score/utils.h>
 
 RemoveDirection::RemoveDirection(const ScoreLocation &location)
-    : QUndoCommand(QObject::tr("Remove Musical Direction")),
+    : QUndoCommand(tr("Remove Musical Direction")),
       myLocation(location),
       myOriginalDirection(*ScoreUtils::findByPosition(
                               location.getSystem().getDirections(),

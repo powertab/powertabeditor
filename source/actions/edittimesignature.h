@@ -18,12 +18,15 @@
 #ifndef ACTIONS_EDITTIMESIGNATURE_H
 #define ACTIONS_EDITTIMESIGNATURE_H
 
+#include <QCoreApplication>
 #include <QUndoCommand>
 #include <score/scorelocation.h>
 #include <score/timesignature.h>
 
 class EditTimeSignature : public QUndoCommand
 {
+    Q_DECLARE_TR_FUNCTIONS(EditTimeSignature)
+
 public:
     EditTimeSignature(const ScoreLocation &location,
                       const TimeSignature &newTimeSig);

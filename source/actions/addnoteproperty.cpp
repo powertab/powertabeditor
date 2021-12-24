@@ -20,7 +20,7 @@
 AddNoteProperty::AddNoteProperty(const ScoreLocation &location,
                                  Note::SimpleProperty property,
                                  const QString &description)
-    : QUndoCommand(QObject::tr("Set ") + description),
+    : QUndoCommand(tr("Set %1").arg(description)),
       myLocation(location),
       myProperty(property)
 {

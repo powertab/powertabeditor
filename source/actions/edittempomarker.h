@@ -18,12 +18,15 @@
 #ifndef ACTIONS_EDITTEMPOMARKER_H
 #define ACTIONS_EDITTEMPOMARKER_H
 
+#include <QCoreApplication>
 #include <QUndoCommand>
 #include <score/scorelocation.h>
 #include <score/tempomarker.h>
 
 class AddTempoMarker : public QUndoCommand
 {
+    Q_DECLARE_TR_FUNCTIONS(AddTempoMarker)
+
 public:
     AddTempoMarker(const ScoreLocation &location, const TempoMarker &marker);
 
@@ -37,6 +40,8 @@ private:
 
 class RemoveTempoMarker : public QUndoCommand
 {
+    Q_DECLARE_TR_FUNCTIONS(RemoveTempoMarker)
+
 public:
     RemoveTempoMarker(const ScoreLocation &location);
 

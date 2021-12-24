@@ -18,12 +18,15 @@
 #ifndef ACTIONS_TREMOLOBAR_H
 #define ACTIONS_TREMOLOBAR_H
 
+#include <QCoreApplication>
 #include <QUndoCommand>
 #include <score/position.h>
 #include <score/scorelocation.h>
 
 class AddTremoloBar : public QUndoCommand
 {
+    Q_DECLARE_TR_FUNCTIONS(AddTremoloBar)
+
 public:
     AddTremoloBar(const ScoreLocation &location, const TremoloBar &trem);
 
@@ -37,6 +40,8 @@ private:
 
 class RemoveTremoloBar : public QUndoCommand
 {
+    Q_DECLARE_TR_FUNCTIONS(RemoveTremoloBar)
+
 public:
     RemoveTremoloBar(const ScoreLocation &location);
 

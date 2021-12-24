@@ -18,12 +18,15 @@
 #ifndef ACTIONS_ADDSYSTEM_H
 #define ACTIONS_ADDSYSTEM_H
 
+#include <QCoreApplication>
 #include <QUndoCommand>
 
 class Score;
 
 class AddSystem : public QUndoCommand
 {
+    Q_DECLARE_TR_FUNCTIONS(AddSystem)
+
 public:
     AddSystem(Score &score, int index);
 

@@ -22,7 +22,7 @@
 
 EditKeySignature::EditKeySignature(const ScoreLocation &location,
                                    const KeySignature &newKey)
-    : QUndoCommand(QObject::tr("Edit Key Signature")),
+    : QUndoCommand(tr("Edit Key Signature")),
       myLocation(location),
       myNewKey(newKey),
       myOldKey(location.getBarline()->getKeySignature())

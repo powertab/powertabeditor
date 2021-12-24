@@ -21,7 +21,7 @@
 #include <score/utils.h>
 
 RemoveAlternateEnding::RemoveAlternateEnding(const ScoreLocation &location)
-    : QUndoCommand(QObject::tr("Remove Repeat Ending")),
+    : QUndoCommand(tr("Remove Repeat Ending")),
       myLocation(location),
       myOriginalEnding(*ScoreUtils::findByPosition(
                            location.getSystem().getAlternateEndings(),

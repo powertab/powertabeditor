@@ -19,12 +19,15 @@
 #define ACTIONS_EDITCLEF_H
 
 #include <optional>
+#include <QCoreApplication>
 #include <QUndoCommand>
 #include <score/scorelocation.h>
 #include <score/system.h>
 
 class EditStaff : public QUndoCommand
 {
+    Q_DECLARE_TR_FUNCTIONS(EditStaff)
+
 public:
     EditStaff(const ScoreLocation &location, Staff::ClefType clef, int strings);
 

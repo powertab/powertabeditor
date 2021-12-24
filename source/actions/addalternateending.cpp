@@ -21,7 +21,7 @@
 
 AddAlternateEnding::AddAlternateEnding(const ScoreLocation &location,
                                        const AlternateEnding &ending)
-    : QUndoCommand(QObject::tr("Add Repeat Ending")),
+    : QUndoCommand(tr("Add Repeat Ending")),
       myLocation(location),
       myEnding(ending)
 {

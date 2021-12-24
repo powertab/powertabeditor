@@ -18,7 +18,7 @@
 #include "edittabnumber.h"
 
 EditTabNumber::EditTabNumber(const ScoreLocation &location, int typedNumber)
-    : QUndoCommand(QObject::tr("Edit Tab Number")),
+    : QUndoCommand(tr("Edit Tab Number")),
       myLocation(location),
       myOriginalNumber(location.getNote()->getFretNumber()),
       myTappedHarmonicOffset(location.getNote()->hasTappedHarmonic()

@@ -21,7 +21,7 @@
 
 EditFileInformation::EditFileInformation(const ScoreLocation &location,
                                          const ScoreInfo &scoreInfo)
-    : QUndoCommand(QObject::tr("Edit File Information")),
+    : QUndoCommand(tr("Edit File Information")),
       myLocation(location),
       myScoreInfo(scoreInfo),
       myOriginalScoreInfo(location.getScore().getScoreInfo())

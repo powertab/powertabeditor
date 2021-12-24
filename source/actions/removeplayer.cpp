@@ -20,7 +20,7 @@
 #include <score/score.h>
 
 RemovePlayer::RemovePlayer(Score &score, int index)
-    : QUndoCommand(QObject::tr("Remove Player")),
+    : QUndoCommand(tr("Remove Player")),
       myScore(score),
       myPlayer(score.getPlayers()[index]),
       myPlayerIndex(index)

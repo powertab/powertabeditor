@@ -20,7 +20,7 @@
 #include <score/utils/scorepolisher.h>
 
 PolishSystem::PolishSystem(const ScoreLocation &location)
-    : QUndoCommand(QObject::tr("Polish System")), myLocation(location)
+    : QUndoCommand(tr("Polish System")), myLocation(location)
 {
 }
 

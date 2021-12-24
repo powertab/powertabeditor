@@ -18,12 +18,15 @@
 #ifndef ACTIONS_EDITDYNAMIC_H
 #define ACTIONS_EDITDYNAMIC_H
 
+#include <QCoreApplication>
 #include <QUndoCommand>
 #include <score/dynamic.h>
 #include <score/scorelocation.h>
 
 class EditDynamic : public QUndoCommand
 {
+    Q_DECLARE_TR_FUNCTIONS(EditDynamic)
+
 public:
     EditDynamic(const ScoreLocation &location,
                 const Dynamic &originalDynamic,

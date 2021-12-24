@@ -18,6 +18,7 @@
 #ifndef ACTIONS_INSERTNOTES_H
 #define ACTIONS_INSERTNOTES_H
 
+#include <QCoreApplication>
 #include <QUndoCommand>
 #include <score/irregulargrouping.h>
 #include <score/position.h>
@@ -26,6 +27,8 @@
 
 class InsertNotes : public QUndoCommand
 {
+    Q_DECLARE_TR_FUNCTIONS(InsertNotes)
+
 public:
     InsertNotes(const ScoreLocation &location,
                 const std::vector<Position> &positions,

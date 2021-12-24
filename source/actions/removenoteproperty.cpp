@@ -20,7 +20,7 @@
 RemoveNoteProperty::RemoveNoteProperty(const ScoreLocation &location,
                                        Note::SimpleProperty property,
                                        const QString &description)
-    : QUndoCommand(QObject::tr("Remove ") + description),
+    : QUndoCommand(tr("Remove %1").arg(description)),
       myLocation(location),
       myProperty(property)
 {

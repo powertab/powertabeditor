@@ -19,7 +19,7 @@
 
 AddVolumeSwell::AddVolumeSwell(const ScoreLocation &location,
                                const VolumeSwell &swell)
-    : QUndoCommand(QObject::tr("Add Volume Swell")),
+    : QUndoCommand(tr("Add Volume Swell")),
       myLocation(location),
       mySwell(swell)
 {
@@ -38,7 +38,7 @@ AddVolumeSwell::undo()
 }
 
 RemoveVolumeSwell::RemoveVolumeSwell(const ScoreLocation &location)
-    : QUndoCommand(QObject::tr("Remove Volume Swell")),
+    : QUndoCommand(tr("Remove Volume Swell")),
       myLocation(location),
       mySwell(location.getPosition()->getVolumeSwell())
 {

@@ -18,6 +18,7 @@
 #ifndef ACTIONS_REMOVEINSTRUMENT_H
 #define ACTIONS_REMOVEINSTRUMENT_H
 
+#include <QCoreApplication>
 #include <QUndoCommand>
 #include <score/instrument.h>
 #include <score/playerchange.h>
@@ -27,6 +28,8 @@ class Score;
 
 class RemoveInstrument : public QUndoCommand
 {
+    Q_DECLARE_TR_FUNCTIONS(RemoveInstrument)
+
 public:
     RemoveInstrument(Score &score, int index);
 

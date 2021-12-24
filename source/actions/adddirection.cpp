@@ -21,7 +21,7 @@
 
 AddDirection::AddDirection(const ScoreLocation &location,
                            const Direction &direction)
-    : QUndoCommand(QObject::tr("Add Musical Direction")),
+    : QUndoCommand(tr("Add Musical Direction")),
       myLocation(location),
       myDirection(direction)
 {

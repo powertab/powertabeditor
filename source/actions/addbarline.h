@@ -18,12 +18,15 @@
 #ifndef ACTIONS_ADDBARLINE_H
 #define ACTIONS_ADDBARLINE_H
 
+#include <QCoreApplication>
 #include <QUndoCommand>
 #include <score/barline.h>
 #include <score/scorelocation.h>
 
 class AddBarline : public QUndoCommand
 {
+    Q_DECLARE_TR_FUNCTIONS(AddBarline)
+
 public:
     AddBarline(const ScoreLocation &location, const Barline &barline);
 

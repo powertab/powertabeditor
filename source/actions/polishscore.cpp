@@ -21,7 +21,7 @@
 #include <score/utils/scorepolisher.h>
 
 PolishScore::PolishScore(Score &score)
-    : QUndoCommand(QObject::tr("Polish Score")), myScore(score)
+    : QUndoCommand(tr("Polish Score")), myScore(score)
 {
 }
 

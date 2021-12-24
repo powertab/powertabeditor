@@ -18,6 +18,7 @@
 #ifndef ACTIONS_REMOVESYSTEM_H
 #define ACTIONS_REMOVESYSTEM_H
 
+#include <QCoreApplication>
 #include <QUndoCommand>
 #include <score/system.h>
 
@@ -25,6 +26,8 @@ class Score;
 
 class RemoveSystem : public QUndoCommand
 {
+    Q_DECLARE_TR_FUNCTIONS(RemoveSystem)
+
 public:
     RemoveSystem(Score &score, int index);
 

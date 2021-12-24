@@ -24,7 +24,7 @@
 InsertNotes::InsertNotes(const ScoreLocation &location,
                          const std::vector<Position> &positions,
                          const std::vector<IrregularGrouping> &groups)
-    : QUndoCommand(QObject::tr("Insert Notes")),
+    : QUndoCommand(tr("Insert Notes")),
       myLocation(location),
       myNewPositions(positions),
       myNewGroups(groups),

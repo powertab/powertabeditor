@@ -18,6 +18,7 @@
 #ifndef ACTIONS_REMOVEPOSITIONPROPERTY_H
 #define ACTIONS_REMOVEPOSITIONPROPERTY_H
 
+#include <QCoreApplication>
 #include <QUndoCommand>
 #include <score/position.h>
 #include <score/scorelocation.h>
@@ -25,6 +26,8 @@
 /// Removes a simple position property for each of the selected notes.
 class RemovePositionProperty : public QUndoCommand
 {
+    Q_DECLARE_TR_FUNCTIONS(RemovePositionProperty)
+
 public:
     RemovePositionProperty(const ScoreLocation &location,
                            Position::SimpleProperty property,

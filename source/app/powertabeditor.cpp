@@ -549,7 +549,7 @@ void PowerTabEditor::pasteNotes()
     if (!Clipboard::hasData())
     {
         QMessageBox msg(this);
-        msg.setText(QObject::tr("The clipboard does not contain any notes."));
+        msg.setText(tr("The clipboard does not contain any notes."));
         msg.exec();
         return;
     }
@@ -1287,7 +1287,8 @@ void PowerTabEditor::editMultiBarRest(bool remove)
         Q_ASSERT(position);
         Q_ASSERT(position->hasMultiBarRest());
         myUndoManager->push(
-            new RemovePosition(location, tr("Remove Multi-Bar Rest")),
+            new RemovePosition(location,
+                               RemovePosition::tr("Remove Multi-Bar Rest")),
             location.getSystemIndex());
         return;
     }

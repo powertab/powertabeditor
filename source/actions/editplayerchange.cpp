@@ -22,7 +22,7 @@
 
 AddPlayerChange::AddPlayerChange(const ScoreLocation &location,
                                  const PlayerChange &change)
-    : QUndoCommand(QObject::tr("Add Player Change")),
+    : QUndoCommand(tr("Add Player Change")),
       myLocation(location),
       myPlayerChange(change)
 {
@@ -42,7 +42,7 @@ AddPlayerChange::undo()
 }
 
 RemovePlayerChange::RemovePlayerChange(const ScoreLocation &location)
-    : QUndoCommand(QObject::tr("Remove Player Change")),
+    : QUndoCommand(tr("Remove Player Change")),
       myLocation(location),
       myPlayerChange(*ScoreUtils::findByPosition(
           location.getSystem().getPlayerChanges(), location.getPositionIndex()))

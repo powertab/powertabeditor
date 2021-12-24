@@ -20,7 +20,7 @@
 #include <score/score.h>
 
 AddSystem::AddSystem(Score &score, int index)
-    : QUndoCommand(QObject::tr("Add System")),
+    : QUndoCommand(tr("Add System")),
       myScore(score),
       myIndex(index)
 {

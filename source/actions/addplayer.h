@@ -18,6 +18,7 @@
 #ifndef ACTIONS_ADDPLAYER_H
 #define ACTIONS_ADDPLAYER_H
 
+#include <QCoreApplication>
 #include <QUndoCommand>
 #include <score/player.h>
 
@@ -25,6 +26,8 @@ class Score;
 
 class AddPlayer : public QUndoCommand
 {
+    Q_DECLARE_TR_FUNCTIONS(AddPlayer)
+
 public:
     AddPlayer(Score &score, const Player &player);
 

@@ -20,7 +20,7 @@
 RemovePositionProperty::RemovePositionProperty(const ScoreLocation &location,
                                                Position::SimpleProperty property,
                                                const QString &positionDescription)
-    : QUndoCommand(QObject::tr("Remove ") + positionDescription),
+    : QUndoCommand(tr("Remove %1").arg(positionDescription)),
       myLocation(location),
       myProperty(property)
 {

@@ -18,6 +18,7 @@
 #ifndef ACTIONS_SHIFTTABNUMBER_H
 #define ACTIONS_SHIFTTABNUMBER_H
 
+#include <QCoreApplication>
 #include <QUndoCommand>
 #include <optional>
 #include <score/position.h>
@@ -27,6 +28,8 @@
 /// Shift tab numbers to an adjacent string.
 class ShiftString : public QUndoCommand
 {
+    Q_DECLARE_TR_FUNCTIONS(ShiftString)
+
 public:
     ShiftString(const ScoreLocation &location, bool shift_up);
 

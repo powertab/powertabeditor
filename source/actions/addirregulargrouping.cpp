@@ -24,9 +24,9 @@ AddIrregularGrouping::AddIrregularGrouping(const ScoreLocation &location,
     : myLocation(location), myGroup(group)
 {
     if (group.getNotesPlayed() == 3 && group.getNotesPlayed() == 2)
-        setText(QObject::tr("Add Triplet"));
+        setText(tr("Add Triplet"));
     else
-        setText(QObject::tr("Add Irregular Grouping"));
+        setText(tr("Add Irregular Grouping"));
 }
 
 void AddIrregularGrouping::redo()

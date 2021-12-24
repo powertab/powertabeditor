@@ -18,6 +18,7 @@
 #include "systemrenderer.h"
 
 #include <app/scorearea.h>
+#include <QCoreApplication>
 #include <painters/clickableitem.h>
 #include <painters/musicfont.h>
 #include <painters/simpletextitem.h>
@@ -50,7 +51,8 @@ SystemRenderer::drawDirections(const ConstScoreLocation &location,
         ConstScoreLocation dir_location(location);
         dir_location.setPositionIndex(direction.getPosition());
         auto group = new ClickableGroup(
-            QObject::tr("Double-click to edit musical direction."),
+            QCoreApplication::translate(
+                "ScoreArea", "Double-click to edit musical direction."),
             myScoreArea->getClickEvent(), dir_location, ScoreItem::Direction);
         group->setParentItem(myParentSystem);
 

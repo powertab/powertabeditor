@@ -18,12 +18,15 @@
 #ifndef ACTIONS_REMOVECHORDTEXT_H
 #define ACTIONS_REMOVECHORDTEXT_H
 
+#include <QCoreApplication>
 #include <QUndoCommand>
 #include <score/chordtext.h>
 #include <score/scorelocation.h>
 
 class RemoveChordText : public QUndoCommand
 {
+    Q_DECLARE_TR_FUNCTIONS(RemoveChordText)
+
 public:
     RemoveChordText(const ScoreLocation &location);
 

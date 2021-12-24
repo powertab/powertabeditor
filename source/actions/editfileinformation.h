@@ -18,12 +18,15 @@
 #ifndef ACTIONS_EDITFILEINFORMATION_H
 #define ACTIONS_EDITFILEINFORMATION_H
 
+#include <QCoreApplication>
 #include <QUndoCommand>
 #include <score/scoreinfo.h>
 #include <score/scorelocation.h>
 
 class EditFileInformation : public QUndoCommand
 {
+    Q_DECLARE_TR_FUNCTIONS(EditFileInformation)
+
 public:
     EditFileInformation(const ScoreLocation &location,
                         const ScoreInfo &scoreInfo);

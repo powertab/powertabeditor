@@ -19,6 +19,7 @@
 
 #include "scoreclickevent.h"
 
+#include <QCoreApplication>
 #include <QCursor>
 #include <QGraphicsSceneMouseEvent>
 #include <QPainter>
@@ -31,8 +32,9 @@ BarlinePainter::BarlinePainter(const LayoutConstPtr &layout,
                                const ConstScoreLocation &location,
                                const ScoreClickEvent &click_event,
                                const QColor &barlineColor)
-    : ClickableItem(QObject::tr("Click to edit barline."), click_event,
-                    location, ScoreItem::Barline),
+    : ClickableItem(
+          QCoreApplication::translate("ScoreArea", "Click to edit barline."),
+          click_event, location, ScoreItem::Barline),
       myLayout(layout),
       myBarline(barline),
       myX(0),

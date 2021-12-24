@@ -18,6 +18,7 @@
 #ifndef ACTIONS_EDITPLAYER_H
 #define ACTIONS_EDITPLAYER_H
 
+#include <QCoreApplication>
 #include <QUndoCommand>
 #include <score/player.h>
 #include <score/playerchange.h>
@@ -27,6 +28,8 @@ class Score;
 
 class EditPlayer : public QUndoCommand
 {
+    Q_DECLARE_TR_FUNCTIONS(EditPlayer)
+
 public:
     EditPlayer(Score &score, int playerIndex, const Player &player);
 

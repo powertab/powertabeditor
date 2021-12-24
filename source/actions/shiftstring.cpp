@@ -22,8 +22,8 @@
 #include <score/voiceutils.h>
 
 ShiftString::ShiftString(const ScoreLocation &location, bool shift_up)
-    : QUndoCommand(shift_up ? QObject::tr("Shift String Up")
-                            : QObject::tr("Shift String Down")),
+    : QUndoCommand(shift_up ? tr("Shift String Up")
+                            : tr("Shift String Down")),
       myLocation(location),
       myShiftUp(shift_up)
 {

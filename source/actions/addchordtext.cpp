@@ -21,7 +21,7 @@
 
 AddChordText::AddChordText(const ScoreLocation &location,
                            const ChordText &text)
-    : QUndoCommand(QObject::tr("Add Chord Text")),
+    : QUndoCommand(tr("Add Chord Text")),
       myLocation(location),
       myText(text)
 {

@@ -20,7 +20,7 @@
 #include <score/score.h>
 
 RemoveInstrument::RemoveInstrument(Score &score, int index)
-    : QUndoCommand(QObject::tr("Remove Instrument")),
+    : QUndoCommand(tr("Remove Instrument")),
       myScore(score),
       myInstrument(score.getInstruments()[index]),
       myInstrumentIndex(index)

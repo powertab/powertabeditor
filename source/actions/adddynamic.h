@@ -18,12 +18,15 @@
 #ifndef ACTIONS_ADDDYNAMIC_H
 #define ACTIONS_ADDDYNAMIC_H
 
+#include <QCoreApplication>
 #include <QUndoCommand>
 #include <score/dynamic.h>
 #include <score/scorelocation.h>
 
 class AddDynamic : public QUndoCommand
 {
+    Q_DECLARE_TR_FUNCTIONS(AddDynamic)
+
 public:
     AddDynamic(const ScoreLocation &location, const Dynamic &dynamic);
 

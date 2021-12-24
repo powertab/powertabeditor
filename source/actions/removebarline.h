@@ -18,12 +18,15 @@
 #ifndef ACTIONS_REMOVEBARLINE_H
 #define ACTIONS_REMOVEBARLINE_H
 
+#include <QCoreApplication>
 #include <QUndoCommand>
 #include <score/barline.h>
 #include <score/scorelocation.h>
 
 class RemoveBarline : public QUndoCommand
 {
+    Q_DECLARE_TR_FUNCTIONS(RemoveBarline)
+
 public:
     RemoveBarline(const ScoreLocation &location);
 

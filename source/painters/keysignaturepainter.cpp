@@ -20,6 +20,7 @@
 #include "musicfont.h"
 #include "scoreclickevent.h"
 
+#include <QCoreApplication>
 #include <QCursor>
 #include <QPainter>
 #include <score/keysignature.h>
@@ -29,9 +30,10 @@ KeySignaturePainter::KeySignaturePainter(const LayoutConstPtr &layout,
                                          const KeySignature &key,
                                          const ConstScoreLocation &location,
                                          const ScoreClickEvent &click_event)
-    : ClickableItem(QObject::tr("Double-click to edit key signature."),
-            click_event, location, ScoreItem::KeySignature)
-            , myLayout(layout),
+    : ClickableItem(QCoreApplication::translate(
+                        "ScoreArea", "Double-click to edit key signature."),
+                    click_event, location, ScoreItem::KeySignature),
+      myLayout(layout),
       myKeySignature(key),
       myMusicFont(MusicFont::getFont(MusicFont::DEFAULT_FONT_SIZE)),
       myBounds(0, -10, LayoutInfo::getWidth(myKeySignature),

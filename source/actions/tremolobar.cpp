@@ -19,7 +19,7 @@
 
 AddTremoloBar::AddTremoloBar(const ScoreLocation &location,
                              const TremoloBar &trem)
-    : QUndoCommand(QObject::tr("Add Tremolo Bar")),
+    : QUndoCommand(tr("Add Tremolo Bar")),
       myLocation(location),
       myTrem(trem)
 {
@@ -38,7 +38,7 @@ AddTremoloBar::undo()
 }
 
 RemoveTremoloBar::RemoveTremoloBar(const ScoreLocation &location)
-    : QUndoCommand(QObject::tr("Remove Tremolo Bar")),
+    : QUndoCommand(tr("Remove Tremolo Bar")),
       myLocation(location),
       myTrem(location.getPosition()->getTremoloBar())
 {

@@ -20,8 +20,8 @@
 EditNoteDuration::EditNoteDuration(const ScoreLocation &location,
                                    Position::DurationType duration,
                                    bool forRests)
-    : QUndoCommand(forRests ? QObject::tr("Edit Rest Duration") :
-                              QObject::tr("Edit Note Duration")),
+    : QUndoCommand(forRests ? tr("Edit Rest Duration") :
+                              tr("Edit Note Duration")),
       myLocation(location),
       myNewDuration(duration)
 {

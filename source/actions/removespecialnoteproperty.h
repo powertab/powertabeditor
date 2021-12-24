@@ -19,6 +19,7 @@
 #define ACTIONS_REMOVESPECIALNOTEPROPERTY_H
 
 #include <functional>
+#include <QCoreApplication>
 #include <QUndoCommand>
 #include <score/note.h>
 #include <score/scorelocation.h>
@@ -60,10 +61,12 @@ private:
 
 class RemoveTappedHarmonic : public RemoveSpecialNoteProperty<int>
 {
+    Q_DECLARE_TR_FUNCTIONS(RemoveTappedHarmonic)
+
 public:
     RemoveTappedHarmonic(const ScoreLocation &location)
         : RemoveSpecialNoteProperty<int>(
-              location, QObject::tr("Remove Tapped Harmonic"),
+              location, tr("Remove Tapped Harmonic"),
               location.getNote()->getTappedHarmonicFret(),
               std::mem_fn(&Note::clearTappedHarmonic),
               std::mem_fn(&Note::setTappedHarmonicFret)) {}
@@ -71,9 +74,11 @@ public:
 
 class RemoveTrill : public RemoveSpecialNoteProperty<int>
 {
+    Q_DECLARE_TR_FUNCTIONS(RemoveTrill)
+
 public:
     RemoveTrill(const ScoreLocation &location)
-        : RemoveSpecialNoteProperty<int>(location, QObject::tr("Remove Trill"),
+        : RemoveSpecialNoteProperty<int>(location, tr("Remove Trill"),
                                          location.getNote()->getTrilledFret(),
                                          std::mem_fn(&Note::clearTrill),
                                          std::mem_fn(&Note::setTrilledFret)) {}
@@ -82,10 +87,12 @@ public:
 class RemoveArtificialHarmonic
     : public RemoveSpecialNoteProperty<ArtificialHarmonic>
 {
+    Q_DECLARE_TR_FUNCTIONS(RemoveArtificialHarmonic)
+
 public:
     RemoveArtificialHarmonic(const ScoreLocation &location)
         : RemoveSpecialNoteProperty<ArtificialHarmonic>(
-              location, QObject::tr("Remove Artificial Harmonic"),
+              location, tr("Remove Artificial Harmonic"),
               location.getNote()->getArtificialHarmonic(),
               std::mem_fn(&Note::clearArtificialHarmonic),
               std::mem_fn(&Note::setArtificialHarmonic)) {}
@@ -93,9 +100,11 @@ public:
 
 class RemoveBend : public RemoveSpecialNoteProperty<Bend>
 {
+    Q_DECLARE_TR_FUNCTIONS(RemoveBend)
+
 public:
     RemoveBend(const ScoreLocation &location)
-        : RemoveSpecialNoteProperty<Bend>(location, QObject::tr("Remove Bend"),
+        : RemoveSpecialNoteProperty<Bend>(location, tr("Remove Bend"),
                                           location.getNote()->getBend(),
                                           std::mem_fn(&Note::clearBend),
                                           std::mem_fn(&Note::setBend)) {}
@@ -103,10 +112,12 @@ public:
 
 class RemoveLeftHandFingering : public RemoveSpecialNoteProperty<LeftHandFingering>
 {
+    Q_DECLARE_TR_FUNCTIONS(RemoveLeftHandFingering)
+
 public:
     RemoveLeftHandFingering(const ScoreLocation &location)
         : RemoveSpecialNoteProperty<LeftHandFingering>(location,
-            QObject::tr("Remove Left Hand Fingering"),
+            tr("Remove Left Hand Fingering"),
             location.getNote()->getLeftHandFingering(),
             std::mem_fn(&Note::clearLeftHandFingering),
             std::mem_fn(&Note::setLeftHandFingering)) {}

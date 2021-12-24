@@ -151,13 +151,15 @@ int main(int argc, char *argv[])
     QStringList files_to_open;
     {
         QCommandLineParser parser;
-        parser.setApplicationDescription(
-            QObject::tr("A guitar tablature editor."));
+        parser.setApplicationDescription(QCoreApplication::translate(
+            "PowerTabEditor", "A guitar tablature editor."));
         parser.addHelpOption();
         parser.addVersionOption();
-        parser.addPositionalArgument(QStringLiteral("files"),
-                                     QObject::tr("The files to be opened"),
-                                     QStringLiteral("[files...]"));
+        parser.addPositionalArgument(
+            QStringLiteral("files"),
+            QCoreApplication::translate("PowerTabEditor",
+                                        "The files to be opened"),
+            QStringLiteral("[files...]"));
         parser.process(a);
 
         files_to_open = parser.positionalArguments();

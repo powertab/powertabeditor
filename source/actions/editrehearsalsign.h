@@ -18,6 +18,7 @@
 #ifndef ACTIONS_EDITREHEARSALSIGN_H
 #define ACTIONS_EDITREHEARSALSIGN_H
 
+#include <QCoreApplication>
 #include <QUndoCommand>
 #include <score/rehearsalsign.h>
 #include <score/scorelocation.h>
@@ -25,6 +26,8 @@
 /// Adds a new rehearsal sign.
 class AddRehearsalSign : public QUndoCommand
 {
+    Q_DECLARE_TR_FUNCTIONS(AddRehearsalSign)
+
 public:
     AddRehearsalSign(const ScoreLocation &location,
                      const std::string &description);
@@ -41,6 +44,8 @@ private:
 /// subsequent signs.
 class EditRehearsalSign : public QUndoCommand
 {
+    Q_DECLARE_TR_FUNCTIONS(EditRehearsalSign)
+
 public:
     EditRehearsalSign(const ScoreLocation &location,
                       const std::string &new_description);
@@ -57,6 +62,8 @@ private:
 /// Removes a rehearsal sign.
 class RemoveRehearsalSign : public QUndoCommand
 {
+    Q_DECLARE_TR_FUNCTIONS(RemoveRehearsalSign)
+
 public:
     RemoveRehearsalSign(const ScoreLocation &location);
 

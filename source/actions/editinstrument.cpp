@@ -21,7 +21,7 @@
 
 EditInstrument::EditInstrument(Score &score, int index,
                                const Instrument &instrument)
-    : QUndoCommand(QObject::tr("Edit Instrument")),
+    : QUndoCommand(tr("Edit Instrument")),
       myScore(score),
       myInstrumentIndex(index),
       myNewInstrument(instrument),

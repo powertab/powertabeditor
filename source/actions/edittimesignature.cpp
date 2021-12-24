@@ -22,7 +22,7 @@
 
 EditTimeSignature::EditTimeSignature(const ScoreLocation &location,
                                      const TimeSignature& newTimeSig)
-    : QUndoCommand(QObject::tr("Edit Time Signature")),
+    : QUndoCommand(tr("Edit Time Signature")),
       myLocation(location),
       myNewTime(newTimeSig),
       myOldTime(location.getBarline()->getTimeSignature())

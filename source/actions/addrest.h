@@ -18,6 +18,7 @@
 #ifndef ACTIONS_ADDREST_H
 #define ACTIONS_ADDREST_H
 
+#include <QCoreApplication>
 #include <QUndoCommand>
 #include <optional>
 #include <score/position.h>
@@ -25,6 +26,8 @@
 
 class AddRest : public QUndoCommand
 {
+    Q_DECLARE_TR_FUNCTIONS(AddRest)
+
 public:
     AddRest(const ScoreLocation &location, Position::DurationType duration);
 

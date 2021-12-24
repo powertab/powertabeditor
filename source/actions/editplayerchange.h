@@ -18,12 +18,15 @@
 #ifndef ACTIONS_EDITPLAYERCHANGE_H
 #define ACTIONS_EDITPLAYERCHANGE_H
 
+#include <QCoreApplication>
 #include <QUndoCommand>
 #include <score/playerchange.h>
 #include <score/scorelocation.h>
 
 class AddPlayerChange : public QUndoCommand
 {
+    Q_DECLARE_TR_FUNCTIONS(AddPlayerChange)
+
 public:
     AddPlayerChange(const ScoreLocation &location, const PlayerChange &change);
 
@@ -37,6 +40,8 @@ private:
 
 class RemovePlayerChange : public QUndoCommand
 {
+    Q_DECLARE_TR_FUNCTIONS(RemovePlayerChange)
+
 public:
     RemovePlayerChange(const ScoreLocation &location);
 

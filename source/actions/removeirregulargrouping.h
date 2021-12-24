@@ -18,12 +18,15 @@
 #ifndef ACTIONS_REMOVEIRREGULARGROUPING_H
 #define ACTIONS_REMOVEIRREGULARGROUPING_H
 
+#include <QCoreApplication>
 #include <QUndoCommand>
 #include <score/irregulargrouping.h>
 #include <score/scorelocation.h>
 
 class RemoveIrregularGrouping : public QUndoCommand
 {
+    Q_DECLARE_TR_FUNCTIONS(RemoveIrregularGrouping)
+
 public:
     RemoveIrregularGrouping(const ScoreLocation &location,
                             const IrregularGrouping &group);

@@ -18,6 +18,7 @@
 #ifndef ACTIONS_REMOVEPOSITION_H
 #define ACTIONS_REMOVEPOSITION_H
 
+#include <QCoreApplication>
 #include <QUndoCommand>
 #include <score/irregulargrouping.h>
 #include <score/position.h>
@@ -25,9 +26,11 @@
 
 class RemovePosition : public QUndoCommand
 {
+    Q_DECLARE_TR_FUNCTIONS(RemovePosition)
+
 public:
     RemovePosition(const ScoreLocation &location,
-                   const QString &text = QObject::tr("Remove Position"));
+                   const QString &text = tr("Remove Position"));
 
     virtual void redo() override;
     virtual void undo() override;

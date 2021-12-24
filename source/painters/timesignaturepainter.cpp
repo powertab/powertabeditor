@@ -18,6 +18,7 @@
 #include "timesignaturepainter.h"
 
 #include <painters/musicfont.h>
+#include <QCoreApplication>
 #include <QCursor>
 #include <QPainter>
 #include <score/timesignature.h>
@@ -26,8 +27,9 @@ TimeSignaturePainter::TimeSignaturePainter(const LayoutConstPtr &layout,
                                            const TimeSignature &time,
                                            const ConstScoreLocation &location,
                                            const ScoreClickEvent &click_event)
-    : ClickableItem(QObject::tr("Click to edit time signature."), click_event,
-                    location, ScoreItem::TimeSignature),
+    : ClickableItem(QCoreApplication::translate(
+                        "ScoreArea", "Click to edit time signature."),
+                    click_event, location, ScoreItem::TimeSignature),
       myLayout(layout),
       myTimeSignature(time),
       myBounds(0, 0, LayoutInfo::getWidth(myTimeSignature),

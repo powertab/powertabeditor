@@ -18,11 +18,14 @@
 #ifndef ACTIONS_SHIFTPOSITIONS_H
 #define ACTIONS_SHIFTPOSITIONS_H
 
+#include <QCoreApplication>
 #include <QUndoCommand>
 #include <score/scorelocation.h>
 
 class ShiftPositions : public QUndoCommand
 {
+    Q_DECLARE_TR_FUNCTIONS(ShiftPositions)
+
 public:
     enum ShiftType
     {

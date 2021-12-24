@@ -18,12 +18,15 @@
 #ifndef ACTIONS_ADDSTAFF_H
 #define ACTIONS_ADDSTAFF_H
 
+#include <QCoreApplication>
 #include <QUndoCommand>
 #include <score/scorelocation.h>
 #include <score/staff.h>
 
 class AddStaff : public QUndoCommand
 {
+    Q_DECLARE_TR_FUNCTIONS(AddStaff)
+
 public:
     AddStaff(const ScoreLocation &location, const Staff &staff, int index);
 

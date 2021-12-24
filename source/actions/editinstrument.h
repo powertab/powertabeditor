@@ -18,6 +18,7 @@
 #ifndef ACTIONS_EDITINSTRUMENT_H
 #define ACTIONS_EDITINSTRUMENT_H
 
+#include <QCoreApplication>
 #include <QUndoCommand>
 #include <score/instrument.h>
 
@@ -25,6 +26,8 @@ class Score;
 
 class EditInstrument : public QUndoCommand
 {
+    Q_DECLARE_TR_FUNCTIONS(EditInstrument)
+
 public:
     EditInstrument(Score &score, int index, const Instrument &instrument);
 

@@ -23,8 +23,8 @@
 AddTempoMarker::AddTempoMarker(const ScoreLocation &location,
                                const TempoMarker &marker)
     : QUndoCommand(marker.getMarkerType() == TempoMarker::AlterationOfPace
-                       ? QObject::tr("Add Alteration of Pace")
-                       : QObject::tr("Add Tempo Marker")),
+                       ? tr("Add Alteration of Pace")
+                       : tr("Add Tempo Marker")),
       myLocation(location),
       myMarker(marker)
 {
@@ -48,8 +48,8 @@ RemoveTempoMarker::RemoveTempoMarker(const ScoreLocation &location)
           location.getSystem().getTempoMarkers(), location.getPositionIndex()))
 {
     setText(myOriginalTempo.getMarkerType() == TempoMarker::AlterationOfPace
-                ? QObject::tr("Remove Alteration of Pace")
-                : QObject::tr("Remove Tempo Marker"));
+                ? tr("Remove Alteration of Pace")
+                : tr("Remove Tempo Marker"));
 }
 
 void

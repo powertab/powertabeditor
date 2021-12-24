@@ -18,6 +18,7 @@
 #ifndef ACTIONS_POLISHSYSTEM_H
 #define ACTIONS_POLISHSYSTEM_H
 
+#include <QCoreApplication>
 #include <QUndoCommand>
 
 #include <optional>
@@ -26,6 +27,8 @@
 
 class PolishSystem : public QUndoCommand
 {
+    Q_DECLARE_TR_FUNCTIONS(PolishSystem)
+
 public:
     PolishSystem(const ScoreLocation &location);
 

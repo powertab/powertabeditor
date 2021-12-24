@@ -18,12 +18,15 @@
 #ifndef ACTIONS_ADDMULTIBARREST_H
 #define ACTIONS_ADDMULTIBARREST_H
 
+#include <QCoreApplication>
 #include <QUndoCommand>
 #include <score/position.h>
 #include <score/scorelocation.h>
 
 class AddMultiBarRest : public QUndoCommand
 {
+    Q_DECLARE_TR_FUNCTIONS(AddMultiBarRest)
+
 public:
     AddMultiBarRest(const ScoreLocation &location, int count);
 

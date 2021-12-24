@@ -18,6 +18,7 @@
 #ifndef ACTIONS_EDITVIEWFILTERS_H
 #define ACTIONS_EDITVIEWFILTERS_H
 
+#include <QCoreApplication>
 #include <QUndoCommand>
 #include <score/viewfilter.h>
 #include <vector>
@@ -26,6 +27,8 @@ class Score;
 
 class EditViewFilters : public QUndoCommand
 {
+    Q_DECLARE_TR_FUNCTIONS(EditViewFilters)
+
 public:
     EditViewFilters(Score &score, std::vector<ViewFilter> new_filters);
 

@@ -18,6 +18,7 @@
 #ifndef ACTIONS_REMOVENOTEPROPERTY_H
 #define ACTIONS_REMOVENOTEPROPERTY_H
 
+#include <QCoreApplication>
 #include <QUndoCommand>
 #include <score/note.h>
 #include <score/scorelocation.h>
@@ -25,6 +26,8 @@
 /// Removes a simple note property for each of the selected notes.
 class RemoveNoteProperty : public QUndoCommand
 {
+    Q_DECLARE_TR_FUNCTIONS(RemoveNoteProperty)
+
 public:
     RemoveNoteProperty(const ScoreLocation &location,
                        Note::SimpleProperty property,

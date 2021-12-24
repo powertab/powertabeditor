@@ -21,8 +21,8 @@
 
 ShiftPositions::ShiftPositions(const ScoreLocation &location,
                              ShiftPositions::ShiftType type)
-    : QUndoCommand(type == Forward ? QObject::tr("Shift Forward") :
-                                     QObject::tr("Shift Backward")),
+    : QUndoCommand(type == Forward ? tr("Shift Forward") :
+                                     tr("Shift Backward")),
       myLocation(location),
       myShiftType(type)
 {

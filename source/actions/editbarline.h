@@ -18,12 +18,15 @@
 #ifndef DIALOGS_EDITBARLINE_H
 #define DIALOGS_EDITBARLINE_H
 
+#include <QCoreApplication>
 #include <QUndoCommand>
 #include <score/barline.h>
 #include <score/scorelocation.h>
 
 class EditBarline : public QUndoCommand
 {
+    Q_DECLARE_TR_FUNCTIONS(EditBarline)
+
 public:
     EditBarline(const ScoreLocation &location, Barline::BarType type,
                 int repeats);

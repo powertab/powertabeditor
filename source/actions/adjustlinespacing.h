@@ -18,12 +18,15 @@
 #ifndef ACTIONS_ADJUSTLINESPACING_H
 #define ACTIONS_ADJUSTLINESPACING_H
 
+#include <QCoreApplication>
 #include <QUndoCommand>
 
 class Score;
 
 class AdjustLineSpacing : public QUndoCommand
 {
+    Q_DECLARE_TR_FUNCTIONS(AdjustLineSpacing)
+
 public:
     AdjustLineSpacing(Score &score, int amount);
 

@@ -18,6 +18,7 @@
 #ifndef ACTIONS_ADDPOSITIONPROPERTY_H
 #define ACTIONS_ADDPOSITIONPROPERTY_H
 
+#include <QCoreApplication>
 #include <QUndoCommand>
 #include <score/position.h>
 #include <score/scorelocation.h>
@@ -25,6 +26,8 @@
 /// Sets a simple position property for each of the selected notes.
 class AddPositionProperty : public QUndoCommand
 {
+    Q_DECLARE_TR_FUNCTIONS(AddPositionProperty)
+
 public:
     AddPositionProperty(const ScoreLocation &location,
                         Position::SimpleProperty property,

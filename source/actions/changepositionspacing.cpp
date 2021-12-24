@@ -29,11 +29,11 @@ ChangePositionSpacing::ChangePositionSpacing(shared_ptr<System> system,
 {
     if (newSpacing < originalSpacing)
     {
-        setText(QObject::tr("Decrease Position Spacing"));
+        setText(tr("Decrease Position Spacing"));
     }
     else
     {
-        setText(QObject::tr("Increase Position Spacing"));
+        setText(tr("Increase Position Spacing"));
     }
 }
 

@@ -21,7 +21,7 @@
 
 EditViewFilters::EditViewFilters(Score &score,
                                  std::vector<ViewFilter> new_filters)
-    : QUndoCommand(QObject::tr("Edit View Filters")),
+    : QUndoCommand(tr("Edit View Filters")),
       myScore(score),
       myOriginalFilters(score.getViewFilters().begin(),
                         score.getViewFilters().end()),

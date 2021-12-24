@@ -18,12 +18,15 @@
 #ifndef ACTIONS_ADDIRREGULARGROUPING_H
 #define ACTIONS_ADDIRREGULARGROUPING_H
 
+#include <QCoreApplication>
 #include <QUndoCommand>
 #include <score/irregulargrouping.h>
 #include <score/scorelocation.h>
 
 class AddIrregularGrouping : public QUndoCommand
 {
+    Q_DECLARE_TR_FUNCTIONS(AddIrregularGrouping)
+
 public:
     AddIrregularGrouping(const ScoreLocation &location,
                          const IrregularGrouping &group);

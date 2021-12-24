@@ -18,6 +18,7 @@
 #ifndef ACTIONS_ADDNOTE_H
 #define ACTIONS_ADDNOTE_H
 
+#include <QCoreApplication>
 #include <QUndoCommand>
 #include <optional>
 #include <score/position.h>
@@ -25,6 +26,8 @@
 
 class AddNote : public QUndoCommand
 {
+    Q_DECLARE_TR_FUNCTIONS(AddNote)
+
 public:
     AddNote(const ScoreLocation &location, const Note &note,
             Position::DurationType duration);

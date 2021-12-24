@@ -18,6 +18,7 @@
 #ifndef ACTIONS_ADDNOTEPROPERTY_H
 #define ACTIONS_ADDNOTEPROPERTY_H
 
+#include <QCoreApplication>
 #include <QUndoCommand>
 #include <score/note.h>
 #include <score/scorelocation.h>
@@ -25,6 +26,8 @@
 /// Sets a simple note property for each of the selected notes.
 class AddNoteProperty : public QUndoCommand
 {
+    Q_DECLARE_TR_FUNCTIONS(AddNoteProperty)
+
 public:
     AddNoteProperty(const ScoreLocation &location,
                     Note::SimpleProperty property,

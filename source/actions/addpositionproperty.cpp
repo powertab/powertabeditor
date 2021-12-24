@@ -20,7 +20,7 @@
 AddPositionProperty::AddPositionProperty(const ScoreLocation &location,
                                          Position::SimpleProperty property,
                                          const QString &positionDescription)
-    : QUndoCommand(QObject::tr("Set ") + positionDescription),
+    : QUndoCommand(tr("Set %1").arg(positionDescription)),
       myLocation(location),
       myProperty(property)
 {

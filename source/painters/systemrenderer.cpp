@@ -152,7 +152,7 @@ QGraphicsItem *SystemRenderer::operator()(const System &system,
                                            clef_font, TextAlignment::Baseline,
                                            QPen(myPalette.text().color()));
         auto group = new ClickableGroup(
-            QObject::tr("Double-click to change clef type."),
+            ScoreArea::tr("Double-click to change clef type."),
             myScoreArea->getClickEvent(), location, ScoreItem::Clef);
         group->addToGroup(clef);
         group->setPos(LayoutInfo::CLEF_PADDING, clef_y);
@@ -194,7 +194,7 @@ void SystemRenderer::drawTabClef(double x, const LayoutInfo &layout,
     auto clef = new SimpleTextItem(QChar(MusicFont::TabClef), font, TextAlignment::Baseline, QPen(myPalette.text().color()));
 
     auto group = new ClickableGroup(
-        QObject::tr("Double-click to edit the number of strings."),
+        ScoreArea::tr("Double-click to edit the number of strings."),
         myScoreArea->getClickEvent(), location, ScoreItem::Clef);
     group->addToGroup(clef);
 
@@ -301,7 +301,7 @@ SystemRenderer::drawBarlines(const ConstScoreLocation &location,
             static constexpr int RECTANGLE_OFFSET = 4;
 
             auto group = new ClickableGroup(
-                QObject::tr("Double-click to edit rehearsal sign."),
+                ScoreArea::tr("Double-click to edit rehearsal sign."),
                 myScoreArea->getClickEvent(), bar_location,
                 ScoreItem::RehearsalSign);
 
@@ -500,7 +500,7 @@ SystemRenderer::drawAlternateEndings(const ConstScoreLocation &location,
         ending_location.setPositionIndex(ending.getPosition());
 
         auto group = new ClickableGroup(
-            QObject::tr("Double-click to edit repeat endings."),
+            ScoreArea::tr("Double-click to edit repeat endings."),
             myScoreArea->getClickEvent(), ending_location,
             ScoreItem::AlternateEnding);
 
@@ -630,7 +630,7 @@ SystemRenderer::drawTempoMarkers(const ConstScoreLocation &location,
         ConstScoreLocation marker_location(location);
         marker_location.setPositionIndex(tempo.getPosition());
         auto group = new ClickableGroup(
-            QObject::tr("Double-click to edit tempo marker."),
+            ScoreArea::tr("Double-click to edit tempo marker."),
             myScoreArea->getClickEvent(), marker_location,
             tempo.getMarkerType() == TempoMarker::AlterationOfPace
                 ? ScoreItem::AlterationOfPace
@@ -737,7 +737,7 @@ SystemRenderer::drawChordText(const ConstScoreLocation &location,
         ConstScoreLocation item_location(location);
         item_location.setPositionIndex(chord.getPosition());
         auto group = new ClickableGroup(
-            QObject::tr("Double-click to edit chord text."),
+            ScoreArea::tr("Double-click to edit chord text."),
             myScoreArea->getClickEvent(), item_location, ScoreItem::ChordText);
 
         const std::string text = Util::toString(chord.getChordName());
@@ -763,7 +763,7 @@ SystemRenderer::drawTextItems(const ConstScoreLocation &location,
         ConstScoreLocation item_location(location);
         item_location.setPositionIndex(text.getPosition());
         auto group = new ClickableGroup(
-            QObject::tr("Double-click to edit text."),
+            ScoreArea::tr("Double-click to edit text."),
             myScoreArea->getClickEvent(), item_location, ScoreItem::TextItem);
 
         // Note: the SimpleTextItem class is not used here since multi-line
@@ -933,7 +933,7 @@ SystemRenderer::drawPlayerChanges(const ConstScoreLocation &location,
         ConstScoreLocation change_location(location);
         change_location.setPositionIndex(change.getPosition());
         auto group = new ClickableGroup(
-            QObject::tr("Double-click to edit the active players."),
+            ScoreArea::tr("Double-click to edit the active players."),
             myScoreArea->getClickEvent(), change_location,
             ScoreItem::PlayerChange);
 
@@ -1386,7 +1386,7 @@ SystemRenderer::createVolumeSwell(const ConstScoreLocation &location,
     path.lineTo(end_x, (1.0 - padding) * LayoutInfo::TAB_SYMBOL_SPACING);
 
     auto path_item = new ClickableItemT<QGraphicsPathItem>(
-        QObject::tr("Double-click to edit volume swell."),
+        ScoreArea::tr("Double-click to edit volume swell."),
         myScoreArea->getClickEvent(), swell_location, ScoreItem::VolumeSwell);
     path_item->setPath(path);
     path_item->setPen(myPalette.text().color());
@@ -1406,7 +1406,7 @@ SystemRenderer::createTremoloBar(const ConstScoreLocation &location,
     ConstScoreLocation trem_location(location);
     trem_location.setPositionIndex(pos->getPosition());
     auto group = new ClickableGroup(
-        QObject::tr("Double-click to edit tremolo bar."),
+        ScoreArea::tr("Double-click to edit tremolo bar."),
         myScoreArea->getClickEvent(), trem_location, ScoreItem::TremoloBar);
 
     double x_start = 0;
@@ -1581,7 +1581,7 @@ SystemRenderer::createDynamic(const ConstScoreLocation &location,
     ConstScoreLocation item_location(location);
     item_location.setPositionIndex(dynamic->getPosition());
     auto group = new ClickableGroup(
-        QObject::tr("Double-click to edit dynamic."),
+        ScoreArea::tr("Double-click to edit dynamic."),
         myScoreArea->getClickEvent(), item_location, ScoreItem::Dynamic);
     group->addToGroup(textItem);
     return group;
@@ -1924,7 +1924,7 @@ SystemRenderer::drawMultiBarRest(const ConstScoreLocation &location,
                    LayoutInfo::STAFF_WIDTH - layout.getPositionSpacing() / 2.0);
 
     auto group = new ClickableGroup(
-        QObject::tr("Double-click to edit multi-bar rest."),
+        ScoreArea::tr("Double-click to edit multi-bar rest."),
         myScoreArea->getClickEvent(), location, ScoreItem::MultiBarRest);
 
     // Draw the measure count.
@@ -2177,7 +2177,7 @@ SystemRenderer::createBendGroup(const ConstScoreLocation &location,
             bend_location.setString(note.getString());
 
             auto bend_group = new ClickableGroup(
-                QObject::tr("Double-click to edit bend."),
+                ScoreArea::tr("Double-click to edit bend."),
                 myScoreArea->getClickEvent(), bend_location, ScoreItem::Bend);
 
             const Bend &bend = note.getBend();

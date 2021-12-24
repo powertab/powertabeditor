@@ -20,7 +20,7 @@
 #include <score/staff.h>
 
 AddDynamic::AddDynamic(const ScoreLocation &location, const Dynamic &dynamic)
-    : QUndoCommand(QObject::tr("Add Dynamic")),
+    : QUndoCommand(tr("Add Dynamic")),
       myLocation(location),
       myDynamic(dynamic)
 {

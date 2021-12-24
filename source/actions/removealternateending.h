@@ -18,12 +18,15 @@
 #ifndef ACTIONS_REMOVEALTERNATEENDING_H
 #define ACTIONS_REMOVEALTERNATEENDING_H
 
+#include <QCoreApplication>
 #include <QUndoCommand>
 #include <score/alternateending.h>
 #include <score/scorelocation.h>
 
 class RemoveAlternateEnding : public QUndoCommand
 {
+    Q_DECLARE_TR_FUNCTIONS(RemoveAlternateEnding)
+
 public:
     RemoveAlternateEnding(const ScoreLocation &location);
 

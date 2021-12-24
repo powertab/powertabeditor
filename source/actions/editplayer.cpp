@@ -20,7 +20,7 @@
 #include <score/score.h>
 
 EditPlayer::EditPlayer(Score &score, int playerIndex, const Player &player)
-    : QUndoCommand(QObject::tr("Edit Player")),
+    : QUndoCommand(tr("Edit Player")),
       myScore(score),
       myPlayerIndex(playerIndex),
       myNewPlayer(player),

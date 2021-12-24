@@ -18,12 +18,15 @@
 #ifndef ACTIONS_EDITKEYSIGNATURE_H
 #define ACTIONS_EDITKEYSIGNATURE_H
 
+#include <QCoreApplication>
 #include <QUndoCommand>
 #include <score/keysignature.h>
 #include <score/scorelocation.h>
 
 class EditKeySignature : public QUndoCommand
 {
+    Q_DECLARE_TR_FUNCTIONS(EditKeySignature)
+
 public:
     EditKeySignature(const ScoreLocation &location, const KeySignature &newKey);
 

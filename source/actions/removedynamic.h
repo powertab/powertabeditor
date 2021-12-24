@@ -18,12 +18,15 @@
 #ifndef DIALOGS_REMOVEDYNAMIC_H
 #define DIALOGS_REMOVEDYNAMIC_H
 
+#include <QCoreApplication>
 #include <QUndoCommand>
 #include <score/dynamic.h>
 #include <score/scorelocation.h>
 
 class RemoveDynamic : public QUndoCommand
 {
+    Q_DECLARE_TR_FUNCTIONS(RemoveDynamic)
+
 public:
     RemoveDynamic(const ScoreLocation &location);
 

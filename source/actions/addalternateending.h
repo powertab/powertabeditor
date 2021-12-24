@@ -18,12 +18,15 @@
 #ifndef ACTIONS_ADDALTERNATEENDING_H
 #define ACTIONS_ADDALTERNATEENDING_H
 
+#include <QCoreApplication>
 #include <QUndoCommand>
 #include <score/alternateending.h>
 #include <score/scorelocation.h>
 
 class AddAlternateEnding : public QUndoCommand
 {
+    Q_DECLARE_TR_FUNCTIONS(AddAlternateEnding)
+
 public:
     AddAlternateEnding(const ScoreLocation &location,
                        const AlternateEnding &ending);

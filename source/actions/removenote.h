@@ -18,6 +18,7 @@
 #ifndef ACTIONS_REMOVENOTE_H
 #define ACTIONS_REMOVENOTE_H
 
+#include <QCoreApplication>
 #include <memory>
 #include <QUndoCommand>
 #include "removeposition.h"
@@ -26,6 +27,8 @@
 
 class RemoveNote : public QUndoCommand
 {
+    Q_DECLARE_TR_FUNCTIONS(RemoveNote)
+
 public:
     RemoveNote(const ScoreLocation &location);
 

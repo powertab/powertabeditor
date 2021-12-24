@@ -20,8 +20,8 @@
 #include <score/score.h>
 
 AdjustLineSpacing::AdjustLineSpacing(Score &score, int amount)
-    : QUndoCommand(amount > 0 ? QObject::tr("Increase Line Spacing")
-                              : QObject::tr("Decrease Line Spacing")),
+    : QUndoCommand(amount > 0 ? tr("Increase Line Spacing")
+                              : tr("Decrease Line Spacing")),
       myScore(score),
       myAmount(amount)
 {

@@ -18,6 +18,7 @@
 #ifndef CHANGEPOSITIONSPACING_H
 #define CHANGEPOSITIONSPACING_H
 
+#include <QCoreApplication>
 #include <QUndoCommand>
 #include <boost/cstdint.hpp>
 #include <boost/shared_ptr.hpp>
@@ -26,6 +27,8 @@ class System;
 
 class ChangePositionSpacing : public QUndoCommand
 {
+    Q_DECLARE_TR_FUNCTIONS(ChangePositionSpacing)
+
 public:
     ChangePositionSpacing(boost::shared_ptr<System> system, uint8_t spacing);
     virtual void undo();

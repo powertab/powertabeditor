@@ -19,7 +19,7 @@
 
 EditBarline::EditBarline(const ScoreLocation &location, Barline::BarType type,
                          int repeats)
-    : QUndoCommand(QObject::tr("Edit Barline Type")),
+    : QUndoCommand(tr("Edit Barline Type")),
       myLocation(location),
       myBarType(type),
       myOriginalBarType(location.getBarline()->getBarType()),

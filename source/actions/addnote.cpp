@@ -21,7 +21,7 @@
 
 AddNote::AddNote(const ScoreLocation &location, const Note &note,
                  Position::DurationType duration)
-    : QUndoCommand(QObject::tr("Add Note")),
+    : QUndoCommand(tr("Add Note")),
       myLocation(location),
       myNote(note),
       myDuration(duration)

@@ -22,7 +22,7 @@
 EditDynamic::EditDynamic(const ScoreLocation &location,
                          const Dynamic &originalDynamic,
                          const Dynamic &newDynamic)
-    : QUndoCommand(QObject::tr("Edit Dynamic")),
+    : QUndoCommand(tr("Edit Dynamic")),
       myLocation(location),
       myOriginalDynamic(originalDynamic),
       myNewDynamic(newDynamic)

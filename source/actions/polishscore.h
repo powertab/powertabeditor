@@ -18,6 +18,7 @@
 #ifndef ACTIONS_POLISHSCORE_H
 #define ACTIONS_POLISHSCORE_H
 
+#include <QCoreApplication>
 #include <QUndoCommand>
 #include <score/system.h>
 
@@ -25,6 +26,8 @@ class Score;
 
 class PolishScore : public QUndoCommand
 {
+    Q_DECLARE_TR_FUNCTIONS(PolishScore)
+
 public:
     PolishScore(Score &score);
 

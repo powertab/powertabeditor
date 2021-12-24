@@ -18,12 +18,15 @@
 #ifndef ACTIONS_REMOVESTAFF_H
 #define ACTIONS_REMOVESTAFF_H
 
+#include <QCoreApplication>
 #include <QUndoCommand>
 #include <score/scorelocation.h>
 #include <score/staff.h>
 
 class RemoveStaff : public QUndoCommand
 {
+    Q_DECLARE_TR_FUNCTIONS(RemoveStaff)
+
 public:
     RemoveStaff(const ScoreLocation &location);
 

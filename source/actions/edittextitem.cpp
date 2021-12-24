@@ -21,7 +21,7 @@
 #include <score/utils.h>
 
 AddTextItem::AddTextItem(const ScoreLocation &location, const TextItem &text)
-    : QUndoCommand(QObject::tr("Add Text")), myLocation(location), myText(text)
+    : QUndoCommand(tr("Add Text")), myLocation(location), myText(text)
 {
 }
 
@@ -38,7 +38,7 @@ AddTextItem::undo()
 }
 
 RemoveTextItem::RemoveTextItem(const ScoreLocation &location)
-    : QUndoCommand(QObject::tr("Remove Text")),
+    : QUndoCommand(tr("Remove Text")),
       myLocation(location),
       myOriginalText(*ScoreUtils::findByPosition(
           location.getSystem().getTextItems(), location.getPositionIndex()))

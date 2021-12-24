@@ -21,7 +21,7 @@
 
 EditStaff::EditStaff(const ScoreLocation &location, Staff::ClefType clef,
     int strings)
-    : QUndoCommand(QObject::tr("Edit Staff")),
+    : QUndoCommand(tr("Edit Staff")),
     myLocation(location),
     myClef(clef),
     myNumStrings(strings)

@@ -20,7 +20,7 @@
 #include <score/score.h>
 
 AddInstrument::AddInstrument(Score &score, const Instrument &instrument)
-    : QUndoCommand(QObject::tr("Add Instrument")),
+    : QUndoCommand(tr("Add Instrument")),
       myScore(score),
       myInstrument(instrument),
       myIndex(static_cast<int>(score.getInstruments().size()))

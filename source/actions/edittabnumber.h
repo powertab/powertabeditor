@@ -18,12 +18,15 @@
 #ifndef ACTIONS_EDITTABNUMBER_H
 #define ACTIONS_EDITTABNUMBER_H
 
+#include <QCoreApplication>
 #include <QUndoCommand>
 #include <score/note.h>
 #include <score/scorelocation.h>
 
 class EditTabNumber : public QUndoCommand
 {
+    Q_DECLARE_TR_FUNCTIONS(EditTabNumber)
+
 public:
     EditTabNumber(const ScoreLocation &location, int typedNumber);
 

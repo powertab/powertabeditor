@@ -21,13 +21,12 @@
 #include <score/utils.h>
 
 RemoveDynamic::RemoveDynamic(const ScoreLocation &location)
-    : QUndoCommand(QObject::tr("Remove Dynamic")),
+    : QUndoCommand(tr("Remove Dynamic")),
       myLocation(location),
       myOriginalDynamic(*ScoreUtils::findByPosition(
                             location.getStaff().getDynamics(),
                             location.getPositionIndex()))
 {
-    setText(QObject::tr("Remove Dynamic"));
 }
 
 void RemoveDynamic::redo()

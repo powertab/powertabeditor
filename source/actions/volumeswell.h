@@ -18,12 +18,15 @@
 #ifndef ACTIONS_ADDVOLUMESWELL_H
 #define ACTIONS_ADDVOLUMESWELL_H
 
+#include <QCoreApplication>
 #include <QUndoCommand>
 #include <score/position.h>
 #include <score/scorelocation.h>
 
 class AddVolumeSwell : public QUndoCommand
 {
+    Q_DECLARE_TR_FUNCTIONS(AddVolumeSwell)
+
 public:
     AddVolumeSwell(const ScoreLocation &location, const VolumeSwell &swell);
 
@@ -37,6 +40,8 @@ private:
 
 class RemoveVolumeSwell : public QUndoCommand
 {
+    Q_DECLARE_TR_FUNCTIONS(RemoveVolumeSwell)
+
 public:
     RemoveVolumeSwell(const ScoreLocation &location);
 

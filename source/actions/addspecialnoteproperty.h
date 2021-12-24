@@ -19,6 +19,7 @@
 #define ACTIONS_ADDSPECIALNOTEPROPERTY_H
 
 #include <functional>
+#include <QCoreApplication>
 #include <QUndoCommand>
 #include <score/note.h>
 #include <score/scorelocation.h>
@@ -56,10 +57,12 @@ private:
 
 class AddTappedHarmonic : public AddSpecialNoteProperty<int>
 {
+    Q_DECLARE_TR_FUNCTIONS(AddTappedHarmonic)
+
 public:
     AddTappedHarmonic(const ScoreLocation &location, int fret)
         : AddSpecialNoteProperty<int>(location,
-                                      QObject::tr("Add Tapped Harmonic"), fret,
+                                      tr("Add Tapped Harmonic"), fret,
                                       std::mem_fn(&Note::setTappedHarmonicFret),
                                       std::mem_fn(&Note::clearTappedHarmonic))
     {
@@ -68,9 +71,11 @@ public:
 
 class AddTrill : public AddSpecialNoteProperty<int>
 {
+    Q_DECLARE_TR_FUNCTIONS(AddTrill)
+
 public:
     AddTrill(const ScoreLocation &location, int fret)
-        : AddSpecialNoteProperty<int>(location, QObject::tr("Add Trill"), fret,
+        : AddSpecialNoteProperty<int>(location, tr("Add Trill"), fret,
                                       std::mem_fn(&Note::setTrilledFret),
                                       std::mem_fn(&Note::clearTrill))
     {
@@ -79,11 +84,13 @@ public:
 
 class AddArtificialHarmonic : public AddSpecialNoteProperty<ArtificialHarmonic>
 {
+    Q_DECLARE_TR_FUNCTIONS(AddArtificialHarmonic)
+
 public:
     AddArtificialHarmonic(const ScoreLocation &location,
                           const ArtificialHarmonic &harmonic)
         : AddSpecialNoteProperty<ArtificialHarmonic>(
-              location, QObject::tr("Add Artificial Harmonic"), harmonic,
+              location, tr("Add Artificial Harmonic"), harmonic,
               std::mem_fn(&Note::setArtificialHarmonic),
               std::mem_fn(&Note::clearArtificialHarmonic))
     {
@@ -92,9 +99,11 @@ public:
 
 class AddBend : public AddSpecialNoteProperty<Bend>
 {
+    Q_DECLARE_TR_FUNCTIONS(AddBend)
+
 public:
     AddBend(const ScoreLocation &location, const Bend &bend)
-        : AddSpecialNoteProperty<Bend>(location, QObject::tr("Add Bend"), bend,
+        : AddSpecialNoteProperty<Bend>(location, tr("Add Bend"), bend,
                                        std::mem_fn(&Note::setBend),
                                        std::mem_fn(&Note::clearBend))
     {
@@ -103,10 +112,12 @@ public:
 
 class AddLeftHandFingering : public AddSpecialNoteProperty<LeftHandFingering>
 {
+    Q_DECLARE_TR_FUNCTIONS(AddLeftHandFingering)
+
 public:
     AddLeftHandFingering(const ScoreLocation &location, const LeftHandFingering &fingering)
         : AddSpecialNoteProperty<LeftHandFingering>(location,
-            QObject::tr("Add Left Hand Fingering"), fingering,
+            tr("Add Left Hand Fingering"), fingering,
             std::mem_fn(&Note::setLeftHandFingering),
             std::mem_fn(&Note::clearLeftHandFingering))
     {

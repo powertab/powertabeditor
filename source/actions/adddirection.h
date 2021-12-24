@@ -18,12 +18,15 @@
 #ifndef ACTIONS_ADDDIRECTION_H
 #define ACTIONS_ADDDIRECTION_H
 
+#include <QCoreApplication>
 #include <QUndoCommand>
 #include <score/direction.h>
 #include <score/scorelocation.h>
 
 class AddDirection : public QUndoCommand
 {
+    Q_DECLARE_TR_FUNCTIONS(AddDirection)
+
 public:
     AddDirection(const ScoreLocation &location, const Direction &direction);
 

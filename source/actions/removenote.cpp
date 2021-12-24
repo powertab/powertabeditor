@@ -20,7 +20,7 @@
 #include <score/staff.h>
 
 RemoveNote::RemoveNote(const ScoreLocation &location)
-    : QUndoCommand(QObject::tr("Clear Note")),
+    : QUndoCommand(tr("Clear Note")),
       myLocation(location),
       myNote(*location.getNote())
 {

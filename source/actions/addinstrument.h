@@ -18,6 +18,7 @@
 #ifndef ACTIONS_ADDINSTRUMENT_H
 #define ACTIONS_ADDINSTRUMENT_H
 
+#include <QCoreApplication>
 #include <QUndoCommand>
 #include <score/instrument.h>
 
@@ -25,6 +26,8 @@ class Score;
 
 class AddInstrument : public QUndoCommand
 {
+    Q_DECLARE_TR_FUNCTIONS(AddInstrument)
+
 public:
     AddInstrument(Score &score, const Instrument &instrument);
 

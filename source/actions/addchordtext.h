@@ -18,12 +18,15 @@
 #ifndef ACTIONS_ADDCHORDTEXT_H
 #define ACTIONS_ADDCHORDTEXT_H
 
+#include <QCoreApplication>
 #include <QUndoCommand>
 #include <score/chordtext.h>
 #include <score/scorelocation.h>
 
 class AddChordText : public QUndoCommand
 {
+    Q_DECLARE_TR_FUNCTIONS(AddChordText)
+
 public:
     AddChordText(const ScoreLocation &location, const ChordText &text);
 

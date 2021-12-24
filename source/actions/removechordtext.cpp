@@ -21,7 +21,7 @@
 #include <score/utils.h>
 
 RemoveChordText::RemoveChordText(const ScoreLocation &location)
-    : QUndoCommand(QObject::tr("Remove Chord Text")),
+    : QUndoCommand(tr("Remove Chord Text")),
       myLocation(location),
       myOriginalChord(*ScoreUtils::findByPosition(
                           location.getSystem().getChords(),

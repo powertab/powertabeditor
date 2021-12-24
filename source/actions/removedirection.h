@@ -18,12 +18,15 @@
 #ifndef ACTIONS_REMOVEDIRECTION_H
 #define ACTIONS_REMOVEDIRECTION_H
 
+#include <QCoreApplication>
 #include <QUndoCommand>
 #include <score/direction.h>
 #include <score/scorelocation.h>
 
 class RemoveDirection : public QUndoCommand
 {
+    Q_DECLARE_TR_FUNCTIONS(RemoveDirection)
+
 public:
     RemoveDirection(const ScoreLocation &location);
 

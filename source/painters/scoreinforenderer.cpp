@@ -24,6 +24,7 @@
 #include <score/score.h>
 #include <score/scoreinfo.h>
 #include <QColor>
+#include <QCoreApplication>
 #include <QDate>
 
 static constexpr double VERTICAL_SPACING = 10.0;
@@ -265,8 +266,9 @@ ScoreInfoRenderer::render(const Score &score, const QColor &color,
 
     ConstScoreLocation location(score);
     auto group = new ClickableGroup(
-        QObject::tr("Double-click to edit score information."), click_event,
-        location, ScoreItem::ScoreInfo);
+        QCoreApplication::translate("ScoreArea",
+                                    "Double-click to edit score information."),
+        click_event, location, ScoreItem::ScoreInfo);
 
     switch (score_info.getScoreType())
     {

@@ -18,12 +18,15 @@
 #ifndef ACTIONS_EDITTEXTITEM_H
 #define ACTIONS_EDITTEXTITEM_H
 
+#include <QCoreApplication>
 #include <QUndoCommand>
 #include <score/scorelocation.h>
 #include <score/textitem.h>
 
 class AddTextItem : public QUndoCommand
 {
+    Q_DECLARE_TR_FUNCTIONS(AddTextItem)
+
 public:
     AddTextItem(const ScoreLocation &location, const TextItem &text);
 
@@ -37,6 +40,8 @@ private:
 
 class RemoveTextItem : public QUndoCommand
 {
+    Q_DECLARE_TR_FUNCTIONS(RemoveTextItem)
+
 public:
     RemoveTextItem(const ScoreLocation &location);
 

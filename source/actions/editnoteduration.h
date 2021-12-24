@@ -18,12 +18,15 @@
 #ifndef ACTIONS_EDITNOTEDURATION_H
 #define ACTIONS_EDITNOTEDURATION_H
 
+#include <QCoreApplication>
 #include <QUndoCommand>
 #include <score/position.h>
 #include <score/scorelocation.h>
 
 class EditNoteDuration : public QUndoCommand
 {
+    Q_DECLARE_TR_FUNCTIONS(EditNoteDuration)
+
 public:
     EditNoteDuration(const ScoreLocation &location,
                      Position::DurationType duration,

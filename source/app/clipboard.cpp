@@ -126,7 +126,8 @@ void Clipboard::paste(QWidget *parent, UndoManager &undoManager,
     if (currentStaffSize != selection.getNumStrings())
     {
         QMessageBox msg(parent);
-        msg.setText(QObject::tr("Cannot paste notes from a different tuning."));
+        msg.setText(QCoreApplication::translate(
+            "PowerTabEditor", "Cannot paste notes from a different tuning."));
         msg.exec();
         return;
     }

@@ -18,6 +18,7 @@
 #ifndef ACTIONS_REMOVEPLAYER_H
 #define ACTIONS_REMOVEPLAYER_H
 
+#include <QCoreApplication>
 #include <QUndoCommand>
 #include <score/player.h>
 #include <score/playerchange.h>
@@ -27,6 +28,8 @@ class Score;
 
 class RemovePlayer : public QUndoCommand
 {
+    Q_DECLARE_TR_FUNCTIONS(RemovePlayer)
+
 public:
     RemovePlayer(Score &score, int index);
 
