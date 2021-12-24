@@ -87,8 +87,15 @@ BarlinePainter::paint(QPainter *painter, const QStyleOptionGraphicsItem *option,
 {
     ClickableItem::paint(painter, option, widget);
 
-    painter->setPen(QPen(myBarlineColor, 0.75));
+    painter->setPen(QPen(myBarlineColor, 1));
     painter->setBrush(myBarlineColor);
+
+    // For the start bar, draw a line connecting the staves.
+    if (myBarline.getPosition() == 0)
+    {
+        painter->drawLine(QLineF(myX, myLayout->getBottomStdNotationLine(), myX,
+                                 myLayout->getTopTabLine()));
+    }
 
     const Barline::BarType barType = myBarline.getBarType();
 
@@ -159,13 +166,13 @@ BarlinePainter::paint(QPainter *painter, const QStyleOptionGraphicsItem *option,
 
 void BarlinePainter::drawVerticalLines(QPainter *painter, double x)
 {
-    QVector<QLine> lines(2);
+    QVector<QLineF> lines(2);
 
     // Draw a single bar line.
-    lines[0] = QLine(x, myLayout->getTopStdNotationLine() + 1,
-                     x, myLayout->getBottomStdNotationLine());
-    lines[1] = QLine(x, myLayout->getTopTabLine() + 1,
-                     x, myLayout->getBottomTabLine());
+    lines[0] = QLineF(x, myLayout->getTopStdNotationLine() + 1,
+                      x, myLayout->getBottomStdNotationLine());
+    lines[1] = QLineF(x, myLayout->getTopTabLine() + 1,
+                      x, myLayout->getBottomTabLine());
 
     painter->drawLines(lines);
 }

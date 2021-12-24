@@ -21,6 +21,7 @@ Thanks to the following contributors who worked on this release:
 - Fixed a bug where the mixer's volume settings could be ignored when starting MIDI playback partway through the score (#335).
 - Fixed an issue where the score's title could be scaled incorrectly when printed (#338).
 - Fixed potential crashes on exit when the tuning dictionary failed to load (#342).
+- Improvements for how the first barline in a system is rendered (#2).
 
 ## [Alpha 15] - 2021-07-24
 
