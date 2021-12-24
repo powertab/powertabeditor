@@ -28,6 +28,16 @@ if ( PTE_UPDATE_TRANSLATIONS )
 else ()
     qt5_add_translation( qm_files ${translation_files} )
     add_custom_target( compile_translations ALL DEPENDS ${qm_files} )
+
+    # For Windows, also copy the Qt translations into our local folder since
+    # the dlls are also copied there.
+    if ( PLATFORM_WIN )
+        pte_copyfiles( NAME copy_qt_translations
+            DESTINATION ${PTE_TRANSLATIONS_DIR}
+            FILES ${PTE_QT_TRANSLATION_FILES}
+        )
+        add_dependencies( compile_translations copy_qt_translations )
+    endif ()
 endif ()
 
 # Install the compiled translations. This doesn't seem to be required for
