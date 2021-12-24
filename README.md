@@ -2,10 +2,16 @@
 
 [![Build Status](https://github.com/powertab/powertabeditor/workflows/Build/badge.svg)](https://github.com/powertab/powertabeditor/actions)
 
+[![Translation status](https://hosted.weblate.org/widgets/powertabeditor/-/powertabeditor/287x66-white.png)](https://hosted.weblate.org/engage/powertabeditor/)
+
+[![Get it from the Snap Store](https://snapcraft.io/static/images/badges/en/snap-store-black.svg)](https://snapcraft.io/powertabeditor)
+
+
 ### Users
 * New user? Read the [intro page](https://github.com/powertab/powertabeditor/wiki/Power-Tab-Editor-2.0,-Here-at-last!) to learn more about the project!
 * You can get the latest releases from our [downloads page](https://github.com/powertab/powertabeditor/releases).
 * You can report bugs or suggest features on our [issue tracker](https://github.com/powertab/powertabeditor/issues), or discuss ideas on the [discussions forum](https://github.com/powertab/powertabeditor/discussions)
+* You can [translate](https://hosted.weblate.org/engage/powertabeditor/) the project into your language.
 * Join the [Discord community](https://discord.gg/mpXfquuzxe)
 
 ### Developers
