@@ -17,7 +17,7 @@ jobs:
     steps:
     - uses: actions/checkout@v1
     - name: Install Apt Dependencies
-      run: sudo apt update && sudo apt install ninja-build qtbase5-dev libboost-dev libboost-date-time-dev libboost-iostreams-dev nlohmann-json3-dev libasound2-dev librtmidi-dev libminizip-dev doctest-dev
+      run: sudo apt update && sudo apt install ninja-build qtbase5-dev qttools5-dev-tools libboost-dev libboost-date-time-dev libboost-iostreams-dev nlohmann-json3-dev libasound2-dev librtmidi-dev libminizip-dev doctest-dev
     - name: Install Other Dependencies
       run: vcpkg install pugixml
     - name: Create Build Directory
