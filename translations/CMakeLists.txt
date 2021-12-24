@@ -1,5 +1,5 @@
 set( languages
-    en
+    en_CA
     fr
 )
 
