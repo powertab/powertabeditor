@@ -147,8 +147,12 @@ loadTranslations(QApplication &app, QTranslator &qt_translator,
             ptb_translator.load(locale, QStringLiteral("powertabeditor"),
                                 QStringLiteral("_"), dir))
         {
+#if (QT_VERSION >= QT_VERSION_CHECK(5,15,0))
             qDebug() << "Loaded application translations from"
                      << ptb_translator.filePath();
+#else
+            qDebug() << "Loaded application translations";
+#endif
             app.installTranslator(&ptb_translator);
         }
 
@@ -156,8 +160,12 @@ loadTranslations(QApplication &app, QTranslator &qt_translator,
             qt_translator.load(locale, QStringLiteral("qt"),
                                QStringLiteral("_"), dir))
         {
+#if (QT_VERSION >= QT_VERSION_CHECK(5,15,0))
             qDebug() << "Loaded Qt translations from"
                      << qt_translator.filePath();
+#else
+            qDebug() << "Loaded Qt translations";
+#endif
             app.installTranslator(&qt_translator);
         }
     }
