@@ -16,13 +16,19 @@ set( CPACK_PACKAGE_FILE_NAME powertabeditor-${system_name} )
 
 set( CPACK_GENERATOR DragNDrop )
 
-# Locate macdeployqt
+# Locate macdeployqt and the Qt translations (macdeployqt doesn't handle translations).
 get_target_property( uic_path Qt5::uic IMPORTED_LOCATION )
 get_filename_component( qt_bin_dir ${uic_path} DIRECTORY)
 set( macdeployqt_path "${qt_bin_dir}/macdeployqt" )
 if( NOT EXISTS ${macdeployqt_path} )
     message( FATAL_ERROR "macdeployqt not found (${macdeployqt_path})" )
 endif()
+
+cmake_path( GET qt_bin_dir PARENT_PATH qt_root_dir)
+cmake_path( APPEND qt_root_dir "translations" OUTPUT_VARIABLE qt_translations_dir )
+file( GLOB qt_translation_files
+    ${qt_translations_dir}/qtbase_*.qm
+)
 
 # Run macdeployqt on the bundle at install time.
 install( CODE
@@ -34,6 +40,10 @@ install( CODE
         message( FATAL_ERROR \"Failed to run macdeployqt\" )
     endif ()
     "
+)
+
+install( FILES ${qt_translation_files}
+    DESTINATION "${CPACK_PACKAGE_NAME}.app/Contents/Resources/translations"
 )
 
 # https://codingflamingo.com/blog/how-to-code-sign-and-notarize-net-console-app-for-mac is a good reference...

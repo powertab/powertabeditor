@@ -157,14 +157,14 @@ loadTranslations(QApplication &app, QTranslator &qt_translator,
         }
 
         if (qt_translator.isEmpty() &&
-            qt_translator.load(locale, QStringLiteral("qt"),
+            qt_translator.load(locale, QStringLiteral("qtbase"),
                                QStringLiteral("_"), dir))
         {
 #if (QT_VERSION >= QT_VERSION_CHECK(5,15,0))
-            qDebug() << "Loaded Qt translations from"
+            qDebug() << "Loaded Qt base translations from"
                      << qt_translator.filePath();
 #else
-            qDebug() << "Loaded Qt translations";
+            qDebug() << "Loaded Qt base translations";
 #endif
             app.installTranslator(&qt_translator);
         }
