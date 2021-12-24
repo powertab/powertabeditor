@@ -34,6 +34,9 @@ namespace Paths {
     /// from, ordered from highest to lowest priority.
     std::vector<path> getDataDirs();
 
+    /// Return a list of paths where translations could be loaded from.
+    std::vector<path> getTranslationDirs();
+
     /// Return a path to the user's home directory.
     path getHomeDir();
 

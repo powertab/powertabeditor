@@ -27,8 +27,10 @@
 #include <QApplication>
 #include <QCommandLineParser>
 #include <QFileOpenEvent>
+#include <QLibraryInfo>
 #include <QLocalServer>
 #include <QLocalSocket>
+#include <QTranslator>
 #include <string>
 
 #ifdef __APPLE__
@@ -128,6 +130,39 @@ protected:
     }
 };
 
+static void
+loadTranslations(QApplication &app, QTranslator &qt_translator,
+                 QTranslator &ptb_translator)
+{
+    QLocale locale;
+    qDebug() << "Finding translations for locale" << locale
+             << "with UI languages" << locale.uiLanguages();
+
+    for (auto &&path : Paths::getTranslationDirs())
+    {
+        QString dir = Paths::toQString(path);
+        qDebug() << "  - Checking" << dir;
+
+        if (ptb_translator.isEmpty() &&
+            ptb_translator.load(locale, QStringLiteral("powertabeditor"),
+                                QStringLiteral("_"), dir))
+        {
+            qDebug() << "Loaded application translations from"
+                     << ptb_translator.filePath();
+            app.installTranslator(&ptb_translator);
+        }
+
+        if (qt_translator.isEmpty() &&
+            qt_translator.load(locale, QStringLiteral("qt"),
+                               QStringLiteral("_"), dir))
+        {
+            qDebug() << "Loaded Qt translations from"
+                     << qt_translator.filePath();
+            app.installTranslator(&qt_translator);
+        }
+    }
+}
+
 int main(int argc, char *argv[])
 {
     // Register handlers for unhandled exceptions and segmentation faults.
@@ -140,6 +175,10 @@ int main(int argc, char *argv[])
     QCoreApplication::setOrganizationName(AppInfo::ORGANIZATION_NAME);
     QCoreApplication::setApplicationName(AppInfo::APPLICATION_ID);
     QCoreApplication::setApplicationVersion(AppInfo::APPLICATION_VERSION);
+
+    QTranslator qt_translator;
+    QTranslator ptb_translator;
+    loadTranslations(a, qt_translator, ptb_translator);
 
     // Allow QWidget::activateWindow() to bring the application into the
     // foreground when running on Windows.

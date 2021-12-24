@@ -1,6 +1,11 @@
-set( translation_files
-    en.ts
+set( languages
+    en
 )
+
+# Generate the list of translation files.
+set( translation_files ${languages} )
+list( TRANSFORM translation_files PREPEND "powertabeditor_" )
+list( TRANSFORM translation_files APPEND ".ts" )
 
 # For macOS, install the translations into the bundle.
 if ( PLATFORM_OSX )

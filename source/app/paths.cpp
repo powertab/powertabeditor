@@ -18,6 +18,7 @@
 #include "paths.h"
 
 #include <app/appinfo.h>
+#include <QLibraryInfo>
 #include <QString>
 #include <QStandardPaths>
 
@@ -51,6 +52,21 @@ std::vector<path> getDataDirs()
     std::vector<path> paths;
     for (const QString &p : q_paths)
         paths.push_back(fromQString(p));
+
+    return paths;
+}
+
+std::vector<path>
+getTranslationDirs()
+{
+    // Look under a "translations" folder under the data folder.
+    std::vector<path> paths = getDataDirs();
+    for (path &p : paths)
+        p /= "translations";
+
+    // Also check in the Qt translations folder.
+    paths.push_back(
+        fromQString(QLibraryInfo::location(QLibraryInfo::TranslationsPath)));
 
     return paths;
 }
