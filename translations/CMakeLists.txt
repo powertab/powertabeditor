@@ -1,0 +1,35 @@
+set( translation_files
+    en.ts
+)
+
+# For macOS, install the translations into the bundle.
+if ( PLATFORM_OSX )
+    set( output_dir "${PTE_DEV_BIN_DIR}/Power Tab Editor.app/Contents/Resources/translations")
+else ()
+    set( output_dir ${PTE_TRANSLATIONS_DIR} )
+endif ()
+
+# Set the output location for the compiled translations.
+set_source_files_properties( ${translation_files} PROPERTIES
+    OUTPUT_LOCATION ${output_dir}
+)
+
+# Add a target to generate the translations.
+# Optionally, the translations can be updated with new source strings.
+option( PTE_UPDATE_TRANSLATIONS "Scan source files for new translatable strings." OFF )
+if ( PTE_UPDATE_TRANSLATIONS )
+    qt5_create_translation( qm_files ${CMAKE_SOURCE_DIR} ${translation_files} )
+    add_custom_target( create_translations DEPENDS ${qm_files} )
+else ()
+    qt5_add_translation( qm_files ${translation_files} )
+    add_custom_target( compile_translations ALL DEPENDS ${qm_files} )
+endif ()
+
+# Install the compiled translations. This doesn't seem to be required for
+# macOS, where CPack picks up everything in the build folder's app bundle.
+if ( NOT PLATFORM_OSX )
+    install(
+        FILES ${qm_files}
+        DESTINATION ${PTE_TRANSLATIONS_INSTALL_DIR}
+    )
+endif ()

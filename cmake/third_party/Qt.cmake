@@ -1,6 +1,7 @@
 find_package( Qt5Widgets REQUIRED )
 find_package( Qt5Network REQUIRED )
 find_package( Qt5PrintSupport REQUIRED )
+find_package( Qt5LinguistTools REQUIRED )
 
 set( QT5_PLUGINS )
 if ( PLATFORM_WIN )

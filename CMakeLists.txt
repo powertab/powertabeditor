@@ -31,6 +31,7 @@ include( PTE_Library )
 
 add_subdirectory( source )
 add_subdirectory( installer )
+add_subdirectory( translations )
 if ( PLATFORM_LINUX )
     add_subdirectory(xdg)
 endif ()
