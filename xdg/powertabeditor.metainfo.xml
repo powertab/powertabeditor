@@ -6,7 +6,7 @@
   <summary>View and edit guitar tablature</summary>
   
   <metadata_license>FSFAP</metadata_license>
-  <project_license>GPL-3.0-only</project_license>
+  <project_license>GPL-3.0-or-later</project_license>
   
   <description>
     <p>
@@ -18,16 +18,21 @@
   
   <launchable type="desktop-id">powertabeditor.desktop</launchable>
   
-  <icon type="stock">powertabeditor</icon>
-  
   <categories>
     <category>AudioVideo</category>
     <category>Music</category>
   </categories>
 
   <url type="homepage">https://github.com/powertab/powertabeditor</url>
-  
+  <content_rating type="oars-1.0" />
+
   <provides>
     <binary>powertabeditor</binary>
   </provides>
+
+  <releases>
+    <release version="2.0.0-alpha15" date="2021-07-24">
+      <url>https://github.com/powertab/powertabeditor/releases/tag/2.0.0-alpha15</url>
+    </release>
+  </releases>
 </component>
