@@ -6,7 +6,7 @@
     <message>
         <location filename="../source/actions/addalternateending.cpp" line="24"/>
         <source>Add Repeat Ending</source>
-        <translation type="unfinished"></translation>
+        <translation>Tillat gjentagende slutt</translation>
     </message>
 </context>
 <context>
@@ -14,7 +14,7 @@
     <message>
         <location filename="../source/actions/addspecialnoteproperty.h" line="93"/>
         <source>Add Artificial Harmonic</source>
-        <translation type="unfinished"></translation>
+        <translation>Legg til kunstig harmoni</translation>
     </message>
 </context>
 <context>
@@ -22,7 +22,7 @@
     <message>
         <location filename="../source/actions/addbarline.cpp" line="23"/>
         <source>Insert Barline</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">Legg til taktlinje</translation>
     </message>
 </context>
 <context>
@@ -30,7 +30,7 @@
     <message>
         <location filename="../source/actions/addspecialnoteproperty.h" line="106"/>
         <source>Add Bend</source>
-        <translation type="unfinished"></translation>
+        <translation>Legg til glissando</translation>
     </message>
 </context>
 <context>
@@ -38,7 +38,7 @@
     <message>
         <location filename="../source/actions/addchordtext.cpp" line="24"/>
         <source>Add Chord Text</source>
-        <translation type="unfinished"></translation>
+        <translation>Legg til akkordtekst</translation>
     </message>
 </context>
 <context>
@@ -46,7 +46,7 @@
     <message>
         <location filename="../source/actions/adddirection.cpp" line="24"/>
         <source>Add Musical Direction</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">Legg til noteark</translation>
     </message>
 </context>
 <context>
@@ -62,7 +62,7 @@
     <message>
         <location filename="../source/actions/addinstrument.cpp" line="23"/>
         <source>Add Instrument</source>
-        <translation type="unfinished"></translation>
+        <translation>Legg til instrument</translation>
     </message>
 </context>
 <context>
@@ -99,7 +99,7 @@
     <message>
         <location filename="../source/actions/addnote.cpp" line="24"/>
         <source>Add Note</source>
-        <translation type="unfinished"></translation>
+        <translation>Legg til note</translation>
     </message>
 </context>
 <context>
@@ -147,7 +147,7 @@
     <message>
         <location filename="../source/actions/addrest.cpp" line="23"/>
         <source>Add Rest</source>
-        <translation type="unfinished"></translation>
+        <translation>Legg til hvile</translation>
     </message>
 </context>
 <context>
@@ -155,7 +155,7 @@
     <message>
         <location filename="../source/actions/addstaff.cpp" line="23"/>
         <source>Add Staff</source>
-        <translation type="unfinished"></translation>
+        <translation>Legg til stab</translation>
     </message>
 </context>
 <context>
@@ -163,7 +163,7 @@
     <message>
         <location filename="../source/actions/addsystem.cpp" line="23"/>
         <source>Add System</source>
-        <translation type="unfinished"></translation>
+        <translation>Legg til system</translation>
     </message>
 </context>
 <context>
@@ -184,7 +184,7 @@
     <message>
         <location filename="../source/actions/edittempomarker.cpp" line="27"/>
         <source>Add Tempo Marker</source>
-        <translation type="unfinished"></translation>
+        <translation>Legg til tempomarkør</translation>
     </message>
 </context>
 <context>
@@ -192,7 +192,7 @@
     <message>
         <location filename="../source/actions/edittextitem.cpp" line="24"/>
         <source>Add Text</source>
-        <translation type="unfinished"></translation>
+        <translation>Legg til tekst</translation>
     </message>
 </context>
 <context>
@@ -200,7 +200,7 @@
     <message>
         <location filename="../source/actions/tremolobar.cpp" line="22"/>
         <source>Add Tremolo Bar</source>
-        <translation type="unfinished"></translation>
+        <translation>Legg til tremololinje</translation>
     </message>
 </context>
 <context>
@@ -216,7 +216,7 @@
     <message>
         <location filename="../source/actions/volumeswell.cpp" line="22"/>
         <source>Add Volume Swell</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">Legg til lydstyrkeøkning</translation>
     </message>
 </context>
 <context>
@@ -224,12 +224,12 @@
     <message>
         <location filename="../source/actions/adjustlinespacing.cpp" line="23"/>
         <source>Increase Line Spacing</source>
-        <translation type="unfinished"></translation>
+        <translation>Øk linjeavstand</translation>
     </message>
     <message>
         <location filename="../source/actions/adjustlinespacing.cpp" line="24"/>
         <source>Decrease Line Spacing</source>
-        <translation type="unfinished"></translation>
+        <translation>Reduser linjeavstand</translation>
     </message>
 </context>
 <context>
@@ -244,7 +244,7 @@
         <location filename="../source/dialogs/alterationofpacedialog.ui" line="34"/>
         <location filename="../build/source/dialogs/ui_alterationofpacedialog.h" line="74"/>
         <source>Type:</source>
-        <translation type="unfinished"></translation>
+        <translation>Type:</translation>
     </message>
 </context>
 <context>
@@ -294,7 +294,7 @@
         <location filename="../source/dialogs/artificialharmonicdialog.ui" line="35"/>
         <location filename="../build/source/dialogs/ui_artificialharmonicdialog.h" line="236"/>
         <source>Octave:</source>
-        <translation type="unfinished"></translation>
+        <translation>Oktav:</translation>
     </message>
     <message>
         <location filename="../source/dialogs/artificialharmonicdialog.ui" line="44"/>
@@ -324,25 +324,25 @@
         <location filename="../source/dialogs/artificialharmonicdialog.ui" line="124"/>
         <location filename="../build/source/dialogs/ui_artificialharmonicdialog.h" line="241"/>
         <source>D</source>
-        <translation type="unfinished"></translation>
+        <translation>D</translation>
     </message>
     <message>
         <location filename="../source/dialogs/artificialharmonicdialog.ui" line="150"/>
         <location filename="../build/source/dialogs/ui_artificialharmonicdialog.h" line="242"/>
         <source>E</source>
-        <translation type="unfinished"></translation>
+        <translation>E</translation>
     </message>
     <message>
         <location filename="../source/dialogs/artificialharmonicdialog.ui" line="176"/>
         <location filename="../build/source/dialogs/ui_artificialharmonicdialog.h" line="243"/>
         <source>F</source>
-        <translation type="unfinished"></translation>
+        <translation>F</translation>
     </message>
     <message>
         <location filename="../source/dialogs/artificialharmonicdialog.ui" line="202"/>
         <location filename="../build/source/dialogs/ui_artificialharmonicdialog.h" line="244"/>
         <source>G</source>
-        <translation type="unfinished"></translation>
+        <translation>G</translation>
     </message>
     <message>
         <location filename="../source/dialogs/artificialharmonicdialog.ui" line="228"/>
@@ -369,7 +369,7 @@
         <location filename="../source/dialogs/barlinedialog.ui" line="31"/>
         <location filename="../build/source/dialogs/ui_barlinedialog.h" line="86"/>
         <source>Type:</source>
-        <translation type="unfinished"></translation>
+        <translation>Type:</translation>
     </message>
     <message>
         <location filename="../source/dialogs/barlinedialog.ui" line="41"/>
@@ -380,27 +380,27 @@
     <message>
         <location filename="../source/dialogs/barlinedialog.cpp" line="35"/>
         <source>Single</source>
-        <translation type="unfinished"></translation>
+        <translation>Enkel</translation>
     </message>
     <message>
         <location filename="../source/dialogs/barlinedialog.cpp" line="36"/>
         <source>Double</source>
-        <translation type="unfinished"></translation>
+        <translation>Dobbel</translation>
     </message>
     <message>
         <location filename="../source/dialogs/barlinedialog.cpp" line="37"/>
         <source>Free Time</source>
-        <translation type="unfinished"></translation>
+        <translation>Ledig tid</translation>
     </message>
     <message>
         <location filename="../source/dialogs/barlinedialog.cpp" line="40"/>
         <source>Repeat Start</source>
-        <translation type="unfinished"></translation>
+        <translation>Gjenta start</translation>
     </message>
     <message>
         <location filename="../source/dialogs/barlinedialog.cpp" line="45"/>
         <source>Repeat End</source>
-        <translation type="unfinished"></translation>
+        <translation>Gjenta slutt</translation>
     </message>
     <message>
         <location filename="../source/dialogs/barlinedialog.cpp" line="46"/>
@@ -415,13 +415,13 @@
         <location filename="../build/source/dialogs/ui_benddialog.h" line="167"/>
         <location filename="../source/dialogs/benddialog.cpp" line="34"/>
         <source>Bend</source>
-        <translation type="unfinished"></translation>
+        <translation>Glissando</translation>
     </message>
     <message>
         <location filename="../source/dialogs/benddialog.ui" line="31"/>
         <location filename="../build/source/dialogs/ui_benddialog.h" line="168"/>
         <source>Bend Type:</source>
-        <translation type="unfinished"></translation>
+        <translation>Glissandotype:</translation>
     </message>
     <message>
         <location filename="../source/dialogs/benddialog.ui" line="41"/>
@@ -439,13 +439,13 @@
         <location filename="../source/dialogs/benddialog.ui" line="61"/>
         <location filename="../build/source/dialogs/ui_benddialog.h" line="171"/>
         <source>Bend Duration:</source>
-        <translation type="unfinished"></translation>
+        <translation>Glissandovarighet:</translation>
     </message>
     <message>
         <location filename="../source/dialogs/benddialog.ui" line="73"/>
         <location filename="../build/source/dialogs/ui_benddialog.h" line="172"/>
         <source>Default</source>
-        <translation type="unfinished"></translation>
+        <translation>Forvalg</translation>
     </message>
     <message>
         <location filename="../source/dialogs/benddialog.ui" line="85"/>
@@ -457,19 +457,19 @@
         <location filename="../source/dialogs/benddialog.ui" line="95"/>
         <location filename="../build/source/dialogs/ui_benddialog.h" line="174"/>
         <source>notes</source>
-        <translation type="unfinished"></translation>
+        <translation>noter</translation>
     </message>
     <message>
         <location filename="../source/dialogs/benddialog.ui" line="106"/>
         <location filename="../build/source/dialogs/ui_benddialog.h" line="175"/>
         <source>Vertical Starting Point:</source>
-        <translation type="unfinished"></translation>
+        <translation>Loddrett startpunkt:</translation>
     </message>
     <message>
         <location filename="../source/dialogs/benddialog.ui" line="116"/>
         <location filename="../build/source/dialogs/ui_benddialog.h" line="176"/>
         <source>Vertical Ending Point:</source>
-        <translation type="unfinished"></translation>
+        <translation>Loddrett sluttpunkt:</translation>
     </message>
     <message>
         <location filename="../source/dialogs/benddialog.cpp" line="34"/>
@@ -534,13 +534,13 @@
         <location filename="../source/dialogs/bulkconverterdialog.ui" line="29"/>
         <location filename="../build/source/dialogs/ui_bulkconverterdialog.h" line="117"/>
         <source>E&amp;xit</source>
-        <translation type="unfinished"></translation>
+        <translation>A&amp;vslutt</translation>
     </message>
     <message>
         <location filename="../source/dialogs/bulkconverterdialog.ui" line="43"/>
         <location filename="../build/source/dialogs/ui_bulkconverterdialog.h" line="118"/>
         <source>Destination Directory</source>
-        <translation type="unfinished"></translation>
+        <translation>Målmappe</translation>
     </message>
     <message>
         <location filename="../source/dialogs/bulkconverterdialog.ui" line="50"/>
@@ -548,24 +548,24 @@
         <location filename="../build/source/dialogs/ui_bulkconverterdialog.h" line="119"/>
         <location filename="../build/source/dialogs/ui_bulkconverterdialog.h" line="121"/>
         <source>...</source>
-        <translation type="unfinished"></translation>
+        <translation>…</translation>
     </message>
     <message>
         <location filename="../source/dialogs/bulkconverterdialog.ui" line="60"/>
         <location filename="../build/source/dialogs/ui_bulkconverterdialog.h" line="120"/>
         <source>&amp;Convert</source>
-        <translation type="unfinished"></translation>
+        <translation>&amp;Konverter</translation>
     </message>
     <message>
         <location filename="../source/dialogs/bulkconverterdialog.ui" line="81"/>
         <location filename="../build/source/dialogs/ui_bulkconverterdialog.h" line="122"/>
         <source>Source Directory</source>
-        <translation type="unfinished"></translation>
+        <translation>Kildemappe</translation>
     </message>
     <message>
         <location filename="../source/dialogs/bulkconverterdialog.cpp" line="171"/>
         <source>Directory To Convert</source>
-        <translation type="unfinished"></translation>
+        <translation>Mappe å konvertere</translation>
     </message>
 </context>
 <context>
@@ -587,13 +587,13 @@
         <location filename="../source/dialogs/chordnamedialog.ui" line="17"/>
         <location filename="../build/source/dialogs/ui_chordnamedialog.h" line="508"/>
         <source>Chord Name</source>
-        <translation type="unfinished"></translation>
+        <translation>Akkordnavn</translation>
     </message>
     <message>
         <location filename="../source/dialogs/chordnamedialog.ui" line="31"/>
         <location filename="../build/source/dialogs/ui_chordnamedialog.h" line="509"/>
         <source>Preview:</source>
-        <translation type="unfinished"></translation>
+        <translation>Forhådsvisning:</translation>
     </message>
     <message>
         <location filename="../source/dialogs/chordnamedialog.ui" line="48"/>
@@ -605,7 +605,7 @@
         <location filename="../source/dialogs/chordnamedialog.ui" line="60"/>
         <location filename="../build/source/dialogs/ui_chordnamedialog.h" line="511"/>
         <source>No Chord</source>
-        <translation type="unfinished"></translation>
+        <translation>Ingen akkord</translation>
     </message>
     <message>
         <location filename="../source/dialogs/chordnamedialog.ui" line="90"/>
@@ -613,7 +613,7 @@
         <location filename="../build/source/dialogs/ui_chordnamedialog.h" line="512"/>
         <location filename="../build/source/dialogs/ui_chordnamedialog.h" line="576"/>
         <source>C</source>
-        <translation type="unfinished"></translation>
+        <translation>C</translation>
     </message>
     <message>
         <location filename="../source/dialogs/chordnamedialog.ui" line="110"/>
@@ -621,7 +621,7 @@
         <location filename="../build/source/dialogs/ui_chordnamedialog.h" line="513"/>
         <location filename="../build/source/dialogs/ui_chordnamedialog.h" line="577"/>
         <source>D</source>
-        <translation type="unfinished"></translation>
+        <translation>D</translation>
     </message>
     <message>
         <location filename="../source/dialogs/chordnamedialog.ui" line="130"/>
@@ -629,7 +629,7 @@
         <location filename="../build/source/dialogs/ui_chordnamedialog.h" line="514"/>
         <location filename="../build/source/dialogs/ui_chordnamedialog.h" line="578"/>
         <source>E</source>
-        <translation type="unfinished"></translation>
+        <translation>E</translation>
     </message>
     <message>
         <location filename="../source/dialogs/chordnamedialog.ui" line="150"/>
@@ -637,7 +637,7 @@
         <location filename="../build/source/dialogs/ui_chordnamedialog.h" line="515"/>
         <location filename="../build/source/dialogs/ui_chordnamedialog.h" line="579"/>
         <source>F</source>
-        <translation type="unfinished"></translation>
+        <translation>F</translation>
     </message>
     <message>
         <location filename="../source/dialogs/chordnamedialog.ui" line="170"/>
@@ -645,7 +645,7 @@
         <location filename="../build/source/dialogs/ui_chordnamedialog.h" line="516"/>
         <location filename="../build/source/dialogs/ui_chordnamedialog.h" line="580"/>
         <source>G</source>
-        <translation type="unfinished"></translation>
+        <translation>G</translation>
     </message>
     <message>
         <location filename="../source/dialogs/chordnamedialog.ui" line="190"/>
