@@ -3,6 +3,9 @@
 #define GroupName "Power Tab"
 #define ProductVersion "2.0.0-alpha15"
 
+#define public Dependency_NoExampleSetup
+#include "CodeDependencies.iss"
+
 [Setup]
 AppId=6cab03ff-a31b-4c76-a4d1-20a37575896a
 AppName={#ProductName}
@@ -26,6 +29,47 @@ UninstallDisplayIcon={app}\{#ExeName}.exe
 VersionInfoVersion=1.98.0.15
 WizardSmallImageFile=installer\windows\logo.bmp
 WizardStyle=modern
+
+[Icons]
+Name: "{group}\{#ProductName}"; Filename: "{app}\{#ExeName}.exe"
+
+[Files]
+Source: "build\bin\*"; Excludes: "pte_tests.exe"; DestDir: "{app}"; Flags: ignoreversion
+Source: "build\bin\data\tunings.json"; DestDir: "{app}\data"; Flags: ignoreversion
+Source: "build\bin\data\translations\*"; DestDir: "{app}\data\translations"; Flags: ignoreversion
+Source: "build\bin\platforms\*"; DestDir: "{app}\platforms"; Flags: ignoreversion
+Source: "build\bin\styles\*"; DestDir: "{app}\styles"; Flags: ignoreversion
+
+[Run]
+Filename: "{app}\powertabeditor.exe"; Flags: nowait postinstall; Description: "{cm:LaunchProgram,{#ProductName}}"
+
+; Hooks for MSVC runtime installation
+[Code]
+procedure InitializeWizard;
+begin
+  Dependency_InitializeWizard;
+end;
+
+function PrepareToInstall(var NeedsRestart: Boolean): String;
+begin
+  Result := Dependency_PrepareToInstall(NeedsRestart);
+end;
+
+function NeedRestart: Boolean;
+begin
+  Result := Dependency_NeedRestart;
+end;
+
+function UpdateReadyMemo(const Space, NewLine, MemoUserInfoInfo, MemoDirInfo, MemoTypeInfo, MemoComponentsInfo, MemoGroupInfo, MemoTasksInfo: String): String;
+begin
+  Result := Dependency_UpdateReadyMemo(Space, NewLine, MemoUserInfoInfo, MemoDirInfo, MemoTypeInfo, MemoComponentsInfo, MemoGroupInfo, MemoTasksInfo);
+end;
+
+function InitializeSetup: Boolean;
+begin
+  Dependency_AddVC2015To2019;
+  Result := True;
+end;
 
 [Tasks]
 Name: pt2Assoc; Description: "{cm:AssocFileExtension,{#ProductName},.pt2}";
@@ -81,19 +125,3 @@ Root: HKA; Subkey: "Software\Classes\{#ExeName}.gp"; ValueType: string; ValueNam
 Root: HKA; Subkey: "Software\Classes\{#ExeName}.gp\DefaultIcon"; ValueType: string; ValueName: ""; ValueData: "{app}\{#ExeName}.exe,0"; Tasks: gpAssoc
 Root: HKA; Subkey: "Software\Classes\{#ExeName}.gp\shell\open\command"; ValueType: string; ValueName: ""; ValueData: """{app}\{#ExeName}.exe"" ""%1"""; Tasks: gpAssoc
 Root: HKA; Subkey: "Software\Classes\Applications\{#ExeName}.exe\SupportedTypes"; ValueType: string; ValueName: ".gp"; ValueData: ""; Tasks: gpAssoc
-
-[Icons]
-Name: "{group}\{#ProductName}"; Filename: "{app}\{#ExeName}.exe"
-
-[Files]
-Source: "build\bin\*"; Excludes: "pte_tests.exe"; DestDir: "{app}"; Flags: ignoreversion
-Source: "build\bin\data\tunings.json"; DestDir: "{app}\data"; Flags: ignoreversion
-Source: "build\bin\data\translations\*"; DestDir: "{app}\data\translations"; Flags: ignoreversion
-Source: "build\bin\platforms\*"; DestDir: "{app}\platforms"; Flags: ignoreversion
-Source: "build\bin\styles\*"; DestDir: "{app}\styles"; Flags: ignoreversion
-
-; TODO - install MSVC runtime
-; TODO - file associations
-
-[Run]
-Filename: "{app}\powertabeditor.exe"; Flags: nowait postinstall; Description: "{cm:LaunchProgram,{#ProductName}}"
