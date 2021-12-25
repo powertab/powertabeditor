@@ -86,7 +86,11 @@ Root: HKA; Subkey: "Software\Classes\Applications\{#ExeName}.exe\SupportedTypes"
 Name: "{group}\{#ProductName}"; Filename: "{app}\{#ExeName}.exe"
 
 [Files]
-Source: "build\bin\*"; DestDir: "{app}"; Flags: ignoreversion recursesubdirs
+Source: "build\bin\*"; Excludes: "pte_tests.exe"; DestDir: "{app}"; Flags: ignoreversion
+Source: "build\bin\data\tunings.json"; DestDir: "{app}\data"; Flags: ignoreversion
+Source: "build\bin\data\translations\*"; DestDir: "{app}\data\translations"; Flags: ignoreversion
+Source: "build\bin\platforms\*"; DestDir: "{app}\platforms"; Flags: ignoreversion
+Source: "build\bin\styles\*"; DestDir: "{app}\styles"; Flags: ignoreversion
 
 ; TODO - install MSVC runtime
 ; TODO - file associations
