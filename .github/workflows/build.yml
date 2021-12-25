@@ -104,37 +104,13 @@ jobs:
     - name: Test
       run: ./build/bin/pte_tests.exe
 
-    - uses: microsoft/setup-msbuild@v1.0.2
-
-    - name: Fetch VC redist
-      run: |
-        cd installer/windows
-        mkdir redist
-        Invoke-WebRequest https://aka.ms/vs/16/release/vc_redist.${{ matrix.arch }}.exe -OutFile redist/vc_redist.${{ matrix.arch }}.exe
-
-    - name: Cache Wix
-      id: cache-wix
-      uses: actions/cache@v2
-      with:
-        path: installer/windows/wix314-binaries.zip
-        key: ${{ runner.os }}-wix314-4118
-
-    # Use Wix 3.14 (e.g. for issue #305). Wix 3.11 is present in the CI environment.
-    - name: Fetch Wix
-      if: steps.cache-wix.outputs.cache-hit != 'true'
-      run: |
-        cd installer/windows
-        Invoke-WebRequest -Uri http://static.wixtoolset.org/releases/v3.14.0.4118/wix314-binaries.zip -OutFile wix314-binaries.zip
-
     - name: Build Installer
       run: |
-        cd installer/windows
-        Expand-Archive -Path wix314-binaries.zip
-        msbuild pte_windows_build.sln -p:Configuration=Release -p:Platform=${{ matrix.arch }}
+        iscc installer/windows/installer.iss
 
     - name: Upload Installer
       uses: actions/upload-artifact@v2
       with:
         name: powertabeditor-windows-${{ matrix.arch }}.exe
-        path: installer/windows/bin/${{ matrix.arch }}/Release/powertabeditor.exe
+        path: installer/windows/powertabeditor.exe
         if-no-files-found: error
