@@ -29,6 +29,9 @@ if ( PTE_UPDATE_TRANSLATIONS )
 else ()
     qt5_add_translation( qm_files ${translation_files} )
     add_custom_target( compile_translations ALL DEPENDS ${qm_files} )
+    set_target_properties( compile_translations PROPERTIES
+        FOLDER data
+    )
 
     # For Windows, also copy the Qt translations into our local folder since
     # the dlls are also copied there.

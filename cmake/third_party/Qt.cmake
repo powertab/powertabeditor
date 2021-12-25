@@ -5,7 +5,10 @@ find_package( Qt5LinguistTools REQUIRED )
 
 set( QT5_PLUGINS )
 if ( PLATFORM_WIN )
-	set( QT5_PLUGINS Qt5::QWindowsIntegrationPlugin )
+	set( QT5_PLUGINS 
+        Qt5::QWindowsIntegrationPlugin
+        Qt5::QWindowsVistaStylePlugin
+    )
 endif ()
 
 # Find some standard paths to the Qt installation.

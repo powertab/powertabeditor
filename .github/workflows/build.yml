@@ -126,12 +126,8 @@ jobs:
         cd installer/windows
         Invoke-WebRequest -Uri http://static.wixtoolset.org/releases/v3.14.0.4118/wix314-binaries.zip -OutFile wix314-binaries.zip
 
-    # The qwindowsvistastyle plugin also needs to be installed, but isn't installed to the bin dir
-    # when building with the Qt package from install-qt-action ...
     - name: Build Installer
       run: |
-        mkdir ./build/bin/styles
-        cp "${env:QT_PLUGIN_PATH}/styles/qwindowsvistastyle.dll" ./build/bin/styles
         cd installer/windows
         Expand-Archive -Path wix314-binaries.zip
         msbuild pte_windows_build.sln -p:Configuration=Release -p:Platform=${{ matrix.arch }}
