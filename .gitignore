@@ -3,9 +3,7 @@
 /out
 *.user
 *~
-windows/bin
-windows/obj
-windows/redist
+installer/windows/powertabeditor.exe
 *.suo
 *.app*
 .DS_Store
