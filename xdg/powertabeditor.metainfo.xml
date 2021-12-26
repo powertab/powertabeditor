@@ -24,6 +24,9 @@
   </categories>
 
   <url type="homepage">https://github.com/powertab/powertabeditor</url>
+  <url type="bugtracker">https://github.com/powertab/powertabeditor/issues</url>
+  <url type="translate">https://hosted.weblate.org/engage/powertabeditor</url>
+
   <content_rating type="oars-1.0" />
 
   <screenshots>
