@@ -26,6 +26,13 @@
   <url type="homepage">https://github.com/powertab/powertabeditor</url>
   <content_rating type="oars-1.0" />
 
+  <screenshots>
+    <screenshot type="default">
+      <caption>Main window</caption>
+      <image>https://powertab.github.io/images/screenshot_linux.png</image>
+    </screenshot>
+  </screenshots>
+
   <provides>
     <binary>powertabeditor</binary>
   </provides>
