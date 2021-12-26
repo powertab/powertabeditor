@@ -9,6 +9,8 @@ Thanks to the following contributors who worked on this release:
 ### Added
 - Added support for tremolo bars (#8).
 - .pt2 files are now 3-4x smaller in file size.
+- The application can now be [translated into other languages](https://hosted.weblate.org/engage/powertabeditor/).
+- The Windows installer has been revamped. It is recommended to first uninstall the existing version before upgrading.
 - For Linux users, the application can now be easily installed as a Snap package (https://snapcraft.io/powertabeditor).
 - The macOS installers are now signed and notarized. This resolves the "developer cannot be verified" warnings when running for the first time.
 
