@@ -117,10 +117,11 @@ jobs:
     - name: Build Installer
       run: |
         iscc installer/windows/installer.iss
+        mv installer/windows/powertabeditor.exe installer/windows/powertabeditor-windows-${{ matrix.arch }}-${{ steps.version.outputs.VERSION_ID }}.exe
 
     - name: Upload Installer
       uses: actions/upload-artifact@v2
       with:
         name: powertabeditor-windows-${{ matrix.arch }}-${{ steps.version.outputs.VERSION_ID }}.exe
-        path: installer/windows/powertabeditor.exe
+        path: installer/windows/powertabeditor-windows-${{ matrix.arch }}-${{ steps.version.outputs.VERSION_ID }}.exe
         if-no-files-found: error
