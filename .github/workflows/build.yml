@@ -37,6 +37,11 @@ jobs:
 
     steps:
     - uses: actions/checkout@v1
+
+    - name: Version number
+      id: version
+      run: echo "::set-output name=VERSION_ID::$(git describe --tags --long --always)"
+
     - name: Install Dependencies
       # CMake 3.17 is already installed
       run: brew install boost doctest minizip ninja nlohmann-json pugixml qt5 pugixml rtmidi
@@ -65,7 +70,7 @@ jobs:
       if: github.event_name != 'pull_request'
       uses: actions/upload-artifact@v2
       with:
-        name: "powertabeditor-osx.dmg"
+        name: powertabeditor-osx-${{ steps.version.outputs.VERSION_ID }}.dmg
         path: ${{runner.workspace}}/build/powertabeditor-osx.dmg
         if-no-files-found: error
 
