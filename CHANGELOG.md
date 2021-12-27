@@ -25,6 +25,7 @@ Thanks to the following contributors who worked on this release:
 - Fixed potential crashes on exit when the tuning dictionary failed to load (#342).
 - Fixed a bug that could cause player changes to be incorrect created from .ptb files. This could lead to later issues with MIDI playback.
 - Fixed issues where .ptb files containing multiple text items at the same position did not import correctly.
+- Fixed a bug in the score polisher that could multiple notes to end up at the same position. This could lead to later issues with editing and MIDI playback.
 - Improvements for how the first barline in a system is rendered (#2).
 
 ## [Alpha 15] - 2021-07-24

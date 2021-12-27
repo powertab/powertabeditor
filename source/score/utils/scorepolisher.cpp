@@ -111,7 +111,17 @@ static void computeTimestampPosition(
     // If another voice has a note at this timestamp, use that position.
     auto it = timestampPositions.find(timestamp);
     if (it != timestampPositions.end())
+    {
+        // Shift the following timestamps over if our minimum position is
+        // farther ahead.
         position = std::max(it->second, minPosition);
+        if (it->second < minPosition)
+        {
+            int diff = minPosition - it->second;
+            for (; it != timestampPositions.end(); ++it)
+                it->second += diff;
+        }
+    }
     else
     {
         // If this timestamp falls in between two timestamps from another voice,
