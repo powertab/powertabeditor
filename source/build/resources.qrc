@@ -30,6 +30,7 @@
         <file alias="harmonic_artificial.png">../images/harmonic_artificial.png</file>
         <file alias="harmonic_tapped.png">../images/harmonic_tapped.png</file>
         <file alias="tremolo.png">../images/tremolo.png</file>
+        <file alias="tremolobar">../images/tremolobar.png</file>
         <file alias="trill.png">../images/trill.png</file>
         <file alias="tab_close_button.png">../images/tab_close_button.png</file>
         <file alias="addinstrument.gif">../images/addinstrument.gif</file>

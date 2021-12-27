@@ -67,6 +67,7 @@ ToolBox::ToolBox(Command *keySignatureCommand,
                  Command *artificialHarmonicCommand,
                  Command *tappedHarmonicCommand,
                  Command *bendCommand,
+                 Command *tremoloBarCommand,
                  Command *vibratoCommand,
                  Command *wideVibratoCommand,
                  Command *graceNoteCommand,
@@ -140,6 +141,7 @@ ToolBox::ToolBox(Command *keySignatureCommand,
     ui->artificialHarmonicButton->setDefaultAction(artificialHarmonicCommand);
     ui->tappedHarmonicButton->setDefaultAction(tappedHarmonicCommand);
     ui->bendButton->setDefaultAction(bendCommand);
+    ui->tremoloBarButton->setDefaultAction(tremoloBarCommand);
     ui->vibratoButton->setDefaultAction(vibratoCommand);
     ui->wideVibratoButton->setDefaultAction(wideVibratoCommand);
     ui->graceNoteButton->setDefaultAction(graceNoteCommand);

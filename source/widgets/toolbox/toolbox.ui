@@ -567,26 +567,6 @@
       </property>
      </widget>
     </item>
-    <item row="5" column="6">
-     <widget class="QToolButton" name="graceNoteButton">
-      <property name="text">
-       <string/>
-      </property>
-      <property name="icon">
-       <iconset resource="../../build/resources.qrc">
-        <normaloff>:/images/grace.png</normaloff>:/images/grace.png</iconset>
-      </property>
-      <property name="iconSize">
-       <size>
-        <width>24</width>
-        <height>24</height>
-       </size>
-      </property>
-      <property name="autoRaise">
-       <bool>true</bool>
-      </property>
-     </widget>
-    </item>
     <item row="3" column="3">
      <widget class="QToolButton" name="dynamicMPButton">
       <property name="text">
@@ -707,26 +687,6 @@
       </property>
      </widget>
     </item>
-    <item row="5" column="5">
-     <widget class="QToolButton" name="wideVibratoButton">
-      <property name="text">
-       <string/>
-      </property>
-      <property name="icon">
-       <iconset resource="../../build/resources.qrc">
-        <normaloff>:/images/widevibrato.png</normaloff>:/images/widevibrato.png</iconset>
-      </property>
-      <property name="iconSize">
-       <size>
-        <width>24</width>
-        <height>24</height>
-       </size>
-      </property>
-      <property name="autoRaise">
-       <bool>true</bool>
-      </property>
-     </widget>
-    </item>
     <item row="4" column="1">
      <widget class="QToolButton" name="ghostNoteButton">
       <property name="text">
@@ -815,26 +775,6 @@
       <property name="icon">
        <iconset resource="../../build/resources.qrc">
         <normaloff>:/images/32nd_note</normaloff>:/images/32nd_note</iconset>
-      </property>
-      <property name="iconSize">
-       <size>
-        <width>24</width>
-        <height>24</height>
-       </size>
-      </property>
-      <property name="autoRaise">
-       <bool>true</bool>
-      </property>
-     </widget>
-    </item>
-    <item row="5" column="4">
-     <widget class="QToolButton" name="vibratoButton">
-      <property name="text">
-       <string/>
-      </property>
-      <property name="icon">
-       <iconset resource="../../build/resources.qrc">
-        <normaloff>:/images/vibrato.png</normaloff>:/images/vibrato.png</iconset>
       </property>
       <property name="iconSize">
        <size>
@@ -941,86 +881,6 @@
       <property name="icon">
        <iconset resource="../../build/resources.qrc">
         <normaloff>:/images/dynamic_mf.png</normaloff>:/images/dynamic_mf.png</iconset>
-      </property>
-      <property name="iconSize">
-       <size>
-        <width>24</width>
-        <height>24</height>
-       </size>
-      </property>
-      <property name="autoRaise">
-       <bool>true</bool>
-      </property>
-     </widget>
-    </item>
-    <item row="7" column="0">
-     <widget class="QToolButton" name="pickStrokeUpButton">
-      <property name="text">
-       <string/>
-      </property>
-      <property name="icon">
-       <iconset resource="../../build/resources.qrc">
-        <normaloff>:/images/pickstroke_up.png</normaloff>:/images/pickstroke_up.png</iconset>
-      </property>
-      <property name="iconSize">
-       <size>
-        <width>24</width>
-        <height>24</height>
-       </size>
-      </property>
-      <property name="autoRaise">
-       <bool>true</bool>
-      </property>
-     </widget>
-    </item>
-    <item row="7" column="1">
-     <widget class="QToolButton" name="pickStrokeDownButton">
-      <property name="text">
-       <string/>
-      </property>
-      <property name="icon">
-       <iconset resource="../../build/resources.qrc">
-        <normaloff>:/images/pickstroke_down.png</normaloff>:/images/pickstroke_down.png</iconset>
-      </property>
-      <property name="iconSize">
-       <size>
-        <width>24</width>
-        <height>24</height>
-       </size>
-      </property>
-      <property name="autoRaise">
-       <bool>true</bool>
-      </property>
-     </widget>
-    </item>
-    <item row="7" column="2">
-     <widget class="QToolButton" name="arpeggioUpButton">
-      <property name="text">
-       <string/>
-      </property>
-      <property name="icon">
-       <iconset resource="../../build/resources.qrc">
-        <normaloff>:/images/arpeggio_up.png</normaloff>:/images/arpeggio_up.png</iconset>
-      </property>
-      <property name="iconSize">
-       <size>
-        <width>24</width>
-        <height>24</height>
-       </size>
-      </property>
-      <property name="autoRaise">
-       <bool>true</bool>
-      </property>
-     </widget>
-    </item>
-    <item row="7" column="3">
-     <widget class="QToolButton" name="arpeggioDownButton">
-      <property name="text">
-       <string/>
-      </property>
-      <property name="icon">
-       <iconset resource="../../build/resources.qrc">
-        <normaloff>:/images/arpeggio_down.png</normaloff>:/images/arpeggio_down.png</iconset>
       </property>
       <property name="iconSize">
        <size>
@@ -1233,14 +1093,14 @@
       </property>
      </widget>
     </item>
-    <item row="5" column="7">
-     <widget class="QToolButton" name="leftHandFingeringButton">
+    <item row="7" column="6">
+     <widget class="QToolButton" name="directionButton">
       <property name="text">
        <string/>
       </property>
       <property name="icon">
        <iconset resource="../../build/resources.qrc">
-        <normaloff>:/images/lefthandfingering.png</normaloff>:/images/lefthandfingering.png</iconset>
+        <normaloff>:/images/coda.png</normaloff>:/images/coda.png</iconset>
       </property>
       <property name="iconSize">
        <size>
@@ -1253,7 +1113,7 @@
       </property>
      </widget>
     </item>
-    <item row="7" column="4">
+    <item row="7" column="5">
      <widget class="QToolButton" name="textButton">
       <property name="text">
        <string/>
@@ -1273,14 +1133,174 @@
       </property>
      </widget>
     </item>
-    <item row="7" column="5">
-     <widget class="QToolButton" name="directionButton">
+    <item row="7" column="4">
+     <widget class="QToolButton" name="arpeggioDownButton">
       <property name="text">
        <string/>
       </property>
       <property name="icon">
        <iconset resource="../../build/resources.qrc">
-        <normaloff>:/images/coda.png</normaloff>:/images/coda.png</iconset>
+        <normaloff>:/images/arpeggio_down.png</normaloff>:/images/arpeggio_down.png</iconset>
+      </property>
+      <property name="iconSize">
+       <size>
+        <width>24</width>
+        <height>24</height>
+       </size>
+      </property>
+      <property name="autoRaise">
+       <bool>true</bool>
+      </property>
+     </widget>
+    </item>
+    <item row="7" column="3">
+     <widget class="QToolButton" name="arpeggioUpButton">
+      <property name="text">
+       <string/>
+      </property>
+      <property name="icon">
+       <iconset resource="../../build/resources.qrc">
+        <normaloff>:/images/arpeggio_up.png</normaloff>:/images/arpeggio_up.png</iconset>
+      </property>
+      <property name="iconSize">
+       <size>
+        <width>24</width>
+        <height>24</height>
+       </size>
+      </property>
+      <property name="autoRaise">
+       <bool>true</bool>
+      </property>
+     </widget>
+    </item>
+    <item row="7" column="2">
+     <widget class="QToolButton" name="pickStrokeDownButton">
+      <property name="text">
+       <string/>
+      </property>
+      <property name="icon">
+       <iconset resource="../../build/resources.qrc">
+        <normaloff>:/images/pickstroke_down.png</normaloff>:/images/pickstroke_down.png</iconset>
+      </property>
+      <property name="iconSize">
+       <size>
+        <width>24</width>
+        <height>24</height>
+       </size>
+      </property>
+      <property name="autoRaise">
+       <bool>true</bool>
+      </property>
+     </widget>
+    </item>
+    <item row="7" column="1">
+     <widget class="QToolButton" name="pickStrokeUpButton">
+      <property name="text">
+       <string/>
+      </property>
+      <property name="icon">
+       <iconset resource="../../build/resources.qrc">
+        <normaloff>:/images/pickstroke_up.png</normaloff>:/images/pickstroke_up.png</iconset>
+      </property>
+      <property name="iconSize">
+       <size>
+        <width>24</width>
+        <height>24</height>
+       </size>
+      </property>
+      <property name="autoRaise">
+       <bool>true</bool>
+      </property>
+     </widget>
+    </item>
+    <item row="7" column="0">
+     <widget class="QToolButton" name="leftHandFingeringButton">
+      <property name="text">
+       <string/>
+      </property>
+      <property name="icon">
+       <iconset resource="../../build/resources.qrc">
+        <normaloff>:/images/lefthandfingering.png</normaloff>:/images/lefthandfingering.png</iconset>
+      </property>
+      <property name="iconSize">
+       <size>
+        <width>24</width>
+        <height>24</height>
+       </size>
+      </property>
+      <property name="autoRaise">
+       <bool>true</bool>
+      </property>
+     </widget>
+    </item>
+    <item row="5" column="7">
+     <widget class="QToolButton" name="graceNoteButton">
+      <property name="text">
+       <string/>
+      </property>
+      <property name="icon">
+       <iconset resource="../../build/resources.qrc">
+        <normaloff>:/images/grace.png</normaloff>:/images/grace.png</iconset>
+      </property>
+      <property name="iconSize">
+       <size>
+        <width>24</width>
+        <height>24</height>
+       </size>
+      </property>
+      <property name="autoRaise">
+       <bool>true</bool>
+      </property>
+     </widget>
+    </item>
+    <item row="5" column="6">
+     <widget class="QToolButton" name="wideVibratoButton">
+      <property name="text">
+       <string/>
+      </property>
+      <property name="icon">
+       <iconset resource="../../build/resources.qrc">
+        <normaloff>:/images/widevibrato.png</normaloff>:/images/widevibrato.png</iconset>
+      </property>
+      <property name="iconSize">
+       <size>
+        <width>24</width>
+        <height>24</height>
+       </size>
+      </property>
+      <property name="autoRaise">
+       <bool>true</bool>
+      </property>
+     </widget>
+    </item>
+    <item row="5" column="5">
+     <widget class="QToolButton" name="vibratoButton">
+      <property name="text">
+       <string/>
+      </property>
+      <property name="icon">
+       <iconset resource="../../build/resources.qrc">
+        <normaloff>:/images/vibrato.png</normaloff>:/images/vibrato.png</iconset>
+      </property>
+      <property name="iconSize">
+       <size>
+        <width>24</width>
+        <height>24</height>
+       </size>
+      </property>
+      <property name="autoRaise">
+       <bool>true</bool>
+      </property>
+     </widget>
+    </item>
+    <item row="5" column="4">
+     <widget class="QToolButton" name="tremoloBarButton">
+      <property name="text">
+       <string/>
+      </property>
+      <property name="icon">
+       <iconset>
+        <normaloff>:/images/tremolobar.png</normaloff>:/images/tremolobar.png</iconset>
       </property>
       <property name="iconSize">
        <size>

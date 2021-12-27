@@ -76,6 +76,7 @@ public:
                      Command *artificialHarmonicCommand,
                      Command *tappedHarmonicCommand,
                      Command *bendCommand,
+                     Command *tremoloBarCommand,
                      Command *vibratoCommand,
                      Command *wideVibratoCommand,
                      Command *graceNoteCommand,

@@ -2822,7 +2822,8 @@ void PowerTabEditor::createCommands()
             [=]() { editBend(); });
 
     myTremoloBarCommand =
-        new Command(tr("Tremolo Bar..."), "TabSymbols.TremoloBar", QKeySequence(), this);
+        new Command(tr("Tremolo Bar..."), "TabSymbols.TremoloBar",
+                    QKeySequence(), this, QStringLiteral(u":images/tremolobar"));
     myTremoloBarCommand->setCheckable(true);
     connect(myTremoloBarCommand, &QAction::triggered, this,
             [=]() { editTremoloBar(); });
@@ -3420,6 +3421,7 @@ void PowerTabEditor::createToolBox()
                             myArtificialHarmonicCommand,
                             myTappedHarmonicCommand,
                             myBendCommand,
+                            myTremoloBarCommand,
                             myVibratoCommand,
                             myWideVibratoCommand,
                             myGraceNoteCommand,
