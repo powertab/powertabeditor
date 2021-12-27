@@ -362,9 +362,11 @@ TEST_CASE("Formats/PowerTabOldImport/FloatingText")
     REQUIRE(score.getSystems()[2].getTextItems().empty());
 
     const System &system1 = score.getSystems()[1];
-    REQUIRE(system1.getTextItems().size() == 1);
+    REQUIRE(system1.getTextItems().size() == 2);
     REQUIRE(system1.getTextItems()[0].getPosition() == 11);
-    REQUIRE(system1.getTextItems()[0].getContents() == "foo");
+    REQUIRE(system1.getTextItems()[0].getContents() == "foo\nbaz");
+    REQUIRE(system1.getTextItems()[1].getPosition() == 15);
+    REQUIRE(system1.getTextItems()[1].getContents() == "bar");
 }
 
 TEST_CASE("Formats/PowerTabOldImport/MergeMultiBarRests")

@@ -99,6 +99,13 @@ namespace ScoreUtils {
         const bool needsSort = !objects.empty() &&
                 objects.back().getPosition() > obj.getPosition();
 
+#if 0 // For debugging.
+        assert(std::find_if(objects.begin(), objects.end(),
+                            [&](const T &other) {
+                                return other.getPosition() == obj.getPosition();
+                            }) == objects.end());
+#endif
+
         objects.push_back(obj);
         if (needsSort)
             std::sort(objects.begin(), objects.end(), OrderByPosition<T>());

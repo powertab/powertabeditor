@@ -39,6 +39,7 @@
 #include <score/utils/scorepolisher.h>
 
 #include <cmath>
+#include <unordered_map>
 
 PowerTabOldImporter::PowerTabOldImporter()
     : FileFormatImporter(FileFormat("Power Tab 1.7 Document", { "ptb" }))
@@ -961,9 +962,16 @@ void PowerTabOldImporter::convertInitialVolumes(
     }
 }
 
-void PowerTabOldImporter::convertFloatingText(
+void
+PowerTabOldImporter::convertFloatingText(
     const PowerTabDocument::Score &oldScore, Score &score)
 {
+    // Since floating text in v1.7 has arbitrary positions, we might need to
+    // merge together multiple text items.
+
+    using TextItemMap = std::unordered_map<int, std::string>;
+    std::unordered_map<int, TextItemMap> system_text_items;
+
     for (size_t i = 0, n = oldScore.GetFloatingTextCount(); i < n; ++i)
     {
         // Convert from an absolute (x,y) position to a (system,position)
@@ -972,24 +980,41 @@ void PowerTabOldImporter::convertFloatingText(
         PowerTabDocument::Rect location = floatingText->GetRect();
 
         // Figure out which system to attach to.
-        size_t attachedSystemIdx = oldScore.GetSystemCount() - 1;
+        int system_idx = oldScore.GetSystemCount() - 1;
         for (size_t j = 0, n = oldScore.GetSystemCount(); j < n; ++j)
         {
             auto system = oldScore.GetSystem(j);
             if (system->GetRect().GetBottom() > location.GetTop())
             {
-                attachedSystemIdx = j;
+                system_idx = j;
                 break;
             }
         }
 
         // Figure out what position in the system to use.
-        auto system = oldScore.GetSystem(attachedSystemIdx);
+        auto system = oldScore.GetSystem(system_idx);
         const int position =
             static_cast<int>(system->GetPositionFromX(location.GetX()));
 
-        // Create the text item in the new score.
-        TextItem item(position, floatingText->GetText());
-        score.getSystems()[attachedSystemIdx].insertTextItem(item);
+        // Combine the text with newlines if multiple text items end up at the
+        // same position.
+        std::string &contents = system_text_items[system_idx][position];
+
+        if (!contents.empty())
+            contents += '\n';
+
+        contents += floatingText->GetText();
+    }
+
+    // Create all of the text items.
+    for (auto &&[system_idx, text_items] : system_text_items)
+    {
+        System &system = score.getSystems()[system_idx];
+
+        for (auto &&[position_idx, contents] : text_items)
+        {
+            TextItem item(position_idx, contents);
+            system.insertTextItem(item);
+        }
     }
 }

@@ -24,6 +24,7 @@ Thanks to the following contributors who worked on this release:
 - Fixed an issue where the score's title could be scaled incorrectly when printed (#338).
 - Fixed potential crashes on exit when the tuning dictionary failed to load (#342).
 - Fixed a bug that could cause player changes to be incorrect created from .ptb files. This could lead to later issues with MIDI playback.
+- Fixed issues where .ptb files containing multiple text items at the same position did not import correctly.
 - Improvements for how the first barline in a system is rendered (#2).
 
 ## [Alpha 15] - 2021-07-24
