@@ -522,7 +522,7 @@ static void mergePlayerChanges(ScoreLocation &dest_loc,
 
         // If the number of staves changed, insert the player change at the
         // start of the system.
-        if (num_guitar_staves != prev_num_guitar_staves)
+        if (!guitar_change && !bass_change)
             change.setPosition(0);
         else
             change.setPosition(dest_loc.getPositionIndex());
