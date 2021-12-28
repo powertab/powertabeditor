@@ -44,16 +44,16 @@
     <release version="2.0.0-alpha16" date="2021-12-28">
       <url>https://github.com/powertab/powertabeditor/releases/tag/2.0.0-alpha16</url>
       <description>
-        <p>New Features / Improvements</h3>
+        <p>New Features / Improvements</p>
         <ul>
           <li>Added support for tremolo bars (#8).</li>
           <li>.pt2 files are now 3-4x smaller in file size.</li>
           <li>The Windows installer has been revamped. It is recommended to first uninstall the existing version before upgrading.</li>
-          <li>For Linux users, the application can now be easily installed as a Snap package (https://snapcraft.io/powertabeditor).</li>
+          <li>For Linux users, the application can now be easily installed as a Snap package.</li>
           <li>The macOS installers are now signed and notarized. This resolves the Gatekeeper warnings when running for the first time.</li>
-          <li>The application can now be translated into other languages</a>.</li>
+          <li>The application can now be translated into other languages.</li>
         </ul>
-        <p>Changes<p>
+        <p>Changes</p>
         <ul>
           <li>Removed dependency on boost::filesystem. Instead, std::filesystem (C++17) is now used. See the README for updated build instructions.</li>
           <li>Removed dependency on RapidJSON with nlohmann-json. See the README for updated build instructions.</li>
