@@ -2,6 +2,7 @@ set( languages
     en_CA
     es
     fr
+    it
 )
 
 # Generate the list of translation files.
