@@ -8,6 +8,7 @@ Thanks to the following contributors who worked on this release:
 - @fitojb
 
 ### Added
+- Added MIDI playback support for bends that stretch over multiple notes.
 - Translations
   - Added Spanish translation (#348).
 

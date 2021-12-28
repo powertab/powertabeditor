@@ -21,6 +21,7 @@
 
 #include <boost/rational.hpp>
 #include <chrono>
+#include <optional>
 
 #include <score/generalmidi.h>
 #include <score/score.h>
@@ -552,9 +553,44 @@ static void generateGradualBend(std::vector<BendEventInfo> &bends,
     }
 }
 
-static void generateBends(std::vector<BendEventInfo> &bends,
-                          uint8_t &active_bend, int start_tick, int duration,
-                          int ppq, const Note &note)
+static int
+getDurationTicks(const Voice &voice, const Position &position,
+                 int ticks_per_beat)
+{
+    return boost::rational_cast<int>(
+        ticks_per_beat * VoiceUtils::getDurationTime(voice, position));
+}
+
+/// Add in the duration for any extra notes following the current note. Used
+/// for e.g. volume swells, tremolo bars etc.
+/// Optionally, this can only search for notes on the specified string (e.g.
+/// for bends).
+static int
+computeFollowingNotesDuration(const Voice &voice, int start_idx, int num_notes,
+                              int ticks_per_beat,
+                              const std::optional<int> &string = std::nullopt)
+{
+    int duration = 0;
+    for (int i = 1; i <= num_notes; ++i)
+    {
+        int idx = start_idx + i;
+        if (idx >= static_cast<int>(voice.getPositions().size()))
+            break;
+
+        const Position &pos = voice.getPositions()[idx];
+        if (string.has_value() && !Utils::findByString(pos, *string))
+            continue; // Continue since we only care about notes on this string.
+
+        duration += getDurationTicks(voice, pos, ticks_per_beat);
+    }
+
+    return duration;
+}
+
+static void
+generateBends(std::vector<BendEventInfo> &bends, uint8_t &active_bend,
+              int start_tick, int note_duration, int ticks_per_beat,
+              const Voice &voice, const Position &pos, const Note &note)
 {
     const Bend &bend = note.getBend();
 
@@ -562,6 +598,20 @@ static void generateBends(std::vector<BendEventInfo> &bends,
         DEFAULT_BEND + bend.getBentPitch() * BEND_QUARTER_TONE);
     const int release_amount = boost::rational_cast<int>(
         DEFAULT_BEND + bend.getReleasePitch() * BEND_QUARTER_TONE);
+
+    int duration = note_duration;
+    if (bend.getDuration() > 1 && (bend.getType() == Bend::NormalBend ||
+                                   bend.getType() == Bend::BendAndHold ||
+                                   bend.getType() == Bend::GradualRelease))
+    {
+        // Add in the duration for any extra notes the event is held
+        // over.
+        const int start_idx = ScoreUtils::findIndexByPosition(
+            voice.getPositions(), pos.getPosition());
+        duration += computeFollowingNotesDuration(
+            voice, start_idx, bend.getDuration() - 1, ticks_per_beat,
+            note.getString());
+    }
 
     switch (bend.getType())
     {
@@ -573,25 +623,20 @@ static void generateBends(std::vector<BendEventInfo> &bends,
 
         case Bend::NormalBend:
         case Bend::BendAndHold:
-            // Perform a normal (gradual) bend.
-            if (bend.getDuration() == 0)
-            {
-                // Bend over a 32nd note.
-                generateGradualBend(bends, start_tick, ppq / 8, DEFAULT_BEND,
-                                    bend_amount);
-            }
-            else if (bend.getDuration() == 1)
-            {
-                // Bend over the current note duration.
-                generateGradualBend(bends, start_tick, duration, DEFAULT_BEND,
-                                    bend_amount);
-            }
-            // TODO - implement bends that stretch over multiple notes.
+        {
+            // Bend over a 32nd note for immediate bends.
+            // Regardless, always release after the full note duration.
+            const int bend_duration =
+                bend.getDuration() == 0 ? (ticks_per_beat / 8) : duration;
+
+            generateGradualBend(bends, start_tick, bend_duration, DEFAULT_BEND,
+                                bend_amount);
             break;
+        }
 
         case Bend::BendAndRelease:
             // Bend up to the bent pitch for half of the note duration.
-            generateGradualBend(bends, start_tick, duration / 2, DEFAULT_BEND,
+            generateGradualBend(bends, start_tick, note_duration / 2, DEFAULT_BEND,
                                 bend_amount);
             break;
         default:
@@ -609,19 +654,16 @@ static void generateBends(std::vector<BendEventInfo> &bends,
             break;
 
         case Bend::PreBendAndRelease:
+        case Bend::GradualRelease:
             generateGradualBend(bends, start_tick, duration, bend_amount,
                                 release_amount);
             break;
 
         case Bend::BendAndRelease:
-            generateGradualBend(bends, start_tick + duration / 2, duration / 2,
+            generateGradualBend(bends, start_tick + note_duration / 2, note_duration / 2,
                                 bend_amount, release_amount);
             break;
 
-        case Bend::GradualRelease:
-            generateGradualBend(bends, start_tick, duration, active_bend,
-                                release_amount);
-            break;
         default:
             break;
     }
@@ -638,34 +680,6 @@ static void generateBends(std::vector<BendEventInfo> &bends,
             bends.back().myBendAmount = DEFAULT_BEND;
         active_bend = DEFAULT_BEND;
     }
-}
-
-static int
-getDurationTicks(const Voice &voice, const Position &position,
-                 int ticks_per_beat)
-{
-    return boost::rational_cast<int>(
-        ticks_per_beat * VoiceUtils::getDurationTime(voice, position));
-}
-
-/// Add in the duration for any extra notes following the current note. Used
-/// for e.g. volume swells, tremolo bars etc.
-static int
-computeFollowingNotesDuration(const Voice &voice, int start_idx, int num_notes,
-                              int ticks_per_beat)
-{
-    int duration = 0;
-    for (int i = 1; i <= num_notes; ++i)
-    {
-        int idx = start_idx + i;
-        if (idx >= static_cast<int>(voice.getPositions().size()))
-            break;
-
-        duration +=
-            getDurationTicks(voice, voice.getPositions()[idx], ticks_per_beat);
-    }
-
-    return duration;
 }
 
 static void
@@ -1133,7 +1147,7 @@ MidiFile::addEventsForBar(std::vector<MidiEventList> &tracks,
                 if (note.hasBend())
                 {
                     generateBends(bend_events, active_bend, current_tick,
-                                  duration, myTicksPerBeat, note);
+                                  duration, myTicksPerBeat, voice, *pos, note);
                 }
 
                 for (const BendEventInfo &event : bend_events)
