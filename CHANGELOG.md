@@ -5,8 +5,11 @@ All notable changes to this project will be documented in this file.
 
 Thanks to the following contributors who worked on this release:
 - @cameronwhite
+- @fitojb
 
 ### Added
+- Translations
+  - Added Spanish translation (#348).
 
 ### Changed
 

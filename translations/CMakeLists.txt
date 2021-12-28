@@ -1,5 +1,6 @@
 set( languages
     en_CA
+    es
     fr
 )
 
@@ -27,7 +28,10 @@ if ( PTE_UPDATE_TRANSLATIONS )
     qt5_create_translation( qm_files ${CMAKE_SOURCE_DIR} ${translation_files} )
     add_custom_target( create_translations DEPENDS ${qm_files} )
 else ()
-    qt5_add_translation( qm_files ${translation_files} )
+    qt5_add_translation( qm_files
+        ${translation_files}
+        OPTIONS -silent
+    )
     add_custom_target( compile_translations ALL DEPENDS ${qm_files} )
     set_target_properties( compile_translations PROPERTIES
         FOLDER data
