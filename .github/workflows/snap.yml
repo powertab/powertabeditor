@@ -1,0 +1,33 @@
+name: Snap Package
+
+on:
+  workflow_dispatch:
+    inputs:
+      branch:
+        description: 'Name of the Git branch / tag to build.'
+        required: true
+        default: 'master'
+      release-channel:
+        description: 'Channel on the Snap Store to push to (e.g: latest/stable/bug-fix)'
+        required: true
+        default: 'latest/beta'
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    steps:
+    - uses: actions/checkout@v2
+      with:
+        ref:  ${{ github.event.inputs.branch }}
+
+    - uses: snapcore/action-build@v1
+      id: build
+      with:
+        path: installer/snap
+        snapcraft-args: --enable-experimental-extensions # For kde-neon
+
+    - uses: snapcore/action-publish@v1
+      with:
+        store_login: ${{ secrets.SNAP_STORE_LOGIN }}
+        snap: ${{ steps.build.outputs.snap }}
+        release: ${{ github.event.inputs.release-channel }}
