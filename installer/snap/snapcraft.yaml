@@ -40,6 +40,11 @@ parts:
       - librtmidi4
       - libminizip1
       - libpugixml1v5
+    override-prime: |
+      set -eu
+      snapcraftctl prime
+      # Fix application icon path
+      sed --in-place 's|^Icon=.*|Icon=\${SNAP}/usr/local/share/icons/hicolor/128x128/apps/powertabeditor.png|' usr/local/share/applications/powertabeditor.desktop
 
 layout:
   # Bindings needed for ALSA, see https://forum.snapcraft.io/t/the-alsa-interface/7766/7
