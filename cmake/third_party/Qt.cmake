@@ -13,11 +13,11 @@ endif ()
 
 # Find some standard paths to the Qt installation.
 get_target_property( _uic_path Qt5::uic IMPORTED_LOCATION )
-get_filename_component( PTE_QT_BIN_DIR ${_uic_path} DIRECTORY)
-cmake_path( GET PTE_QT_BIN_DIR PARENT_PATH PTE_QT_ROOT_DIR )
+get_filename_component( PTE_QT_BIN_DIR ${_uic_path} DIRECTORY )
+get_filename_component( PTE_QT_ROOT_DIR ${PTE_QT_BIN_DIR} DIRECTORY )
 
 # Find the Qt translations, which we need to copy for Windows / Mac installers.
-cmake_path( APPEND PTE_QT_ROOT_DIR "translations" OUTPUT_VARIABLE PTE_QT_TRANSLATIONS_DIR )
+set( PTE_QT_TRANSLATIONS_DIR "${PTE_QT_ROOT_DIR}/translations" )
 file( GLOB PTE_QT_TRANSLATION_FILES
     ${PTE_QT_TRANSLATIONS_DIR}/qtbase_*.qm
 )
