@@ -5,7 +5,7 @@
 [![Translation status](https://hosted.weblate.org/widgets/powertabeditor/-/powertabeditor/287x66-white.png)](https://hosted.weblate.org/engage/powertabeditor/)
 
 [![Get it from the Snap Store](https://snapcraft.io/static/images/badges/en/snap-store-black.svg)](https://snapcraft.io/powertabeditor)
-
+<a href='https://flathub.org/apps/details/com.github.powertab.powertabeditor'><img width='185' height='58' alt='Download on Flathub' src='https://flathub.org/assets/badges/flathub-badge-en.png'/></a>
 
 ### Users
 * New user? Read the [intro page](https://github.com/powertab/powertabeditor/wiki/Power-Tab-Editor-2.0,-Here-at-last!) to learn more about the project!
