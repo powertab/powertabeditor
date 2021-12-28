@@ -19,11 +19,11 @@ parts:
     cmake-generator: Ninja
     cmake-parameters:
       - -DCMAKE_BUILD_TYPE=Release
+      - -DBUILD_TESTING=OFF
       - -DCMAKE_FIND_ROOT_PATH="usr;/snap/kde-frameworks-5-qt-5-15-core20-sdk/current"
     build-snaps:
       - kde-frameworks-5-qt-5-15-core20-sdk # For Qt and minizip
     build-packages:
-      - doctest-dev
       - libasound2-dev
       - libboost-date-time-dev
       - libboost-dev
