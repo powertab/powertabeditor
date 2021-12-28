@@ -41,8 +41,35 @@
   </provides>
 
   <releases>
-    <release version="2.0.0-alpha15" date="2021-07-24">
-      <url>https://github.com/powertab/powertabeditor/releases/tag/2.0.0-alpha15</url>
+    <release version="2.0.0-alpha16" date="2021-12-28">
+      <url>https://github.com/powertab/powertabeditor/releases/tag/2.0.0-alpha16</url>
+      <description>
+        <p>New Features / Improvements</h3>
+        <ul>
+          <li>Added support for tremolo bars (#8).</li>
+          <li>.pt2 files are now 3-4x smaller in file size.</li>
+          <li>The Windows installer has been revamped. It is recommended to first uninstall the existing version before upgrading.</li>
+          <li>For Linux users, the application can now be easily installed as a Snap package (https://snapcraft.io/powertabeditor).</li>
+          <li>The macOS installers are now signed and notarized. This resolves the Gatekeeper warnings when running for the first time.</li>
+          <li>The application can now be translated into other languages</a>.</li>
+        </ul>
+        <p>Changes<p>
+        <ul>
+          <li>Removed dependency on boost::filesystem. Instead, std::filesystem (C++17) is now used. See the README for updated build instructions.</li>
+          <li>Removed dependency on RapidJSON with nlohmann-json. See the README for updated build instructions.</li>
+        </ul>
+        <p>Bug Fixes</p>
+        <ul>
+          <li>Fixed an issue where stopping MIDI playback while a `let ring` was active could incorrectly keep the `let ring` active when restarting playback from the beginning (#337).</li>
+          <li>Fixed a bug where the mixer's volume settings could be ignored when starting MIDI playback partway through the score (#335).</li>
+          <li>Fixed an issue where the score's title could be scaled incorrectly when printed (#338).</li>
+          <li>Fixed potential crashes on exit when the tuning dictionary failed to load (#342).</li>
+          <li>Fixed a bug that could cause player changes to be incorrect created from .ptb files. This could lead to later issues with MIDI playback.</li>
+          <li>Fixed issues where .ptb files containing multiple text items at the same position did not import correctly.</li>
+          <li>Fixed a bug in the score polisher that could multiple notes to end up at the same position. This could lead to later issues with editing and MIDI playback.</li>
+          <li>Improvements for how the first barline in a system is rendered (#2).</li>
+        </ul>
+      </description>
     </release>
   </releases>
 </component>

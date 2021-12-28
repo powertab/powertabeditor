@@ -7,12 +7,23 @@ Thanks to the following contributors who worked on this release:
 - @cameronwhite
 
 ### Added
+
+### Changed
+
+### Fixed
+
+## [Alpha 16] - 2021-12-28
+
+Thanks to the following contributors who worked on this release:
+- @cameronwhite
+
+### Added
 - Added support for tremolo bars (#8).
 - .pt2 files are now 3-4x smaller in file size.
-- The application can now be [translated into other languages](https://hosted.weblate.org/engage/powertabeditor/).
 - The Windows installer has been revamped. It is recommended to first uninstall the existing version before upgrading.
 - For Linux users, the application can now be easily installed as a Snap package (https://snapcraft.io/powertabeditor).
 - The macOS installers are now signed and notarized. This resolves the "developer cannot be verified" warnings when running for the first time.
+- The application can now be [translated into other languages](https://hosted.weblate.org/engage/powertabeditor/).
 
 ### Changed
 - Removed dependency on boost::filesystem. Instead, std::filesystem (C++17) is now used. See the README for updated build instructions.
@@ -350,6 +361,7 @@ Thanks to the following contributors who worked on this release:
 * The first alpha release!
 
 [Unreleased]: https://github.com/powertab/powertabeditor/compare/2.0.0-alpha15...HEAD
+[Alpha 16]: https://github.com/powertab/powertabeditor/releases/tag/2.0.0-alpha16
 [Alpha 15]: https://github.com/powertab/powertabeditor/releases/tag/2.0.0-alpha15
 [Alpha 14]: https://github.com/powertab/powertabeditor/releases/tag/2.0.0-alpha14
 [Alpha 13]: https://github.com/powertab/powertabeditor/releases/tag/2.0.0-alpha13
