@@ -87,7 +87,7 @@
           </font>
          </property>
          <property name="text">
-          <string>C</string>
+          <string notr="true">C</string>
          </property>
          <property name="checkable">
           <bool>true</bool>
@@ -107,7 +107,7 @@
           </font>
          </property>
          <property name="text">
-          <string>D</string>
+          <string notr="true">D</string>
          </property>
          <property name="checkable">
           <bool>true</bool>
@@ -127,7 +127,7 @@
           </font>
          </property>
          <property name="text">
-          <string>E</string>
+          <string notr="true">E</string>
          </property>
          <property name="checkable">
           <bool>true</bool>
@@ -147,7 +147,7 @@
           </font>
          </property>
          <property name="text">
-          <string>F</string>
+          <string notr="true">F</string>
          </property>
          <property name="checkable">
           <bool>true</bool>
@@ -167,7 +167,7 @@
           </font>
          </property>
          <property name="text">
-          <string>G</string>
+          <string notr="true">G</string>
          </property>
          <property name="checkable">
           <bool>true</bool>
@@ -187,7 +187,7 @@
           </font>
          </property>
          <property name="text">
-          <string>A</string>
+          <string notr="true">A</string>
          </property>
          <property name="checkable">
           <bool>true</bool>
@@ -207,7 +207,7 @@
           </font>
          </property>
          <property name="text">
-          <string>B</string>
+          <string notr="true">B</string>
          </property>
          <property name="checkable">
           <bool>true</bool>
@@ -343,72 +343,72 @@
        </property>
        <item>
         <property name="text">
-         <string>maj</string>
+         <string notr="true">maj</string>
         </property>
        </item>
        <item>
         <property name="text">
-         <string>m</string>
+         <string notr="true">m</string>
         </property>
        </item>
        <item>
         <property name="text">
-         <string>+</string>
+         <string notr="true">+</string>
         </property>
        </item>
        <item>
         <property name="text">
-         <string>°</string>
+         <string notr="true">°</string>
         </property>
        </item>
        <item>
         <property name="text">
-         <string>5</string>
+         <string notr="true">5</string>
         </property>
        </item>
        <item>
         <property name="text">
-         <string>6</string>
+         <string notr="true">6</string>
         </property>
        </item>
        <item>
         <property name="text">
-         <string>m6</string>
+         <string notr="true">m6</string>
         </property>
        </item>
        <item>
         <property name="text">
-         <string>7</string>
+         <string notr="true">7</string>
         </property>
        </item>
        <item>
         <property name="text">
-         <string>maj7</string>
+         <string notr="true">maj7</string>
         </property>
        </item>
        <item>
         <property name="text">
-         <string>m7</string>
+         <string notr="true">m7</string>
         </property>
        </item>
        <item>
         <property name="text">
-         <string>+7</string>
+         <string notr="true">+7</string>
         </property>
        </item>
        <item>
         <property name="text">
-         <string>°7</string>
+         <string notr="true">°7</string>
         </property>
        </item>
        <item>
         <property name="text">
-         <string>m/maj7</string>
+         <string notr="true">m/maj7</string>
         </property>
        </item>
        <item>
         <property name="text">
-         <string>m7b5</string>
+         <string notr="true">m7b5</string>
         </property>
        </item>
       </widget>
@@ -424,7 +424,7 @@
           </size>
          </property>
          <property name="text">
-          <string>add2</string>
+          <string notr="true">add2</string>
          </property>
         </widget>
        </item>
@@ -437,7 +437,7 @@
           </size>
          </property>
          <property name="text">
-          <string>add4</string>
+          <string notr="true">add4</string>
          </property>
         </widget>
        </item>
@@ -450,7 +450,7 @@
           </size>
          </property>
          <property name="text">
-          <string>add6</string>
+          <string notr="true">add6</string>
          </property>
         </widget>
        </item>
@@ -463,7 +463,7 @@
           </size>
          </property>
          <property name="text">
-          <string>add9</string>
+          <string notr="true">add9</string>
          </property>
         </widget>
        </item>
@@ -476,7 +476,7 @@
           </size>
          </property>
          <property name="text">
-          <string>add11</string>
+          <string notr="true">add11</string>
          </property>
         </widget>
        </item>
@@ -506,7 +506,7 @@
           </size>
          </property>
          <property name="text">
-          <string>9</string>
+          <string notr="true">9</string>
          </property>
         </widget>
        </item>
@@ -519,7 +519,7 @@
           </size>
          </property>
          <property name="text">
-          <string>11</string>
+          <string notr="true">11</string>
          </property>
         </widget>
        </item>
@@ -532,7 +532,7 @@
           </size>
          </property>
          <property name="text">
-          <string>13</string>
+          <string notr="true">13</string>
          </property>
         </widget>
        </item>
@@ -562,7 +562,7 @@
           </size>
          </property>
          <property name="text">
-          <string>b5</string>
+          <string notr="true">b5</string>
          </property>
         </widget>
        </item>
@@ -575,7 +575,7 @@
           </size>
          </property>
          <property name="text">
-          <string>+5</string>
+          <string notr="true">+5</string>
          </property>
         </widget>
        </item>
@@ -588,7 +588,7 @@
           </size>
          </property>
          <property name="text">
-          <string>b9</string>
+          <string notr="true">b9</string>
          </property>
         </widget>
        </item>
@@ -601,7 +601,7 @@
           </size>
          </property>
          <property name="text">
-          <string>+9</string>
+          <string notr="true">+9</string>
          </property>
         </widget>
        </item>
@@ -614,7 +614,7 @@
           </size>
          </property>
          <property name="text">
-          <string>+11</string>
+          <string notr="true">+11</string>
          </property>
         </widget>
        </item>
@@ -627,7 +627,7 @@
           </size>
          </property>
          <property name="text">
-          <string>b13</string>
+          <string notr="true">b13</string>
          </property>
         </widget>
        </item>
@@ -640,7 +640,7 @@
           </size>
          </property>
          <property name="text">
-          <string>sus2</string>
+          <string notr="true">sus2</string>
          </property>
         </widget>
        </item>
@@ -653,7 +653,7 @@
           </size>
          </property>
          <property name="text">
-          <string>sus4</string>
+          <string notr="true">sus4</string>
          </property>
         </widget>
        </item>
@@ -700,7 +700,7 @@
           </font>
          </property>
          <property name="text">
-          <string>C</string>
+          <string notr="true">C</string>
          </property>
          <property name="checkable">
           <bool>true</bool>
@@ -720,7 +720,7 @@
           </font>
          </property>
          <property name="text">
-          <string>D</string>
+          <string notr="true">D</string>
          </property>
          <property name="checkable">
           <bool>true</bool>
@@ -740,7 +740,7 @@
           </font>
          </property>
          <property name="text">
-          <string>E</string>
+          <string notr="true">E</string>
          </property>
          <property name="checkable">
           <bool>true</bool>
@@ -760,7 +760,7 @@
           </font>
          </property>
          <property name="text">
-          <string>F</string>
+          <string notr="true">F</string>
          </property>
          <property name="checkable">
           <bool>true</bool>
@@ -780,7 +780,7 @@
           </font>
          </property>
          <property name="text">
-          <string>G</string>
+          <string notr="true">G</string>
          </property>
          <property name="checkable">
           <bool>true</bool>
@@ -800,7 +800,7 @@
           </font>
          </property>
          <property name="text">
-          <string>A</string>
+          <string notr="true">A</string>
          </property>
          <property name="checkable">
           <bool>true</bool>
@@ -820,7 +820,7 @@
           </font>
          </property>
          <property name="text">
-          <string>B</string>
+          <string notr="true">B</string>
          </property>
          <property name="checkable">
           <bool>true</bool>
@@ -918,4 +918,5 @@
  <resources>
   <include location="../build/resources.qrc"/>
  </resources>
+ <connections/>
 </ui>
