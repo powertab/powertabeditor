@@ -62,7 +62,7 @@
     <message>
         <location filename="../source/actions/addinstrument.cpp" line="23"/>
         <source>Add Instrument</source>
-        <translation type="unfinished"></translation>
+        <translation>Añadir instrumento</translation>
     </message>
 </context>
 <context>
@@ -192,7 +192,7 @@
     <message>
         <location filename="../source/actions/edittextitem.cpp" line="24"/>
         <source>Add Text</source>
-        <translation type="unfinished"></translation>
+        <translation>Añadir texto</translation>
     </message>
 </context>
 <context>
@@ -457,7 +457,7 @@
         <location filename="../source/dialogs/benddialog.ui" line="95"/>
         <location filename="../build/source/dialogs/ui_benddialog.h" line="174"/>
         <source>notes</source>
-        <translation type="unfinished"></translation>
+        <translation>notas</translation>
     </message>
     <message>
         <location filename="../source/dialogs/benddialog.ui" line="106"/>
@@ -1104,7 +1104,7 @@
         <location filename="../source/dialogs/fileinformationdialog.ui" line="73"/>
         <location filename="../build/source/dialogs/ui_fileinformationdialog.h" line="709"/>
         <source>Lesson</source>
-        <translation type="unfinished"></translation>
+        <translation>Lección</translation>
     </message>
     <message>
         <location filename="../source/dialogs/fileinformationdialog.ui" line="113"/>
@@ -1156,7 +1156,7 @@
         <location filename="../source/dialogs/fileinformationdialog.ui" line="188"/>
         <location filename="../build/source/dialogs/ui_fileinformationdialog.h" line="723"/>
         <source>Bootleg</source>
-        <translation type="unfinished"></translation>
+        <translation>Grabación ilegal</translation>
     </message>
     <message>
         <location filename="../source/dialogs/fileinformationdialog.ui" line="193"/>
@@ -1210,7 +1210,7 @@
         <location filename="../source/dialogs/fileinformationdialog.ui" line="266"/>
         <location filename="../build/source/dialogs/ui_fileinformationdialog.h" line="735"/>
         <source>Boxset</source>
-        <translation type="unfinished"></translation>
+        <translation>Caja recopilatoria</translation>
     </message>
     <message>
         <location filename="../source/dialogs/fileinformationdialog.ui" line="274"/>
@@ -1224,25 +1224,25 @@
         <location filename="../build/source/dialogs/ui_fileinformationdialog.h" line="738"/>
         <location filename="../build/source/dialogs/ui_fileinformationdialog.h" line="740"/>
         <source>Live Recording:</source>
-        <translation type="unfinished"></translation>
+        <translation>Grabación en directo:</translation>
     </message>
     <message>
         <location filename="../source/dialogs/fileinformationdialog.ui" line="312"/>
         <location filename="../build/source/dialogs/ui_fileinformationdialog.h" line="739"/>
         <source>Video Title:</source>
-        <translation type="unfinished"></translation>
+        <translation>Título del vídeo:</translation>
     </message>
     <message>
         <location filename="../source/dialogs/fileinformationdialog.ui" line="349"/>
         <location filename="../build/source/dialogs/ui_fileinformationdialog.h" line="741"/>
         <source>Bootleg Title:</source>
-        <translation type="unfinished"></translation>
+        <translation>Título de grabación ilegal:</translation>
     </message>
     <message>
         <location filename="../source/dialogs/fileinformationdialog.ui" line="359"/>
         <location filename="../build/source/dialogs/ui_fileinformationdialog.h" line="742"/>
         <source>Bootleg Date:</source>
-        <translation type="unfinished"></translation>
+        <translation>Fecha de grabación ilegal:</translation>
     </message>
     <message>
         <location filename="../source/dialogs/fileinformationdialog.ui" line="382"/>
@@ -1256,7 +1256,7 @@
         <location filename="../source/dialogs/fileinformationdialog.ui" line="400"/>
         <location filename="../build/source/dialogs/ui_fileinformationdialog.h" line="744"/>
         <source>Traditional (Author Unknown):</source>
-        <translation type="unfinished"></translation>
+        <translation>Tradicional (autoría desconocida):</translation>
     </message>
     <message>
         <location filename="../source/dialogs/fileinformationdialog.ui" line="410"/>
@@ -1444,13 +1444,13 @@
         <location filename="../source/dialogs/fileinformationdialog.ui" line="694"/>
         <location filename="../build/source/dialogs/ui_fileinformationdialog.h" line="782"/>
         <source>Performance Notes</source>
-        <translation type="unfinished"></translation>
+        <translation>Notas de interpretación</translation>
     </message>
     <message>
         <location filename="../source/dialogs/fileinformationdialog.ui" line="718"/>
         <location filename="../build/source/dialogs/ui_fileinformationdialog.h" line="781"/>
         <source>Notes:</source>
-        <translation type="unfinished"></translation>
+        <translation>Notas:</translation>
     </message>
     <message>
         <location filename="../source/dialogs/fileinformationdialog.ui" line="734"/>
@@ -1492,19 +1492,19 @@
         <location filename="../source/dialogs/fileinformationdialog.ui" line="840"/>
         <location filename="../build/source/dialogs/ui_fileinformationdialog.h" line="791"/>
         <source>Created:</source>
-        <translation type="unfinished"></translation>
+        <translation>Creación:</translation>
     </message>
     <message>
         <location filename="../source/dialogs/fileinformationdialog.ui" line="854"/>
         <location filename="../build/source/dialogs/ui_fileinformationdialog.h" line="793"/>
         <source>Modified:</source>
-        <translation type="unfinished"></translation>
+        <translation>Modificación:</translation>
     </message>
     <message>
         <location filename="../source/dialogs/fileinformationdialog.ui" line="868"/>
         <location filename="../build/source/dialogs/ui_fileinformationdialog.h" line="795"/>
         <source>Accessed:</source>
-        <translation type="unfinished"></translation>
+        <translation>Acceso:</translation>
     </message>
     <message>
         <location filename="../source/dialogs/fileinformationdialog.cpp" line="165"/>
@@ -1580,7 +1580,7 @@
         <location filename="../source/dialogs/gotobarlinedialog.ui" line="17"/>
         <location filename="../build/source/dialogs/ui_gotobarlinedialog.h" line="71"/>
         <source>Go To Barline</source>
-        <translation type="unfinished"></translation>
+        <translation>Ir a línea de compás</translation>
     </message>
     <message>
         <location filename="../source/dialogs/gotobarlinedialog.ui" line="28"/>
@@ -1651,7 +1651,7 @@
         <location filename="../source/widgets/instruments/instrumentpanelitem.ui" line="57"/>
         <location filename="../build/source/widgets/ui_instrumentpanelitem.h" line="94"/>
         <source>Click to change instrument name.</source>
-        <translation type="unfinished"></translation>
+        <translation>Pulse para cambiar el nombre del instrumento.</translation>
     </message>
     <message>
         <location filename="../source/widgets/instruments/instrumentpanelitem.ui" line="60"/>
@@ -1919,13 +1919,13 @@
         <location filename="../source/widgets/mixer/mixeritem.ui" line="148"/>
         <location filename="../build/source/widgets/ui_mixeritem.h" line="126"/>
         <source>Click to adjust tuning.</source>
-        <translation type="unfinished"></translation>
+        <translation>Pulse para ajustar la afinación.</translation>
     </message>
     <message>
         <location filename="../source/widgets/mixer/mixeritem.ui" line="151"/>
         <location filename="../build/source/widgets/ui_mixeritem.h" line="128"/>
         <source>Tuning</source>
-        <translation type="unfinished"></translation>
+        <translation>Afinación</translation>
     </message>
     <message>
         <location filename="../source/widgets/mixer/mixeritem.ui" line="176"/>
@@ -2331,7 +2331,7 @@
     <message>
         <location filename="../source/app/clipboard.cpp" line="129"/>
         <source>Cannot paste notes from a different tuning.</source>
-        <translation type="unfinished"></translation>
+        <translation>No es posible pegar notas de una afinación distinta.</translation>
     </message>
     <message>
         <location filename="../source/app/powertabeditor.cpp" line="173"/>
@@ -2394,17 +2394,17 @@
     <message>
         <location filename="../source/app/powertabeditor.cpp" line="536"/>
         <source>Cut Notes</source>
-        <translation type="unfinished"></translation>
+        <translation>Cortar notas</translation>
     </message>
     <message>
         <location filename="../source/app/powertabeditor.cpp" line="552"/>
         <source>The clipboard does not contain any notes.</source>
-        <translation type="unfinished"></translation>
+        <translation>El portapapeles no contiene ninguna nota.</translation>
     </message>
     <message>
         <location filename="../source/app/powertabeditor.cpp" line="557"/>
         <source>Paste Notes</source>
-        <translation type="unfinished"></translation>
+        <translation>Pegar notas</translation>
     </message>
     <message>
         <location filename="../source/app/powertabeditor.cpp" line="602"/>
@@ -2420,28 +2420,28 @@
         <location filename="../source/app/powertabeditor.cpp" line="657"/>
         <location filename="../source/app/powertabeditor.cpp" line="2254"/>
         <source>Play</source>
-        <translation type="unfinished"></translation>
+        <translation>Reproducir</translation>
     </message>
     <message>
         <location filename="../source/app/powertabeditor.cpp" line="876"/>
         <location filename="../source/app/powertabeditor.cpp" line="2411"/>
         <source>Remove Position</source>
-        <translation type="unfinished"></translation>
+        <translation>Quitar posición</translation>
     </message>
     <message>
         <location filename="../source/app/powertabeditor.cpp" line="956"/>
         <source>Edit Chord Text</source>
-        <translation type="unfinished"></translation>
+        <translation>Editar texto de acorde</translation>
     </message>
     <message>
         <location filename="../source/app/powertabeditor.cpp" line="993"/>
         <source>Edit Text Item</source>
-        <translation type="unfinished"></translation>
+        <translation>Editar elemento de texto</translation>
     </message>
     <message>
         <location filename="../source/app/powertabeditor.cpp" line="1092"/>
         <source>Edit Note Duration</source>
-        <translation type="unfinished"></translation>
+        <translation>Editar duración de nota</translation>
     </message>
     <message>
         <location filename="../source/app/powertabeditor.cpp" line="1313"/>
@@ -2596,7 +2596,7 @@
     <message>
         <location filename="../source/app/powertabeditor.cpp" line="2266"/>
         <source>Play From Start Of Measure</source>
-        <translation type="unfinished"></translation>
+        <translation>Reproducir desde inicio de compás</translation>
     </message>
     <message>
         <location filename="../source/app/powertabeditor.cpp" line="2273"/>
@@ -3131,7 +3131,7 @@
     <message>
         <location filename="../source/app/powertabeditor.cpp" line="2916"/>
         <source>Add Instrument</source>
-        <translation type="unfinished"></translation>
+        <translation>Añadir instrumento</translation>
     </message>
     <message>
         <location filename="../source/app/powertabeditor.cpp" line="2920"/>
@@ -3141,7 +3141,7 @@
     <message>
         <location filename="../source/app/powertabeditor.cpp" line="2927"/>
         <source>Tuning Dictionary...</source>
-        <translation type="unfinished"></translation>
+        <translation>Diccionario de afinaciones…</translation>
     </message>
     <message>
         <location filename="../source/app/powertabeditor.cpp" line="2934"/>
@@ -3376,7 +3376,7 @@
         <location filename="../build/source/dialogs/ui_preferencesdialog.h" line="372"/>
         <location filename="../build/source/dialogs/ui_preferencesdialog.h" line="384"/>
         <source>Preset:</source>
-        <translation type="unfinished"></translation>
+        <translation>Preajuste:</translation>
     </message>
     <message>
         <location filename="../source/dialogs/preferencesdialog.ui" line="138"/>
@@ -3460,18 +3460,18 @@
         <location filename="../source/dialogs/preferencesdialog.ui" line="319"/>
         <location filename="../build/source/dialogs/ui_preferencesdialog.h" line="385"/>
         <source>Tuning:</source>
-        <translation type="unfinished"></translation>
+        <translation>Afinación:</translation>
     </message>
     <message>
         <location filename="../source/dialogs/preferencesdialog.ui" line="326"/>
         <location filename="../build/source/dialogs/ui_preferencesdialog.h" line="386"/>
         <source>Tuning</source>
-        <translation type="unfinished"></translation>
+        <translation>Afinación</translation>
     </message>
     <message>
         <location filename="../source/dialogs/preferencesdialog.cpp" line="139"/>
         <source>Click to adjust tuning.</source>
-        <translation type="unfinished"></translation>
+        <translation>Pulse para ajustar la afinación.</translation>
     </message>
 </context>
 <context>
@@ -3620,7 +3620,7 @@
     <message>
         <location filename="../source/actions/removeposition.h" line="33"/>
         <source>Remove Position</source>
-        <translation type="unfinished"></translation>
+        <translation>Quitar posición</translation>
     </message>
     <message>
         <location filename="../source/app/powertabeditor.cpp" line="1291"/>
@@ -3979,7 +3979,7 @@
         <location filename="../source/dialogs/tempomarkerdialog.ui" line="34"/>
         <location filename="../build/source/dialogs/ui_tempomarkerdialog.h" line="417"/>
         <source>Description:</source>
-        <translation type="unfinished"></translation>
+        <translation>Descripción:</translation>
     </message>
     <message>
         <location filename="../source/dialogs/tempomarkerdialog.ui" line="51"/>
@@ -4015,13 +4015,13 @@
         <location filename="../source/dialogs/tempomarkerdialog.ui" line="568"/>
         <location filename="../build/source/dialogs/ui_tempomarkerdialog.h" line="443"/>
         <source>None</source>
-        <translation type="unfinished"></translation>
+        <translation>Ninguno</translation>
     </message>
     <message>
         <location filename="../source/dialogs/tempomarkerdialog.ui" line="648"/>
         <location filename="../build/source/dialogs/ui_tempomarkerdialog.h" line="448"/>
         <source>Show Metronome Marker:</source>
-        <translation type="unfinished"></translation>
+        <translation>Mostrar marcador de metrónomo:</translation>
     </message>
 </context>
 <context>
@@ -4076,7 +4076,7 @@
         <location filename="../source/dialogs/timesignaturedialog.ui" line="61"/>
         <location filename="../build/source/dialogs/ui_timesignaturedialog.h" line="179"/>
         <source>Beats Per Measure:</source>
-        <translation type="unfinished"></translation>
+        <translation>Tiempos por compás:</translation>
     </message>
     <message>
         <location filename="../source/dialogs/timesignaturedialog.ui" line="78"/>
@@ -4088,7 +4088,7 @@
         <location filename="../source/dialogs/timesignaturedialog.ui" line="95"/>
         <location filename="../build/source/dialogs/ui_timesignaturedialog.h" line="181"/>
         <source>Metronome Pulses Per Measure:</source>
-        <translation type="unfinished"></translation>
+        <translation>Pulsos de metrónomo por compás:</translation>
     </message>
     <message>
         <location filename="../source/dialogs/timesignaturedialog.ui" line="112"/>
@@ -4224,7 +4224,7 @@
         <location filename="../source/dialogs/tuningdialog.ui" line="17"/>
         <location filename="../build/source/dialogs/ui_tuningdialog.h" line="197"/>
         <source>Tuning</source>
-        <translation type="unfinished"></translation>
+        <translation>Afinación</translation>
     </message>
     <message>
         <location filename="../source/dialogs/tuningdialog.ui" line="31"/>
@@ -4254,13 +4254,13 @@
         <location filename="../source/dialogs/tuningdialog.ui" line="71"/>
         <location filename="../build/source/dialogs/ui_tuningdialog.h" line="202"/>
         <source>Tuning:</source>
-        <translation type="unfinished"></translation>
+        <translation>Afinación:</translation>
     </message>
     <message>
         <location filename="../source/dialogs/tuningdialog.ui" line="106"/>
         <location filename="../build/source/dialogs/ui_tuningdialog.h" line="203"/>
         <source>Preset:</source>
-        <translation type="unfinished"></translation>
+        <translation>Preajuste:</translation>
     </message>
     <message>
         <location filename="../source/dialogs/tuningdialog.ui" line="120"/>
@@ -4275,7 +4275,7 @@
         <location filename="../source/dialogs/tuningdictionarydialog.ui" line="17"/>
         <location filename="../build/source/dialogs/ui_tuningdictionarydialog.h" line="121"/>
         <source>Tuning Dictionary</source>
-        <translation type="unfinished"></translation>
+        <translation>Diccionario de afinaciones</translation>
     </message>
     <message>
         <location filename="../source/dialogs/tuningdictionarydialog.ui" line="25"/>
@@ -4309,7 +4309,7 @@
     <message>
         <location filename="../source/dialogs/tuningdictionarydialog.cpp" line="40"/>
         <source>Tuning (Low to High)</source>
-        <translation type="unfinished"></translation>
+        <translation>Afinación (de baja a alta)</translation>
     </message>
 </context>
 <context>
