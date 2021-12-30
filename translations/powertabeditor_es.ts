@@ -22,7 +22,7 @@
     <message>
         <location filename="../source/actions/addbarline.cpp" line="23"/>
         <source>Insert Barline</source>
-        <translation>Insertar línea de compás</translation>
+        <translation>Insertar barra de compás</translation>
     </message>
 </context>
 <context>
@@ -99,7 +99,7 @@
     <message>
         <location filename="../source/actions/addnote.cpp" line="24"/>
         <source>Add Note</source>
-        <translation type="unfinished"></translation>
+        <translation>Añadir nota</translation>
     </message>
 </context>
 <context>
@@ -163,7 +163,7 @@
     <message>
         <location filename="../source/actions/addsystem.cpp" line="23"/>
         <source>Add System</source>
-        <translation type="unfinished"></translation>
+        <translation>Añadir sistema</translation>
     </message>
 </context>
 <context>
@@ -224,12 +224,12 @@
     <message>
         <location filename="../source/actions/adjustlinespacing.cpp" line="23"/>
         <source>Increase Line Spacing</source>
-        <translation type="unfinished"></translation>
+        <translation>Aumentar interlineado</translation>
     </message>
     <message>
         <location filename="../source/actions/adjustlinespacing.cpp" line="24"/>
         <source>Decrease Line Spacing</source>
-        <translation type="unfinished"></translation>
+        <translation>Disminuir interlineado</translation>
     </message>
 </context>
 <context>
@@ -380,12 +380,12 @@
     <message>
         <location filename="../source/dialogs/barlinedialog.cpp" line="35"/>
         <source>Single</source>
-        <translation type="unfinished">Sencillo</translation>
+        <translation>Sencilla</translation>
     </message>
     <message>
         <location filename="../source/dialogs/barlinedialog.cpp" line="36"/>
         <source>Double</source>
-        <translation type="unfinished"></translation>
+        <translation>Doble</translation>
     </message>
     <message>
         <location filename="../source/dialogs/barlinedialog.cpp" line="37"/>
@@ -445,7 +445,7 @@
         <location filename="../source/dialogs/benddialog.ui" line="73"/>
         <location filename="../build/source/dialogs/ui_benddialog.h" line="172"/>
         <source>Default</source>
-        <translation type="unfinished"></translation>
+        <translation>Predeterminada</translation>
     </message>
     <message>
         <location filename="../source/dialogs/benddialog.ui" line="85"/>
@@ -528,19 +528,19 @@
         <location filename="../source/dialogs/bulkconverterdialog.ui" line="14"/>
         <location filename="../build/source/dialogs/ui_bulkconverterdialog.h" line="116"/>
         <source>Bulk Converter</source>
-        <translation type="unfinished"></translation>
+        <translation>Conversor en masa</translation>
     </message>
     <message>
         <location filename="../source/dialogs/bulkconverterdialog.ui" line="29"/>
         <location filename="../build/source/dialogs/ui_bulkconverterdialog.h" line="117"/>
         <source>E&amp;xit</source>
-        <translation type="unfinished"></translation>
+        <translation>&amp;Salir</translation>
     </message>
     <message>
         <location filename="../source/dialogs/bulkconverterdialog.ui" line="43"/>
         <location filename="../build/source/dialogs/ui_bulkconverterdialog.h" line="118"/>
         <source>Destination Directory</source>
-        <translation type="unfinished"></translation>
+        <translation>Directorio de destino</translation>
     </message>
     <message>
         <location filename="../source/dialogs/bulkconverterdialog.ui" line="50"/>
@@ -548,7 +548,7 @@
         <location filename="../build/source/dialogs/ui_bulkconverterdialog.h" line="119"/>
         <location filename="../build/source/dialogs/ui_bulkconverterdialog.h" line="121"/>
         <source>...</source>
-        <translation type="unfinished"></translation>
+        <translation>…</translation>
     </message>
     <message>
         <location filename="../source/dialogs/bulkconverterdialog.ui" line="60"/>
@@ -560,12 +560,12 @@
         <location filename="../source/dialogs/bulkconverterdialog.ui" line="81"/>
         <location filename="../build/source/dialogs/ui_bulkconverterdialog.h" line="122"/>
         <source>Source Directory</source>
-        <translation type="unfinished"></translation>
+        <translation>Directorio de origen</translation>
     </message>
     <message>
         <location filename="../source/dialogs/bulkconverterdialog.cpp" line="171"/>
         <source>Directory To Convert</source>
-        <translation type="unfinished"></translation>
+        <translation>Directorio que convertir</translation>
     </message>
 </context>
 <context>
@@ -587,13 +587,13 @@
         <location filename="../source/dialogs/chordnamedialog.ui" line="17"/>
         <location filename="../build/source/dialogs/ui_chordnamedialog.h" line="552"/>
         <source>Chord Name</source>
-        <translation type="unfinished"></translation>
+        <translation>Nombre del acorde</translation>
     </message>
     <message>
         <location filename="../source/dialogs/chordnamedialog.ui" line="31"/>
         <location filename="../build/source/dialogs/ui_chordnamedialog.h" line="553"/>
         <source>Preview:</source>
-        <translation type="unfinished"></translation>
+        <translation>Previsualización:</translation>
     </message>
     <message>
         <location filename="../source/dialogs/chordnamedialog.ui" line="48"/>
@@ -770,7 +770,7 @@
     <message>
         <location filename="../source/actions/editbarline.cpp" line="22"/>
         <source>Edit Barline Type</source>
-        <translation type="unfinished"></translation>
+        <translation>Editar tipo de barra de compás</translation>
     </message>
 </context>
 <context>
@@ -786,7 +786,7 @@
     <message>
         <location filename="../source/actions/editfileinformation.cpp" line="24"/>
         <source>Edit File Information</source>
-        <translation type="unfinished"></translation>
+        <translation>Editar información del archivo</translation>
     </message>
 </context>
 <context>
@@ -794,7 +794,7 @@
     <message>
         <location filename="../source/actions/editinstrument.cpp" line="24"/>
         <source>Edit Instrument</source>
-        <translation type="unfinished"></translation>
+        <translation>Editar instrumento</translation>
     </message>
 </context>
 <context>
@@ -855,7 +855,7 @@
     <message>
         <location filename="../source/actions/edittimesignature.cpp" line="25"/>
         <source>Edit Time Signature</source>
-        <translation type="unfinished"></translation>
+        <translation>Editar cifra de compás</translation>
     </message>
 </context>
 <context>
@@ -863,7 +863,7 @@
     <message>
         <location filename="../source/actions/editviewfilters.cpp" line="24"/>
         <source>Edit View Filters</source>
-        <translation type="unfinished"></translation>
+        <translation>Editar filtros de vista</translation>
     </message>
 </context>
 <context>
@@ -924,25 +924,25 @@
         <location filename="../source/dialogs/fileinformationdialog.ui" line="152"/>
         <location filename="../build/source/dialogs/ui_fileinformationdialog.h" line="713"/>
         <source>Release Information</source>
-        <translation type="unfinished"></translation>
+        <translation>Información de lanzamiento</translation>
     </message>
     <message>
         <location filename="../source/dialogs/fileinformationdialog.ui" line="164"/>
         <location filename="../build/source/dialogs/ui_fileinformationdialog.h" line="714"/>
         <source>Release Type:</source>
-        <translation type="unfinished"></translation>
+        <translation>Tipo de lanzamiento:</translation>
     </message>
     <message>
         <location filename="../source/dialogs/fileinformationdialog.ui" line="178"/>
         <location filename="../build/source/dialogs/ui_fileinformationdialog.h" line="719"/>
         <source>Public Release (Audio)</source>
-        <translation type="unfinished"></translation>
+        <translation>Lanzamiento público (audio)</translation>
     </message>
     <message>
         <location filename="../source/dialogs/fileinformationdialog.ui" line="183"/>
         <location filename="../build/source/dialogs/ui_fileinformationdialog.h" line="721"/>
         <source>Public Release (Video)</source>
-        <translation type="unfinished"></translation>
+        <translation>Lanzamiento público (vídeo)</translation>
     </message>
     <message>
         <location filename="../source/dialogs/fileinformationdialog.ui" line="188"/>
@@ -1372,13 +1372,13 @@
         <location filename="../source/dialogs/gotobarlinedialog.ui" line="17"/>
         <location filename="../build/source/dialogs/ui_gotobarlinedialog.h" line="71"/>
         <source>Go To Barline</source>
-        <translation>Ir a línea de compás</translation>
+        <translation>Ir a barra de compás</translation>
     </message>
     <message>
         <location filename="../source/dialogs/gotobarlinedialog.ui" line="28"/>
         <location filename="../build/source/dialogs/ui_gotobarlinedialog.h" line="72"/>
         <source>Barline:</source>
-        <translation>Línea de compás:</translation>
+        <translation>Barra de compás:</translation>
     </message>
 </context>
 <context>
@@ -1437,7 +1437,7 @@
         <location filename="../source/widgets/instruments/instrumentpanelitem.ui" line="50"/>
         <location filename="../build/source/widgets/ui_instrumentpanelitem.h" line="92"/>
         <source>1.</source>
-        <translation type="unfinished">300&#xa0;% {1.?}</translation>
+        <translation>1.</translation>
     </message>
     <message>
         <location filename="../source/widgets/instruments/instrumentpanelitem.ui" line="57"/>
@@ -1687,7 +1687,7 @@
         <location filename="../source/widgets/mixer/mixeritem.ui" line="53"/>
         <location filename="../build/source/widgets/ui_mixeritem.h" line="117"/>
         <source>1.</source>
-        <translation type="unfinished">300&#xa0;% {1.?}</translation>
+        <translation>1.</translation>
     </message>
     <message>
         <location filename="../source/widgets/mixer/mixeritem.ui" line="72"/>
@@ -1746,7 +1746,7 @@
     <message>
         <location filename="../source/widgets/toolbox/notepage.cpp" line="34"/>
         <source>Notes</source>
-        <translation type="unfinished"></translation>
+        <translation>Notas</translation>
     </message>
     <message>
         <location filename="../source/widgets/toolbox/notepage.cpp" line="47"/>
@@ -1921,7 +1921,7 @@
     <message>
         <location filename="../source/widgets/toolbox/notepage.cpp" line="288"/>
         <source>Tremolo</source>
-        <translation type="unfinished"></translation>
+        <translation>Trémolo</translation>
     </message>
 </context>
 <context>
@@ -1942,13 +1942,13 @@
         <location filename="../source/widgets/playback/playbackwidget.ui" line="61"/>
         <location filename="../build/source/widgets/ui_playbackwidget.h" line="212"/>
         <source>1</source>
-        <translation type="unfinished">300&#xa0;% {1?}</translation>
+        <translation>1</translation>
     </message>
     <message>
         <location filename="../source/widgets/playback/playbackwidget.ui" line="71"/>
         <location filename="../build/source/widgets/ui_playbackwidget.h" line="213"/>
         <source>2</source>
-        <translation type="unfinished">300&#xa0;% {2?}</translation>
+        <translation>2</translation>
     </message>
     <message>
         <location filename="../source/widgets/playback/playbackwidget.ui" line="93"/>
@@ -2133,7 +2133,7 @@
     <message>
         <location filename="../source/app/powertabeditor.cpp" line="246"/>
         <source>Open</source>
-        <translation type="unfinished"></translation>
+        <translation>Abrir</translation>
     </message>
     <message>
         <location filename="../source/app/powertabeditor.cpp" line="276"/>
@@ -2206,7 +2206,7 @@
     <message>
         <location filename="../source/app/powertabeditor.cpp" line="624"/>
         <source>Pause</source>
-        <translation type="unfinished"></translation>
+        <translation>Pausar</translation>
     </message>
     <message>
         <location filename="../source/app/powertabeditor.cpp" line="657"/>
@@ -2328,7 +2328,7 @@
     <message>
         <location filename="../source/app/powertabeditor.cpp" line="2193"/>
         <source>Bulk Converter...</source>
-        <translation type="unfinished"></translation>
+        <translation>Conversor en masa…</translation>
     </message>
     <message>
         <location filename="../source/app/powertabeditor.cpp" line="2199"/>
@@ -2503,7 +2503,7 @@
     <message>
         <location filename="../source/app/powertabeditor.cpp" line="2429"/>
         <source>Chord Name...</source>
-        <translation type="unfinished"></translation>
+        <translation>Nombre del acorde…</translation>
     </message>
     <message>
         <location filename="../source/app/powertabeditor.cpp" line="2435"/>
@@ -2548,12 +2548,12 @@
     <message>
         <location filename="../source/app/powertabeditor.cpp" line="2487"/>
         <source>Increase</source>
-        <translation type="unfinished"></translation>
+        <translation>Aumentar</translation>
     </message>
     <message>
         <location filename="../source/app/powertabeditor.cpp" line="2494"/>
         <source>Decrease</source>
-        <translation type="unfinished"></translation>
+        <translation>Disminuir</translation>
     </message>
     <message>
         <location filename="../source/app/powertabeditor.cpp" line="2503"/>
@@ -2600,12 +2600,12 @@
     <message>
         <location filename="../source/app/powertabeditor.cpp" line="2527"/>
         <source>Increase Duration</source>
-        <translation type="unfinished"></translation>
+        <translation>Aumentar duración</translation>
     </message>
     <message>
         <location filename="../source/app/powertabeditor.cpp" line="2534"/>
         <source>Decrease Duration</source>
-        <translation type="unfinished"></translation>
+        <translation>Disminuir duración</translation>
     </message>
     <message>
         <location filename="../source/app/powertabeditor.cpp" line="2541"/>
@@ -2751,7 +2751,7 @@
     <message>
         <location filename="../source/app/powertabeditor.cpp" line="2704"/>
         <source>Edit Time Signature...</source>
-        <translation type="unfinished"></translation>
+        <translation>Editar cifra de compás…</translation>
     </message>
     <message>
         <location filename="../source/app/powertabeditor.cpp" line="2711"/>
@@ -2761,7 +2761,7 @@
     <message>
         <location filename="../source/app/powertabeditor.cpp" line="2718"/>
         <source>Barline...</source>
-        <translation>Línea de compás…</translation>
+        <translation>Barra de compás…</translation>
     </message>
     <message>
         <location filename="../source/app/powertabeditor.cpp" line="2724"/>
@@ -2938,7 +2938,7 @@
     <message>
         <location filename="../source/app/powertabeditor.cpp" line="2935"/>
         <source>Edit View Filters...</source>
-        <translation type="unfinished"></translation>
+        <translation>Editar filtros de vista…</translation>
     </message>
     <message>
         <location filename="../source/app/powertabeditor.cpp" line="2952"/>
@@ -3079,17 +3079,17 @@
     <message>
         <location filename="../source/app/powertabeditor.cpp" line="3931"/>
         <source>Edit Barline</source>
-        <translation>Editar línea de compás</translation>
+        <translation>Editar barra de compás</translation>
     </message>
     <message>
         <location filename="../source/app/powertabeditor.cpp" line="3936"/>
         <source>Insert Barline</source>
-        <translation>Insertar línea de compás</translation>
+        <translation>Insertar barra de compás</translation>
     </message>
     <message>
         <location filename="../source/app/powertabeditor.cpp" line="3942"/>
         <source>Barline</source>
-        <translation>Línea de compás</translation>
+        <translation>Barra de compás</translation>
     </message>
     <message>
         <location filename="../source/build/main.cpp" line="201"/>
@@ -3144,7 +3144,7 @@
         <location filename="../source/dialogs/preferencesdialog.ui" line="86"/>
         <location filename="../build/source/dialogs/ui_preferencesdialog.h" line="364"/>
         <source>Play Notes While Editing</source>
-        <translation type="unfinished"></translation>
+        <translation>Reproducir notas al editar</translation>
     </message>
     <message>
         <location filename="../source/dialogs/preferencesdialog.ui" line="101"/>
@@ -3316,7 +3316,7 @@
     <message>
         <location filename="../source/actions/removebarline.cpp" line="24"/>
         <source>Remove Barline</source>
-        <translation>Quitar línea de compás</translation>
+        <translation>Quitar barra de compás</translation>
     </message>
 </context>
 <context>
@@ -3510,7 +3510,7 @@
     <message>
         <location filename="../source/painters/barlinepainter.cpp" line="36"/>
         <source>Click to edit barline.</source>
-        <translation>Pulse para editar la línea de compás.</translation>
+        <translation>Pulse para editar la barra de compás.</translation>
     </message>
     <message>
         <location filename="../source/painters/directions.cpp" line="54"/>
@@ -3555,12 +3555,12 @@
     <message>
         <location filename="../source/painters/systemrenderer.cpp" line="740"/>
         <source>Double-click to edit chord text.</source>
-        <translation type="unfinished"></translation>
+        <translation>Pulse dos veces para editar el texto del acorde.</translation>
     </message>
     <message>
         <location filename="../source/painters/systemrenderer.cpp" line="766"/>
         <source>Double-click to edit text.</source>
-        <translation type="unfinished"></translation>
+        <translation>Pulse dos veces para editar el texto.</translation>
     </message>
     <message>
         <location filename="../source/painters/systemrenderer.cpp" line="936"/>
@@ -3595,7 +3595,7 @@
     <message>
         <location filename="../source/painters/timesignaturepainter.cpp" line="30"/>
         <source>Click to edit time signature.</source>
-        <translation type="unfinished"></translation>
+        <translation>Pulse para editar la cifra de compás.</translation>
     </message>
 </context>
 <context>
@@ -3613,7 +3613,7 @@
     <message>
         <location filename="../source/widgets/toolbox/scorepage.cpp" line="40"/>
         <source>Add Percussion Track</source>
-        <translation type="unfinished"></translation>
+        <translation>Añadir pista percusiva</translation>
     </message>
     <message>
         <location filename="../source/widgets/toolbox/scorepage.cpp" line="44"/>
@@ -3628,22 +3628,22 @@
     <message>
         <location filename="../source/widgets/toolbox/scorepage.cpp" line="64"/>
         <source>Section</source>
-        <translation type="unfinished"></translation>
+        <translation>Sección</translation>
     </message>
     <message>
         <location filename="../source/widgets/toolbox/scorepage.cpp" line="68"/>
         <source>Insert Section Before</source>
-        <translation type="unfinished"></translation>
+        <translation>Insertar sección antes</translation>
     </message>
     <message>
         <location filename="../source/widgets/toolbox/scorepage.cpp" line="72"/>
         <source>Insert Section After</source>
-        <translation type="unfinished"></translation>
+        <translation>Insertar sección después</translation>
     </message>
     <message>
         <location filename="../source/widgets/toolbox/scorepage.cpp" line="76"/>
         <source>Remove Section</source>
-        <translation type="unfinished"></translation>
+        <translation>Quitar sección</translation>
     </message>
     <message>
         <location filename="../source/widgets/toolbox/scorepage.cpp" line="80"/>
@@ -3653,17 +3653,17 @@
     <message>
         <location filename="../source/widgets/toolbox/scorepage.cpp" line="84"/>
         <source>Increase Width</source>
-        <translation type="unfinished"></translation>
+        <translation>Aumentar anchura</translation>
     </message>
     <message>
         <location filename="../source/widgets/toolbox/scorepage.cpp" line="89"/>
         <source>Decrease Width</source>
-        <translation type="unfinished"></translation>
+        <translation>Disminuir anchura</translation>
     </message>
     <message>
         <location filename="../source/widgets/toolbox/scorepage.cpp" line="94"/>
         <source>Justify</source>
-        <translation type="unfinished"></translation>
+        <translation>Justificar</translation>
     </message>
     <message>
         <location filename="../source/widgets/toolbox/scorepage.cpp" line="113"/>
@@ -3844,13 +3844,13 @@
         <location filename="../build/source/dialogs/ui_timesignaturedialog.h" line="175"/>
         <location filename="../source/dialogs/timesignaturedialog.cpp" line="130"/>
         <source>Time Signature</source>
-        <translation type="unfinished"></translation>
+        <translation>Cifra de compás</translation>
     </message>
     <message>
         <location filename="../source/dialogs/timesignaturedialog.ui" line="31"/>
         <location filename="../build/source/dialogs/ui_timesignaturedialog.h" line="176"/>
         <source>Show Time Signature:</source>
-        <translation type="unfinished"></translation>
+        <translation>Mostrar cifra de compás:</translation>
     </message>
     <message>
         <location filename="../source/dialogs/timesignaturedialog.ui" line="41"/>
@@ -3945,7 +3945,7 @@
         <location filename="../source/dialogs/tremolobardialog.ui" line="73"/>
         <location filename="../build/source/dialogs/ui_tremolobardialog.h" line="122"/>
         <source>notes</source>
-        <translation type="unfinished"></translation>
+        <translation>notas</translation>
     </message>
     <message>
         <location filename="../source/dialogs/tremolobardialog.cpp" line="32"/>
@@ -4110,7 +4110,7 @@
         <location filename="../source/dialogs/viewfilterdialog.ui" line="17"/>
         <location filename="../build/source/dialogs/ui_viewfilterdialog.h" line="240"/>
         <source>View Filters</source>
-        <translation type="unfinished"></translation>
+        <translation>Filtros de vista</translation>
     </message>
     <message>
         <location filename="../source/dialogs/viewfilterdialog.ui" line="76"/>
@@ -4148,19 +4148,19 @@
         <location filename="../source/dialogs/viewfilterdialog.ui" line="149"/>
         <location filename="../build/source/dialogs/ui_viewfilterdialog.h" line="250"/>
         <source>Rules:</source>
-        <translation type="unfinished"></translation>
+        <translation>Reglas:</translation>
     </message>
     <message>
         <location filename="../source/dialogs/viewfilterdialog.ui" line="276"/>
         <location filename="../build/source/dialogs/ui_viewfilterdialog.h" line="252"/>
         <source>Add Rule</source>
-        <translation type="unfinished"></translation>
+        <translation>Añadir regla</translation>
     </message>
     <message>
         <location filename="../source/dialogs/viewfilterdialog.ui" line="293"/>
         <location filename="../build/source/dialogs/ui_viewfilterdialog.h" line="255"/>
         <source>Matches:</source>
-        <translation type="unfinished"></translation>
+        <translation>Coincidencias:</translation>
     </message>
 </context>
 <context>
@@ -4183,7 +4183,7 @@
         <location filename="../build/source/dialogs/ui_volumeswelldialog.h" line="354"/>
         <location filename="../build/source/dialogs/ui_volumeswelldialog.h" line="364"/>
         <source>Off</source>
-        <translation type="unfinished"></translation>
+        <translation>Desactivado</translation>
     </message>
     <message>
         <location filename="../source/dialogs/volumeswelldialog.ui" line="317"/>
@@ -4201,19 +4201,19 @@
         <location filename="../source/dialogs/volumeswelldialog.ui" line="609"/>
         <location filename="../build/source/dialogs/ui_volumeswelldialog.h" line="374"/>
         <source>Current Note</source>
-        <translation type="unfinished"></translation>
+        <translation>Nota actual</translation>
     </message>
     <message>
         <location filename="../source/dialogs/volumeswelldialog.ui" line="616"/>
         <location filename="../build/source/dialogs/ui_volumeswelldialog.h" line="375"/>
         <source>Current Note and Following Notes</source>
-        <translation type="unfinished"></translation>
+        <translation>Nota actual más las siguientes</translation>
     </message>
     <message>
         <location filename="../source/dialogs/volumeswelldialog.ui" line="625"/>
         <location filename="../build/source/dialogs/ui_volumeswelldialog.h" line="376"/>
         <source>Number of Notes:</source>
-        <translation type="unfinished"></translation>
+        <translation>Número de notas:</translation>
     </message>
 </context>
 </TS>
