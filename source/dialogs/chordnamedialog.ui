@@ -87,7 +87,7 @@
           </font>
          </property>
          <property name="text">
-          <string notr="true">C</string>
+          <string>C</string>
          </property>
          <property name="checkable">
           <bool>true</bool>
@@ -107,7 +107,7 @@
           </font>
          </property>
          <property name="text">
-          <string notr="true">D</string>
+          <string>D</string>
          </property>
          <property name="checkable">
           <bool>true</bool>
@@ -127,7 +127,7 @@
           </font>
          </property>
          <property name="text">
-          <string notr="true">E</string>
+          <string>E</string>
          </property>
          <property name="checkable">
           <bool>true</bool>
@@ -147,7 +147,7 @@
           </font>
          </property>
          <property name="text">
-          <string notr="true">F</string>
+          <string>F</string>
          </property>
          <property name="checkable">
           <bool>true</bool>
@@ -167,7 +167,7 @@
           </font>
          </property>
          <property name="text">
-          <string notr="true">G</string>
+          <string>G</string>
          </property>
          <property name="checkable">
           <bool>true</bool>
@@ -187,7 +187,7 @@
           </font>
          </property>
          <property name="text">
-          <string notr="true">A</string>
+          <string>A</string>
          </property>
          <property name="checkable">
           <bool>true</bool>
@@ -207,7 +207,7 @@
           </font>
          </property>
          <property name="text">
-          <string notr="true">B</string>
+          <string>B</string>
          </property>
          <property name="checkable">
           <bool>true</bool>
@@ -700,7 +700,7 @@
           </font>
          </property>
          <property name="text">
-          <string notr="true">C</string>
+          <string>C</string>
          </property>
          <property name="checkable">
           <bool>true</bool>
@@ -720,7 +720,7 @@
           </font>
          </property>
          <property name="text">
-          <string notr="true">D</string>
+          <string>D</string>
          </property>
          <property name="checkable">
           <bool>true</bool>
@@ -740,7 +740,7 @@
           </font>
          </property>
          <property name="text">
-          <string notr="true">E</string>
+          <string>E</string>
          </property>
          <property name="checkable">
           <bool>true</bool>
@@ -760,7 +760,7 @@
           </font>
          </property>
          <property name="text">
-          <string notr="true">F</string>
+          <string>F</string>
          </property>
          <property name="checkable">
           <bool>true</bool>
@@ -780,7 +780,7 @@
           </font>
          </property>
          <property name="text">
-          <string notr="true">G</string>
+          <string>G</string>
          </property>
          <property name="checkable">
           <bool>true</bool>
@@ -800,7 +800,7 @@
           </font>
          </property>
          <property name="text">
-          <string notr="true">A</string>
+          <string>A</string>
          </property>
          <property name="checkable">
           <bool>true</bool>
@@ -820,7 +820,7 @@
           </font>
          </property>
          <property name="text">
-          <string notr="true">B</string>
+          <string>B</string>
          </property>
          <property name="checkable">
           <bool>true</bool>
