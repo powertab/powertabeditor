@@ -608,32 +608,46 @@
         <translation type="unfinished"></translation>
     </message>
     <message>
+        <location filename="../source/dialogs/chordnamedialog.ui" line="90"/>
+        <location filename="../source/dialogs/chordnamedialog.ui" line="703"/>
         <source>C</source>
-        <translation type="vanished">Do</translation>
+        <translation>Do</translation>
     </message>
     <message>
+        <location filename="../source/dialogs/chordnamedialog.ui" line="110"/>
+        <location filename="../source/dialogs/chordnamedialog.ui" line="723"/>
         <source>D</source>
-        <translation type="vanished">Re</translation>
+        <translation>Re</translation>
     </message>
     <message>
+        <location filename="../source/dialogs/chordnamedialog.ui" line="130"/>
+        <location filename="../source/dialogs/chordnamedialog.ui" line="743"/>
         <source>E</source>
-        <translation type="vanished">Mi</translation>
+        <translation>Mi</translation>
     </message>
     <message>
+        <location filename="../source/dialogs/chordnamedialog.ui" line="150"/>
+        <location filename="../source/dialogs/chordnamedialog.ui" line="763"/>
         <source>F</source>
-        <translation type="vanished">Fa</translation>
+        <translation>Fa</translation>
     </message>
     <message>
+        <location filename="../source/dialogs/chordnamedialog.ui" line="170"/>
+        <location filename="../source/dialogs/chordnamedialog.ui" line="783"/>
         <source>G</source>
-        <translation type="vanished">Sol</translation>
+        <translation>Sol</translation>
     </message>
     <message>
+        <location filename="../source/dialogs/chordnamedialog.ui" line="190"/>
+        <location filename="../source/dialogs/chordnamedialog.ui" line="803"/>
         <source>A</source>
-        <translation type="vanished">La</translation>
+        <translation>La</translation>
     </message>
     <message>
+        <location filename="../source/dialogs/chordnamedialog.ui" line="210"/>
+        <location filename="../source/dialogs/chordnamedialog.ui" line="823"/>
         <source>B</source>
-        <translation type="vanished">Si</translation>
+        <translation>Si</translation>
     </message>
     <message>
         <location filename="../source/dialogs/chordnamedialog.ui" line="295"/>
@@ -762,7 +776,7 @@
         <location filename="../source/dialogs/dynamicdialog.ui" line="67"/>
         <location filename="../build/source/dialogs/ui_dynamicdialog.h" line="205"/>
         <source>Off</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">Desactivado</translation>
     </message>
 </context>
 <context>
@@ -815,7 +829,7 @@
     <message>
         <location filename="../source/actions/editnoteduration.cpp" line="24"/>
         <source>Edit Note Duration</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">Editar duración de nota</translation>
     </message>
 </context>
 <context>
@@ -1542,7 +1556,7 @@
         <location filename="../source/dialogs/keyboardsettingsdialog.ui" line="63"/>
         <location filename="../build/source/dialogs/ui_keyboardsettingsdialog.h" line="104"/>
         <source>Default</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">Predeterminada</translation>
     </message>
     <message>
         <location filename="../source/dialogs/keyboardsettingsdialog.cpp" line="66"/>

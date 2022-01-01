@@ -608,6 +608,48 @@
         <translation type="unfinished"></translation>
     </message>
     <message>
+        <location filename="../source/dialogs/chordnamedialog.ui" line="90"/>
+        <location filename="../source/dialogs/chordnamedialog.ui" line="703"/>
+        <source>C</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../source/dialogs/chordnamedialog.ui" line="110"/>
+        <location filename="../source/dialogs/chordnamedialog.ui" line="723"/>
+        <source>D</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../source/dialogs/chordnamedialog.ui" line="130"/>
+        <location filename="../source/dialogs/chordnamedialog.ui" line="743"/>
+        <source>E</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../source/dialogs/chordnamedialog.ui" line="150"/>
+        <location filename="../source/dialogs/chordnamedialog.ui" line="763"/>
+        <source>F</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../source/dialogs/chordnamedialog.ui" line="170"/>
+        <location filename="../source/dialogs/chordnamedialog.ui" line="783"/>
+        <source>G</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../source/dialogs/chordnamedialog.ui" line="190"/>
+        <location filename="../source/dialogs/chordnamedialog.ui" line="803"/>
+        <source>A</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../source/dialogs/chordnamedialog.ui" line="210"/>
+        <location filename="../source/dialogs/chordnamedialog.ui" line="823"/>
+        <source>B</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
         <location filename="../source/dialogs/chordnamedialog.ui" line="295"/>
         <location filename="../build/source/dialogs/ui_chordnamedialog.h" line="558"/>
         <source>Brackets</source>
