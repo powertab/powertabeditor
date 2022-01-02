@@ -28,7 +28,7 @@ class ViewOptions
 public:
     static constexpr double MIN_ZOOM = 25;
     static constexpr double MAX_ZOOM = 300;
-    static constexpr std::array<unsigned short, 13> ZOOM_LEVELS = { 25, 50, 70, 80, 90, 100, 110, 125, 150, 175, 200, 250, 300 };
+    static constexpr std::array<int, 13> ZOOM_LEVELS = { 25, 50, 70, 80, 90, 100, 110, 125, 150, 175, 200, 250, 300 };
 
 public:
     ViewOptions();

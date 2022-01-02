@@ -206,7 +206,7 @@ void PlaybackWidget::updateLocationLabel(const std::string &location)
 void PlaybackWidget::setupZoomComboBox ()
 {
     // Add zoom options
-    for(auto const& zoom: ViewOptions::ZOOM_LEVELS)
+    for (int zoom : ViewOptions::ZOOM_LEVELS)
     {
         std::string zoomOptionLabel = std::to_string(zoom) + "%";
         ui->zoomComboBox->addItem(tr(zoomOptionLabel.c_str()));

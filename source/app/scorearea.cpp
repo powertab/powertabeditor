@@ -79,6 +79,8 @@ void ScoreArea::renderDocument(const Document &document)
     myRenderedSystems.clear();
     myDocument = &document;
 
+    refreshZoom();
+
     const Score &score = document.getScore();
 
     auto start = std::chrono::high_resolution_clock::now();
@@ -140,7 +142,6 @@ void ScoreArea::renderDocument(const Document &document)
     }
 
     myScene.addItem(myCaretPainter);
-    refreshZoom();
 
     auto end = std::chrono::high_resolution_clock::now();
     qDebug() << "Score rendered in"
