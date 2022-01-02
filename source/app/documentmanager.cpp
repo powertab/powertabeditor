@@ -24,17 +24,22 @@ DocumentManager::DocumentManager()
 {
 }
 
-Document &DocumentManager::addDocument()
+Document &DocumentManager::addDocument(
+        const SettingsManager &settings_manager)
 {
     myDocumentList.emplace_back(new Document());
     myCurrentIndex = static_cast<int>(myDocumentList.size()) - 1;
+
+    auto settings = settings_manager.getReadHandle();
+    myDocumentList.back()->getViewOptions().setZoom(settings->get(Settings::LastZoomLevel));
+
     return *myDocumentList.back();
 }
 
 Document &DocumentManager::addDefaultDocument(
     const SettingsManager &settings_manager)
 {
-    Document &doc = addDocument();
+    Document &doc = addDocument(settings_manager);
     Score &score = doc.getScore();
 
     auto settings = settings_manager.getReadHandle();

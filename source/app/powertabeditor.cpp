@@ -280,7 +280,7 @@ void PowerTabEditor::openFile(QString filename)
 
     try
     {
-        Document &doc = myDocumentManager->addDocument();
+        Document &doc = myDocumentManager->addDocument(*mySettingsManager);
         myFileFormatManager->importFile(doc.getScore(), path, *format);
         auto end = std::chrono::high_resolution_clock::now();
         qDebug() << "File loaded in"
@@ -2961,6 +2961,16 @@ void PowerTabEditor::createCommands()
         cycleTab(-1);
     });
 
+    myZoomInCommand = new Command(tr("Zoom In"), "Window.ZoomIn",
+                                  QKeySequence::ZoomIn, this);
+    connect(myZoomInCommand, &QAction::triggered, this,
+            &PowerTabEditor::zoomInScore);
+
+    myZoomOutCommand = new Command(tr("Zoom Out"), "Window.ZoomOut",
+                                   QKeySequence::ZoomOut, this);
+    connect(myZoomOutCommand, &QAction::triggered, this,
+            &PowerTabEditor::zoomOutScore);
+
     // Help menu commands.
     myReportBugCommand = new Command(tr("Report Bug..."), "Help.ReportBug",
                                      QKeySequence(), this);
@@ -3360,6 +3370,8 @@ void PowerTabEditor::createMenus()
     myWindowMenu = menuBar()->addMenu(tr("&Window"));
     myWindowMenu->addAction(myNextTabCommand);
     myWindowMenu->addAction(myPrevTabCommand);
+    myWindowMenu->addAction(myZoomInCommand);
+    myWindowMenu->addAction(myZoomOutCommand);
     myWindowMenu->addSeparator();
     myWindowMenu->addAction(myMixerDockWidgetCommand);
     myWindowMenu->addAction(myInstrumentDockWidgetCommand);
@@ -3467,8 +3479,9 @@ void PowerTabEditor::createTabArea()
     connect(myPlaybackWidget, &PlaybackWidget::activeFilterChanged, this,
             &PowerTabEditor::updateActiveFilter);
 
-    connect(myPlaybackWidget, &PlaybackWidget::zoomChanged, this,
-            &PowerTabEditor::updateZoom);
+    connect(myPlaybackWidget, &PlaybackWidget::zoomChanged, this, [=](int percent) {
+        setScoreZoom(percent, true);
+    });
 
     auto update_metronome_state = [&]() {
         auto settings = mySettingsManager->getReadHandle();
@@ -4018,6 +4031,8 @@ void PowerTabEditor::enableEditing(bool enable)
     myEditViewFiltersCommand->setEnabled(enable);
     myNextTabCommand->setEnabled(enable);
     myPrevTabCommand->setEnabled(enable);
+    myZoomInCommand->setEnabled(enable);
+    myZoomOutCommand->setEnabled(enable);
 
     // MIDI commands are always enabled if documents are open.
     if (myDocumentManager->hasOpenDocuments())
@@ -4096,10 +4111,36 @@ void PowerTabEditor::updateActiveFilter(int filter)
     redrawScore();
 }
 
-void PowerTabEditor::updateZoom(double percent)
+void PowerTabEditor::applyZoomChange(bool playback_widget_update)
+{
+    getScoreArea()->refreshZoom();
+
+    if (!playback_widget_update)
+    {
+        myPlaybackWidget->reset(myDocumentManager->getCurrentDocument());
+    }
+
+    auto settings = mySettingsManager->getWriteHandle();
+    settings->set(Settings::LastZoomLevel,
+            myDocumentManager->getCurrentDocument().getViewOptions().getZoom());
+}
+
+void PowerTabEditor::zoomInScore()
+{
+    myDocumentManager->getCurrentDocument().getViewOptions().increaseZoom();
+    applyZoomChange();
+}
+
+void PowerTabEditor::zoomOutScore()
+{
+    myDocumentManager->getCurrentDocument().getViewOptions().decreaseZoom();
+    applyZoomChange();
+}
+
+void PowerTabEditor::setScoreZoom(double percent, bool playback_widget_update)
 {
     myDocumentManager->getCurrentDocument().getViewOptions().setZoom(percent);
-    getScoreArea()->refreshZoom();
+    applyZoomChange(playback_widget_update);
 }
 
 void PowerTabEditor::updateLocationLabel()

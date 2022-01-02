@@ -18,16 +18,18 @@
 #include <doctest/doctest.h>
 
 #include <app/documentmanager.h>
+#include <app/settingsmanager.h>
 
 TEST_CASE("App/DocumentManager")
 {
+    SettingsManager settings_manager;
     DocumentManager manager;
 
     REQUIRE(!manager.hasOpenDocuments());
 
-    manager.addDocument();
-    manager.addDocument();
-    manager.addDocument();
+    manager.addDocument(settings_manager);
+    manager.addDocument(settings_manager);
+    manager.addDocument(settings_manager);
 
     REQUIRE(manager.hasOpenDocuments());
     REQUIRE(manager.getCurrentDocumentIndex() == 2);
