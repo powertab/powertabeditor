@@ -2961,8 +2961,16 @@ void PowerTabEditor::createCommands()
         cycleTab(-1);
     });
 
+    // QKeySequence::ZoomIn requires Ctrl+Shift+= rather than the usual Ctrl+=
+    // The default works fine on macOS, though.
+#ifndef Q_OS_MAC
+    QKeySequence zoom_in_seq = Qt::CTRL + Qt::Key_Equal;
+#else
+    QKeySequence zoom_in_seq = QKeySequence::ZoomIn;
+#endif
+
     myZoomInCommand = new Command(tr("Zoom In"), "Window.ZoomIn",
-                                  QKeySequence::ZoomIn, this);
+                                  zoom_in_seq, this);
     connect(myZoomInCommand, &QAction::triggered, this,
             &PowerTabEditor::zoomInScore);
 
