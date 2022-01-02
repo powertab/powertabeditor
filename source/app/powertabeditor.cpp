@@ -3469,9 +3469,13 @@ void PowerTabEditor::createTabArea()
     connect(myTabWidget, &QTabWidget::currentChanged, this,
             &PowerTabEditor::switchTab);
 
-    myPlaybackWidget =
-        new PlaybackWidget(*myPlayPauseCommand, *myRewindCommand,
-                           *myStopCommand, *myMetronomeCommand, this);
+    {
+        auto settings = mySettingsManager->getReadHandle();
+        double initial_zoom = settings->get(Settings::LastZoomLevel);
+        myPlaybackWidget = new PlaybackWidget(
+            *myPlayPauseCommand, *myRewindCommand, *myStopCommand,
+            *myMetronomeCommand, initial_zoom, this);
+    }
 
     connect(myPlaybackWidget, &PlaybackWidget::activeVoiceChanged, this,
             &PowerTabEditor::updateActiveVoice);

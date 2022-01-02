@@ -48,6 +48,13 @@ static QString extractPercent(const QString &text, const QLocale &locale)
     return number_only;
 }
 
+static QString
+percentToString(double zoom)
+{
+    QLocale locale;
+    return QStringLiteral("%1%2").arg(zoom).arg(locale.percent());
+}
+
 class PercentageValidator : public QValidator
 {
 public:
@@ -78,6 +85,7 @@ PlaybackWidget::PlaybackWidget(const QAction &play_pause_command,
                                const QAction &rewind_command,
                                const QAction &stop_command,
                                const QAction &metronome_command,
+                               double initial_zoom,
                                QWidget *parent)
     : QWidget(parent),
       ui(new Ui::PlaybackWidget),
@@ -142,7 +150,7 @@ PlaybackWidget::PlaybackWidget(const QAction &play_pause_command,
     connectButtonToAction(ui->rewindToStartButton, &rewind_command);
     connectButtonToAction(ui->stopButton, &stop_command);
 
-    setupZoomComboBox();
+    setupZoomComboBox(initial_zoom);
 }
 
 PlaybackWidget::~PlaybackWidget()
@@ -171,10 +179,8 @@ void PlaybackWidget::reset(const Document &doc)
         ->setChecked(true);
 
     // Update zoom.
-    QLocale locale;
     const double zoom = doc.getViewOptions().getZoom();
-    QString percent = QStringLiteral("%1%2").arg(zoom).arg(locale.percent());
-    ui->zoomComboBox->setCurrentText(percent);
+    ui->zoomComboBox->setCurrentText(percentToString(zoom));
 
     ui->filterComboBox->blockSignals(false);
 }
@@ -203,14 +209,14 @@ void PlaybackWidget::updateLocationLabel(const std::string &location)
     ui->locationLabel->setText(QString::fromStdString(location));
 }
 
-void PlaybackWidget::setupZoomComboBox ()
+void
+PlaybackWidget::setupZoomComboBox(double initial_zoom)
 {
     // Add zoom options
     for (int zoom : ViewOptions::ZOOM_LEVELS)
-    {
-        std::string zoomOptionLabel = std::to_string(zoom) + "%";
-        ui->zoomComboBox->addItem(tr(zoomOptionLabel.c_str()));
-    }
+        ui->zoomComboBox->addItem(percentToString(zoom));
+
+    ui->zoomComboBox->setCurrentText(percentToString(initial_zoom));
 
     // Display a different style for invalid zoom values.
     ui->zoomComboBox->setStyleSheet(

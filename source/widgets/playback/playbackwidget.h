@@ -35,7 +35,8 @@ public:
     explicit PlaybackWidget(const QAction &play_pause_command,
                             const QAction &rewind_command,
                             const QAction &stop_command,
-                            const QAction &metronome_command, QWidget *parent);
+                            const QAction &metronome_command,
+                            double initial_zoom, QWidget *parent);
     ~PlaybackWidget();
 
     /// Reload any settings for the given score.
@@ -57,7 +58,7 @@ signals:
     void zoomChanged(double zoom);
 
 private:
-    void setupZoomComboBox();
+    void setupZoomComboBox(double initial_zoom);
     void onSettingChanged(const std::string &setting);
 
     Ui::PlaybackWidget *ui;

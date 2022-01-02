@@ -5,10 +5,14 @@ All notable changes to this project will be documented in this file.
 
 Thanks to the following contributors who worked on this release:
 - @cameronwhite
+- @danailbd
 - @fitojb
 
 ### Added
 - Added MIDI playback support for bends that stretch over multiple notes.
+- Improvements for adjusting the score's zoom (#315, #340, #50)
+  - Added standard keyboard shortcuts for adjusting the zoom
+  - The last zoom level is saved in the settings and used when opening new scores
 - Translations
   - Added Spanish translation (#348).
 
