@@ -369,7 +369,7 @@ private:
     /// Apply the zoom level to all interested parties - e.g. the playback and score.
     void applyZoomChange(bool pb_widget_update=false);
     /// Updates the zoom level.
-    void setScoreZoom(double percent, bool pb_widget_update=false);
+    void setScoreZoom(int percent, bool pb_widget_update=false);
     /// Increase the zoom level of the score
     void zoomInScore();
     /// Decrease the zoom level of the score

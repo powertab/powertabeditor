@@ -231,8 +231,8 @@ PlaybackWidget::setupZoomComboBox(double initial_zoom)
                 ui->zoomComboBox->style()->polish(ui->zoomComboBox);
 
                 QLocale locale;
-                double percentage =
-                    std::clamp(locale.toDouble(extractPercent(text, locale)),
+                int percentage =
+                    std::clamp(locale.toInt(extractPercent(text, locale)),
                                ViewOptions::MIN_ZOOM, ViewOptions::MAX_ZOOM);
                 emit zoomChanged(percentage);
             });

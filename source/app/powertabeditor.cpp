@@ -4141,7 +4141,7 @@ void PowerTabEditor::zoomOutScore()
     applyZoomChange();
 }
 
-void PowerTabEditor::setScoreZoom(double percent, bool playback_widget_update)
+void PowerTabEditor::setScoreZoom(int percent, bool playback_widget_update)
 {
     myDocumentManager->getCurrentDocument().getViewOptions().setZoom(percent);
     applyZoomChange(playback_widget_update);

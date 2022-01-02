@@ -55,7 +55,7 @@ signals:
     void playbackSpeedChanged(int speed);
     void activeVoiceChanged(int voice);
     void activeFilterChanged(int filter);
-    void zoomChanged(double zoom);
+    void zoomChanged(int zoom);
 
 private:
     void setupZoomComboBox(double initial_zoom);

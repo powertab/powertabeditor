@@ -19,11 +19,11 @@
 
 #include <algorithm>
 
-ViewOptions::ViewOptions() : myZoom(100.0)
+ViewOptions::ViewOptions() : myZoom(100)
 {
 }
 
-bool ViewOptions::setZoom(double percent)
+bool ViewOptions::setZoom(int percent)
 {
     myZoom = std::clamp(percent, MIN_ZOOM, MAX_ZOOM);
     return myZoom == percent;

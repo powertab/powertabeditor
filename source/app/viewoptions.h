@@ -26,8 +26,8 @@
 class ViewOptions
 {
 public:
-    static constexpr double MIN_ZOOM = 25;
-    static constexpr double MAX_ZOOM = 300;
+    static constexpr int MIN_ZOOM = 25;
+    static constexpr int MAX_ZOOM = 300;
     static constexpr std::array<int, 13> ZOOM_LEVELS = { 25, 50, 70, 80, 90, 100, 110, 125, 150, 175, 200, 250, 300 };
 
 public:
@@ -41,7 +41,7 @@ public:
 
     /// Fixates the zoom level. Note that we support two types of zoom
     /// changes - explicit level or one from a list
-    bool setZoom(double percent);
+    bool setZoom(int percent);
     /// Increases to the next possible zoom level.
     bool increaseZoom();
     /// Increases to the previous possible zoom level.
@@ -49,7 +49,7 @@ public:
 
 private:
     std::optional<int> myFilter;
-    double myZoom;
+    int myZoom;
 };
 
 #endif
