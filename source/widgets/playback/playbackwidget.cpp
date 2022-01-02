@@ -126,9 +126,6 @@ PlaybackWidget::PlaybackWidget(const QAction &play_pause_command,
                 .arg(getShortcutHint(metronome_command)));
     });
 
-    connect(myVoices, qOverload<int>(&QButtonGroup::buttonClicked), this,
-            &PlaybackWidget::activeVoiceChanged);
-        
     connect(myVoices,
 #if (QT_VERSION >= QT_VERSION_CHECK(5,15,0))
             &QButtonGroup::idClicked,

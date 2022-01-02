@@ -20,7 +20,6 @@
 
 #include <optional>
 #include <array>
-#include <algorithm>
 
 /// Stores any view options that are not saved with the score (e.g. the current
 /// zoom level or the active score filter).
