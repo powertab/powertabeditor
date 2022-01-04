@@ -6,6 +6,7 @@ All notable changes to this project will be documented in this file.
 Thanks to the following contributors who worked on this release:
 - @cameronwhite
 - @danailbd
+- @nbrunett
 - @fitojb
 
 ### Added
@@ -19,6 +20,7 @@ Thanks to the following contributors who worked on this release:
 ### Changed
 
 ### Fixed
+- Fixed various playback issues with alternate endings (#306)
 - Fixed a bug where alternate endings could be drawn too far if there were multiple repeat end bars in a system
 
 ## [Alpha 16] - 2021-12-28

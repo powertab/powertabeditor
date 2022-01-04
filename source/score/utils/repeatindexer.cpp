@@ -64,11 +64,7 @@ const SystemLocation &RepeatedSection::getLastEndBarLocation() const
 
 int RepeatedSection::getAlternateEndingCount() const
 {
-    if (myAlternateEndings.empty())
-        return 0;
-
-    // Return the maximum alternate ending number.
-    return myAlternateEndings.rbegin()->first;
+    return static_cast<int>(myAlternateEndings.size());
 }
 
 int RepeatedSection::getTotalRepeatCount() const
@@ -132,6 +128,42 @@ SystemLocation RepeatedSection::performRepeat(const SystemLocation &loc)
     }
 }
 
+static bool
+needsFinalRepeatEnd(const RepeatedSection &section)
+{
+    int num_endings = section.getAlternateEndingCount();
+    if (!num_endings)
+        return false;
+
+    // Find the last alternate ending (by position) in the section.
+    // If this has anything other than the highest number, a repeat end bar is
+    // required after it.
+    SystemLocation last_loc(-1, -1);
+    int last_num = num_endings;
+    for (int i = 0; i < num_endings; ++i)
+    {
+        auto ending_loc = section.findAlternateEnding(i);
+        if (!ending_loc)
+            continue;
+
+        if (*ending_loc >= last_loc)
+        {
+            last_loc = *ending_loc;
+            last_num = i;
+        }
+    }
+
+    if (last_num != num_endings)
+    {
+        // Return whether there is a missing repeat end bar after the last alt
+        // ending.
+        return section.getRepeatEndBars().upper_bound(last_loc) ==
+               section.getRepeatEndBars().end();
+    }
+    else
+        return false;
+}
+
 RepeatIndexer::RepeatIndexer(const Score &score)
 {
     // There may be nested repeats, so maintain a stack of the active repeats
@@ -176,21 +208,11 @@ RepeatIndexer::RepeatIndexer(const Score &score)
                 if (activeRepeat.getAlternateEndingCount() &&
                     !activeRepeat.getRepeatEndBars().empty() &&
                     activeRepeat.getAlternateEndingCount() >=
-                        activeRepeat.getTotalRepeatCount())
+                        activeRepeat.getTotalRepeatCount() &&
+                    !needsFinalRepeatEnd(activeRepeat))
                 {
-                    // If no following repeat endings then we're done with this
-                    // repeat.
-                    if (!this->nextRepeatIsEnd(score, systemIndex, bar))
-                    {
-                        if (bar.getBarType() == Barline::RepeatEnd)
-                        {
-                            activeRepeat.addRepeatEndBar(
-                                SystemLocation(systemIndex, bar.getPosition()),
-                                bar.getRepeatCount());
-                        }
-                        myRepeats.insert(activeRepeat);
-                        repeats.pop();
-                    }
+                    myRepeats.insert(activeRepeat);
+                    repeats.pop();
                 }
             }
 
@@ -253,32 +275,4 @@ boost::iterator_range<RepeatIndexer::RepeatedSectionIterator>
 RepeatIndexer::getRepeats() const
 {
     return boost::make_iterator_range(myRepeats);
-}
-
-bool RepeatIndexer::nextRepeatIsEnd(
-    const Score &score, const int systemIndex, const Barline &bar) const
-{
-    for (size_t i = systemIndex; i < score.getSystems().size(); ++i)
-    {
-        for (const Barline &barCheck : score.getSystems()[i].getBarlines())
-        {
-            if (barCheck.getPosition() > bar.getPosition() ||
-                i > systemIndex)
-            {
-                // If we get to a repeat end first then the repeated
-                // section is not finished.
-                if (barCheck.getBarType() == Barline::RepeatEnd)
-                {
-                    return true;
-                }
-                // If we get to a repeat start first then the
-                // repeated section must be finished.
-                else if (barCheck.getBarType() == Barline::RepeatStart)
-                {
-                    return false;
-                }
-            }
-        }
-    }
-    return false;
 }
