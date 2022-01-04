@@ -529,6 +529,7 @@ SystemRenderer::drawAlternateEndings(const ConstScoreLocation &location,
                 barline.getBarType() == Barline::RepeatEnd)
             {
                 end_x = layout.getPositionX(barline.getPosition());
+                break;
             }
         }
 
