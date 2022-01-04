@@ -64,7 +64,11 @@ const SystemLocation &RepeatedSection::getLastEndBarLocation() const
 
 int RepeatedSection::getAlternateEndingCount() const
 {
-    return static_cast<int>(myAlternateEndings.size());
+    if (myAlternateEndings.empty())
+        return 0;
+
+    // Return the maximum alternate ending number.
+    return myAlternateEndings.rbegin()->first;
 }
 
 int RepeatedSection::getTotalRepeatCount() const

@@ -23,7 +23,6 @@
 #include <optional>
 #include <score/systemlocation.h>
 #include <set>
-#include <unordered_map>
 
 class AlternateEnding;
 class Score;
@@ -71,7 +70,7 @@ public:
 private:
     SystemLocation myStartBarLocation;
     std::map<SystemLocation, int> myRepeatEndBars;
-    std::unordered_map<int, SystemLocation> myAlternateEndings;
+    std::map<int, SystemLocation> myAlternateEndings;
     int myActiveRepeat;
 };
 
