@@ -25,6 +25,7 @@
 #include <set>
 
 class AlternateEnding;
+class Barline;
 class Score;
 class System;
 
@@ -88,6 +89,8 @@ public:
 
     /// Returns a list of the repeated sections in the score.
     boost::iterator_range<RepeatedSectionIterator> getRepeats() const;
+    bool nextRepeatIsEnd(const Score &score, const int systemIndex,
+                         const Barline &bar) const;
 
 private:
     std::set<RepeatedSection> myRepeats;
