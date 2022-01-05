@@ -8,6 +8,7 @@ Thanks to the following contributors who worked on this release:
 - @danailbd
 - @nbrunett
 - @fitojb
+- @NathanBnm
 
 ### Added
 - Added MIDI playback support for bends that stretch over multiple notes.
@@ -16,6 +17,7 @@ Thanks to the following contributors who worked on this release:
   - The last zoom level is saved in the settings and used when opening new scores
 - Translations
   - Added Spanish translation (#348).
+  - Added French translation (#355).
 
 ### Changed
 
