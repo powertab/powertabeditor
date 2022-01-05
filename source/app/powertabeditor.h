@@ -642,6 +642,7 @@ private:
 
     QMenu *myHelpMenu;
     Command *myReportBugCommand;
+    Command *myTranslationsCommand;
     Command *myInfoCommand;
 };
 

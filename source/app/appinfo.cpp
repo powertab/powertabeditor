@@ -28,6 +28,8 @@ namespace AppInfo
 {
     const char *BUG_TRACKER_URL =
         "https://github.com/powertab/powertabeditor/issues/";
+    const char *TRANSLATIONS_URL =
+        "https://hosted.weblate.org/engage/powertabeditor";
     const char *APPLICATION_NAME = "Power Tab Editor";
     const char *APPLICATION_VERSION = "2.0";
 

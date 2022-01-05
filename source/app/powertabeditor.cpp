@@ -2986,7 +2986,13 @@ void PowerTabEditor::createCommands()
         QDesktopServices::openUrl(QUrl(AppInfo::BUG_TRACKER_URL));
     });
 
-    myInfoCommand = new Command(tr("App Info"), "Help.Info",
+    myTranslationsCommand = new Command(tr("Translate This Application..."),
+                                        "Help.Translate", QKeySequence(), this);
+    connect(myTranslationsCommand, &QAction::triggered, [=]() {
+        QDesktopServices::openUrl(QUrl(AppInfo::TRANSLATIONS_URL));
+    });
+
+    myInfoCommand = new Command(tr("Application Info..."), "Help.Info",
                                 QKeySequence(), this);
 
     connect(myInfoCommand, &QAction::triggered, this, &PowerTabEditor::info);
@@ -3388,6 +3394,7 @@ void PowerTabEditor::createMenus()
     // Help menu.
     myHelpMenu = menuBar()->addMenu(tr("&Help"));
     myHelpMenu->addAction(myReportBugCommand);
+    myHelpMenu->addAction(myTranslationsCommand);
     myHelpMenu->addAction(myInfoCommand);
 }
 
