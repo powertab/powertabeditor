@@ -22,7 +22,7 @@ Thanks to the following contributors who worked on this release:
 ### Changed
 
 ### Fixed
-- Fixed various playback issues with alternate endings (#306)
+- Fixed various playback issues with alternate endings (#306, #354)
 - Fixed a bug where alternate endings could be drawn too far if there were multiple repeat end bars in a system
 
 ## [Alpha 16] - 2021-12-28

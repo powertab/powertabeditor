@@ -123,8 +123,10 @@ SystemLocation RepeatedSection::performRepeat(const SystemLocation &loc)
     }
     else
     {
-        // Pass through the repeat.
-        return loc;
+        // Pass through the repeated section, jumping to the last repeat
+        // ending. We might not be at the final repeat end bar in the section,
+        // depending on where the highest alt ending number was.
+        return myRepeatEndBars.rbegin()->first;
     }
 }
 
