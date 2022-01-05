@@ -104,7 +104,16 @@ SystemLocation RepeatedSection::performRepeat(const SystemLocation &loc)
         std::optional<SystemLocation> nextAltEnding =
             findAlternateEnding(myActiveRepeat);
         if (nextAltEnding)
+        {
+            // Reset if we've left the section via the final alternate ending.
+            if (myActiveRepeat == getAlternateEndingCount() &&
+                *nextAltEnding >= getLastEndBarLocation())
+            {
+                reset();
+            }
+
             return *nextAltEnding;
+        }
     }
 
     // Now, we can look for repeat end bars.
@@ -126,7 +135,8 @@ SystemLocation RepeatedSection::performRepeat(const SystemLocation &loc)
         // Pass through the repeated section, jumping to the last repeat
         // ending. We might not be at the final repeat end bar in the section,
         // depending on where the highest alt ending number was.
-        return myRepeatEndBars.rbegin()->first;
+        reset();
+        return getLastEndBarLocation();
     }
 }
 
