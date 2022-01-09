@@ -20,6 +20,7 @@
 
 #include "chordname.h"
 #include "fileversion.h"
+#include <vector>
 
 class ChordDiagram
 {
