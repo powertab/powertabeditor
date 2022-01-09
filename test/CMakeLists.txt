@@ -78,6 +78,7 @@ set( srcs
 
     score/test_alternateending.cpp
     score/test_barline.cpp
+    score/test_chorddiagram.cpp
     score/test_chordname.cpp
     score/test_chordtext.cpp
     score/test_direction.cpp

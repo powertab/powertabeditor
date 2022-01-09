@@ -32,6 +32,7 @@ bool Score::operator==(const Score &other) const
     return myScoreInfo == other.myScoreInfo && mySystems == other.mySystems &&
            myPlayers == other.myPlayers &&
            myInstruments == other.myInstruments &&
+           myChordDiagrams == other.myChordDiagrams &&
            myLineSpacing == other.myLineSpacing &&
            myViewFilters == other.myViewFilters;
 }
@@ -117,6 +118,30 @@ void Score::insertInstrument(const Instrument &instrument, int index)
 void Score::removeInstrument(int index)
 {
     myInstruments.erase(myInstruments.begin() + index);
+}
+
+boost::iterator_range<Score::ChordDiagramIterator>
+Score::getChordDiagrams()
+{
+    return boost::make_iterator_range(myChordDiagrams);
+}
+
+boost::iterator_range<Score::ChordDiagramConstIterator>
+Score::getChordDiagrams() const
+{
+    return boost::make_iterator_range(myChordDiagrams);
+}
+
+void
+Score::insertChordDiagram(const ChordDiagram &filter)
+{
+    myChordDiagrams.push_back(filter);
+}
+
+void
+Score::removeChordDiagram(int index)
+{
+    myChordDiagrams.erase(myChordDiagrams.begin() + index);
 }
 
 boost::iterator_range<Score::ViewFilterIterator> Score::getViewFilters()

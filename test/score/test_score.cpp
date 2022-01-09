@@ -80,6 +80,26 @@ TEST_CASE("Score/Score/ViewFilters")
     REQUIRE(score.getViewFilters()[0] == filter1);
 }
 
+TEST_CASE("Score/Score/ChordDiagrams")
+{
+    Score score;
+
+    REQUIRE(score.getChordDiagrams().size() == 0);
+
+    ChordDiagram diagram1;
+    diagram1.setTopFret(1);
+    score.insertChordDiagram(diagram1);
+
+    ChordDiagram diagram2;
+    diagram2.setTopFret(2);
+    score.insertChordDiagram(diagram2);
+
+    REQUIRE(score.getChordDiagrams().size() == 2);
+    score.removeChordDiagram(1);
+    REQUIRE(score.getChordDiagrams().size() == 1);
+    REQUIRE(score.getChordDiagrams()[0] == diagram1);
+}
+
 // Verify that we don't rely on the order of JSON keys (see bug #294).
 TEST_CASE("Score/Score/Deserialization")
 {

@@ -38,7 +38,9 @@ enum class FileVersion : int
     VOLUME_SWELLS = 7,
     /// Added tremolo bar.
     TREMOLO_BAR = 8,
-    LATEST_VERSION = TREMOLO_BAR
+    /// Added chord diagrams.
+    CHORD_DIAGRAMS = 9,
+    LATEST_VERSION = CHORD_DIAGRAMS
 };
 
 #endif
