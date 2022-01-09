@@ -119,6 +119,7 @@ set( data_files
     formats/powertab_old/data/alternate_endings.ptb
     formats/powertab_old/data/barlines.ptb
     formats/powertab_old/data/bends.ptb
+    formats/powertab_old/data/chord_diagrams.ptb
     formats/powertab_old/data/chordtext.ptb
     formats/powertab_old/data/directions.ptb
     formats/powertab_old/data/floating_text.ptb
