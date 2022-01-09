@@ -30,21 +30,21 @@
 #include <score/utils.h>
 #include <score/voiceutils.h>
 
-static const int PERCUSSION_CHANNEL = 9;
-static const int METRONOME_CHANNEL = PERCUSSION_CHANNEL;
-static const int DEFAULT_PPQ = 480;
+static constexpr int PERCUSSION_CHANNEL = 9;
+static constexpr int METRONOME_CHANNEL = PERCUSSION_CHANNEL;
+static constexpr int DEFAULT_PPQ = 480;
 
-static const int PITCH_BEND_RANGE = 24;
-static const int DEFAULT_BEND = 64;
-static const int SLIDE_OUT_STEPS = 5;
+static constexpr int PITCH_BEND_RANGE = 24;
+static constexpr int DEFAULT_BEND = 64;
+static constexpr int SLIDE_OUT_STEPS = 5;
 
 /// Pitch bend amount to bend a note by a quarter tone.
-static const boost::rational<int> BEND_QUARTER_TONE(
+static constexpr boost::rational<int> BEND_QUARTER_TONE(
     (Midi::MAX_MIDI_CHANNEL_EFFECT_LEVEL - DEFAULT_BEND), 2 * PITCH_BEND_RANGE);
 
-static const int SLIDE_BELOW_BEND = boost::rational_cast<int>(
+static constexpr int SLIDE_BELOW_BEND = boost::rational_cast<int>(
     DEFAULT_BEND - SLIDE_OUT_STEPS * 2 * BEND_QUARTER_TONE);
-static const int SLIDE_ABOVE_BEND = boost::rational_cast<int>(
+static constexpr int SLIDE_ABOVE_BEND = boost::rational_cast<int>(
     DEFAULT_BEND + SLIDE_OUT_STEPS * 2 * BEND_QUARTER_TONE);
 
 enum Velocity : uint8_t
@@ -149,6 +149,24 @@ MidiFile::MidiFile() : myTicksPerBeat(0)
 {
 }
 
+static void
+initializeChannel(MidiEventList &events, int channel)
+{
+    // Set an initial channel volume.
+    events.append(MidiEvent::volumeChange(
+        0, channel, static_cast<uint8_t>(VolumeLevel::fff)));
+
+    // Set up the pitch wheel range.
+    for (const MidiEvent &event :
+         MidiEvent::pitchWheelRange(0, channel, PITCH_BEND_RANGE))
+    {
+        events.append(event);
+    }
+
+    // Reset pitch wheel.
+    events.append(MidiEvent::pitchWheel(0, channel, DEFAULT_BEND));
+}
+
 void MidiFile::load(const Score &score, const LoadOptions &options)
 {
     myTicksPerBeat = DEFAULT_PPQ;
@@ -161,16 +179,7 @@ void MidiFile::load(const Score &score, const LoadOptions &options)
     // Set the initial channel volume and pitch bend range..
     std::vector<MidiEventList> regular_tracks(score.getPlayers().size());
     for (unsigned int i = 0; i < score.getPlayers().size(); ++i)
-    {
-        regular_tracks[i].append(MidiEvent::volumeChange(
-            0, getChannel(i), static_cast<uint8_t>(VolumeLevel::fff)));
-
-        for (const MidiEvent &event :
-             MidiEvent::pitchWheelRange(0, getChannel(i), PITCH_BEND_RANGE))
-        {
-            regular_tracks[i].append(event);
-        }
-    }
+        initializeChannel(regular_tracks[i], getChannel(i));
 
     SystemLocation location(0, 0);
     std::vector<uint8_t> active_bends;
@@ -1280,15 +1289,7 @@ MidiFile::loadSingleNote(const Score &score,
         const int channel = getChannel(player_index);
         MidiEventList &track = myTracks[i];
 
-        // Reset the channel volume, pitch bend range, and instrument.
-        track.append(MidiEvent::volumeChange(
-            0, channel, static_cast<uint8_t>(VolumeLevel::fff)));
-
-        for (const MidiEvent &event :
-             MidiEvent::pitchWheelRange(0, channel, PITCH_BEND_RANGE))
-        {
-            track.append(event);
-        }
+        initializeChannel(track, channel);
 
         const Instrument &instrument =
             score.getInstruments()[staff_players[i].getInstrumentNumber()];

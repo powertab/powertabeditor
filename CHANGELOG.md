@@ -24,6 +24,7 @@ Thanks to the following contributors who worked on this release:
 ### Fixed
 - Fixed various playback issues with alternate endings (#306, #353, #354)
 - Fixed a bug where alternate endings could be drawn too far if there were multiple repeat end bars in a system
+- Fixed an issue where MIDI playback did not reset correctly if playback was interrupted during a pitch shift (e.g. bend or tremolo bar) (#361)
 
 ## [Alpha 16] - 2021-12-28
 
