@@ -718,7 +718,7 @@
         <location filename="../source/dialogs/crashdialog.ui" line="74"/>
         <location filename="../build/source/dialogs/ui_crashdialog.h" line="101"/>
         <source>Report Bug...</source>
-        <translation type="unfinished"></translation>
+        <translation>Informar de un defecto…</translation>
     </message>
     <message>
         <location filename="../source/dialogs/crashdialog.ui" line="84"/>
@@ -2850,7 +2850,7 @@
     <message>
         <location filename="../source/app/powertabeditor.cpp" line="2841"/>
         <source>Palm Mute</source>
-        <translation type="unfinished"></translation>
+        <translation>Silenciamiento de palma</translation>
     </message>
     <message>
         <location filename="../source/app/powertabeditor.cpp" line="2845"/>
@@ -2860,12 +2860,12 @@
     <message>
         <location filename="../source/app/powertabeditor.cpp" line="2849"/>
         <source>Arpeggio Up</source>
-        <translation type="unfinished"></translation>
+        <translation>Arpegio hacia arriba</translation>
     </message>
     <message>
         <location filename="../source/app/powertabeditor.cpp" line="2854"/>
         <source>Arpeggio Down</source>
-        <translation type="unfinished"></translation>
+        <translation>Arpegio hacia abajo</translation>
     </message>
     <message>
         <location filename="../source/app/powertabeditor.cpp" line="2859"/>
@@ -2955,27 +2955,27 @@
     <message>
         <location filename="../source/app/powertabeditor.cpp" line="2972"/>
         <source>Zoom In</source>
-        <translation type="unfinished"></translation>
+        <translation>Acercar</translation>
     </message>
     <message>
         <location filename="../source/app/powertabeditor.cpp" line="2977"/>
         <source>Zoom Out</source>
-        <translation type="unfinished"></translation>
+        <translation>Alejar</translation>
     </message>
     <message>
         <location filename="../source/app/powertabeditor.cpp" line="2983"/>
         <source>Report Bug...</source>
-        <translation type="unfinished"></translation>
+        <translation>Informar de un defecto…</translation>
     </message>
     <message>
         <location filename="../source/app/powertabeditor.cpp" line="2989"/>
         <source>Translate This Application...</source>
-        <translation type="unfinished"></translation>
+        <translation>Traducir esta aplicación…</translation>
     </message>
     <message>
         <location filename="../source/app/powertabeditor.cpp" line="2995"/>
         <source>Application Info...</source>
-        <translation type="unfinished"></translation>
+        <translation>Información sobre la aplicación…</translation>
     </message>
     <message>
         <source>App Info</source>
@@ -2984,7 +2984,7 @@
     <message>
         <location filename="../source/app/powertabeditor.cpp" line="3039"/>
         <source>Mixer</source>
-        <translation type="unfinished"></translation>
+        <translation>Mezclador</translation>
     </message>
     <message>
         <location filename="../source/app/powertabeditor.cpp" line="3064"/>
@@ -4196,7 +4196,7 @@
         <location filename="../source/dialogs/volumeswelldialog.ui" line="34"/>
         <location filename="../build/source/dialogs/ui_volumeswelldialog.h" line="353"/>
         <source>Start Volume:</source>
-        <translation type="unfinished"></translation>
+        <translation>Volumen inicial:</translation>
     </message>
     <message>
         <location filename="../source/dialogs/volumeswelldialog.ui" line="61"/>
@@ -4210,7 +4210,7 @@
         <location filename="../source/dialogs/volumeswelldialog.ui" line="317"/>
         <location filename="../build/source/dialogs/ui_volumeswelldialog.h" line="363"/>
         <source>End Volume:</source>
-        <translation type="unfinished"></translation>
+        <translation>Volumen final:</translation>
     </message>
     <message>
         <location filename="../source/dialogs/volumeswelldialog.ui" line="600"/>
