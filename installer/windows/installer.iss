@@ -41,7 +41,7 @@ Source: "build\bin\platforms\*"; DestDir: "{app}\platforms"; Flags: ignoreversio
 Source: "build\bin\styles\*"; DestDir: "{app}\styles"; Flags: ignoreversion
 
 [Run]
-Filename: "{app}\powertabeditor.exe"; Flags: nowait postinstall; Description: "{cm:LaunchProgram,{#ProductName}}"
+Filename: "{app}\powertabeditor.exe"; Flags: nowait postinstall skipifsilent; Description: "{cm:LaunchProgram,{#ProductName}}"
 
 ; Hooks for MSVC runtime installation
 [Code]
