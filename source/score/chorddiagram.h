@@ -38,6 +38,9 @@ public:
     int getTopFret() const { return myTopFret; }
     void setTopFret(int fret) { myTopFret = fret; }
 
+    /// Returns the number of strings in the diagram.
+    int getStringCount() const { return myFretNumbers.size(); }
+
     const std::vector<int> &getFretNumbers() const { return myFretNumbers; }
     void setFretNumbers(const std::vector<int> &frets) { myFretNumbers = frets; }
 

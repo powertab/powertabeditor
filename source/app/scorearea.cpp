@@ -22,6 +22,7 @@
 #include <chrono>
 #include <future>
 #include <painters/caretpainter.h>
+#include <painters/chorddiagrampainter.h>
 #include <painters/scoreclickevent.h>
 #include <painters/scoreinforenderer.h>
 #include <painters/systemrenderer.h>
@@ -42,6 +43,7 @@ void ScoreArea::Scene::dragEnterEvent(QGraphicsSceneDragDropEvent *event)
 ScoreArea::ScoreArea(SettingsManager &settings_manager, QWidget *parent)
     : QGraphicsView(parent),
       myScoreInfoBlock(nullptr),
+      myChordDiagramList(nullptr),
       myCaretPainter(nullptr),
       myDefaultPalette(&parent->palette()),
       myActivePalette(nullptr),
@@ -94,6 +96,9 @@ void ScoreArea::renderDocument(const Document &document)
     myScoreInfoBlock = ScoreInfoRenderer::render(
         score, myActivePalette->text().color(), myClickEvent);
 
+    myChordDiagramList = ChordDiagramPainter::renderDiagrams(
+        score, myActivePalette->text().color(), LayoutInfo::STAFF_WIDTH);
+
     myRenderedSystems.reserve(static_cast<int>(score.getSystems().size()));
     for (unsigned int i = 0; i < score.getSystems().size(); ++i)
         myRenderedSystems.append(nullptr);
@@ -130,6 +135,10 @@ void ScoreArea::renderDocument(const Document &document)
     // Score info.
     myScene.addItem(myScoreInfoBlock);
     height += myScoreInfoBlock->boundingRect().height() + 0.5 * SYSTEM_SPACING;
+
+    myChordDiagramList->setPos(0, height);
+    myScene.addItem(myChordDiagramList);
+    height += myChordDiagramList->boundingRect().height() + 0.5 * SYSTEM_SPACING;
 
     // Layout the systems.
     for (QGraphicsItem *system : myRenderedSystems)
@@ -210,6 +219,7 @@ void ScoreArea::print(QPrinter &printer)
 
     QList<QGraphicsItem*> items;
     items.append(myScoreInfoBlock);
+    items.append(myChordDiagramList);
     items.append(myRenderedSystems);
 
     for (int i = 0, n = items.length(); i < n; ++i)

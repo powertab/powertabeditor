@@ -5,6 +5,7 @@ set( srcs
     barlinepainter.cpp
     beamgroup.cpp
     caretpainter.cpp
+    chorddiagrampainter.cpp
     clickableitem.cpp
     directions.cpp
     keysignaturepainter.cpp
@@ -26,6 +27,7 @@ set( headers
     barlinepainter.h
     beamgroup.h
     caretpainter.h
+    chorddiagrampainter.h
     clickableitem.h
     keysignaturepainter.h
     layoutinfo.h
