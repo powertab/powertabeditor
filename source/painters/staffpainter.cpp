@@ -70,6 +70,7 @@ void StaffPainter::mouseMoveEvent(QGraphicsSceneMouseEvent *event)
 void StaffPainter::paint(QPainter *painter, const QStyleOptionGraphicsItem *,
                          QWidget *)
 {
+    painter->setRenderHint(QPainter::Antialiasing);
     painter->setPen(QPen(QBrush(myStaffColor), 0.75));
 
     // Draw standard notation staff.
