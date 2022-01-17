@@ -154,6 +154,7 @@ set( data_files
     formats/gp7/data/alternate_endings.gp
     formats/gp7/data/bars.gp
     formats/gp7/data/bends.gp
+    formats/gp7/data/chord_diagrams.gp
     formats/gp7/data/directions.gp
     formats/gp7/data/fermatas.gp
     formats/gp7/data/harmonics.gp

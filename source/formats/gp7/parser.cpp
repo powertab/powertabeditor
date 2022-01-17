@@ -152,12 +152,12 @@ parseTempoChanges(const pugi::xml_node &master_track,
     }
 }
 
-static Gp7::Chord::Note
+static Gp7::ChordName::Note
 parseChordNote(const pugi::xml_node &node)
 {
     using namespace std::string_literals;
 
-    Gp7::Chord::Note note;
+    Gp7::ChordName::Note note;
     note.myStep = node.attribute("step").as_string();
 
     static const std::unordered_map<std::string, int> theAccidentals = {
@@ -177,7 +177,7 @@ parseChordNote(const pugi::xml_node &node)
     return note;
 }
 
-static std::optional<Gp7::Chord::Degree>
+static std::optional<Gp7::ChordName::Degree>
 parseChordDegree(const pugi::xml_node &chord_node, const char *name)
 {
     auto node = chord_node.find_child_by_attribute("Degree", "interval", name);
@@ -185,9 +185,9 @@ parseChordDegree(const pugi::xml_node &chord_node, const char *name)
         return {};
 
     using namespace std::string_literals;
-    using Alteration = Gp7::Chord::Degree::Alteration;
+    using Alteration = Gp7::ChordName::Degree::Alteration;
 
-    Gp7::Chord::Degree degree;
+    Gp7::ChordName::Degree degree;
     degree.myOmitted = node.attribute("omitted").as_bool();
 
     static const std::unordered_map<std::string, Alteration> theAlterations = {
@@ -214,20 +214,40 @@ parseChords(const pugi::xml_node &collection_node)
     for (auto node : collection_node.child("Items").children("Item"))
     {
         Gp7::Chord chord;
+        Gp7::ChordName &chord_name = chord.myName;
 
+        // Chord name
         auto chord_node = node.child("Chord");
-        chord.myKeyNote = parseChordNote(chord_node.child("KeyNote"));
-        chord.myBassNote = parseChordNote(chord_node.child("BassNote"));
+        chord_name.myKeyNote = parseChordNote(chord_node.child("KeyNote"));
+        chord_name.myBassNote = parseChordNote(chord_node.child("BassNote"));
 
-        chord.mySecond = parseChordDegree(chord_node, "Second");
-        chord.myThird = parseChordDegree(chord_node, "Third");
-        chord.myFourth = parseChordDegree(chord_node, "Fourth");
-        chord.myFifth = parseChordDegree(chord_node, "Fifth");
-        chord.mySixth = parseChordDegree(chord_node, "Sixth");
-        chord.mySeventh = parseChordDegree(chord_node, "Seventh");
-        chord.myNinth = parseChordDegree(chord_node, "Ninth");
-        chord.myEleventh = parseChordDegree(chord_node, "Eleventh");
-        chord.myThirteenth = parseChordDegree(chord_node, "Thirteenth");
+        chord_name.mySecond = parseChordDegree(chord_node, "Second");
+        chord_name.myThird = parseChordDegree(chord_node, "Third");
+        chord_name.myFourth = parseChordDegree(chord_node, "Fourth");
+        chord_name.myFifth = parseChordDegree(chord_node, "Fifth");
+        chord_name.mySixth = parseChordDegree(chord_node, "Sixth");
+        chord_name.mySeventh = parseChordDegree(chord_node, "Seventh");
+        chord_name.myNinth = parseChordDegree(chord_node, "Ninth");
+        chord_name.myEleventh = parseChordDegree(chord_node, "Eleventh");
+        chord_name.myThirteenth = parseChordDegree(chord_node, "Thirteenth");
+
+        // Chord diagram.
+        {
+            Gp7::ChordDiagram &diagram = chord.myDiagram;
+            auto diagram_node = node.child("Diagram");
+
+            diagram.myBaseFret = diagram_node.attribute("baseFret").as_int();
+            diagram.myFrets.resize(
+                diagram_node.attribute("stringCount").as_int());
+            std::fill(diagram.myFrets.begin(), diagram.myFrets.end(), -1);
+
+            for (auto child_node : diagram_node.children("Fret"))
+            {
+                int string = child_node.attribute("string").as_int();
+                int fret = child_node.attribute("fret").as_int();
+                diagram.myFrets[string] = fret;
+            }
+        }
 
         const int id = node.attribute("id").as_int();
         chords.emplace(id, chord);

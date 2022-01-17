@@ -911,3 +911,23 @@ TEST_CASE("Formats/Gp7Import/Harmonics")
                        Octave::Octave15ma);
     }
 }
+
+TEST_CASE("Formats/Gp7Import/ChordDiagrams")
+{
+    Score score;
+    Gp7Importer importer;
+    importer.load(AppInfo::getAbsolutePath("data/chord_diagrams.gp"), score);
+
+    REQUIRE(score.getChordDiagrams().size() == 5);
+
+    REQUIRE(Util::toString(score.getChordDiagrams()[0]) ==
+            "E: 0 2 2 1 0 0");
+    REQUIRE(Util::toString(score.getChordDiagrams()[1]) ==
+            "Bb: 6 8 8 7 6 x (6)");
+    REQUIRE(Util::toString(score.getChordDiagrams()[2]) ==
+            "F#: x 2 4 4 3 x x");
+    REQUIRE(Util::toString(score.getChordDiagrams()[4]) ==
+            "Asus2: x 0 2 2 0 0");
+    // Duplicates aren't detected currently.
+    REQUIRE(score.getChordDiagrams()[3] == score.getChordDiagrams()[0]);
+}
