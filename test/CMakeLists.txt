@@ -166,6 +166,7 @@ set( data_files
     formats/gp7/data/tremolo_bars.gp
     formats/gp7/data/words_and_music.gp
 
+    formats/gpx/data/chord_diagrams.gpx
     formats/gpx/data/text.gpx
     formats/gpx/data/tremolo_bars.gpx
 
