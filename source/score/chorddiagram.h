@@ -60,4 +60,6 @@ void ChordDiagram::serialize(Archive &ar, const FileVersion /*version*/)
 	ar("fret_numbers", myFretNumbers);
 }
 
+std::ostream &operator<<(std::ostream &os, const ChordDiagram &diagram);
+
 #endif

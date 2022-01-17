@@ -420,22 +420,6 @@ TEST_CASE("Formats/PowerTabOldImport/ChordDiagrams")
     loadTest(importer, "data/chord_diagrams.ptb", score);
 
     REQUIRE(score.getChordDiagrams().size() == 2);
-
-    {
-        const ChordDiagram &diagram = score.getChordDiagrams()[0];
-        REQUIRE(Util::toString(diagram.getChordName()) == "A");
-        REQUIRE(diagram.getTopFret() == 5);
-
-        std::vector<int> frets = { 5, 5, 6, 7, 7, 5 };
-        REQUIRE(diagram.getFretNumbers() == frets);
-    }
-
-    {
-        const ChordDiagram &diagram = score.getChordDiagrams()[1];
-        REQUIRE(Util::toString(diagram.getChordName()) == "Asus2");
-        REQUIRE(diagram.getTopFret() == 0);
-
-        std::vector<int> frets = { 0, 0, 2, 2, 0, -1 };
-        REQUIRE(diagram.getFretNumbers() == frets);
-    }
+    REQUIRE(Util::toString(score.getChordDiagrams()[0]) == "A: 5 7 7 6 5 5 (5)");
+    REQUIRE(Util::toString(score.getChordDiagrams()[1]) == "Asus2: x 0 2 2 0 0");
 }

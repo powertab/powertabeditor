@@ -96,21 +96,13 @@ ChordDiagramPainter::paint(QPainter *painter, const QStyleOptionGraphicsItem *,
         }
         else
         {
-            int fret_offset = fret;
-            if (myDiagram.getTopFret() > 0)
-            {
-                // A top fret of 1 displays the same as 0, just without drawing
-                // the nut.
-                fret_offset -= myDiagram.getTopFret() - 1;
-            }
+            const int fret_offset = fret - myDiagram.getTopFret();
 
             painter->setBrush(QBrush(myColor));
             painter->drawEllipse(
                 QPointF(x, top_fret_y + (fret_offset - 0.5) * fret_spacing),
                 dot_radius, dot_radius);
             painter->setBrush(QBrush()); // reset
-
-            // TODO - also draw the top fret number.
         }
     }
 
@@ -121,7 +113,8 @@ ChordDiagramPainter::paint(QPainter *painter, const QStyleOptionGraphicsItem *,
         font.setPixelSize(7);
         painter->setFont(font);
 
-        const QString text = QString::number(myDiagram.getTopFret());
+        // Adding 1 since the next fret is where a finger can be placed.
+        const QString text = QString::number(myDiagram.getTopFret() + 1);
         painter->drawText(DIAGRAM_WIDTH - x_pad + 3, top_fret_y + fret_spacing,
                           text);
     }

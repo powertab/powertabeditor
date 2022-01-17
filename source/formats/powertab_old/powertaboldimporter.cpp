@@ -295,7 +295,10 @@ convertChordDiagrams(const PowerTabDocument::Score &old_score, Score &score)
 
         ChordDiagram diagram;
         diagram.setChordName(convertChordName(old_diagram.GetChordName()));
-        diagram.setTopFret(old_diagram.GetTopFret());
+        // In PTE 2.0, the top fret is always 1 above the first fret that can
+        // be played. In PTE 1.7 this was inconsistent when the top fret was 0.
+        diagram.setTopFret(
+            old_diagram.GetTopFret() > 0 ? old_diagram.GetTopFret() - 1 : 0);
 
         std::vector<int> fret_numbers;
         for (size_t j = 0; j < old_diagram.GetStringCount(); ++j)

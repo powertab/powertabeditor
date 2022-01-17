@@ -17,6 +17,8 @@
 
 #include "chorddiagram.h"
 
+#include <ostream>
+
 ChordDiagram::ChordDiagram()
 {
 }
@@ -25,4 +27,27 @@ bool ChordDiagram::operator==(const ChordDiagram &other) const
 {
     return myChordName == other.myChordName && myTopFret == other.myTopFret &&
            myFretNumbers == other.myFretNumbers;
+}
+
+std::ostream &
+operator<<(std::ostream &os, const ChordDiagram &diagram)
+{
+    os << diagram.getChordName() << ": ";
+
+    for (int i = diagram.getStringCount() - 1; i >= 0; --i)
+    {
+        int fret = diagram.getFretNumbers()[i];
+        if (fret < 0)
+            os << "x";
+        else
+            os << fret;
+
+        if (i > 0)
+            os << " ";
+    }
+
+    if (diagram.getTopFret() > 0)
+        os << " (" << (diagram.getTopFret() + 1) << ")";
+
+    return os;
 }
