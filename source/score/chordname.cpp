@@ -19,6 +19,7 @@
 
 #include <array>
 #include <boost/algorithm/string/replace.hpp>
+#include <boost/functional/hash.hpp>
 #include <iostream>
 
 ChordName::ChordName()
@@ -197,4 +198,19 @@ std::ostream &operator<<(std::ostream &os, const ChordName &chord)
         os << ")";
 
     return os;
+}
+
+size_t
+std::hash<ChordName>::operator()(const ChordName &name) const
+{
+    size_t seed = 0;
+    boost::hash_combine(seed, name.getTonicKey());
+    boost::hash_combine(seed, name.getTonicVariation());
+    boost::hash_combine(seed, name.getBassKey());
+    boost::hash_combine(seed, name.getBassVariation());
+    boost::hash_combine(seed, name.getFormula());
+    boost::hash_combine(seed, name.getModifications().to_ulong());
+    boost::hash_combine(seed, name.hasBrackets());
+    boost::hash_combine(seed, name.isNoChord());
+    return seed;
 }

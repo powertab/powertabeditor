@@ -46,14 +46,11 @@ private:
     int myPosition;
 };
 
-namespace std
+/// Enable the use of SystemLocation as a key for std::unordered_map, etc.
+template<>
+struct std::hash<SystemLocation>
 {
-    /// Enable the use of SystemLocation as a key for std::unordered_map, etc.
-    template<>
-    struct hash<SystemLocation>
-    {
-        size_t operator()(const SystemLocation &location) const;
-    };
-}
+    size_t operator()(const SystemLocation &location) const;
+};
 
 #endif
