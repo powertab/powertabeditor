@@ -92,14 +92,14 @@ BarlinePainter::paint(QPainter *painter, const QStyleOptionGraphicsItem *option,
     painter->setPen(QPen(myBarlineColor, 1));
     painter->setBrush(myBarlineColor);
 
+    const Barline::BarType barType = myBarline.getBarType();
+
     // For the start bar, draw a line connecting the staves.
-    if (myBarline.getPosition() == 0)
+    if (myBarline.getPosition() == 0 && barType == Barline::SingleBar)
     {
         painter->drawLine(QLineF(myX, myLayout->getBottomStdNotationLine(), myX,
                                  myLayout->getTopTabLine()));
     }
-
-    const Barline::BarType barType = myBarline.getBarType();
 
     if (barType == Barline::FreeTimeBar)
         painter->setPen(Qt::DashLine);
