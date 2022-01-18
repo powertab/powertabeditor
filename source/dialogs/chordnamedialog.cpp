@@ -97,8 +97,9 @@ ChordNameDialog::ChordNameDialog(QWidget *parent,
 
     myBassKeys->button(myChord.getBassKey())->setChecked(true);
 
-    ui->formulaListWidget->setCurrentRow(myChord.getFormula());
-    connect(ui->formulaListWidget, &QListWidget::currentRowChanged, this,
+    ui->formulaListWidget->setCurrentIndex(myChord.getFormula());
+    connect(ui->formulaListWidget,
+            qOverload<int>(&QComboBox::currentIndexChanged), this,
             &ChordNameDialog::updateState);
 
     initCheckBox(ui->add2CheckBox,
@@ -173,7 +174,7 @@ void ChordNameDialog::updateState()
     myChord.setBassVariation(bassVariation);
 
     myChord.setFormula(
-        static_cast<ChordName::Formula>(ui->formulaListWidget->currentRow()));
+        static_cast<ChordName::Formula>(ui->formulaListWidget->currentIndex()));
 
     myChord.setModification(ChordName::Added2nd, ui->add2CheckBox->isChecked());
     myChord.setModification(ChordName::Added4th, ui->add4CheckBox->isChecked());

@@ -9,8 +9,8 @@
    <rect>
     <x>0</x>
     <y>0</y>
-    <width>596</width>
-    <height>580</height>
+    <width>593</width>
+    <height>331</height>
    </rect>
   </property>
   <property name="windowTitle">
@@ -71,7 +71,7 @@
          </property>
          <property name="sizeHint" stdset="0">
           <size>
-           <width>5</width>
+           <width>10</width>
            <height>20</height>
           </size>
          </property>
@@ -334,13 +334,7 @@
       </widget>
      </item>
      <item row="2" column="1">
-      <widget class="QListWidget" name="formulaListWidget">
-       <property name="minimumSize">
-        <size>
-         <width>0</width>
-         <height>275</height>
-        </size>
-       </property>
+      <widget class="QComboBox" name="formulaListWidget">
        <item>
         <property name="text">
          <string notr="true">maj</string>
@@ -677,19 +671,6 @@
        <property name="spacing">
         <number>0</number>
        </property>
-       <item>
-        <spacer name="horizontalSpacer_3">
-         <property name="orientation">
-          <enum>Qt::Horizontal</enum>
-         </property>
-         <property name="sizeHint" stdset="0">
-          <size>
-           <width>40</width>
-           <height>20</height>
-          </size>
-         </property>
-        </spacer>
-       </item>
        <item>
         <widget class="QToolButton" name="bassCButton">
          <property name="font">
