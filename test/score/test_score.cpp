@@ -110,3 +110,36 @@ TEST_CASE("Score/Score/Deserialization")
     REQUIRE(score.getSystems().size() == 2);
     REQUIRE(score.getSystems()[0].getAlternateEndings().size() == 2);
 }
+
+TEST_CASE("Score/Score/FindAllChordNames")
+{
+    ChordName name;
+    name.setTonicKey(ChordName::F);
+    name.setTonicVariation(ChordName::Flat);
+    name.setBassKey(ChordName::F);
+    name.setBassVariation(ChordName::Flat);
+    name.setFormula(ChordName::Major7th);
+
+    ChordName name2 = name;
+    name2.setModification(ChordName::Extended11th);
+
+    ChordName name3 = name;
+    name3.setModification(ChordName::Extended9th);
+
+    Score score;
+
+    ChordDiagram diagram1;
+    diagram1.setChordName(name2);
+    ChordDiagram diagram2;
+    diagram2.setChordName(name);
+    score.insertChordDiagram(diagram1);
+    score.insertChordDiagram(diagram2);
+
+    System system;
+    system.insertChord(ChordText(2, name3));
+    system.insertChord(ChordText(4, name));
+    score.insertSystem(system);
+
+    REQUIRE(ScoreUtils::findAllChordNames(score) ==
+            std::vector<ChordName>({ name2, name, name3 }));
+}

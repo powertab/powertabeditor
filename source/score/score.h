@@ -21,6 +21,7 @@
 #include <boost/range/iterator_range_core.hpp>
 #include "fileversion.h"
 #include "chorddiagram.h"
+#include "chordname.h"
 #include "instrument.h"
 #include "player.h"
 #include "scoreinfo.h"
@@ -155,6 +156,10 @@ void adjustRehearsalSigns(Score &score);
 
 /// Add the standard view filters (guitar and bass) to the score.
 void addStandardFilters(Score &score);
+
+/// Return a list of the unique chord names used in the score (from diagrams
+/// and plain chord names).
+std::vector<ChordName> findAllChordNames(const Score &score);
 }
 
 #endif

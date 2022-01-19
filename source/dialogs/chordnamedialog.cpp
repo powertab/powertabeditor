@@ -22,16 +22,29 @@
 #include <util/tostring.h>
 
 ChordNameDialog::ChordNameDialog(QWidget *parent,
-                                 const ChordName &initial_chord)
-    : QDialog(parent), ui(new Ui::ChordNameDialog), myChord(initial_chord)
+                                 const ChordName &initial_chord,
+                                 std::vector<ChordName> available_chords)
+    : QDialog(parent),
+      ui(new Ui::ChordNameDialog),
+      myScoreChords(std::move(available_chords))
 {
     ui->setupUi(this);
+
+    for (const ChordName &name : myScoreChords)
+        ui->chordsList->addItem(QString::fromStdString(Util::toString(name)));
+
+    connect(ui->chordsList, &QListWidget::currentRowChanged,
+            [&](int row)
+            {
+                if (row >= 0)
+                    setToChord(myScoreChords[row]);
+            });
 
     connect(ui->buttonBox, &QDialogButtonBox::accepted, this, &QDialog::accept);
     connect(ui->buttonBox, &QDialogButtonBox::rejected, this, &QDialog::reject);
 
-    initCheckBox(ui->noChordCheckBox, myChord.isNoChord());
-    initCheckBox(ui->bracketsCheckBox, myChord.hasBrackets());
+    initCheckBox(ui->noChordCheckBox);
+    initCheckBox(ui->bracketsCheckBox);
 
     myTonicVariations = new QButtonGroup(this);
     myTonicVariations->addButton(ui->tonicFlatButton);
@@ -43,11 +56,6 @@ ChordNameDialog::ChordNameDialog(QWidget *parent,
             qOverload<QAbstractButton *>(&QButtonGroup::buttonClicked), this,
             &ChordNameDialog::onTonicVariationClicked);
 
-    ui->tonicSharpButton->setChecked(myChord.getTonicVariation() ==
-                                     ChordName::Sharp);
-    ui->tonicFlatButton->setChecked(myChord.getTonicVariation() ==
-                                    ChordName::Flat);
-
     myBassVariations = new QButtonGroup(this);
     myBassVariations->addButton(ui->bassFlatButton);
     myBassVariations->addButton(ui->bassSharpButton);
@@ -55,11 +63,6 @@ ChordNameDialog::ChordNameDialog(QWidget *parent,
     connect(myBassVariations,
             qOverload<QAbstractButton *>(&QButtonGroup::buttonClicked), this,
             &ChordNameDialog::onBassVariationClicked);
-
-    ui->bassSharpButton->setChecked(myChord.getBassVariation() ==
-                                    ChordName::Sharp);
-    ui->bassFlatButton->setChecked(myChord.getBassVariation() ==
-                                   ChordName::Flat);
 
     myTonicKeys = new QButtonGroup(this);
     myTonicKeys->addButton(ui->tonicCButton, ChordName::C);
@@ -77,8 +80,6 @@ ChordNameDialog::ChordNameDialog(QWidget *parent,
 #endif
             this, &ChordNameDialog::onTonicChanged);
 
-    myTonicKeys->button(myChord.getTonicKey())->setChecked(true);
-
     myBassKeys = new QButtonGroup(this);
     myBassKeys->addButton(ui->bassCButton, ChordName::C);
     myBassKeys->addButton(ui->bassDButton, ChordName::D);
@@ -95,49 +96,30 @@ ChordNameDialog::ChordNameDialog(QWidget *parent,
 #endif
             this, &ChordNameDialog::updateState);
 
-    myBassKeys->button(myChord.getBassKey())->setChecked(true);
-
-    ui->formulaListWidget->setCurrentIndex(myChord.getFormula());
     connect(ui->formulaListWidget,
             qOverload<int>(&QComboBox::currentIndexChanged), this,
             &ChordNameDialog::updateState);
 
-    initCheckBox(ui->add2CheckBox,
-                 myChord.hasModification(ChordName::Added2nd));
-    initCheckBox(ui->add4CheckBox,
-                 myChord.hasModification(ChordName::Added4th));
-    initCheckBox(ui->add6CheckBox,
-                 myChord.hasModification(ChordName::Added6th));
-    initCheckBox(ui->add9CheckBox,
-                 myChord.hasModification(ChordName::Added9th));
-    initCheckBox(ui->add11CheckBox,
-                 myChord.hasModification(ChordName::Added11th));
+    initCheckBox(ui->add2CheckBox);
+    initCheckBox(ui->add4CheckBox);
+    initCheckBox(ui->add6CheckBox);
+    initCheckBox(ui->add9CheckBox);
+    initCheckBox(ui->add11CheckBox);
 
-    initCheckBox(ui->extend9CheckBox,
-                 myChord.hasModification(ChordName::Extended9th));
-    initCheckBox(ui->extend11CheckBox,
-                 myChord.hasModification(ChordName::Extended11th));
-    initCheckBox(ui->extend13CheckBox,
-                 myChord.hasModification(ChordName::Extended13th));
+    initCheckBox(ui->extend9CheckBox);
+    initCheckBox(ui->extend11CheckBox);
+    initCheckBox(ui->extend13CheckBox);
 
-    initCheckBox(ui->flat5CheckBox,
-                 myChord.hasModification(ChordName::Flatted5th));
-    initCheckBox(ui->raised5CheckBox,
-                 myChord.hasModification(ChordName::Raised5th));
-    initCheckBox(ui->flat9CheckBox,
-                 myChord.hasModification(ChordName::Flatted9th));
-    initCheckBox(ui->raised9CheckBox,
-                 myChord.hasModification(ChordName::Raised9th));
-    initCheckBox(ui->raised11CheckBox,
-                 myChord.hasModification(ChordName::Raised11th));
-    initCheckBox(ui->flat13CheckBox,
-                 myChord.hasModification(ChordName::Flatted13th));
-    initCheckBox(ui->sus2CheckBox,
-                 myChord.hasModification(ChordName::Suspended2nd));
-    initCheckBox(ui->sus4CheckBox,
-                 myChord.hasModification(ChordName::Suspended4th));
+    initCheckBox(ui->flat5CheckBox);
+    initCheckBox(ui->raised5CheckBox);
+    initCheckBox(ui->flat9CheckBox);
+    initCheckBox(ui->raised9CheckBox);
+    initCheckBox(ui->raised11CheckBox);
+    initCheckBox(ui->flat13CheckBox);
+    initCheckBox(ui->sus2CheckBox);
+    initCheckBox(ui->sus4CheckBox);
 
-    updateState();
+    setToChord(initial_chord);
 }
 
 ChordNameDialog::~ChordNameDialog()
@@ -243,8 +225,58 @@ void ChordNameDialog::onTonicChanged()
     updateState();
 }
 
-void ChordNameDialog::initCheckBox(QCheckBox *checkbox, bool value)
+void ChordNameDialog::initCheckBox(QCheckBox *checkbox)
 {
-    checkbox->setChecked(value);
     connect(checkbox, &QCheckBox::clicked, this, &ChordNameDialog::updateState);
+}
+
+void
+ChordNameDialog::setToChord(const ChordName &chord)
+{
+    ui->noChordCheckBox->setChecked(chord.isNoChord());
+    ui->bracketsCheckBox->setChecked(chord.hasBrackets());
+
+    ui->tonicSharpButton->setChecked(chord.getTonicVariation() ==
+                                     ChordName::Sharp);
+    ui->tonicFlatButton->setChecked(chord.getTonicVariation() ==
+                                    ChordName::Flat);
+
+    ui->bassSharpButton->setChecked(chord.getBassVariation() ==
+                                    ChordName::Sharp);
+    ui->bassFlatButton->setChecked(chord.getBassVariation() == ChordName::Flat);
+
+    myTonicKeys->button(chord.getTonicKey())->setChecked(true);
+    myBassKeys->button(chord.getBassKey())->setChecked(true);
+
+    ui->formulaListWidget->setCurrentIndex(chord.getFormula());
+
+    ui->add2CheckBox->setChecked(chord.hasModification(ChordName::Added2nd));
+    ui->add4CheckBox->setChecked(chord.hasModification(ChordName::Added4th));
+    ui->add6CheckBox->setChecked(chord.hasModification(ChordName::Added6th));
+    ui->add9CheckBox->setChecked(chord.hasModification(ChordName::Added9th));
+    ui->add11CheckBox->setChecked(chord.hasModification(ChordName::Added11th));
+
+    ui->extend9CheckBox->setChecked(
+        chord.hasModification(ChordName::Extended9th));
+    ui->extend11CheckBox->setChecked(
+        chord.hasModification(ChordName::Extended11th));
+    ui->extend13CheckBox->setChecked(
+        chord.hasModification(ChordName::Extended13th));
+
+    ui->flat5CheckBox->setChecked(chord.hasModification(ChordName::Flatted5th));
+    ui->raised5CheckBox->setChecked(
+        chord.hasModification(ChordName::Raised5th));
+    ui->flat9CheckBox->setChecked(chord.hasModification(ChordName::Flatted9th));
+    ui->raised9CheckBox->setChecked(
+        chord.hasModification(ChordName::Raised9th));
+    ui->raised11CheckBox->setChecked(
+        chord.hasModification(ChordName::Raised11th));
+    ui->flat13CheckBox->setChecked(
+        chord.hasModification(ChordName::Flatted13th));
+    ui->sus2CheckBox->setChecked(
+        chord.hasModification(ChordName::Suspended2nd));
+    ui->sus4CheckBox->setChecked(
+        chord.hasModification(ChordName::Suspended4th));
+
+    updateState();
 }

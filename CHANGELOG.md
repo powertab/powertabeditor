@@ -11,6 +11,10 @@ Thanks to the following contributors who worked on this release:
 - @NathanBnm
 
 ### Added
+- Added support for chord diagrams.
+  - Chord diagrams are displayed at the top of the score
+  - Can be imported from v1.7 files and Guitar Pro 6 / 7 files
+  - The Chord Name dialog allows for quick selection from existing chord names in the score (chord text items, or chord diagrams)
 - Added MIDI playback support for bends that stretch over multiple notes.
 - Improvements for adjusting the score's zoom (#315, #340, #50)
   - Added standard keyboard shortcuts for adjusting the zoom

@@ -18,6 +18,8 @@
 #include "score.h"
 
 #include <stdexcept>
+#include <unordered_set>
+#include <util/tostring.h>
 
 const int Score::MIN_LINE_SPACING = 6;
 const int Score::MAX_LINE_SPACING = 14;
@@ -256,4 +258,27 @@ void ScoreUtils::addStandardFilters(Score &score)
                                      FilterRule::Operation::LessThanEqual,
                                      5));
     score.insertViewFilter(filter_basses);
+}
+
+std::vector<ChordName>
+ScoreUtils::findAllChordNames(const Score &score)
+{
+    std::unordered_set<ChordName> unique_names;
+
+    for (const ChordDiagram &diagram : score.getChordDiagrams())
+        unique_names.insert(diagram.getChordName());
+
+    for (const System &system : score.getSystems())
+    {
+        for (const ChordText &chord : system.getChords())
+            unique_names.insert(chord.getChordName());
+    }
+
+    std::vector<ChordName> names(unique_names.begin(), unique_names.end());
+    // Sort the names alphabetically. The performance of this could be improved
+    // by implementing operator< for ChordName's.
+    std::sort(names.begin(), names.end(),
+              [](auto c1, auto c2)
+              { return Util::toString(c1) < Util::toString(c2); });
+    return names;
 }

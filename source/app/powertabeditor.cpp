@@ -946,7 +946,8 @@ PowerTabEditor::editChordName(bool remove)
         return;
     }
 
-    ChordNameDialog dialog(this, text ? text->getChordName() : ChordName());
+    ChordNameDialog dialog(this, text ? text->getChordName() : ChordName(),
+                           ScoreUtils::findAllChordNames(location.getScore()));
     if (dialog.exec() == QDialog::Accepted)
     {
         ChordText new_text(location.getPositionIndex(), dialog.getChordName());
