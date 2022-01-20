@@ -116,6 +116,7 @@ jobs:
 
     - name: Build Installer
       run: |
+        choco install innosetup -y -v
         iscc installer/windows/installer.iss
         mv installer/windows/powertabeditor.exe installer/windows/powertabeditor-windows-${{ matrix.arch }}-${{ steps.version.outputs.VERSION_ID }}.exe
 
