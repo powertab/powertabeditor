@@ -15,6 +15,9 @@
 * Join the [Discord community](https://discord.gg/mpXfquuzxe)
 
 ### Developers
+* Development help is very welcome! If you're interested in contributing, the issue tracker has a list of [good first issues](https://github.com/powertab/powertabeditor/issues?q=is%3Aissue+is%3Aopen+label%3A%22good+first+issue%22) that are easier to dive into!
+* Feel free to ask development-related questions on the [discussions page](https://github.com/powertab/powertabeditor/discussions) or on [Discord](https://discord.gg/mpXfquuzxe)
+* See below for instructions on how to compile and run the project:
 
 #### Dependencies:
 * [CMake](http://www.cmake.org/) >= 3.12
