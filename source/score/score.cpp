@@ -287,3 +287,39 @@ ScoreUtils::findAllChordNames(const Score &score)
               { return Util::toString(c1) < Util::toString(c2); });
     return names;
 }
+
+static std::string
+createUniqueName(size_t count, const std::string &prefix,
+                 const std::unordered_set<std::string> &used_names)
+{
+    std::string name;
+    do
+    {
+        ++count;
+        name = prefix + " " + std::to_string(count);
+    } while (used_names.find(name) != used_names.end());
+
+    return name;
+}
+
+std::string
+ScoreUtils::createUniquePlayerName(const Score &score,
+                                   const std::string &prefix)
+{
+    std::unordered_set<std::string> used_names;
+    for (const Player &player : score.getPlayers())
+        used_names.insert(player.getDescription());
+
+    return createUniqueName(score.getPlayers().size(), prefix, used_names);
+}
+
+std::string
+ScoreUtils::createUniqueInstrumentName(const Score &score,
+                                       const std::string &prefix)
+{
+    std::unordered_set<std::string> used_names;
+    for (const Instrument &inst : score.getInstruments())
+        used_names.insert(inst.getDescription());
+
+    return createUniqueName(score.getInstruments().size(), prefix, used_names);
+}

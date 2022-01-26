@@ -143,3 +143,31 @@ TEST_CASE("Score/Score/FindAllChordNames")
     REQUIRE(ScoreUtils::findAllChordNames(score) ==
             std::vector<ChordName>({ name2, name, name3 }));
 }
+
+TEST_CASE("Score/Score/UniquePlayerName")
+{
+    Score score;
+    Player player1;
+    player1.setDescription("Player 1");
+    Player player2;
+    player2.setDescription("Player 3");
+
+    score.insertPlayer(player1);
+    score.insertPlayer(player2);
+
+    REQUIRE(ScoreUtils::createUniquePlayerName(score, "Player") == "Player 4");
+}
+
+TEST_CASE("Score/Score/UniqueInstrumentName")
+{
+    Score score;
+    Instrument i1;
+    i1.setDescription("Inst 1");
+    Instrument i2;
+    i2.setDescription("Inst 3");
+
+    score.insertInstrument(i1);
+    score.insertInstrument(i2);
+
+    REQUIRE(ScoreUtils::createUniqueInstrumentName(score, "Inst") == "Inst 4");
+}

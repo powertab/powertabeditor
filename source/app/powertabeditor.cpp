@@ -88,7 +88,6 @@
 #include <audio/midiplayer.h>
 #include <audio/settings.h>
 
-#include <boost/range/algorithm/transform.hpp>
 #include <chrono>
 
 #include <dialogs/alterationofpacedialog.h>
@@ -1859,30 +1858,9 @@ void PowerTabEditor::addPlayer()
 {
     ScoreLocation &location = getLocation();
     Score &score = location.getScore();
+
     Player player;
-
-    // Create a unique name for the player.
-    {
-        std::vector<std::string> names;
-        boost::range::transform(score.getPlayers(), std::back_inserter(names),
-                                [](const Player &player) {
-            return player.getDescription();
-        });
-
-        size_t i = score.getPlayers().size() + 1;
-        while (true)
-        {
-            const std::string name = "Player " + std::to_string(i);
-
-            if (std::find(names.begin(), names.end(), name) == names.end())
-            {
-                player.setDescription(name);
-                break;
-            }
-            else
-                ++i;
-        }
-    }
+    player.setDescription(ScoreUtils::createUniquePlayerName(score, "Player"));
 
     auto settings = mySettingsManager->getReadHandle();
     player.setTuning(settings->get(Settings::DefaultTuning));
@@ -1898,33 +1876,10 @@ void PowerTabEditor::addInstrument()
     Instrument instrument;
 
     auto settings = mySettingsManager->getReadHandle();
-
-    // Create a unique name for the instrument.
-    {
-        std::vector<std::string> names;
-        boost::range::transform(score.getInstruments(),
-                                std::back_inserter(names),
-                                [](const Instrument &instrument) {
-            return instrument.getDescription();
-        });
-
-        const std::string default_name =
-            settings->get(Settings::DefaultInstrumentName);
-
-        size_t i = score.getInstruments().size() + 1;
-        while (true)
-        {
-            const std::string name = default_name + " " + std::to_string(i);
-
-            if (std::find(names.begin(), names.end(), name) == names.end())
-            {
-                instrument.setDescription(name);
-                break;
-            }
-            else
-                ++i;
-        }
-    }
+    const std::string default_name =
+        settings->get(Settings::DefaultInstrumentName);
+    instrument.setDescription(
+        ScoreUtils::createUniqueInstrumentName(score, default_name));
 
     instrument.setMidiPreset(settings->get(Settings::DefaultInstrumentPreset));
 

@@ -161,6 +161,14 @@ void addStandardFilters(Score &score);
 /// Return a list of the unique chord names used in the score (from diagrams
 /// and plain chord names).
 std::vector<ChordName> findAllChordNames(const Score &score);
+
+/// Creates a unique name for a new player.
+std::string createUniquePlayerName(const Score &score,
+                                   const std::string &prefix);
+
+/// Creates a unique name for a new instrument.
+std::string createUniqueInstrumentName(const Score &score,
+                                       const std::string &prefix);
 }
 
 #endif
