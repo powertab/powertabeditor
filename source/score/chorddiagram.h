@@ -40,6 +40,9 @@ public:
 
     /// Returns the number of strings in the diagram.
     int getStringCount() const { return myFretNumbers.size(); }
+    /// Edits the number of strings. When increasing, new strings are muted by
+    /// default.
+    void setStringCount(int count);
 
     const std::vector<int> &getFretNumbers() const { return myFretNumbers; }
     void setFretNumbers(const std::vector<int> &frets) { myFretNumbers = frets; }

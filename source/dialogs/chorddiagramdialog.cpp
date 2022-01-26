@@ -39,6 +39,24 @@ ChordDiagramDialog::ChordDiagramDialog(QWidget *parent, const Score &score,
         QString::fromStdString(Util::toString(myDiagram.getChordName())));
     connect(ui->chordNameButton, &ClickableLabel::clicked, this,
             &ChordDiagramDialog::editChordName);
+
+    ui->numStringsSpinBox->setMinimum(Tuning::MIN_STRING_COUNT);
+    ui->numStringsSpinBox->setMaximum(Tuning::MAX_STRING_COUNT);
+    ui->numStringsSpinBox->setValue(myDiagram.getStringCount());
+    connect(ui->topFretSpinBox, qOverload<int>(&QSpinBox::valueChanged),
+            [&](int value)
+            {
+                myDiagram.setStringCount(value);
+                onDiagramChanged();
+            });
+
+    ui->topFretSpinBox->setValue(myDiagram.getTopFret());
+    connect(ui->topFretSpinBox, qOverload<int>(&QSpinBox::valueChanged),
+            [&](int value)
+            {
+                myDiagram.setTopFret(value);
+                onDiagramChanged();
+            });
 }
 
 ChordDiagramDialog::~ChordDiagramDialog()
@@ -58,4 +76,10 @@ ChordDiagramDialog::editChordName()
         ui->chordNameButton->setText(
             QString::fromStdString(Util::toString(name)));
     }
+}
+
+void
+ChordDiagramDialog::onDiagramChanged()
+{
+    // TODO
 }

@@ -44,6 +44,8 @@ private slots:
     void editChordName();
 
 private:
+    void onDiagramChanged();
+
     std::unique_ptr<Ui::ChordDiagramDialog> ui;
     const Score &myScore;
     ChordDiagram myDiagram;

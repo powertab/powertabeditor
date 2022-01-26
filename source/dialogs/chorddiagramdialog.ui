@@ -35,6 +35,26 @@
      <item row="0" column="1">
       <widget class="ClickableLabel" name="chordNameButton" native="true"/>
      </item>
+     <item row="2" column="0">
+      <widget class="QLabel" name="topFretLabel">
+       <property name="text">
+        <string>Top Fret:</string>
+       </property>
+      </widget>
+     </item>
+     <item row="2" column="1">
+      <widget class="QSpinBox" name="topFretSpinBox"/>
+     </item>
+     <item row="1" column="0">
+      <widget class="QLabel" name="numStringsLabel">
+       <property name="text">
+        <string>Number of Strings:</string>
+       </property>
+      </widget>
+     </item>
+     <item row="1" column="1">
+      <widget class="QSpinBox" name="numStringsSpinBox"/>
+     </item>
     </layout>
    </item>
    <item>

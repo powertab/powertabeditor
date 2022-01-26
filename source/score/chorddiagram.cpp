@@ -17,6 +17,7 @@
 
 #include "chorddiagram.h"
 
+#include "tuning.h"
 #include <ostream>
 
 ChordDiagram::ChordDiagram()
@@ -27,6 +28,21 @@ bool ChordDiagram::operator==(const ChordDiagram &other) const
 {
     return myChordName == other.myChordName && myTopFret == other.myTopFret &&
            myFretNumbers == other.myFretNumbers;
+}
+
+void
+ChordDiagram::setStringCount(int count)
+{
+    if (!Tuning::isValidStringCount(count))
+        throw std::out_of_range("Invalid string count");
+
+    if (count > getStringCount())
+    {
+        for (int i = getStringCount(); i < count; ++i)
+            myFretNumbers.push_back(-1);
+    }
+    else
+        myFretNumbers.resize(count);
 }
 
 std::ostream &
