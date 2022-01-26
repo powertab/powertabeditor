@@ -97,6 +97,7 @@ public:
 
     /// Adds a new chord diagram to the score.
     void insertChordDiagram(const ChordDiagram &diagram);
+    void insertChordDiagram(const ChordDiagram &diagram, int index);
     /// Removes the specified chord diagram from the score.
     void removeChordDiagram(int index);
 

@@ -34,6 +34,7 @@
 #include <actions/addstaff.h>
 #include <actions/addsystem.h>
 #include <actions/adjustlinespacing.h>
+#include <actions/chorddiagram.h>
 #include <actions/editbarline.h>
 #include <actions/editdynamic.h>
 #include <actions/editfileinformation.h>
@@ -1013,6 +1014,18 @@ PowerTabEditor::editTextItem(bool remove)
 void
 PowerTabEditor::editChordDiagram(bool remove)
 {
+    ScoreLocation &location = getLocation();
+    Score &score = location.getScore();
+    const int chord_idx = location.getChordDiagramIndex();
+    assert(chord_idx >= 0);
+
+    if (remove)
+    {
+        myUndoManager->push(new RemoveChordDiagram(score, chord_idx),
+                            UndoManager::AFFECTS_ALL_SYSTEMS);
+        return;
+    }
+
     // TODO
 }
 
@@ -3588,6 +3601,8 @@ void PowerTabEditor::setupNewTab()
 
                 getCaret().moveToSystem(location.getSystemIndex(), true);
                 getCaret().moveToPosition(location.getPositionIndex());
+                getCaret().getLocation().setChordDiagramIndex(
+                    location.getChordDiagramIndex());
                 getCaret().setSelectedItem(item);
 
                 switch (action)

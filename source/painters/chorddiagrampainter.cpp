@@ -157,10 +157,12 @@ ChordDiagramPainter::renderDiagrams(const Score &score, const QColor &color,
     double x = 0;
     double y = 0;
 
+    int chord_idx = 0;
     for (const ChordDiagram &diagram : score.getChordDiagrams())
     {
         // TODO - identify the diagram index.
         ConstScoreLocation location(score);
+        location.setChordDiagramIndex(chord_idx);
 
         auto group = new ClickableGroup(
             QCoreApplication::translate("ScoreArea",
@@ -193,6 +195,7 @@ ChordDiagramPainter::renderDiagrams(const Score &score, const QColor &color,
         current_line_items.push_back(group);
 
         x += size.width() + SPACING;
+        ++chord_idx;
     }
 
     // Center the final line.

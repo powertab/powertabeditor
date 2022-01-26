@@ -140,6 +140,11 @@ Score::insertChordDiagram(const ChordDiagram &filter)
     myChordDiagrams.push_back(filter);
 }
 
+void Score::insertChordDiagram(const ChordDiagram &diagram, int index)
+{
+    myChordDiagrams.insert(myChordDiagrams.begin() + index, diagram);
+}
+
 void
 Score::removeChordDiagram(int index)
 {
