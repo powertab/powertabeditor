@@ -97,7 +97,8 @@ void ScoreArea::renderDocument(const Document &document)
         score, myActivePalette->text().color(), myClickEvent);
 
     myChordDiagramList = ChordDiagramPainter::renderDiagrams(
-        score, myActivePalette->text().color(), LayoutInfo::STAFF_WIDTH);
+        score, myActivePalette->text().color(), myClickEvent,
+        LayoutInfo::STAFF_WIDTH);
 
     myRenderedSystems.reserve(static_cast<int>(score.getSystems().size()));
     for (unsigned int i = 0; i < score.getSystems().size(); ++i)

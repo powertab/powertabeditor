@@ -23,6 +23,7 @@
 
 class ChordDiagram;
 class Score;
+class ScoreClickEvent;
 
 /// Renders a single chord diagram.
 /// Use the static renderDiagrams() method to layout and render all of the
@@ -39,7 +40,9 @@ public:
     /// Returns a group of all the chord diagrams, constrained to the provided
     /// width.
     static QGraphicsItem *renderDiagrams(const Score &score,
-                                         const QColor &color, double max_width);
+                                         const QColor &color,
+                                         const ScoreClickEvent &click_event,
+                                         double max_width);
 
 private:
     const QRectF myBounds;

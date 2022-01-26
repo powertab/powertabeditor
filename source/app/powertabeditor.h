@@ -171,6 +171,8 @@ private slots:
     void editChordName(bool remove = false);
     /// Adds or removes a text item at the current position.
     void editTextItem(bool remove = false);
+    /// Adds or edits a chord diagram.
+    void editChordDiagram(bool remove = false);
 
     /// Inserts a new system at the end of the score.
     void insertSystemAtEnd();
@@ -505,6 +507,7 @@ private:
     QMenu *myTextMenu;
     Command *myChordNameCommand;
     Command *myTextCommand;
+    Command *myAddChordDiagramCommand;
 
     QMenu *mySectionMenu;
     Command *myInsertSystemAtEndCommand;

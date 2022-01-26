@@ -29,6 +29,7 @@ enum class ScoreItem
     AlternateEnding,
     Barline,
     Bend,
+    ChordDiagram,
     ChordText,
     Clef,
     Direction,

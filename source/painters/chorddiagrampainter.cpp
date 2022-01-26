@@ -17,9 +17,11 @@
 
 #include "chorddiagrampainter.h"
 
+#include "clickableitem.h"
 #include "layoutinfo.h"
 #include "simpletextitem.h"
 
+#include <QCoreApplication>
 #include <QPainter>
 #include <score/chorddiagram.h>
 #include <score/score.h>
@@ -120,11 +122,30 @@ ChordDiagramPainter::paint(QPainter *painter, const QStyleOptionGraphicsItem *,
     }
 }
 
+/// Empty graphics item to be the parent for the chord diagrams, since they
+/// aren't invidually selectable if they're part of a QGraphicsItemGroup.
+class EmptyGraphicsItem : public QGraphicsItem
+{
+public:
+    void paint(QPainter *, const QStyleOptionGraphicsItem *, QWidget *) override
+    {
+        // Do nothing
+    }
+
+    QRectF boundingRect() const override
+    {
+        return myBounds;
+    }
+
+    QRectF myBounds = QRectF(0, 0, 0, 0);
+};
+
 QGraphicsItem *
 ChordDiagramPainter::renderDiagrams(const Score &score, const QColor &color,
+                                    const ScoreClickEvent &click_event,
                                     double max_width)
 {
-    auto group = new QGraphicsItemGroup();
+    auto diagram_list = new EmptyGraphicsItem();
 
     QFont font(QStringLiteral("Liberation Sans"));
     font.setPixelSize(10);
@@ -135,21 +156,20 @@ ChordDiagramPainter::renderDiagrams(const Score &score, const QColor &color,
     std::vector<QGraphicsItem *> current_line_items;
     double x = 0;
     double y = 0;
+
     for (const ChordDiagram &diagram : score.getChordDiagrams())
     {
-        auto item = new ChordDiagramPainter(diagram, color);
+        // TODO - identify the diagram index.
+        ConstScoreLocation location(score);
 
-        const QSizeF size = item->boundingRect().size();
-        if (x > max_width)
-        {
-            x = 0;
-            y += size.height() + SPACING;
-            current_line_items.clear();
-        }
+        auto group = new ClickableGroup(
+            QCoreApplication::translate("ScoreArea",
+                                        "Double-click to edit chord diagram."),
+            click_event, location, ScoreItem::ChordDiagram);
 
-        item->setPos(x, y);
-        group->addToGroup(item);
-        current_line_items.push_back(item);
+        auto diagram_item = new ChordDiagramPainter(diagram, color);
+        const QSizeF size = diagram_item->boundingRect().size();
+        group->addToGroup(diagram_item);
 
         // Overlay the chord name, using SimpleTextItem to keep the
         // ChordDiagramPainter simpler.
@@ -157,9 +177,20 @@ ChordDiagramPainter::renderDiagrams(const Score &score, const QColor &color,
         auto text_item = new SimpleTextItem(QString::fromStdString(text), font,
                                             TextAlignment::Top, QPen(color));
         text_item->setPos(
-            x + 0.5 * (size.width() - text_item->boundingRect().width()), y);
+            0.5 * (size.width() - text_item->boundingRect().width()), 0);
         group->addToGroup(text_item);
-        current_line_items.push_back(text_item);
+
+        // Layout the diagrams.
+        if (x + size.width() > max_width)
+        {
+            x = 0;
+            y += size.height() + SPACING;
+            current_line_items.clear();
+        }
+
+        group->setPos(x, y);
+        group->setParentItem(diagram_list);
+        current_line_items.push_back(group);
 
         x += size.width() + SPACING;
     }
@@ -174,5 +205,6 @@ ChordDiagramPainter::renderDiagrams(const Score &score, const QColor &color,
             item->setX(item->x() + offset);
     }
 
-    return group;
+    diagram_list->myBounds.setCoords(0, 0, max_width, y + DIAGRAM_HEIGHT);
+    return diagram_list;
 }

@@ -846,6 +846,10 @@ void PowerTabEditor::removeSelectedItem()
             editChordName(/* remove */ true);
             break;
 
+        case ScoreItem::ChordDiagram:
+            editChordDiagram(/* remove */ true);
+            break;
+
         case ScoreItem::Bend:
             editBend(/* remove */ true);
             break;
@@ -1004,6 +1008,12 @@ PowerTabEditor::editTextItem(bool remove)
     }
     else
         myTextCommand->setChecked(item != nullptr);
+}
+
+void
+PowerTabEditor::editChordDiagram(bool remove)
+{
+    // TODO
 }
 
 void PowerTabEditor::insertSystemAtEnd()
@@ -2440,6 +2450,12 @@ void PowerTabEditor::createCommands()
     connect(myTextCommand, &QAction::triggered, this,
             [=]() { editTextItem(); });
 
+    myAddChordDiagramCommand =
+        new Command(tr("Add Chord Diagram..."), "Text.AddChordDiagram",
+                    QKeySequence(), this);
+    connect(myAddChordDiagramCommand, &QAction::triggered, this,
+            [=]() { editChordDiagram(); });
+
     myInsertSystemAtEndCommand = new Command(tr("Insert System At End"),
                                              "Section.InsertSystemAtEnd",
                                              Qt::Key_N, this);
@@ -3241,8 +3257,10 @@ void PowerTabEditor::createMenus()
 
     // Text Menu.
     myTextMenu = menuBar()->addMenu(tr("&Text"));
-    myTextMenu->addAction(myChordNameCommand);
     myTextMenu->addAction(myTextCommand);
+    myTextMenu->addAction(myChordNameCommand);
+    myTextMenu->addSeparator();
+    myTextMenu->addAction(myAddChordDiagramCommand);
 
     // Section Menu.
     mySectionMenu = menuBar()->addMenu(tr("&Section"));
@@ -3644,6 +3662,9 @@ void PowerTabEditor::setupNewTab()
                             case ScoreItem::ChordText:
                                 editChordName();
                                 break;
+                            case ScoreItem::ChordDiagram:
+                                editChordDiagram();
+                                break;
                             case ScoreItem::Bend:
                                 editBend();
                                 break;
@@ -3734,6 +3755,7 @@ canDeleteItem(ScoreItem item)
         case ScoreItem::AlternateEnding:
         case ScoreItem::Barline:
         case ScoreItem::Bend:
+        case ScoreItem::ChordDiagram:
         case ScoreItem::ChordText:
         case ScoreItem::Direction:
         case ScoreItem::Dynamic:
