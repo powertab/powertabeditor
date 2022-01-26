@@ -96,6 +96,7 @@
 #include <dialogs/barlinedialog.h>
 #include <dialogs/benddialog.h>
 #include <dialogs/bulkconverterdialog.h>
+#include <dialogs/chorddiagramdialog.h>
 #include <dialogs/chordnamedialog.h>
 #include <dialogs/directiondialog.h>
 #include <dialogs/dynamicdialog.h>
@@ -1011,6 +1012,20 @@ PowerTabEditor::editTextItem(bool remove)
 }
 
 void
+PowerTabEditor::addChordDiagram()
+{
+    Score &score = getLocation().getScore();
+
+    ChordDiagramDialog dialog(this, nullptr);
+    if (dialog.exec() == QDialog::Accepted)
+    {
+        myUndoManager->push(
+            new AddChordDiagram(score, dialog.getChordDiagram()),
+            UndoManager::AFFECTS_ALL_SYSTEMS);
+    }
+}
+
+void
 PowerTabEditor::editChordDiagram(bool remove)
 {
     ScoreLocation &location = getLocation();
@@ -1023,6 +1038,20 @@ PowerTabEditor::editChordDiagram(bool remove)
         myUndoManager->push(new RemoveChordDiagram(score, chord_idx),
                             UndoManager::AFFECTS_ALL_SYSTEMS);
         return;
+    }
+
+    ChordDiagramDialog dialog(this, &score.getChordDiagrams()[chord_idx]);
+    if (dialog.exec() == QDialog::Accepted)
+    {
+        myUndoManager->beginMacro(tr("Edit Chord Diagram"));
+
+        myUndoManager->push(new RemoveChordDiagram(score, chord_idx),
+                            UndoManager::AFFECTS_ALL_SYSTEMS);
+        myUndoManager->push(
+            new AddChordDiagram(score, dialog.getChordDiagram(), chord_idx),
+            UndoManager::AFFECTS_ALL_SYSTEMS);
+
+        myUndoManager->endMacro();
     }
 
     // TODO
@@ -2422,7 +2451,7 @@ void PowerTabEditor::createCommands()
         new Command(tr("Add Chord Diagram..."), "Text.AddChordDiagram",
                     QKeySequence(), this);
     connect(myAddChordDiagramCommand, &QAction::triggered, this,
-            [=]() { editChordDiagram(); });
+            [=]() { addChordDiagram(); });
 
     myInsertSystemAtEndCommand = new Command(tr("Insert System At End"),
                                              "Section.InsertSystemAtEnd",

@@ -171,7 +171,9 @@ private slots:
     void editChordName(bool remove = false);
     /// Adds or removes a text item at the current position.
     void editTextItem(bool remove = false);
-    /// Adds or edits a chord diagram.
+    /// Adds a new chord diagram.
+    void addChordDiagram();
+    /// Edits or removes a chord diagram.
     void editChordDiagram(bool remove = false);
 
     /// Inserts a new system at the end of the score.

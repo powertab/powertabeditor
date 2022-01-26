@@ -19,23 +19,25 @@
 
 #include <score/score.h>
 
-AddChordDiagram::AddChordDiagram(Score &score, const ChordDiagram &diagram)
+AddChordDiagram::AddChordDiagram(Score &score, const ChordDiagram &diagram,
+                                 int index)
     : QUndoCommand(tr("Add Chord Diagram")),
       myScore(score),
-      myDiagram(diagram)
+      myDiagram(diagram),
+      myDiagramIndex(index >= 0 ? index : score.getChordDiagrams().size() - 1)
 {
 }
 
 void
 AddChordDiagram::redo()
 {
-    myScore.insertChordDiagram(myDiagram);
+    myScore.insertChordDiagram(myDiagram, myDiagramIndex);
 }
 
 void
 AddChordDiagram::undo()
 {
-    myScore.removeChordDiagram(myScore.getChordDiagrams().size() - 1);
+    myScore.removeChordDiagram(myDiagramIndex);
 }
 
 RemoveChordDiagram::RemoveChordDiagram(Score &score, int idx)

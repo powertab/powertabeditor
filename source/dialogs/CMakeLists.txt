@@ -7,6 +7,7 @@ set( srcs
     barlinedialog.cpp
     benddialog.cpp
     bulkconverterdialog.cpp
+    chorddiagramdialog.cpp
     chordnamedialog.cpp
     crashdialog.cpp
     directiondialog.cpp
@@ -45,6 +46,7 @@ set( headers
     barlinedialog.h
     benddialog.h
     bulkconverterdialog.h
+    chorddiagramdialog.h
     chordnamedialog.h
     crashdialog.h
     directiondialog.h
@@ -83,6 +85,7 @@ set( moc_headers
     barlinedialog.h
     benddialog.h
     bulkconverterdialog.h
+    chorddiagramdialog.h
     chordnamedialog.h
     crashdialog.h
     directiondialog.h
@@ -114,6 +117,7 @@ set( forms
     barlinedialog.ui
     benddialog.ui
     bulkconverterdialog.ui
+    chorddiagramdialog.ui
     chordnamedialog.ui
     crashdialog.ui
     directiondialog.ui

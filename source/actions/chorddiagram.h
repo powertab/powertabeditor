@@ -29,7 +29,7 @@ class AddChordDiagram : public QUndoCommand
     Q_DECLARE_TR_FUNCTIONS(AddChordDiagram)
 
 public:
-    AddChordDiagram(Score &score, const ChordDiagram &diagram);
+    AddChordDiagram(Score &score, const ChordDiagram &diagram, int index = -1);
 
     void redo() final;
     void undo() final;
@@ -37,6 +37,7 @@ public:
 private:
     Score &myScore;
     ChordDiagram myDiagram;
+    int myDiagramIndex;
 };
 
 class RemoveChordDiagram : public QUndoCommand
