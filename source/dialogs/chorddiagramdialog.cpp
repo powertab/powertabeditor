@@ -19,12 +19,16 @@
 #include "ui_chorddiagramdialog.h"
 
 #include "chordnamedialog.h"
+#include <painters/chorddiagrampainter.h>
 #include <score/score.h>
 #include <util/tostring.h>
 
 ChordDiagramDialog::ChordDiagramDialog(QWidget *parent, const Score &score,
                                        const ChordDiagram *current_diagram)
-    : QDialog(parent), ui(new Ui::ChordDiagramDialog), myScore(score)
+    : QDialog(parent),
+      ui(new Ui::ChordDiagramDialog),
+      myScore(score),
+      myPainter(nullptr)
 {
     ui->setupUi(this);
 
@@ -43,7 +47,7 @@ ChordDiagramDialog::ChordDiagramDialog(QWidget *parent, const Score &score,
     ui->numStringsSpinBox->setMinimum(Tuning::MIN_STRING_COUNT);
     ui->numStringsSpinBox->setMaximum(Tuning::MAX_STRING_COUNT);
     ui->numStringsSpinBox->setValue(myDiagram.getStringCount());
-    connect(ui->topFretSpinBox, qOverload<int>(&QSpinBox::valueChanged),
+    connect(ui->numStringsSpinBox, qOverload<int>(&QSpinBox::valueChanged),
             [&](int value)
             {
                 myDiagram.setStringCount(value);
@@ -57,6 +61,18 @@ ChordDiagramDialog::ChordDiagramDialog(QWidget *parent, const Score &score,
                 myDiagram.setTopFret(value);
                 onDiagramChanged();
             });
+
+    ui->diagramView->setScene(&myScene);
+    ui->diagramView->setSceneRect(QRectF(0,15,46, 40));
+
+    QTransform xform;
+    xform.scale(4, 4);
+    ui->diagramView->setTransform(xform);
+    ui->diagramView->setHorizontalScrollBarPolicy(Qt::ScrollBarAlwaysOff);
+    ui->diagramView->setVerticalScrollBarPolicy(Qt::ScrollBarAlwaysOff);
+
+    myPainter = new ChordDiagramPainter(myDiagram, palette().text().color());
+    myScene.addItem(myPainter);
 }
 
 ChordDiagramDialog::~ChordDiagramDialog()
@@ -81,5 +97,7 @@ ChordDiagramDialog::editChordName()
 void
 ChordDiagramDialog::onDiagramChanged()
 {
-    // TODO
+    delete myPainter;
+    myPainter = new ChordDiagramPainter(myDiagram, palette().text().color());
+    myScene.addItem(myPainter);
 }

@@ -19,6 +19,7 @@
 #define DIALOGS_CHORDDIAGRAMDIALOG_H
 
 #include <QDialog>
+#include <QGraphicsScene>
 #include <memory>
 #include <score/chorddiagram.h>
 
@@ -49,6 +50,9 @@ private:
     std::unique_ptr<Ui::ChordDiagramDialog> ui;
     const Score &myScore;
     ChordDiagram myDiagram;
+
+    QGraphicsScene myScene;
+    QGraphicsItem *myPainter;
 };
 
 #endif
