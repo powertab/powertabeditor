@@ -18,24 +18,44 @@
 #include "chorddiagramdialog.h"
 #include "ui_chorddiagramdialog.h"
 
-ChordDiagramDialog::ChordDiagramDialog(QWidget *parent,
+#include "chordnamedialog.h"
+#include <score/score.h>
+#include <util/tostring.h>
+
+ChordDiagramDialog::ChordDiagramDialog(QWidget *parent, const Score &score,
                                        const ChordDiagram *current_diagram)
-    : QDialog(parent), ui(new Ui::ChordDiagramDialog)
+    : QDialog(parent), ui(new Ui::ChordDiagramDialog), myScore(score)
 {
     ui->setupUi(this);
 
     connect(ui->buttonBox, &QDialogButtonBox::accepted, this, &QDialog::accept);
     connect(ui->buttonBox, &QDialogButtonBox::rejected, this, &QDialog::reject);
+
+    if (current_diagram)
+        myDiagram = *current_diagram;
+
+    ui->chordNameButton->setToolTip(tr("Click to edit chord name."));
+    ui->chordNameButton->setText(
+        QString::fromStdString(Util::toString(myDiagram.getChordName())));
+    connect(ui->chordNameButton, &ClickableLabel::clicked, this,
+            &ChordDiagramDialog::editChordName);
 }
 
 ChordDiagramDialog::~ChordDiagramDialog()
 {
 }
 
-ChordDiagram
-ChordDiagramDialog::getChordDiagram() const
+void
+ChordDiagramDialog::editChordName()
 {
-    ChordDiagram diagram;
-    // FIXME
-    return diagram;
+    ChordNameDialog dialog(this, myDiagram.getChordName(),
+                           ScoreUtils::findAllChordNames(myScore));
+
+    if (dialog.exec() == QDialog::Accepted)
+    {
+        ChordName name = dialog.getChordName();
+        myDiagram.setChordName(name);
+        ui->chordNameButton->setText(
+            QString::fromStdString(Util::toString(name)));
+    }
 }

@@ -27,18 +27,26 @@ namespace Ui
 class ChordDiagramDialog;
 }
 
+class Score;
+
 class ChordDiagramDialog final : public QDialog
 {
     Q_OBJECT
 
 public:
-    ChordDiagramDialog(QWidget *parent, const ChordDiagram *current_diagram);
+    ChordDiagramDialog(QWidget *parent, const Score &score,
+                       const ChordDiagram *current_diagram);
     ~ChordDiagramDialog();
 
-    ChordDiagram getChordDiagram() const;
+    ChordDiagram getChordDiagram() const { return myDiagram; }
+
+private slots:
+    void editChordName();
 
 private:
     std::unique_ptr<Ui::ChordDiagramDialog> ui;
+    const Score &myScore;
+    ChordDiagram myDiagram;
 };
 
 #endif

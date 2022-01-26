@@ -1016,7 +1016,7 @@ PowerTabEditor::addChordDiagram()
 {
     Score &score = getLocation().getScore();
 
-    ChordDiagramDialog dialog(this, nullptr);
+    ChordDiagramDialog dialog(this, score, nullptr);
     if (dialog.exec() == QDialog::Accepted)
     {
         myUndoManager->push(
@@ -1040,7 +1040,8 @@ PowerTabEditor::editChordDiagram(bool remove)
         return;
     }
 
-    ChordDiagramDialog dialog(this, &score.getChordDiagrams()[chord_idx]);
+    ChordDiagramDialog dialog(this, score,
+                              &score.getChordDiagrams()[chord_idx]);
     if (dialog.exec() == QDialog::Accepted)
     {
         myUndoManager->beginMacro(tr("Edit Chord Diagram"));

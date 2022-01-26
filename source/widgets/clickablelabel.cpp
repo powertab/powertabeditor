@@ -17,6 +17,8 @@
 
 #include "clickablelabel.h"
 
+#include <QCursor>
+
 ClickableLabel::ClickableLabel(QWidget *parent)
     : QLabel(parent)
 {
@@ -26,11 +28,13 @@ ClickableLabel::ClickableLabel(QWidget *parent)
 void ClickableLabel::enterEvent(QEvent *)
 {
     setFrameStyle(QFrame::StyledPanel | QFrame::Raised);
+    setCursor(Qt::PointingHandCursor);
 }
 
 void ClickableLabel::leaveEvent(QEvent *)
 {
     setFrameStyle(QFrame::NoFrame);
+    unsetCursor();
 }
 
 void ClickableLabel::mouseReleaseEvent(QMouseEvent *)
