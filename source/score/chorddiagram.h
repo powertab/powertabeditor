@@ -44,6 +44,9 @@ public:
     /// default.
     void setStringCount(int count);
 
+    int getFretNumber(int i) const { return myFretNumbers[i]; }
+    void setFretNumber(int i, int fret) { myFretNumbers[i] = fret; }
+
     const std::vector<int> &getFretNumbers() const { return myFretNumbers; }
     void setFretNumbers(const std::vector<int> &frets) { myFretNumbers = frets; }
 

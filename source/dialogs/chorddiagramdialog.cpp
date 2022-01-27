@@ -27,8 +27,7 @@ ChordDiagramDialog::ChordDiagramDialog(QWidget *parent, const Score &score,
                                        const ChordDiagram *current_diagram)
     : QDialog(parent),
       ui(new Ui::ChordDiagramDialog),
-      myScore(score),
-      myPainter(nullptr)
+      myScore(score)
 {
     ui->setupUi(this);
 
@@ -55,13 +54,11 @@ ChordDiagramDialog::ChordDiagramDialog(QWidget *parent, const Score &score,
             });
 
     ui->topFretSpinBox->setValue(myDiagram.getTopFret());
-    connect(ui->topFretSpinBox, qOverload<int>(&QSpinBox::valueChanged),
-            [&](int value)
-            {
-                myDiagram.setTopFret(value);
-                onDiagramChanged();
-            });
+    connect(ui->topFretSpinBox, qOverload<int>(&QSpinBox::valueChanged), this,
+            &ChordDiagramDialog::onTopFretChanged);
 
+    // Set up a graphics view for the rendered diagram. This is scaled up more
+    // than in the score view.
     ui->diagramView->setScene(&myScene);
     ui->diagramView->setSceneRect(QRectF(0,15,46, 40));
 
@@ -71,8 +68,8 @@ ChordDiagramDialog::ChordDiagramDialog(QWidget *parent, const Score &score,
     ui->diagramView->setHorizontalScrollBarPolicy(Qt::ScrollBarAlwaysOff);
     ui->diagramView->setVerticalScrollBarPolicy(Qt::ScrollBarAlwaysOff);
 
-    myPainter = new ChordDiagramPainter(myDiagram, palette().text().color());
-    myScene.addItem(myPainter);
+    // Create the diagram and add it to the scene.
+    onDiagramChanged();
 }
 
 ChordDiagramDialog::~ChordDiagramDialog()
@@ -100,4 +97,45 @@ ChordDiagramDialog::onDiagramChanged()
     delete myPainter;
     myPainter = new ChordDiagramPainter(myDiagram, palette().text().color());
     myScene.addItem(myPainter);
+
+    connect(myPainter, &ChordDiagramPainter::clicked, this,
+            &ChordDiagramDialog::onDiagramClicked);
+}
+
+void
+ChordDiagramDialog::onDiagramClicked(int string, int fret)
+{
+    if (fret == 0)
+    {
+        // Toggle between open and muted.
+        fret = (myDiagram.getFretNumber(string) == 0) ? -1 : 0;
+    }
+    else
+    {
+        fret += myDiagram.getTopFret();
+        // Allow toggling to a muted string.
+        if (fret == myDiagram.getFretNumber(string))
+            fret = -1;
+    }
+
+    myDiagram.setFretNumber(string, fret);
+    onDiagramChanged();
+}
+
+void
+ChordDiagramDialog::onTopFretChanged(int top_fret)
+{
+    // Fret numbers aren't stored relative to the top fret, but the workflow
+    // here is that shifting the top fret should shift all the non-empty
+    // strings.
+    std::vector<int> frets = myDiagram.getFretNumbers();
+    for (int &fret:  frets)
+    {
+        if (fret > 0)
+            fret = top_fret + (fret - myDiagram.getTopFret());
+    }
+
+    myDiagram.setFretNumbers(frets);
+    myDiagram.setTopFret(top_fret);
+    onDiagramChanged();
 }

@@ -28,8 +28,10 @@ class ScoreClickEvent;
 /// Renders a single chord diagram.
 /// Use the static renderDiagrams() method to layout and render all of the
 /// diagrams in a score.
-class ChordDiagramPainter : public QGraphicsItem
+class ChordDiagramPainter : public QGraphicsObject
 {
+    Q_OBJECT
+
 public:
     ChordDiagramPainter(const ChordDiagram &diagram, const QColor &color);
 
@@ -48,9 +50,11 @@ public:
                                          const QColor &color,
                                          const ScoreClickEvent &click_event,
                                          double max_width);
+signals:
+    void clicked(int string, int fret);
 
 private:
-    bool findFretAtPosition(const QPointF &pos, int &fret, int &string) const;
+    bool findFretAtPosition(const QPointF &pos, int &string, int &fret) const;
 
     const QRectF myBounds;
     const QColor myColor;

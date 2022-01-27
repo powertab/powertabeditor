@@ -44,10 +44,15 @@ set( headers
     verticallayout.h
 )
 
+set( moc_headers
+    chorddiagrampainter.h
+)
+
 pte_library(
     NAME ptepainters
     SOURCES ${srcs}
     HEADERS ${headers}
+    MOC_HEADERS ${moc_headers}
     DEPENDS
         ptescore
         Qt5::Widgets

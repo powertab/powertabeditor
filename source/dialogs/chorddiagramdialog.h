@@ -28,6 +28,7 @@ namespace Ui
 class ChordDiagramDialog;
 }
 
+class ChordDiagramPainter;
 class Score;
 
 class ChordDiagramDialog final : public QDialog
@@ -43,6 +44,8 @@ public:
 
 private slots:
     void editChordName();
+    void onDiagramClicked(int string, int fret);
+    void onTopFretChanged(int top_fret);
 
 private:
     void onDiagramChanged();
@@ -52,7 +55,7 @@ private:
     ChordDiagram myDiagram;
 
     QGraphicsScene myScene;
-    QGraphicsItem *myPainter;
+    ChordDiagramPainter *myPainter = nullptr;
 };
 
 #endif

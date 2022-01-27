@@ -23,7 +23,6 @@
 
 #include <QCoreApplication>
 #include <QCursor>
-#include <QDebug>
 #include <QGraphicsSceneMouseEvent>
 #include <QPainter>
 #include <score/chorddiagram.h>
@@ -133,8 +132,8 @@ ChordDiagramPainter::paint(QPainter *painter, const QStyleOptionGraphicsItem *,
 }
 
 bool
-ChordDiagramPainter::findFretAtPosition(const QPointF &pos, int &fret,
-                                        int &string) const
+ChordDiagramPainter::findFretAtPosition(const QPointF &pos, int &string,
+                                        int &fret) const
 {
     const int num_strings = myDiagram.getStringCount();
     for (int i = 0; i < NUM_FRETS; ++i)
@@ -149,7 +148,8 @@ ChordDiagramPainter::findFretAtPosition(const QPointF &pos, int &fret,
             if ((pos - QPointF(x, y)).manhattanLength() < HIT_RADIUS)
             {
                 fret = i;
-                string = j;
+                // Strings are right to left in a chord diagram.
+                string = num_strings - j - 1;
                 return true;
             }
         }
@@ -170,21 +170,18 @@ ChordDiagramPainter::mouseReleaseEvent(QGraphicsSceneMouseEvent *event)
 {
     QGraphicsItem::mouseReleaseEvent(event);
 
-    int fret = -1;
     int string = -1;
-    if (findFretAtPosition(event->pos(), fret, string))
-    {
-        qDebug() << fret << string;
-        // TODO
-    }
+    int fret = -1;
+    if (findFretAtPosition(event->pos(), string, fret))
+        emit clicked(string, fret);
 }
 
 void
 ChordDiagramPainter::hoverMoveEvent(QGraphicsSceneHoverEvent *event)
 {
-    int fret = -1;
     int string = -1;
-    if (findFretAtPosition(event->pos(), fret, string))
+    int fret = -1;
+    if (findFretAtPosition(event->pos(), string, fret))
         setCursor(Qt::PointingHandCursor);
     else
         unsetCursor();
