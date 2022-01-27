@@ -24,7 +24,7 @@ AddChordDiagram::AddChordDiagram(Score &score, const ChordDiagram &diagram,
     : QUndoCommand(tr("Add Chord Diagram")),
       myScore(score),
       myDiagram(diagram),
-      myDiagramIndex(index >= 0 ? index : score.getChordDiagrams().size() - 1)
+      myDiagramIndex(index >= 0 ? index : score.getChordDiagrams().size())
 {
 }
 

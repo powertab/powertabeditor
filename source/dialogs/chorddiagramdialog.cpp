@@ -36,6 +36,14 @@ ChordDiagramDialog::ChordDiagramDialog(QWidget *parent, const Score &score,
 
     if (current_diagram)
         myDiagram = *current_diagram;
+    else
+    {
+        // Default to 6 strings, all muted.
+        // TODO - could probably initialize using the # of strings from a
+        // player the score, or remember the last # of strings that was used.
+        std::vector<int> frets(6, -1);
+        myDiagram.setFretNumbers(frets);
+    }
 
     ui->chordNameButton->setToolTip(tr("Click to edit chord name."));
     ui->chordNameButton->setText(

@@ -23,6 +23,7 @@ set( srcs
     actions/test_addsystem.cpp
     actions/test_addtappedharmonic.cpp
     actions/test_addtrill.cpp
+    actions/test_chorddiagram.cpp
     actions/test_adjustlinespacing.cpp
     actions/test_editbarline.cpp
     actions/test_editclef.cpp
