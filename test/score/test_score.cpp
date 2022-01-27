@@ -80,6 +80,26 @@ TEST_CASE("Score/Score/ViewFilters")
     REQUIRE(score.getViewFilters()[0] == filter1);
 }
 
+TEST_CASE("Score/Score/ChordDiagrams")
+{
+    Score score;
+
+    REQUIRE(score.getChordDiagrams().size() == 0);
+
+    ChordDiagram diagram1;
+    diagram1.setTopFret(1);
+    score.insertChordDiagram(diagram1);
+
+    ChordDiagram diagram2;
+    diagram2.setTopFret(2);
+    score.insertChordDiagram(diagram2);
+
+    REQUIRE(score.getChordDiagrams().size() == 2);
+    score.removeChordDiagram(1);
+    REQUIRE(score.getChordDiagrams().size() == 1);
+    REQUIRE(score.getChordDiagrams()[0] == diagram1);
+}
+
 // Verify that we don't rely on the order of JSON keys (see bug #294).
 TEST_CASE("Score/Score/Deserialization")
 {
@@ -89,4 +109,65 @@ TEST_CASE("Score/Score/Deserialization")
 
     REQUIRE(score.getSystems().size() == 2);
     REQUIRE(score.getSystems()[0].getAlternateEndings().size() == 2);
+}
+
+TEST_CASE("Score/Score/FindAllChordNames")
+{
+    ChordName name;
+    name.setTonicKey(ChordName::F);
+    name.setTonicVariation(ChordName::Flat);
+    name.setBassKey(ChordName::F);
+    name.setBassVariation(ChordName::Flat);
+    name.setFormula(ChordName::Major7th);
+
+    ChordName name2 = name;
+    name2.setModification(ChordName::Extended11th);
+
+    ChordName name3 = name;
+    name3.setModification(ChordName::Extended9th);
+
+    Score score;
+
+    ChordDiagram diagram1;
+    diagram1.setChordName(name2);
+    ChordDiagram diagram2;
+    diagram2.setChordName(name);
+    score.insertChordDiagram(diagram1);
+    score.insertChordDiagram(diagram2);
+
+    System system;
+    system.insertChord(ChordText(2, name3));
+    system.insertChord(ChordText(4, name));
+    score.insertSystem(system);
+
+    REQUIRE(ScoreUtils::findAllChordNames(score) ==
+            std::vector<ChordName>({ name2, name, name3 }));
+}
+
+TEST_CASE("Score/Score/UniquePlayerName")
+{
+    Score score;
+    Player player1;
+    player1.setDescription("Player 1");
+    Player player2;
+    player2.setDescription("Player 3");
+
+    score.insertPlayer(player1);
+    score.insertPlayer(player2);
+
+    REQUIRE(ScoreUtils::createUniquePlayerName(score, "Player") == "Player 4");
+}
+
+TEST_CASE("Score/Score/UniqueInstrumentName")
+{
+    Score score;
+    Instrument i1;
+    i1.setDescription("Inst 1");
+    Instrument i2;
+    i2.setDescription("Inst 3");
+
+    score.insertInstrument(i1);
+    score.insertInstrument(i2);
+
+    REQUIRE(ScoreUtils::createUniqueInstrumentName(score, "Inst") == "Inst 4");
 }

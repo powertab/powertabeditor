@@ -22,6 +22,7 @@
 #include <formats/powertab_old/powertaboldimporter.h>
 #include <formats/powertab_old/powertabdocument/powertabdocument.h>
 #include <score/score.h>
+#include <util/tostring.h>
 
 static void loadTest(FileFormatImporter &importer, const char *filename,
                      Score &score)
@@ -410,4 +411,15 @@ TEST_CASE("Formats/PowerTabOldImport/TremoloBars")
     REQUIRE(bar.getType() == TremoloBar::Type::DiveAndRelease);
     REQUIRE(bar.getPitch() == 6);
     REQUIRE(bar.getDuration() == 1);
+}
+
+TEST_CASE("Formats/PowerTabOldImport/ChordDiagrams")
+{
+    Score score;
+    PowerTabOldImporter importer;
+    loadTest(importer, "data/chord_diagrams.ptb", score);
+
+    REQUIRE(score.getChordDiagrams().size() == 2);
+    REQUIRE(Util::toString(score.getChordDiagrams()[0]) == "A: 5 7 7 6 5 5 (5)");
+    REQUIRE(Util::toString(score.getChordDiagrams()[1]) == "Asus2: x 0 2 2 0 0");
 }

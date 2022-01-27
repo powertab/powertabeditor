@@ -20,6 +20,8 @@
 
 #include <boost/range/iterator_range_core.hpp>
 #include "fileversion.h"
+#include "chorddiagram.h"
+#include "chordname.h"
 #include "instrument.h"
 #include "player.h"
 #include "scoreinfo.h"
@@ -38,6 +40,8 @@ public:
     typedef std::vector<Player>::const_iterator PlayerConstIterator;
     typedef std::vector<Instrument>::iterator InstrumentIterator;
     typedef std::vector<Instrument>::const_iterator InstrumentConstIterator;
+    typedef std::vector<ChordDiagram>::iterator ChordDiagramIterator;
+    typedef std::vector<ChordDiagram>::const_iterator ChordDiagramConstIterator;
     typedef std::vector<ViewFilter>::iterator ViewFilterIterator;
     typedef std::vector<ViewFilter>::const_iterator ViewFilterConstIterator;
 
@@ -86,10 +90,21 @@ public:
     /// Removes the specified instrument from the score.
     void removeInstrument(int index);
 
-    /// Returns the set of view filters in the score.
+    /// Returns the set of chord diagrams in the score.
     boost::iterator_range<ViewFilterIterator> getViewFilters();
     /// Returns the set of view filters in the score.
     boost::iterator_range<ViewFilterConstIterator> getViewFilters() const;
+
+    /// Adds a new chord diagram to the score.
+    void insertChordDiagram(const ChordDiagram &diagram);
+    void insertChordDiagram(const ChordDiagram &diagram, int index);
+    /// Removes the specified chord diagram from the score.
+    void removeChordDiagram(int index);
+
+    /// Returns the set of chord diagrams in the score.
+    boost::iterator_range<ChordDiagramIterator> getChordDiagrams();
+    /// Returns the set of chord diagrams in the score.
+    boost::iterator_range<ChordDiagramConstIterator> getChordDiagrams() const;
 
     /// Adds a new filter to the score.
     void insertViewFilter(const ViewFilter &filter);
@@ -110,6 +125,7 @@ private:
     std::vector<System> mySystems;
     std::vector<Player> myPlayers;
     std::vector<Instrument> myInstruments;
+    std::vector<ChordDiagram> myChordDiagrams;
     int myLineSpacing; ///< Spacing between tab lines (in pixels).
     std::vector<ViewFilter> myViewFilters;
 };
@@ -125,6 +141,9 @@ void Score::serialize(Archive &ar, const FileVersion version)
 
     if (version >= FileVersion::VIEW_FILTERS)
         ar("view_filters", myViewFilters);
+
+    if (version >= FileVersion::CHORD_DIAGRAMS)
+        ar("chord_diagrams", myChordDiagrams);
 }
 
 namespace ScoreUtils {
@@ -138,6 +157,18 @@ void adjustRehearsalSigns(Score &score);
 
 /// Add the standard view filters (guitar and bass) to the score.
 void addStandardFilters(Score &score);
+
+/// Return a list of the unique chord names used in the score (from diagrams
+/// and plain chord names).
+std::vector<ChordName> findAllChordNames(const Score &score);
+
+/// Creates a unique name for a new player.
+std::string createUniquePlayerName(const Score &score,
+                                   const std::string &prefix);
+
+/// Creates a unique name for a new instrument.
+std::string createUniqueInstrumentName(const Score &score,
+                                       const std::string &prefix);
 }
 
 #endif

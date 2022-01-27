@@ -78,6 +78,7 @@ set( srcs
 
     score/test_alternateending.cpp
     score/test_barline.cpp
+    score/test_chorddiagram.cpp
     score/test_chordname.cpp
     score/test_chordtext.cpp
     score/test_direction.cpp
@@ -118,6 +119,7 @@ set( data_files
     formats/powertab_old/data/alternate_endings.ptb
     formats/powertab_old/data/barlines.ptb
     formats/powertab_old/data/bends.ptb
+    formats/powertab_old/data/chord_diagrams.ptb
     formats/powertab_old/data/chordtext.ptb
     formats/powertab_old/data/directions.ptb
     formats/powertab_old/data/floating_text.ptb
@@ -152,6 +154,7 @@ set( data_files
     formats/gp7/data/alternate_endings.gp
     formats/gp7/data/bars.gp
     formats/gp7/data/bends.gp
+    formats/gp7/data/chord_diagrams.gp
     formats/gp7/data/directions.gp
     formats/gp7/data/fermatas.gp
     formats/gp7/data/harmonics.gp
@@ -163,6 +166,7 @@ set( data_files
     formats/gp7/data/tremolo_bars.gp
     formats/gp7/data/words_and_music.gp
 
+    formats/gpx/data/chord_diagrams.gpx
     formats/gpx/data/text.gpx
     formats/gpx/data/tremolo_bars.gpx
 

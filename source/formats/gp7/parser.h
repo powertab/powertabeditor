@@ -93,7 +93,7 @@ struct Sound
     int myMidiPreset = -1;
 };
 
-struct Chord
+struct ChordName
 {
     struct Note
     {
@@ -128,6 +128,18 @@ struct Chord
     std::optional<Degree> myNinth;
     std::optional<Degree> myEleventh;
     std::optional<Degree> myThirteenth;
+};
+
+struct ChordDiagram
+{
+    int myBaseFret = 0;
+    std::vector<int> myFrets;
+};
+
+struct Chord
+{
+    ChordName myName;
+    ChordDiagram myDiagram;
 };
 
 struct Track

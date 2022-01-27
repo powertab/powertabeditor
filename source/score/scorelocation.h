@@ -77,6 +77,14 @@ public:
 
     const Note *getNote() const;
 
+    /// @{
+    /// Chord diagrams are global, so they can have their own selection index.
+    /// This is mainly used for uniform handling of mouse events in the score
+    /// view.
+    int getChordDiagramIndex() const { return myChordDiagramIndex; }
+    void setChordDiagramIndex(int idx) { myChordDiagramIndex = idx; }
+    /// @}
+
 protected:
     const Score &myScore;
 
@@ -88,6 +96,7 @@ protected:
     int mySelectionStart;
     int myVoiceIndex;
     int myString;
+    int myChordDiagramIndex = -1;
 };
 
 /// Location within a non-const Score.

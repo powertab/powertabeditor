@@ -21,6 +21,7 @@
 #include <bitset>
 #include "fileversion.h"
 #include <iosfwd>
+#include <memory>
 
 class ChordName
 {
@@ -109,6 +110,7 @@ public:
 
     bool hasModification(FormulaModification modification) const;
     void setModification(FormulaModification modification, bool set = true);
+    const std::bitset<NumModifications> &getModifications() const { return myModifications; }
 
     bool hasBrackets() const;
     void setBrackets(bool value);
@@ -141,5 +143,12 @@ void ChordName::serialize(Archive &ar, const FileVersion /*version*/)
 }
 
 std::ostream &operator<<(std::ostream &os, const ChordName &chord);
+
+/// Enable the use of ChordName as a key for std::unordered_map, etc.
+template<>
+struct std::hash<ChordName>
+{
+    size_t operator()(const ChordName &name) const;
+};
 
 #endif

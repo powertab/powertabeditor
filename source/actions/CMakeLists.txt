@@ -17,6 +17,7 @@ set( srcs
     addstaff.cpp
     addsystem.cpp
     adjustlinespacing.cpp
+    chorddiagram.cpp
     editbarline.cpp
     editdynamic.cpp
     editfileinformation.cpp
@@ -74,6 +75,7 @@ set( headers
     addstaff.h
     addsystem.h
     adjustlinespacing.h
+    chorddiagram.h
     editbarline.h
     editdynamic.h
     editfileinformation.h

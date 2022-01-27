@@ -18,6 +18,8 @@
 #include "score.h"
 
 #include <stdexcept>
+#include <unordered_set>
+#include <util/tostring.h>
 
 const int Score::MIN_LINE_SPACING = 6;
 const int Score::MAX_LINE_SPACING = 14;
@@ -32,6 +34,7 @@ bool Score::operator==(const Score &other) const
     return myScoreInfo == other.myScoreInfo && mySystems == other.mySystems &&
            myPlayers == other.myPlayers &&
            myInstruments == other.myInstruments &&
+           myChordDiagrams == other.myChordDiagrams &&
            myLineSpacing == other.myLineSpacing &&
            myViewFilters == other.myViewFilters;
 }
@@ -117,6 +120,35 @@ void Score::insertInstrument(const Instrument &instrument, int index)
 void Score::removeInstrument(int index)
 {
     myInstruments.erase(myInstruments.begin() + index);
+}
+
+boost::iterator_range<Score::ChordDiagramIterator>
+Score::getChordDiagrams()
+{
+    return boost::make_iterator_range(myChordDiagrams);
+}
+
+boost::iterator_range<Score::ChordDiagramConstIterator>
+Score::getChordDiagrams() const
+{
+    return boost::make_iterator_range(myChordDiagrams);
+}
+
+void
+Score::insertChordDiagram(const ChordDiagram &filter)
+{
+    myChordDiagrams.push_back(filter);
+}
+
+void Score::insertChordDiagram(const ChordDiagram &diagram, int index)
+{
+    myChordDiagrams.insert(myChordDiagrams.begin() + index, diagram);
+}
+
+void
+Score::removeChordDiagram(int index)
+{
+    myChordDiagrams.erase(myChordDiagrams.begin() + index);
 }
 
 boost::iterator_range<Score::ViewFilterIterator> Score::getViewFilters()
@@ -231,4 +263,63 @@ void ScoreUtils::addStandardFilters(Score &score)
                                      FilterRule::Operation::LessThanEqual,
                                      5));
     score.insertViewFilter(filter_basses);
+}
+
+std::vector<ChordName>
+ScoreUtils::findAllChordNames(const Score &score)
+{
+    std::unordered_set<ChordName> unique_names;
+
+    for (const ChordDiagram &diagram : score.getChordDiagrams())
+        unique_names.insert(diagram.getChordName());
+
+    for (const System &system : score.getSystems())
+    {
+        for (const ChordText &chord : system.getChords())
+            unique_names.insert(chord.getChordName());
+    }
+
+    std::vector<ChordName> names(unique_names.begin(), unique_names.end());
+    // Sort the names alphabetically. The performance of this could be improved
+    // by implementing operator< for ChordName's.
+    std::sort(names.begin(), names.end(),
+              [](auto c1, auto c2)
+              { return Util::toString(c1) < Util::toString(c2); });
+    return names;
+}
+
+static std::string
+createUniqueName(size_t count, const std::string &prefix,
+                 const std::unordered_set<std::string> &used_names)
+{
+    std::string name;
+    do
+    {
+        ++count;
+        name = prefix + " " + std::to_string(count);
+    } while (used_names.find(name) != used_names.end());
+
+    return name;
+}
+
+std::string
+ScoreUtils::createUniquePlayerName(const Score &score,
+                                   const std::string &prefix)
+{
+    std::unordered_set<std::string> used_names;
+    for (const Player &player : score.getPlayers())
+        used_names.insert(player.getDescription());
+
+    return createUniqueName(score.getPlayers().size(), prefix, used_names);
+}
+
+std::string
+ScoreUtils::createUniqueInstrumentName(const Score &score,
+                                       const std::string &prefix)
+{
+    std::unordered_set<std::string> used_names;
+    for (const Instrument &inst : score.getInstruments())
+        used_names.insert(inst.getDescription());
+
+    return createUniqueName(score.getInstruments().size(), prefix, used_names);
 }

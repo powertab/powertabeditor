@@ -206,6 +206,17 @@ static void mergePlayers(Score &dest_score, const Score &guitar_score,
         dest_score.insertInstrument(instrument);
 }
 
+static void
+mergeChordDiagrams(Score &dest_score, const Score &guitar_score,
+                   const Score &bass_score)
+{
+    for (const ChordDiagram &diagram : guitar_score.getChordDiagrams())
+        dest_score.insertChordDiagram(diagram);
+
+    for (const ChordDiagram &diagram : bass_score.getChordDiagrams())
+        dest_score.insertChordDiagram(diagram);
+}
+
 static void getPositionRange(const ScoreLocation &dest,
                              const ScoreLocation &src, int &offset, int &left,
                              int &right)
@@ -608,6 +619,7 @@ static void combineScores(Score &dest_score, Score &guitar_score,
                           const ExpandedBarList &bass_bars)
 {
     mergePlayers(dest_score, guitar_score, bass_score);
+    mergeChordDiagrams(dest_score, guitar_score, bass_score);
 
     int num_guitar_staves = 0;
     int prev_num_guitar_staves = 0;

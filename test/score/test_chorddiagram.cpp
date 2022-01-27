@@ -1,5 +1,5 @@
 /*
-  * Copyright (C) 2012 Cameron White
+  * Copyright (C) 2022 Cameron White
   *
   * This program is free software: you can redistribute it and/or modify
   * it under the terms of the GNU General Public License as published by
@@ -15,34 +15,23 @@
   * along with this program.  If not, see <http://www.gnu.org/licenses/>.
 */
 
-#include "clickablelabel.h"
+#include <doctest/doctest.h>
 
-#include <QCursor>
+#include <score/chorddiagram.h>
+#include "test_serialization.h"
 
-ClickableLabel::ClickableLabel(QWidget *parent)
-    : QLabel(parent)
+TEST_CASE("Score/ChordDiagram/Serialization")
 {
-    setStyleSheet(QStringLiteral("QLabel { padding: 4px }"));
-}
+    ChordName name;
+    name.setNoChord(true);
+    name.setBrackets(true);
+    name.setTonicVariation(ChordName::DoubleFlat);
+    name.setTonicKey(ChordName::D);
 
-void ClickableLabel::enterEvent(QEvent *)
-{
-    setFrameStyle(QFrame::StyledPanel | QFrame::Raised);
-    setCursor(Qt::PointingHandCursor);
-}
+    ChordDiagram diagram;
+    diagram.setChordName(name);
+    diagram.setTopFret(3);
+    diagram.setFretNumbers({-1,-1, 3, 5, 4, 6});
 
-void ClickableLabel::leaveEvent(QEvent *)
-{
-    setFrameStyle(QFrame::NoFrame);
-    unsetCursor();
-}
-
-void ClickableLabel::mouseReleaseEvent(QMouseEvent *)
-{
-    emit clicked();
-}
-
-void ClickableLabel::mouseDoubleClickEvent(QMouseEvent *)
-{
-    emit doubleClicked();
+    Serialization::test("chord_diagram", diagram);
 }

@@ -3,6 +3,7 @@ project( ptescore )
 set( srcs
     alternateending.cpp
     barline.cpp
+    chorddiagram.cpp
     chordname.cpp
     chordtext.cpp
     direction.cpp
@@ -40,6 +41,7 @@ set( srcs
 set( headers
     alternateending.h
     barline.h
+    chorddiagram.h
     chordname.h
     chordtext.h
     direction.h

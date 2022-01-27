@@ -20,6 +20,7 @@
 
 #include <QDialog>
 #include <score/chordname.h>
+#include <vector>
 
 namespace Ui {
 class ChordNameDialog;
@@ -34,7 +35,8 @@ class ChordNameDialog : public QDialog
     Q_OBJECT
     
 public:
-    explicit ChordNameDialog(QWidget *parent, const ChordName &initial_chord);
+    explicit ChordNameDialog(QWidget *parent, const ChordName &initial_chord,
+                             std::vector<ChordName> available_chords);
     ~ChordNameDialog();
 
     const ChordName &getChordName() const;
@@ -46,7 +48,8 @@ private slots:
     void onTonicChanged();
     
 private:
-    void initCheckBox(QCheckBox *checkbox, bool value);
+    void initCheckBox(QCheckBox *checkbox);
+    void setToChord(const ChordName &chord);
 
     Ui::ChordNameDialog *ui;
     QButtonGroup *myTonicVariations;
@@ -55,6 +58,7 @@ private:
     QButtonGroup *myBassKeys;
 
     ChordName myChord;
+    std::vector<ChordName> myScoreChords;
 };
 
 #endif

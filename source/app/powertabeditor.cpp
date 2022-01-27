@@ -34,6 +34,7 @@
 #include <actions/addstaff.h>
 #include <actions/addsystem.h>
 #include <actions/adjustlinespacing.h>
+#include <actions/chorddiagram.h>
 #include <actions/editbarline.h>
 #include <actions/editdynamic.h>
 #include <actions/editfileinformation.h>
@@ -87,7 +88,6 @@
 #include <audio/midiplayer.h>
 #include <audio/settings.h>
 
-#include <boost/range/algorithm/transform.hpp>
 #include <chrono>
 
 #include <dialogs/alterationofpacedialog.h>
@@ -96,6 +96,7 @@
 #include <dialogs/barlinedialog.h>
 #include <dialogs/benddialog.h>
 #include <dialogs/bulkconverterdialog.h>
+#include <dialogs/chorddiagramdialog.h>
 #include <dialogs/chordnamedialog.h>
 #include <dialogs/directiondialog.h>
 #include <dialogs/dynamicdialog.h>
@@ -846,6 +847,10 @@ void PowerTabEditor::removeSelectedItem()
             editChordName(/* remove */ true);
             break;
 
+        case ScoreItem::ChordDiagram:
+            editChordDiagram(/* remove */ true);
+            break;
+
         case ScoreItem::Bend:
             editBend(/* remove */ true);
             break;
@@ -946,7 +951,8 @@ PowerTabEditor::editChordName(bool remove)
         return;
     }
 
-    ChordNameDialog dialog(this, text ? text->getChordName() : ChordName());
+    ChordNameDialog dialog(this, text ? text->getChordName() : ChordName(),
+                           ScoreUtils::findAllChordNames(location.getScore()));
     if (dialog.exec() == QDialog::Accepted)
     {
         ChordText new_text(location.getPositionIndex(), dialog.getChordName());
@@ -1003,6 +1009,53 @@ PowerTabEditor::editTextItem(bool remove)
     }
     else
         myTextCommand->setChecked(item != nullptr);
+}
+
+void
+PowerTabEditor::addChordDiagram()
+{
+    Score &score = getLocation().getScore();
+
+    ChordDiagramDialog dialog(this, score, nullptr);
+    if (dialog.exec() == QDialog::Accepted)
+    {
+        myUndoManager->push(
+            new AddChordDiagram(score, dialog.getChordDiagram()),
+            UndoManager::AFFECTS_ALL_SYSTEMS);
+    }
+}
+
+void
+PowerTabEditor::editChordDiagram(bool remove)
+{
+    ScoreLocation &location = getLocation();
+    Score &score = location.getScore();
+    const int chord_idx = location.getChordDiagramIndex();
+    assert(chord_idx >= 0);
+
+    if (remove)
+    {
+        myUndoManager->push(new RemoveChordDiagram(score, chord_idx),
+                            UndoManager::AFFECTS_ALL_SYSTEMS);
+        return;
+    }
+
+    ChordDiagramDialog dialog(this, score,
+                              &score.getChordDiagrams()[chord_idx]);
+    if (dialog.exec() == QDialog::Accepted)
+    {
+        myUndoManager->beginMacro(tr("Edit Chord Diagram"));
+
+        myUndoManager->push(new RemoveChordDiagram(score, chord_idx),
+                            UndoManager::AFFECTS_ALL_SYSTEMS);
+        myUndoManager->push(
+            new AddChordDiagram(score, dialog.getChordDiagram(), chord_idx),
+            UndoManager::AFFECTS_ALL_SYSTEMS);
+
+        myUndoManager->endMacro();
+    }
+
+    // TODO
 }
 
 void PowerTabEditor::insertSystemAtEnd()
@@ -1835,30 +1888,9 @@ void PowerTabEditor::addPlayer()
 {
     ScoreLocation &location = getLocation();
     Score &score = location.getScore();
+
     Player player;
-
-    // Create a unique name for the player.
-    {
-        std::vector<std::string> names;
-        boost::range::transform(score.getPlayers(), std::back_inserter(names),
-                                [](const Player &player) {
-            return player.getDescription();
-        });
-
-        size_t i = score.getPlayers().size() + 1;
-        while (true)
-        {
-            const std::string name = "Player " + std::to_string(i);
-
-            if (std::find(names.begin(), names.end(), name) == names.end())
-            {
-                player.setDescription(name);
-                break;
-            }
-            else
-                ++i;
-        }
-    }
+    player.setDescription(ScoreUtils::createUniquePlayerName(score, "Player"));
 
     auto settings = mySettingsManager->getReadHandle();
     player.setTuning(settings->get(Settings::DefaultTuning));
@@ -1874,33 +1906,10 @@ void PowerTabEditor::addInstrument()
     Instrument instrument;
 
     auto settings = mySettingsManager->getReadHandle();
-
-    // Create a unique name for the instrument.
-    {
-        std::vector<std::string> names;
-        boost::range::transform(score.getInstruments(),
-                                std::back_inserter(names),
-                                [](const Instrument &instrument) {
-            return instrument.getDescription();
-        });
-
-        const std::string default_name =
-            settings->get(Settings::DefaultInstrumentName);
-
-        size_t i = score.getInstruments().size() + 1;
-        while (true)
-        {
-            const std::string name = default_name + " " + std::to_string(i);
-
-            if (std::find(names.begin(), names.end(), name) == names.end())
-            {
-                instrument.setDescription(name);
-                break;
-            }
-            else
-                ++i;
-        }
-    }
+    const std::string default_name =
+        settings->get(Settings::DefaultInstrumentName);
+    instrument.setDescription(
+        ScoreUtils::createUniqueInstrumentName(score, default_name));
 
     instrument.setMidiPreset(settings->get(Settings::DefaultInstrumentPreset));
 
@@ -2438,6 +2447,12 @@ void PowerTabEditor::createCommands()
     myTextCommand->setCheckable(true);
     connect(myTextCommand, &QAction::triggered, this,
             [=]() { editTextItem(); });
+
+    myAddChordDiagramCommand =
+        new Command(tr("Add Chord Diagram..."), "Text.AddChordDiagram",
+                    QKeySequence(), this);
+    connect(myAddChordDiagramCommand, &QAction::triggered, this,
+            [=]() { addChordDiagram(); });
 
     myInsertSystemAtEndCommand = new Command(tr("Insert System At End"),
                                              "Section.InsertSystemAtEnd",
@@ -3240,8 +3255,10 @@ void PowerTabEditor::createMenus()
 
     // Text Menu.
     myTextMenu = menuBar()->addMenu(tr("&Text"));
-    myTextMenu->addAction(myChordNameCommand);
     myTextMenu->addAction(myTextCommand);
+    myTextMenu->addAction(myChordNameCommand);
+    myTextMenu->addSeparator();
+    myTextMenu->addAction(myAddChordDiagramCommand);
 
     // Section Menu.
     mySectionMenu = menuBar()->addMenu(tr("&Section"));
@@ -3569,6 +3586,8 @@ void PowerTabEditor::setupNewTab()
 
                 getCaret().moveToSystem(location.getSystemIndex(), true);
                 getCaret().moveToPosition(location.getPositionIndex());
+                getCaret().getLocation().setChordDiagramIndex(
+                    location.getChordDiagramIndex());
                 getCaret().setSelectedItem(item);
 
                 switch (action)
@@ -3642,6 +3661,9 @@ void PowerTabEditor::setupNewTab()
                                 break;
                             case ScoreItem::ChordText:
                                 editChordName();
+                                break;
+                            case ScoreItem::ChordDiagram:
+                                editChordDiagram();
                                 break;
                             case ScoreItem::Bend:
                                 editBend();
@@ -3733,6 +3755,7 @@ canDeleteItem(ScoreItem item)
         case ScoreItem::AlternateEnding:
         case ScoreItem::Barline:
         case ScoreItem::Bend:
+        case ScoreItem::ChordDiagram:
         case ScoreItem::ChordText:
         case ScoreItem::Direction:
         case ScoreItem::Dynamic:

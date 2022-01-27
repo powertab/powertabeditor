@@ -20,6 +20,7 @@
 #include <app/appinfo.h>
 #include <formats/gpx/gpximporter.h>
 #include <score/score.h>
+#include <util/tostring.h>
 
 TEST_CASE("Formats/GpxImport/Text")
 {
@@ -78,4 +79,24 @@ TEST_CASE("Formats/GpxImport/TremoloBar")
         REQUIRE(pos.getTremoloBar().getType() == TremoloBar::Type::Dip);
         REQUIRE(pos.getTremoloBar().getPitch() == 6);
     }
+}
+
+TEST_CASE("Formats/GpxImport/ChordDiagrams")
+{
+    Score score;
+    GpxImporter importer;
+    importer.load(AppInfo::getAbsolutePath("data/chord_diagrams.gpx"), score);
+
+    REQUIRE(score.getChordDiagrams().size() == 5);
+
+    REQUIRE(Util::toString(score.getChordDiagrams()[0]) ==
+            "E: 0 2 2 1 0 0");
+    REQUIRE(Util::toString(score.getChordDiagrams()[1]) ==
+            "Bb: 6 8 8 7 6 x (6)");
+    REQUIRE(Util::toString(score.getChordDiagrams()[2]) ==
+            "F#: x 2 4 4 3 x x");
+    REQUIRE(Util::toString(score.getChordDiagrams()[4]) ==
+            "Asus2: x 0 2 2 0 0");
+    // Duplicates aren't detected currently.
+    REQUIRE(score.getChordDiagrams()[3] == score.getChordDiagrams()[0]);
 }

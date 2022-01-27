@@ -779,9 +779,9 @@ convertChordKey(const std::string &name)
 }
 
 static ChordName
-convertChord(const Gp7::Chord &gp_chord)
+convertChordName(const Gp7::ChordName &gp_chord)
 {
-    using Alteration = Gp7::Chord::Degree::Alteration;
+    using Alteration = Gp7::ChordName::Degree::Alteration;
 
     ChordName chord;
 
@@ -960,6 +960,42 @@ convertChord(const Gp7::Chord &gp_chord)
     return chord;
 }
 
+static ChordDiagram
+convertChordDiagram(const Gp7::Chord &gp_chord)
+{
+    ChordDiagram diagram;
+    diagram.setChordName(convertChordName(gp_chord.myName));
+    diagram.setTopFret(gp_chord.myDiagram.myBaseFret);
+
+    std::vector<int> frets = gp_chord.myDiagram.myFrets;
+    // Strings are in the opposite order, and frets are relative to the top
+    // fret.
+    std::reverse(frets.begin(), frets.end());
+    for (int &fret : frets)
+    {
+        if (fret > 0)
+            fret += diagram.getTopFret();
+    }
+
+    diagram.setFretNumbers(frets);
+    return diagram;
+}
+
+static void
+convertChordDiagrams(const Gp7::Document &doc, Score &score)
+{
+    // TODO - consolidate identical diagrams from different tracks?
+    for (const Gp7::Track &track : doc.myTracks)
+    {
+        // Sort by id to insert in a deterministic order..
+        std::map<int, Gp7::Chord> ordered_chords(track.myChords.begin(),
+                                                 track.myChords.end());
+
+        for (auto &&[_, chord] : ordered_chords)
+            score.insertChordDiagram(convertChordDiagram(chord));
+    }
+}
+
 static void
 convertSystem(const Gp7::Document &doc, Score &score, int bar_begin,
               int bar_end)
@@ -1044,10 +1080,11 @@ convertSystem(const Gp7::Document &doc, Score &score, int bar_begin,
                         // FIXME - doesn't handle dual-staff tracks.
                         const int track_idx = staff_idx;
 
-                        ChordName chord =
-                            convertChord(doc.myTracks[track_idx].myChords.at(
-                                *gp_beat.myChordId));
-                        system.insertChord(ChordText(voice_pos, chord));
+                        const Gp7::Chord &gp_chord =
+                            doc.myTracks[track_idx].myChords.at(*gp_beat.myChordId);
+
+                        ChordName chord_name = convertChordName(gp_chord.myName);
+                        system.insertChord(ChordText(voice_pos, chord_name));
                     }
 
                     Position pos = convertPosition(gp_beat, gp_rhythm);
@@ -1159,6 +1196,8 @@ Gp7::convert(const Gp7::Document &doc, Score &score)
         convertSystem(doc, score, bar_idx, bar_end);
         bar_idx += num_bars;
     }
+
+    convertChordDiagrams(doc, score);
 
     ScoreUtils::adjustRehearsalSigns(score);
     ScoreUtils::polishScore(score);
