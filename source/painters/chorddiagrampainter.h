@@ -37,6 +37,11 @@ public:
     void paint(QPainter *painter, const QStyleOptionGraphicsItem *,
                QWidget *) override;
 
+    void mousePressEvent(QGraphicsSceneMouseEvent *event) override;
+    void mouseReleaseEvent(QGraphicsSceneMouseEvent *event) override;
+    void hoverMoveEvent(QGraphicsSceneHoverEvent *event) override;
+    void hoverLeaveEvent(QGraphicsSceneHoverEvent *event) override;
+
     /// Returns a group of all the chord diagrams, constrained to the provided
     /// width.
     static QGraphicsItem *renderDiagrams(const Score &score,
@@ -45,9 +50,12 @@ public:
                                          double max_width);
 
 private:
+    bool findFretAtPosition(const QPointF &pos, int &fret, int &string) const;
+
     const QRectF myBounds;
     const QColor myColor;
     const ChordDiagram &myDiagram;
+    double myXPad = 0;
 };
 
 #endif

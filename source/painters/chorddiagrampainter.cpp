@@ -22,6 +22,9 @@
 #include "simpletextitem.h"
 
 #include <QCoreApplication>
+#include <QCursor>
+#include <QDebug>
+#include <QGraphicsSceneMouseEvent>
 #include <QPainter>
 #include <score/chorddiagram.h>
 #include <score/score.h>
@@ -29,6 +32,22 @@
 
 static constexpr double DIAGRAM_WIDTH = 46;
 static constexpr double DIAGRAM_HEIGHT = 55;
+static constexpr double TOP_FRET_Y = 22;
+
+/// Size of the fret marker dots.
+static constexpr double DOT_RADIUS = 1.5;
+/// Hit radius for clicking on fret markers.
+static constexpr double HIT_RADIUS = 2.5;
+
+/// Height of the diagram, in frets.
+static constexpr int NUM_FRETS = 6;
+/// Spacing between frets.
+static constexpr double FRET_SPACING = 6.0;
+/// Spacing between strings.
+static constexpr double STRING_SPACING = FRET_SPACING;
+
+/// Y position for drawing open / muted strings above the nut.
+const double Y_ABOVE = TOP_FRET_Y - 0.6 * FRET_SPACING;
 
 ChordDiagramPainter::ChordDiagramPainter(const ChordDiagram &diagram,
                                          const QColor &color)
@@ -36,6 +55,9 @@ ChordDiagramPainter::ChordDiagramPainter(const ChordDiagram &diagram,
       myColor(color),
       myDiagram(diagram)
 {
+    setAcceptHoverEvents(true);
+    myXPad =
+        (DIAGRAM_WIDTH - FRET_SPACING * (diagram.getStringCount() - 1)) * 0.5;
 }
 
 void
@@ -48,19 +70,12 @@ ChordDiagramPainter::paint(QPainter *painter, const QStyleOptionGraphicsItem *,
     painter->setRenderHint(QPainter::Antialiasing);
     painter->setPen(default_pen);
 
-    static constexpr double top_fret_y = 22;
-    static constexpr double fret_spacing = 6;
-    static constexpr double string_spacing = fret_spacing;
-
-    static constexpr int num_frets = 6;
     const int num_strings = myDiagram.getStringCount();
-    const double x_pad =
-        (DIAGRAM_WIDTH - fret_spacing * (num_strings - 1)) * 0.5;
 
     // Draw horizontal lines for each fret.
-    for (int i = 0; i < num_frets; ++i)
+    for (int i = 0; i < NUM_FRETS; ++i)
     {
-        const double y = top_fret_y + i * fret_spacing;
+        const double y = TOP_FRET_Y + i * FRET_SPACING;
 
         // Draw the nut a bit thicker.
         if (i == 0 && myDiagram.getTopFret() == 0)
@@ -69,32 +84,27 @@ ChordDiagramPainter::paint(QPainter *painter, const QStyleOptionGraphicsItem *,
             painter->setPen(default_pen);
 
         painter->drawLine(
-            QLineF(x_pad, y, x_pad + (num_strings - 1) * string_spacing, y));
+            QLineF(myXPad, y, myXPad + (num_strings - 1) * STRING_SPACING, y));
     }
 
     // Draw a line for each string, and marker dots for the chord's frets.
     for (int i = 0; i < num_strings; ++i)
     {
-        const double x = x_pad + i * string_spacing;
-        painter->drawLine(QLineF(x, top_fret_y, x,
-                                 top_fret_y + (num_frets - 1) * fret_spacing));
-
-        // Size of the fret marker dots.
-        static constexpr double dot_radius = 1.5;
-        // Y position for drawing open / muted strings above the nut.
-        const double y_above = top_fret_y - 0.6 * fret_spacing;
+        const double x = myXPad + i * STRING_SPACING;
+        painter->drawLine(QLineF(x, TOP_FRET_Y, x,
+                                 TOP_FRET_Y + (NUM_FRETS - 1) * FRET_SPACING));
 
         const int fret = myDiagram.getFretNumbers()[num_strings - i - 1];
         if (fret < 0) // Muted string.
         {
-            painter->drawLine(QLineF(x - dot_radius, y_above - dot_radius,
-                                     x + dot_radius, y_above + dot_radius));
-            painter->drawLine(QLineF(x + dot_radius, y_above - dot_radius,
-                                     x - dot_radius, y_above + dot_radius));
+            painter->drawLine(QLineF(x - DOT_RADIUS, Y_ABOVE - DOT_RADIUS,
+                                     x + DOT_RADIUS, Y_ABOVE + DOT_RADIUS));
+            painter->drawLine(QLineF(x + DOT_RADIUS, Y_ABOVE - DOT_RADIUS,
+                                     x - DOT_RADIUS, Y_ABOVE + DOT_RADIUS));
         }
         else if (fret == 0) // Open string.
         {
-            painter->drawEllipse(QPointF(x, y_above), dot_radius, dot_radius);
+            painter->drawEllipse(QPointF(x, Y_ABOVE), DOT_RADIUS, DOT_RADIUS);
         }
         else
         {
@@ -102,8 +112,8 @@ ChordDiagramPainter::paint(QPainter *painter, const QStyleOptionGraphicsItem *,
 
             painter->setBrush(QBrush(myColor));
             painter->drawEllipse(
-                QPointF(x, top_fret_y + (fret_offset - 0.5) * fret_spacing),
-                dot_radius, dot_radius);
+                QPointF(x, TOP_FRET_Y + (fret_offset - 0.5) * FRET_SPACING),
+                DOT_RADIUS, DOT_RADIUS);
             painter->setBrush(QBrush()); // reset
         }
     }
@@ -117,9 +127,76 @@ ChordDiagramPainter::paint(QPainter *painter, const QStyleOptionGraphicsItem *,
 
         // Adding 1 since the next fret is where a finger can be placed.
         const QString text = QString::number(myDiagram.getTopFret() + 1);
-        painter->drawText(DIAGRAM_WIDTH - x_pad + 3, top_fret_y + fret_spacing,
+        painter->drawText(DIAGRAM_WIDTH - myXPad + 3, TOP_FRET_Y + FRET_SPACING,
                           text);
     }
+}
+
+bool
+ChordDiagramPainter::findFretAtPosition(const QPointF &pos, int &fret,
+                                        int &string) const
+{
+    const int num_strings = myDiagram.getStringCount();
+    for (int i = 0; i < NUM_FRETS; ++i)
+    {
+        const double y =
+            (i == 0) ? Y_ABOVE : (TOP_FRET_Y + (i - 0.5) * FRET_SPACING);
+
+        for (int j = 0; j < num_strings; ++j)
+        {
+            const double x = myXPad + j * STRING_SPACING;
+
+            if ((pos - QPointF(x, y)).manhattanLength() < HIT_RADIUS)
+            {
+                fret = i;
+                string = j;
+                return true;
+            }
+        }
+    }
+
+    return false;
+}
+
+void
+ChordDiagramPainter::mousePressEvent(QGraphicsSceneMouseEvent *event)
+{
+    QGraphicsItem::mouseReleaseEvent(event);
+    // Do nothing: this is just needed to get mouseReleaseEvent() to be fired.
+}
+
+void
+ChordDiagramPainter::mouseReleaseEvent(QGraphicsSceneMouseEvent *event)
+{
+    QGraphicsItem::mouseReleaseEvent(event);
+
+    int fret = -1;
+    int string = -1;
+    if (findFretAtPosition(event->pos(), fret, string))
+    {
+        qDebug() << fret << string;
+        // TODO
+    }
+}
+
+void
+ChordDiagramPainter::hoverMoveEvent(QGraphicsSceneHoverEvent *event)
+{
+    int fret = -1;
+    int string = -1;
+    if (findFretAtPosition(event->pos(), fret, string))
+        setCursor(Qt::PointingHandCursor);
+    else
+        unsetCursor();
+
+    QGraphicsItem::hoverMoveEvent(event);
+}
+
+void
+ChordDiagramPainter::hoverLeaveEvent(QGraphicsSceneHoverEvent *event)
+{
+    unsetCursor();
+    QGraphicsItem::hoverLeaveEvent(event);
 }
 
 /// Empty graphics item to be the parent for the chord diagrams, since they
