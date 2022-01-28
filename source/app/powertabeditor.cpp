@@ -2294,6 +2294,12 @@ void PowerTabEditor::createCommands()
     connect(myMetronomeCommand, &QAction::triggered, this,
             &PowerTabEditor::toggleMetronome);
 
+    myCountInCommand = new Command(tr("Count-In"), "Playback.CountIn",
+                                     QKeySequence(), this);
+    myCountInCommand->setCheckable(true);
+    connect(myCountInCommand, &QAction::triggered, this,
+            &PowerTabEditor::toggleCountIn);
+
     // Section navigation actions.
     myFirstSectionCommand =
         new Command(tr("First Section"), "Position.Section.FirstSection",
@@ -3222,6 +3228,7 @@ void PowerTabEditor::createMenus()
     myPlaybackMenu->addAction(myStopCommand);
     myPlaybackMenu->addAction(myRewindCommand);
     myPlaybackMenu->addAction(myMetronomeCommand);
+    myPlaybackMenu->addAction(myCountInCommand);
 
     // Position Menu.
     myPositionMenu = menuBar()->addMenu(tr("&Position"));
@@ -3506,7 +3513,7 @@ void PowerTabEditor::createTabArea()
         double initial_zoom = settings->get(Settings::LastZoomLevel);
         myPlaybackWidget = new PlaybackWidget(
             *myPlayPauseCommand, *myRewindCommand, *myStopCommand,
-            *myMetronomeCommand, initial_zoom, this);
+            *myMetronomeCommand, *myCountInCommand, initial_zoom, this);
     }
 
     connect(myPlaybackWidget, &PlaybackWidget::activeVoiceChanged, this,
@@ -3523,6 +3530,7 @@ void PowerTabEditor::createTabArea()
         auto settings = mySettingsManager->getReadHandle();
         myMetronomeCommand->setChecked(
             settings->get(Settings::MetronomeEnabled));
+        myCountInCommand->setChecked(settings->get(Settings::CountInEnabled));
     };
 
     update_metronome_state();
@@ -4082,6 +4090,7 @@ void PowerTabEditor::enableEditing(bool enable)
         myPlayPauseCommand->setEnabled(true);
         myRewindCommand->setEnabled(true);
         myMetronomeCommand->setEnabled(true);
+        myCountInCommand->setEnabled(true);
         myStopCommand->setEnabled(myIsPlaying);
     }
 
@@ -4139,6 +4148,12 @@ void PowerTabEditor::toggleMetronome()
 {
     auto settings = mySettingsManager->getWriteHandle();
     settings->set(Settings::MetronomeEnabled, myMetronomeCommand->isChecked());
+}
+
+void PowerTabEditor::toggleCountIn()
+{
+    auto settings = mySettingsManager->getWriteHandle();
+    settings->set(Settings::CountInEnabled, myCountInCommand->isChecked());
 }
 
 void PowerTabEditor::updateActiveVoice(int voice)

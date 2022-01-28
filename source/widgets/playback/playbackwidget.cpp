@@ -85,6 +85,7 @@ PlaybackWidget::PlaybackWidget(const QAction &play_pause_command,
                                const QAction &rewind_command,
                                const QAction &stop_command,
                                const QAction &metronome_command,
+                               const QAction &count_in_command,
                                double initial_zoom,
                                QWidget *parent)
     : QWidget(parent),
@@ -134,6 +135,14 @@ PlaybackWidget::PlaybackWidget(const QAction &play_pause_command,
                 .arg(getShortcutHint(metronome_command)));
     });
 
+    ui->countInToggleButton->setIcon(
+        style()->standardIcon(QStyle::SP_ArrowDown));
+    connect(&count_in_command, &QAction::changed, [&]() {
+        ui->countInToggleButton->setToolTip(
+            tr("Click to toggle whether a count-in before playback is enabled%1.")
+                .arg(getShortcutHint(count_in_command)));
+    });
+
     connect(myVoices,
 #if (QT_VERSION >= QT_VERSION_CHECK(5,15,0))
             &QButtonGroup::idClicked,
@@ -147,6 +156,7 @@ PlaybackWidget::PlaybackWidget(const QAction &play_pause_command,
             this, &PlaybackWidget::activeFilterChanged);
     connectButtonToAction(ui->playPauseButton, &play_pause_command);
     connectButtonToAction(ui->metronomeToggleButton, &metronome_command);
+    connectButtonToAction(ui->countInToggleButton, &count_in_command);
     connectButtonToAction(ui->rewindToStartButton, &rewind_command);
     connectButtonToAction(ui->stopButton, &stop_command);
 

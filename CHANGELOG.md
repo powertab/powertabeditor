@@ -21,6 +21,7 @@ Thanks to the following contributors who worked on this release:
 - Improvements for adjusting the score's zoom (#315, #340, #50)
   - Added standard keyboard shortcuts for adjusting the zoom
   - The last zoom level is saved in the settings and used when opening new scores
+- Added a button in the playback widget to toggle the count-in option.
 - Translations
   - Added Spanish translation (#348).
   - Added French translation (#355).

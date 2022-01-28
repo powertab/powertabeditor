@@ -366,6 +366,7 @@ private:
     void stopPlayback();
     /// Toggles the metronome on or off.
     void toggleMetronome();
+    void toggleCountIn();
     /// Sets the current voice that is being edited.
     void updateActiveVoice(int);
     /// Sets the current score filter.
@@ -481,6 +482,7 @@ private:
     Command *myStopCommand;
     Command *myRewindCommand;
     Command *myMetronomeCommand;
+    Command *myCountInCommand;
 
     QMenu *myPositionMenu;
     QMenu *myPositionSectionMenu;

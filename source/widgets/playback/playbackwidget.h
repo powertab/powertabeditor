@@ -36,6 +36,7 @@ public:
                             const QAction &rewind_command,
                             const QAction &stop_command,
                             const QAction &metronome_command,
+                            const QAction &count_in_command,
                             double initial_zoom, QWidget *parent);
     ~PlaybackWidget();
 
