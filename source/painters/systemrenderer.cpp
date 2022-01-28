@@ -363,10 +363,14 @@ void SystemRenderer::drawTabNotes(const Staff &staff,
                 const QString text =
                     QString::fromStdString(Util::toString(note));
 
+                QColor color = myPalette.text().color();
+                // Similar to myPalette.placeholderText(), but with alpha=64
+                // instead of 128 to be more faded.
+                if (note.hasProperty(Note::Tied))
+                    color.setAlpha(64);
+
                 auto tabNote = new SimpleTextItem(
-                    text, myPlainTextFont, TextAlignment::Top,
-                    QPen(note.hasProperty(Note::Tied) ? myPalette.dark().color()
-                                                      : myPalette.text().color()),
+                    text, myPlainTextFont, TextAlignment::Top, QPen(color),
                     QBrush(myPalette.light().color()));
 
                 centerHorizontally(*tabNote, location,

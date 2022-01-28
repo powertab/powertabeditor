@@ -29,7 +29,8 @@ class ViewOptions;
 class CaretPainter : public QGraphicsItem
 {
 public:
-    CaretPainter(const Caret &caret, const ViewOptions &view_options);
+    CaretPainter(const Caret &caret, const ViewOptions &view_options,
+                 const QPalette &palette);
 
     virtual void paint(QPainter *painter, const QStyleOptionGraphicsItem *,
                        QWidget *) override;
@@ -53,6 +54,7 @@ private:
 
     const Caret &myCaret;
     const ViewOptions &myViewOptions;
+    const QPalette &myPalette;
     std::unique_ptr<LayoutInfo> myLayout;
     std::vector<QRectF> mySystemRects;
     boost::signals2::scoped_connection myCaretConnection;

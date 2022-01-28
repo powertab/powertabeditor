@@ -26,6 +26,7 @@ Thanks to the following contributors who worked on this release:
   - Added French translation (#355).
 
 ### Changed
+- Improved the visibility of some colors in the dark score theme (#357)
 
 ### Fixed
 - Fixed various playback issues with alternate endings (#306, #353, #354)

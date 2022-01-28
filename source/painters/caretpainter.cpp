@@ -33,12 +33,13 @@
 const double CaretPainter::PEN_WIDTH = 0.75;
 const double CaretPainter::CARET_NOTE_SPACING = 6;
 
-CaretPainter::CaretPainter(const Caret &caret, const ViewOptions &view_options)
+CaretPainter::CaretPainter(const Caret &caret, const ViewOptions &view_options,
+                           const QPalette &palette)
     : myCaret(caret),
       myViewOptions(view_options),
-      myCaretConnection(caret.subscribeToChanges([=]() {
-          onLocationChanged();
-      }))
+      myPalette(palette),
+      myCaretConnection(
+          caret.subscribeToChanges([=]() { onLocationChanged(); }))
 {
 }
 
@@ -55,12 +56,13 @@ void CaretPainter::paint(QPainter *painter, const QStyleOptionGraphicsItem *,
     const bool hasFocus = scene()->views().first()->hasFocus();
 
     // Set color.
+    QColor color = myPalette.link().color();
     if (!hasFocus)
-        painter->setPen(QPen(Qt::darkGray, PEN_WIDTH));
+        color.setAlpha(128);
     else if (myCaret.isInPlaybackMode())
-        painter->setPen(QPen(Qt::red, PEN_WIDTH));
-    else
-        painter->setPen(QPen(Qt::blue, PEN_WIDTH));
+        color = myPalette.linkVisited().color();
+
+    painter->setPen(QPen(color, PEN_WIDTH));
 
     double left = myLayout->getPositionX(location.getPositionIndex());
     const double y1 = 0;
