@@ -140,6 +140,7 @@ void ScoreArea::renderDocument(const Document &document)
     myChordDiagramList->setPos(0, height);
     myScene.addItem(myChordDiagramList);
     height += myChordDiagramList->boundingRect().height() + 0.5 * SYSTEM_SPACING;
+    myHeaderSize = height;
 
     // Layout the systems.
     for (QGraphicsItem *system : myRenderedSystems)
@@ -175,6 +176,8 @@ void ScoreArea::redrawSystem(int index)
         height = myRenderedSystems.at(index - 1)->sceneBoundingRect().bottom() +
                 SYSTEM_SPACING;
     }
+    else
+        height = myHeaderSize;
 
     newSystem->setPos(0, height);
     height += newSystem->boundingRect().height() + SYSTEM_SPACING;

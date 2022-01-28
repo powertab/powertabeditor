@@ -32,6 +32,7 @@ Thanks to the following contributors who worked on this release:
 - Fixed a bug where alternate endings could be drawn too far if there were multiple repeat end bars in a system
 - Fixed an issue where MIDI playback did not reset correctly if playback was interrupted during a pitch shift (e.g. bend or tremolo bar) (#361)
 - When the Windows installer is run in silent mode, the option to launch the app after installing is now disabled
+- Fixed a bug where editing the first system could cause it to shift up and overlap with the score information or chord diagrams
 
 ## [Alpha 16] - 2021-12-28
 

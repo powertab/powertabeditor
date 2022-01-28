@@ -85,6 +85,7 @@ private:
     const Document *myDocument;
     QGraphicsItem *myScoreInfoBlock;
     QGraphicsItem *myChordDiagramList;
+    double myHeaderSize = 0;
     QList<QGraphicsItem *> myRenderedSystems;
     CaretPainter *myCaretPainter;
     /// The color palette from the parent widget.
