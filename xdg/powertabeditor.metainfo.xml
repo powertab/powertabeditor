@@ -41,6 +41,48 @@
   </provides>
 
   <releases>
+    <release version="2.0.0-alpha17" date="2022-01-28">
+      <url>https://github.com/powertab/powertabeditor/releases/tag/2.0.0-alpha17</url>
+      <description>
+        <p>New Features / Improvements</p>
+        <ul>
+          <li>Added support for chord diagrams
+            <ul>
+              <li>Chord diagrams are displayed at the top of the score</li>
+              <li>Diagrams can be imported from v1.7 files and Guitar Pro 6 / 7 files</li>
+              <li>The Chord Name dialog allows for quick selection from existing chord names in the score (chord text items, or chord diagrams)</li>
+              <li>Use the Add Chord Diagram option in the text menu to add a new diagram</li>
+              <li>Double-clicking a chord diagram will open a dialog to edit it, and selecting a chord diagram and pressing Delete will remove it</li>
+            </ul>
+          </li>
+          <li>Added MIDI playback support for bends that stretch over multiple notes</li>
+          <li>Improvements for adjusting the score's zoom (#315, #340, #50)
+            <ul>
+              <li>Added standard keyboard shortcuts for adjusting the zoom</li>
+              <li>The last zoom level is saved in the settings and used when opening new scores</li>
+            </ul>
+          </li>
+          <li>Added a button in the playback widget to toggle the count-in option</li>
+          <li>Translations<ul>
+              <li>Added Spanish translation (#348)</li>
+              <li>Added French translation (#355)</li>
+            </ul>
+          </li>
+        </ul>
+        <p>Changes</p>
+        <ul>
+          <li>Improved the visibility of some colors in the dark score theme (#357)</li>
+        </ul>
+        <p>Bug Fixes</p>
+        <ul>
+          <li>Fixed various playback issues with alternate endings (#306, #353, #354)</li>
+          <li>Fixed a bug where alternate endings could be drawn too far if there were multiple repeat end bars in a system</li>
+          <li>Fixed an issue where MIDI playback did not reset correctly if playback was interrupted during a pitch shift (e.g. bend or tremolo bar) (#361)</li>
+          <li>When the Windows installer is run in silent mode, the option to launch the app after installing is now disabled</li>
+          <li>Fixed a bug where editing the first system could cause it to shift up and overlap with the score information or chord diagrams</li>
+        </ul>
+      </description>
+    </release>
     <release version="2.0.0-alpha16" date="2021-12-28">
       <url>https://github.com/powertab/powertabeditor/releases/tag/2.0.0-alpha16</url>
       <description>

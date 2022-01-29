@@ -5,26 +5,37 @@ All notable changes to this project will be documented in this file.
 
 Thanks to the following contributors who worked on this release:
 - @cameronwhite
+
+### Added
+
+### Changed
+
+### Fixed
+
+## [Alpha 17] - 2022-01-28
+
+Thanks to the following contributors who worked on this release:
+- @cameronwhite
 - @danailbd
 - @nbrunett
 - @fitojb
 - @NathanBnm
 
 ### Added
-- Added support for chord diagrams.
+- Added support for chord diagrams
   - Chord diagrams are displayed at the top of the score
   - Diagrams can be imported from v1.7 files and Guitar Pro 6 / 7 files
   - The Chord Name dialog allows for quick selection from existing chord names in the score (chord text items, or chord diagrams)
   - Use the Add Chord Diagram option in the text menu to add a new diagram
   - Double-clicking a chord diagram will open a dialog to edit it, and selecting a chord diagram and pressing Delete will remove it
-- Added MIDI playback support for bends that stretch over multiple notes.
+- Added MIDI playback support for bends that stretch over multiple notes
 - Improvements for adjusting the score's zoom (#315, #340, #50)
   - Added standard keyboard shortcuts for adjusting the zoom
   - The last zoom level is saved in the settings and used when opening new scores
-- Added a button in the playback widget to toggle the count-in option.
+- Added a button in the playback widget to toggle the count-in option
 - Translations
-  - Added Spanish translation (#348).
-  - Added French translation (#355).
+  - Added Spanish translation (#348)
+  - Added French translation (#355)
 
 ### Changed
 - Improved the visibility of some colors in the dark score theme (#357)
@@ -385,6 +396,7 @@ Thanks to the following contributors who worked on this release:
 * The first alpha release!
 
 [Unreleased]: https://github.com/powertab/powertabeditor/compare/2.0.0-alpha15...HEAD
+[Alpha 17]: https://github.com/powertab/powertabeditor/releases/tag/2.0.0-alpha17
 [Alpha 16]: https://github.com/powertab/powertabeditor/releases/tag/2.0.0-alpha16
 [Alpha 15]: https://github.com/powertab/powertabeditor/releases/tag/2.0.0-alpha15
 [Alpha 14]: https://github.com/powertab/powertabeditor/releases/tag/2.0.0-alpha14
