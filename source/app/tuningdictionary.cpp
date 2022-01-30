@@ -25,13 +25,24 @@
 #include <iostream>
 #include <score/serialization.h>
 #include <stdexcept>
+#include <unordered_set>
 
 static const char *theTuningDictFilename = "tunings.json";
 
 std::vector<TuningDictionary::Entry>
 TuningDictionary::load()
 {
-    for (std::filesystem::path dir : Paths::getDataDirs())
+    // Accumulate from all tunings.json files in the search path. This is in
+    // reverse order, from the installation folder to the user prefs dir, so
+    // that factory tunings appear first.
+    auto search_paths = Paths::getDataDirs();
+    std::reverse(search_paths.begin(), search_paths.end());
+
+    auto user_data_dir = Paths::getUserDataDir();
+
+    std::unordered_set<Tuning> known_tunings;
+    std::vector<TuningDictionary::Entry> entries;
+    for (std::filesystem::path dir : search_paths)
     {
         auto path = dir / theTuningDictFilename;
         if (!std::filesystem::exists(path))
@@ -42,31 +53,36 @@ TuningDictionary::load()
         std::vector<Tuning> tunings;
         ScoreUtils::load(file, "tunings", tunings);
 
-        std::vector<TuningDictionary::Entry> entries;
+        const bool writeable = (dir == user_data_dir);
         for (const Tuning &tuning: tunings)
-            entries.push_back({ tuning, /* writeable */ true });
+        {
+            // Avoid adding duplicate tunings from multiple files.
+            // This is important for old tunings.json files in the user prefs
+            // dir, which contained the whole tuning dictionary contents before
+            // bug #367.
+            if (known_tunings.find(tuning) != known_tunings.end())
+                continue;
 
-        return entries;
+            known_tunings.insert(tuning);
+            entries.push_back({ tuning, writeable });
+        }
     }
 
-    std::cerr << "Could not locate tuning dictionary." << std::endl;
-    std::cerr << "Candidate paths:" << std::endl;
+    if (entries.empty())
+    {
+        std::cerr << "Could not locate tuning dictionary." << std::endl;
+        std::cerr << "Candidate paths:" << std::endl;
 
-    for (std::filesystem::path dir : Paths::getDataDirs())
-        std::cerr << (dir / theTuningDictFilename) << std::endl;
+        for (std::filesystem::path dir : Paths::getDataDirs())
+            std::cerr << (dir / theTuningDictFilename) << std::endl;
+    }
 
-    return {};
+    return entries;
 }
 
 void TuningDictionary::save() const
 {
     ensureLoaded();
-
-    // If the tuning dictionary is empty, it presumably failed to load for some
-    // reason. So, we shouldn't be trying to save an empty dictionary in the
-    // config folder.
-    if (myEntries.empty())
-        return;
 
     auto dir = Paths::getUserDataDir();
     std::filesystem::create_directories(dir);
@@ -78,7 +94,13 @@ void TuningDictionary::save() const
 
     std::vector<Tuning> tunings;
     for (const Entry &entry : myEntries)
-        tunings.push_back(entry.myTuning);
+    {
+        // Only save out tunings that are marked as writeable (i.e.
+        // newly-added, or were loaded from the tunings.json file in the user
+        // prefs dir). Other tunings are from the factory tuning dictionary.
+        if (entry.myWriteable)
+            tunings.push_back(entry.myTuning);
+    }
 
     ScoreUtils::save(file, "tunings", tunings);
 }

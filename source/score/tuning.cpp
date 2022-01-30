@@ -20,6 +20,7 @@
 #include <sstream>
 #include <stdexcept>
 #include "generalmidi.h"
+#include <boost/functional/hash.hpp>
 
 const int8_t Tuning::MIN_MUSIC_NOTATION_OFFSET = -12;
 const int8_t Tuning::MAX_MUSIC_NOTATION_OFFSET = 12;
@@ -168,4 +169,16 @@ std::ostream &operator<<(std::ostream &os, const Tuning &t)
     }
 
     return os;
+}
+
+size_t
+std::hash<Tuning>::operator()(const Tuning &tuning) const
+{
+    size_t seed = 0;
+    boost::hash_combine(seed, tuning.getName());
+    boost::hash_combine(seed, tuning.getNotes());
+    boost::hash_combine(seed, tuning.getMusicNotationOffset());
+    boost::hash_combine(seed, tuning.usesSharps());
+    boost::hash_combine(seed, tuning.getCapo());
+    return seed;
 }

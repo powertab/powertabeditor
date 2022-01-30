@@ -9,6 +9,9 @@ Thanks to the following contributors who worked on this release:
 ### Added
 
 ### Changed
+- Tuning dictionary changes (#367)
+  - The tuning dictionary in the user prefs folder (`tunings.json`) now only stores custom tunings instead of the entire tuning dictionary
+  - The user tuning dictionary is now combined with the default tuning dictionary when loaded, ensuring that updates to the default tunings take effect
 
 ### Fixed
 

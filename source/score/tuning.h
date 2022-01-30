@@ -21,6 +21,7 @@
 #include <cstdint>
 #include "fileversion.h"
 #include <iosfwd>
+#include <memory>
 #include <string>
 #include <vector>
 
@@ -103,5 +104,12 @@ void Tuning::serialize(Archive &ar, const FileVersion /*version*/)
 /// Returns a string representation of the tuning from low to
 /// high (e.g. "E A D G B E").
 std::ostream &operator<<(std::ostream &os, const Tuning &t);
+
+/// Enable the use of Tuning as a key for std::unordered_map, etc.
+template<>
+struct std::hash<Tuning>
+{
+    size_t operator()(const Tuning &tuning) const;
+};
 
 #endif
