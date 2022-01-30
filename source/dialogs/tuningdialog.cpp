@@ -149,13 +149,14 @@ void TuningDialog::updateEnabledStrings(int numStrings)
 
 void TuningDialog::updateTuningDictionary(int numStrings)
 {
-    std::vector<const Tuning *> tunings;
-    myDictionary.findTunings(numStrings, tunings);
+    std::vector<const TuningDictionary::Entry *> entries;
+    myDictionary.findTunings(numStrings, entries);
 
     ui->presetComboBox->clear();
 
-    for (const Tuning *tuning : tunings)
+    for (const TuningDictionary::Entry *entry : entries)
     {
+        const Tuning *tuning = &entry->myTuning;
         ui->presetComboBox->addItem(
             QStringLiteral("%1 - %2").arg(
                 QString::fromStdString(tuning->getName()),

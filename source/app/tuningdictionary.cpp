@@ -28,7 +28,8 @@
 
 static const char *theTuningDictFilename = "tunings.json";
 
-std::vector<Tuning> TuningDictionary::load()
+std::vector<TuningDictionary::Entry>
+TuningDictionary::load()
 {
     for (std::filesystem::path dir : Paths::getDataDirs())
     {
@@ -40,7 +41,12 @@ std::vector<Tuning> TuningDictionary::load()
 
         std::vector<Tuning> tunings;
         ScoreUtils::load(file, "tunings", tunings);
-        return tunings;
+
+        std::vector<TuningDictionary::Entry> entries;
+        for (const Tuning &tuning: tunings)
+            entries.push_back({ tuning, /* writeable */ true });
+
+        return entries;
     }
 
     std::cerr << "Could not locate tuning dictionary." << std::endl;
@@ -59,7 +65,7 @@ void TuningDictionary::save() const
     // If the tuning dictionary is empty, it presumably failed to load for some
     // reason. So, we shouldn't be trying to save an empty dictionary in the
     // config folder.
-    if (myTunings.empty())
+    if (myEntries.empty())
         return;
 
     auto dir = Paths::getUserDataDir();
@@ -70,7 +76,11 @@ void TuningDictionary::save() const
     if (!file)
         throw std::runtime_error("Error opening tuning dictionary for writing.");
 
-    ScoreUtils::save(file, "tunings", myTunings);
+    std::vector<Tuning> tunings;
+    for (const Entry &entry : myEntries)
+        tunings.push_back(entry.myTuning);
+
+    ScoreUtils::save(file, "tunings", tunings);
 }
 
 void TuningDictionary::loadInBackground()
@@ -79,45 +89,52 @@ void TuningDictionary::loadInBackground()
 }
 
 void TuningDictionary::findTunings(int numStrings,
-                                   std::vector<Tuning *> &tunings)
+                                   std::vector<Entry *> &tunings)
 {
     ensureLoaded();
-    for (Tuning &tuning : myTunings)
+    for (Entry &entry : myEntries)
     {
-        if (tuning.getStringCount() == numStrings)
-            tunings.push_back(&tuning);
+        if (entry.myTuning.getStringCount() == numStrings)
+            tunings.push_back(&entry);
     }
 }
 
 void TuningDictionary::findTunings(int numStrings,
-                                   std::vector<const Tuning *> &tunings) const
+                                   std::vector<const Entry *> &tunings) const
 {
     ensureLoaded();
-    for (const Tuning &tuning : myTunings)
+    for (const Entry &entry : myEntries)
     {
-        if (tuning.getStringCount() == numStrings)
-            tunings.push_back(&tuning);
+        if (entry.myTuning.getStringCount() == numStrings)
+            tunings.push_back(&entry);
     }
 }
 
 void TuningDictionary::addTuning(const Tuning &tuning)
 {
     ensureLoaded();
-    myTunings.push_back(tuning);
+    myEntries.push_back(Entry{ tuning, /* writeable */ true });
 }
 
 void TuningDictionary::removeTuning(const Tuning &tuning)
 {
     ensureLoaded();
-    myTunings.erase(std::remove(myTunings.begin(), myTunings.end(), tuning));
+    auto it = std::find_if(myEntries.begin(), myEntries.end(),
+                           [&](const Entry &entry)
+                           { return entry.myTuning == tuning; });
+    if (it == myEntries.end())
+        return;
+
+    assert(it->myWriteable);
+    myEntries.erase(it);
 }
 
 void TuningDictionary::ensureLoaded() const
 {
     if (myFuture.valid())
     {
-        // myTunings shouldn't be mutable in general.
+        // myEntries shouldn't be mutable in general.
         auto me = const_cast<TuningDictionary *>(this);
-        me->myTunings = myFuture.get();
+        me->myEntries = myFuture.get();
     }
 }

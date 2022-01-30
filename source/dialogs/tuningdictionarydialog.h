@@ -19,6 +19,7 @@
 #define DIALOGS_TUNINGDICTIONARYDIALOG_H
 
 #include <QDialog>
+#include <app/tuningdictionary.h>
 
 namespace Ui {
 class TuningDictionaryDialog;
@@ -26,7 +27,6 @@ class TuningDictionaryDialog;
 
 class QTreeWidgetItem;
 class Tuning;
-class TuningDictionary;
 
 class TuningDictionaryDialog : public QDialog
 {
@@ -46,7 +46,7 @@ private slots:
     
 private:
     void onTuningModified();
-    Tuning *selectedTuning() const;
+    TuningDictionary::Entry *selectedTuning() const;
 
     Ui::TuningDictionaryDialog *ui;
     TuningDictionary &myDictionary;

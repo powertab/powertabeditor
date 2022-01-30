@@ -25,6 +25,12 @@
 class TuningDictionary
 {
 public:
+    struct Entry
+    {
+        Tuning myTuning;
+        bool myWriteable = true;
+    };
+
     /// Saves the tuning dictionary to a file.
     void save() const;
 
@@ -32,9 +38,9 @@ public:
     void loadInBackground();
 
     /// Returns all tunings with the specified number of strings.
-    void findTunings(int numStrings, std::vector<Tuning *> &tunings);
+    void findTunings(int numStrings, std::vector<Entry *> &tunings);
     void findTunings(int numStrings,
-                     std::vector<const Tuning *> &tunings) const;
+                     std::vector<const Entry *> &tunings) const;
 
     /// Adds a new tuning to the tuning dictionary.
     void addTuning(const Tuning &tuning);
@@ -44,12 +50,12 @@ public:
 
 private:
     /// Loads the tuning dictionary from a file.
-    static std::vector<Tuning> load();
+    static std::vector<Entry> load();
 
     void ensureLoaded() const;
 
-    mutable std::future<std::vector<Tuning>> myFuture;
-    std::vector<Tuning> myTunings;
+    mutable std::future<std::vector<Entry>> myFuture;
+    std::vector<Entry> myEntries;
 };
 
 #endif

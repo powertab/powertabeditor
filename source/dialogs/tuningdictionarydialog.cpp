@@ -22,7 +22,7 @@
 #include <dialogs/tuningdialog.h>
 #include <util/tostring.h>
 
-Q_DECLARE_METATYPE(Tuning *)
+Q_DECLARE_METATYPE(TuningDictionary::Entry *)
 
 TuningDictionaryDialog::TuningDictionaryDialog(QWidget *parent,
                                                TuningDictionary &dictionary)
@@ -70,16 +70,17 @@ void TuningDictionaryDialog::onNumStringsChanged(int index)
 
     ui->tuningsList->clear();
 
-    std::vector<Tuning *> tunings;
-    myDictionary.findTunings(numStrings, tunings);
+    std::vector<TuningDictionary::Entry *> entries;
+    myDictionary.findTunings(numStrings, entries);
 
-    for (Tuning *tuning : tunings)
+    for (TuningDictionary::Entry *entry : entries)
     {
+        const Tuning &tuning = entry->myTuning;
         auto item = new QTreeWidgetItem(
-            QStringList({ QString::fromStdString(tuning->getName()),
-                          QString::fromStdString(Util::toString(*tuning)) }));
+            QStringList({ QString::fromStdString(tuning.getName()),
+                          QString::fromStdString(Util::toString(tuning)) }));
 
-        item->setData(0, Qt::UserRole, QVariant::fromValue(tuning));
+        item->setData(0, Qt::UserRole, QVariant::fromValue(entry));
         ui->tuningsList->addTopLevelItem(item);
     }
 }
@@ -98,25 +99,34 @@ void TuningDictionaryDialog::onNewTuning()
 
 void TuningDictionaryDialog::onDeleteTuning()
 {
-    myDictionary.removeTuning(*selectedTuning());
+    myDictionary.removeTuning(selectedTuning()->myTuning);
     onTuningModified();
 }
 
 void TuningDictionaryDialog::onCurrentTuningChanged(QTreeWidgetItem *current,
                                                     QTreeWidgetItem *)
 {
-    ui->deleteTuningButton->setEnabled(current != nullptr);
-    ui->editTuningButton->setEnabled(current != nullptr);
+    // Enable if there is a selected tuning and it's writeable.
+    bool enable = false;
+    if (current != nullptr)
+    {
+        auto entry =
+            current->data(0, Qt::UserRole).value<TuningDictionary::Entry *>();
+        enable = entry->myWriteable;
+    }
+
+    ui->deleteTuningButton->setEnabled(enable);
+    ui->editTuningButton->setEnabled(enable);
 }
 
 void TuningDictionaryDialog::onEditTuning()
 {
-    Tuning *tuning = selectedTuning();
-    TuningDialog dialog(this, *tuning, myDictionary);
+    Tuning &tuning = selectedTuning()->myTuning;
+    TuningDialog dialog(this, tuning, myDictionary);
 
     if (dialog.exec() == QDialog::Accepted)
     {
-        *tuning = dialog.getTuning();
+        tuning = dialog.getTuning();
         onTuningModified();
     }
 }
@@ -126,8 +136,8 @@ void TuningDictionaryDialog::onTuningModified()
     onNumStringsChanged(ui->stringsComboBox->currentIndex());
 }
 
-Tuning *TuningDictionaryDialog::selectedTuning() const
+TuningDictionary::Entry *TuningDictionaryDialog::selectedTuning() const
 {
     return ui->tuningsList->currentItem()->data(
-                0, Qt::UserRole).value<Tuning *>();
+                0, Qt::UserRole).value<TuningDictionary::Entry *>();
 }
