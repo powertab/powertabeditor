@@ -58,6 +58,54 @@
             "capo": 0
         },
         {
+            "name": "Bass-Down 1/2 Step",
+            "notes": [
+                42,
+                37,
+                32,
+                27
+            ],
+            "offset": 1,
+            "sharps": false,
+            "capo": 0
+        },
+        {
+            "name": "Bass-Down 1 Step",
+            "notes": [
+                41,
+                36,
+                31,
+                26
+            ],
+            "offset": 2,
+            "sharps": true,
+            "capo": 0
+        },
+        {
+            "name": "Bass-Down 1 1/2 Steps",
+            "notes": [
+                40,
+                35,
+                30,
+                25
+            ],
+            "offset": 3,
+            "sharps": false,
+            "capo": 0
+        },
+        {
+            "name": "Bass-Down 2 Steps",
+            "notes": [
+                39,
+                34,
+                29,
+                24
+            ],
+            "offset": 4,
+            "sharps": false,
+            "capo": 0
+        },
+        {
             "name": "Bass-Dropped-D",
             "notes": [
                 43,
@@ -112,54 +160,6 @@
                 34,
                 29,
                 22
-            ],
-            "offset": 4,
-            "sharps": false,
-            "capo": 0
-        },
-        {
-            "name": "Bass-Down 1/2 Step",
-            "notes": [
-                42,
-                37,
-                32,
-                27
-            ],
-            "offset": 1,
-            "sharps": false,
-            "capo": 0
-        },
-        {
-            "name": "Bass-Down 1 Step",
-            "notes": [
-                41,
-                36,
-                31,
-                26
-            ],
-            "offset": 2,
-            "sharps": true,
-            "capo": 0
-        },
-        {
-            "name": "Bass-Down 1 1/2 Steps",
-            "notes": [
-                40,
-                35,
-                30,
-                25
-            ],
-            "offset": 3,
-            "sharps": false,
-            "capo": 0
-        },
-        {
-            "name": "Bass-Down 2 Steps",
-            "notes": [
-                39,
-                34,
-                29,
-                24
             ],
             "offset": 4,
             "sharps": false,
@@ -323,6 +323,58 @@
             "capo": 0
         },
         {
+            "name": "Bass-Down 1/2 Step",
+            "notes": [
+                42,
+                37,
+                32,
+                27,
+                22
+            ],
+            "offset": 1,
+            "sharps": false,
+            "capo": 0
+        },
+        {
+            "name": "Bass-Down 1 Step",
+            "notes": [
+                41,
+                36,
+                31,
+                26,
+                21
+            ],
+            "offset": 2,
+            "sharps": true,
+            "capo": 0
+        },
+        {
+            "name": "Bass-Down 1 1/2 Steps",
+            "notes": [
+                40,
+                35,
+                30,
+                25,
+                20
+            ],
+            "offset": 3,
+            "sharps": false,
+            "capo": 0
+        },
+        {
+            "name": "Bass-Down 2 Steps",
+            "notes": [
+                39,
+                34,
+                29,
+                24,
+                19
+            ],
+            "offset": 4,
+            "sharps": false,
+            "capo": 0
+        },
+        {
             "name": "Bass-Standard C",
             "notes": [
                 48,
@@ -395,58 +447,6 @@
                 29,
                 24,
                 17
-            ],
-            "offset": 4,
-            "sharps": false,
-            "capo": 0
-        },
-        {
-            "name": "Bass-Down 1/2 Step",
-            "notes": [
-                42,
-                37,
-                32,
-                27,
-                22
-            ],
-            "offset": 1,
-            "sharps": false,
-            "capo": 0
-        },
-        {
-            "name": "Bass-Down 1 Step",
-            "notes": [
-                41,
-                36,
-                31,
-                26,
-                21
-            ],
-            "offset": 2,
-            "sharps": true,
-            "capo": 0
-        },
-        {
-            "name": "Bass-Down 1 1/2 Steps",
-            "notes": [
-                40,
-                35,
-                30,
-                25,
-                20
-            ],
-            "offset": 3,
-            "sharps": false,
-            "capo": 0
-        },
-        {
-            "name": "Bass-Down 2 Steps",
-            "notes": [
-                39,
-                34,
-                29,
-                24,
-                19
             ],
             "offset": 4,
             "sharps": false,
@@ -831,104 +831,6 @@
             "capo": 0
         },
         {
-            "name": "Bass-Standard",
-            "notes": [
-                48,
-                43,
-                38,
-                33,
-                28,
-                23
-            ],
-            "offset": 0,
-            "sharps": true,
-            "capo": 0
-        },
-        {
-            "name": "Dropped-D",
-            "notes": [
-                64,
-                59,
-                55,
-                50,
-                45,
-                38
-            ],
-            "offset": 0,
-            "sharps": true,
-            "capo": 0
-        },
-        {
-            "name": "Double Dropped-D",
-            "notes": [
-                62,
-                59,
-                55,
-                50,
-                45,
-                38
-            ],
-            "offset": 0,
-            "sharps": true,
-            "capo": 0
-        },
-        {
-            "name": "Down 1/2 Step Dropped-Db",
-            "notes": [
-                63,
-                58,
-                54,
-                49,
-                44,
-                37
-            ],
-            "offset": 1,
-            "sharps": false,
-            "capo": 0
-        },
-        {
-            "name": "Down 1 Step Dropped-C",
-            "notes": [
-                62,
-                57,
-                53,
-                48,
-                43,
-                36
-            ],
-            "offset": 2,
-            "sharps": true,
-            "capo": 0
-        },
-        {
-            "name": "Down 1 1/2 Step Dropped-B",
-            "notes": [
-                61,
-                56,
-                52,
-                47,
-                42,
-                35
-            ],
-            "offset": 3,
-            "sharps": true,
-            "capo": 0
-        },
-        {
-            "name": "Down 2 Steps Dropped-Bb",
-            "notes": [
-                60,
-                55,
-                51,
-                46,
-                41,
-                34
-            ],
-            "offset": 4,
-            "sharps": false,
-            "capo": 0
-        },
-        {
             "name": "Down 1/2 Step",
             "notes": [
                 63,
@@ -1023,6 +925,104 @@
                 33
             ],
             "offset": 7,
+            "sharps": true,
+            "capo": 0
+        },
+        {
+            "name": "Dropped-D",
+            "notes": [
+                64,
+                59,
+                55,
+                50,
+                45,
+                38
+            ],
+            "offset": 0,
+            "sharps": true,
+            "capo": 0
+        },
+        {
+            "name": "Double Dropped-D",
+            "notes": [
+                62,
+                59,
+                55,
+                50,
+                45,
+                38
+            ],
+            "offset": 0,
+            "sharps": true,
+            "capo": 0
+        },
+        {
+            "name": "Down 1/2 Step Dropped-Db",
+            "notes": [
+                63,
+                58,
+                54,
+                49,
+                44,
+                37
+            ],
+            "offset": 1,
+            "sharps": false,
+            "capo": 0
+        },
+        {
+            "name": "Down 1 Step Dropped-C",
+            "notes": [
+                62,
+                57,
+                53,
+                48,
+                43,
+                36
+            ],
+            "offset": 2,
+            "sharps": true,
+            "capo": 0
+        },
+        {
+            "name": "Down 1 1/2 Step Dropped-B",
+            "notes": [
+                61,
+                56,
+                52,
+                47,
+                42,
+                35
+            ],
+            "offset": 3,
+            "sharps": true,
+            "capo": 0
+        },
+        {
+            "name": "Down 2 Steps Dropped-Bb",
+            "notes": [
+                60,
+                55,
+                51,
+                46,
+                41,
+                34
+            ],
+            "offset": 4,
+            "sharps": false,
+            "capo": 0
+        },
+        {
+            "name": "Bass-Standard",
+            "notes": [
+                48,
+                43,
+                38,
+                33,
+                28,
+                23
+            ],
+            "offset": 0,
             "sharps": true,
             "capo": 0
         },
@@ -1588,6 +1588,66 @@
             "capo": 0
         },
         {
+            "name": "Down 1/2 Step",
+            "notes": [
+                63,
+                58,
+                54,
+                49,
+                44,
+                39,
+                34
+            ],
+            "offset": 1,
+            "sharps": false,
+            "capo": 0
+        },
+        {
+            "name": "Down 1 Step",
+            "notes": [
+                62,
+                57,
+                53,
+                48,
+                43,
+                38,
+                33
+            ],
+            "offset": 2,
+            "sharps": true,
+            "capo": 0
+        },
+        {
+            "name": "Down 1 1/2 Step",
+            "notes": [
+                61,
+                56,
+                52,
+                47,
+                42,
+                37,
+                32
+            ],
+            "offset": 3,
+            "sharps": false,
+            "capo": 0
+        },
+        {
+            "name": "Down 2 Steps",
+            "notes": [
+                60,
+                55,
+                51,
+                46,
+                41,
+                36,
+                31
+            ],
+            "offset": 4,
+            "sharps": false,
+            "capo": 0
+        },
+        {
             "name": "Bass-Standard",
             "notes": [
                 53,
@@ -1784,66 +1844,6 @@
             ],
             "offset": 0,
             "sharps": true,
-            "capo": 0
-        },
-        {
-            "name": "Down 1/2 Step",
-            "notes": [
-                63,
-                58,
-                54,
-                49,
-                44,
-                39,
-                34
-            ],
-            "offset": 1,
-            "sharps": false,
-            "capo": 0
-        },
-        {
-            "name": "Down 1 Step",
-            "notes": [
-                62,
-                57,
-                53,
-                48,
-                43,
-                38,
-                33
-            ],
-            "offset": 2,
-            "sharps": true,
-            "capo": 0
-        },
-        {
-            "name": "Down 1 1/2 Step",
-            "notes": [
-                61,
-                56,
-                52,
-                47,
-                42,
-                37,
-                32
-            ],
-            "offset": 3,
-            "sharps": false,
-            "capo": 0
-        },
-        {
-            "name": "Down 2 Steps",
-            "notes": [
-                60,
-                55,
-                51,
-                46,
-                41,
-                36,
-                31
-            ],
-            "offset": 4,
-            "sharps": false,
             "capo": 0
         },
         {
