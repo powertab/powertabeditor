@@ -310,6 +310,7 @@ struct Note
     {
         Natural,
         Artificial,
+        Pinch,
         Tap,
         Semi,
         Feedback

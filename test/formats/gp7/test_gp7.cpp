@@ -909,6 +909,10 @@ TEST_CASE("Formats/Gp7Import/Harmonics")
                        Octave::Octave15ma);
         checkHarmonics(voice, 3, 5, ChordName::F, ChordName::NoVariation,
                        Octave::Octave15ma);
+        // Verify that pinch / semi / feedback harmonics are just imported as
+        // artificial harmonics.
+        checkHarmonics(voice, 6, 8, ChordName::G, ChordName::NoVariation,
+                       Octave::Loco);
     }
 }
 

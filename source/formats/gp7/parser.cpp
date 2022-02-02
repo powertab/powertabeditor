@@ -690,6 +690,8 @@ parseNotes(const pugi::xml_node &notes_node)
                     note.myHarmonic = HarmonicType::Natural;
                 else if (harmonic_type == "Artificial")
                     note.myHarmonic = HarmonicType::Artificial;
+                else if (harmonic_type == "Pinch")
+                    note.myHarmonic = HarmonicType::Pinch;
                 else if (harmonic_type == "Tap")
                     note.myHarmonic = HarmonicType::Tap;
                 else if (harmonic_type == "Semi")
@@ -697,7 +699,10 @@ parseNotes(const pugi::xml_node &notes_node)
                 else if (harmonic_type == "Feedback")
                     note.myHarmonic = HarmonicType::Feedback;
                 else
-                    throw FileFormatException("Unexpected harmonic type");
+                {
+                    std::cerr << "Unexpected harmonic type: " << harmonic_type
+                              << std::endl;
+                }
             }
             else if (name == "Bended")
                 has_bend = true;

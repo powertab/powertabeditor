@@ -15,6 +15,7 @@ Thanks to the following contributors who worked on this release:
   - Reordered the default tuning dictionary so that "Down 1/2 Step", "Down 1 Step" etc tunings are next to the standard tuning (#363)
 
 ### Fixed
+- Fixed an error with importing `.gpx` or `.gp` files with artificial harmonics for which the harmonic type was set to `Pinch`
 
 ## [Alpha 17] - 2022-01-28
 

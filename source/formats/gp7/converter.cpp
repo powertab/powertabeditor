@@ -300,7 +300,10 @@ convertNote(Position &position, const Gp7::Beat &gp_beat,
                 static_cast<int>(gp_note.myHarmonicFret));
         }
 
-        if (gp_note.myHarmonic == HarmonicType::Artificial)
+        if (gp_note.myHarmonic == HarmonicType::Artificial ||
+            gp_note.myHarmonic == HarmonicType::Pinch ||
+            gp_note.myHarmonic == HarmonicType::Semi ||
+            gp_note.myHarmonic == HarmonicType::Feedback)
         {
             // Convert the fret offset into a key/variation plus an octave
             // offset.
