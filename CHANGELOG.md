@@ -16,6 +16,7 @@ Thanks to the following contributors who worked on this release:
 
 ### Fixed
 - Fixed an error with importing `.gpx` or `.gp` files with artificial harmonics for which the harmonic type was set to `Pinch`
+- Fixed a MIDI playback bug where let rings could ring forever in certain situations
 
 ## [Alpha 17] - 2022-01-28
 

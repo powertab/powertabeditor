@@ -1052,10 +1052,8 @@ MidiFile::addEventsForBar(std::vector<MidiEventList> &tracks,
             let_ring_active = false;
         }
         // Make sure that we end the let ring after the last position in the bar.
-        else if (let_ring_active &&
-                 (pos ==
-                  &ScoreUtils::findInRange(voice.getPositions(), bar_start,
-                                           bar_end) .back()))
+        if (let_ring_active &&
+            (pos == &ScoreUtils::findInRange(voice.getPositions(), bar_start, bar_end).back()))
         {
             for (const ActivePlayer &player : active_players)
             {
