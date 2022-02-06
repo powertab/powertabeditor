@@ -24,19 +24,27 @@
 #include <score/score.h>
 
 #include <QFileDialog>
-#include <QFileInfo>
 #include <QDebug>
 #include <QThread>
 
-std::optional<std::string> convertFile(const std::filesystem::path& src,
-                                       const std::filesystem::path& dst,
-                                       std::unique_ptr<FileFormatManager>& ffm)
+/// Returns the file extension without the leading '.'
+static std::string
+getExtension(const std::filesystem::path &path)
 {
-    QFileInfo fileInfo(QString::fromStdString(src.string()));
-    std::optional<FileFormat> format = ffm->findFormat(
-                fileInfo.suffix().toStdString());
+    std::string extension = path.extension().string();
+    extension.erase(std::remove(extension.begin(), extension.end(), '.'),
+                    extension.end());
+    return extension;
+}
 
-    if (!format) return "bad format";
+static std::optional<std::string>
+convertFile(const std::filesystem::path &src, const std::filesystem::path &dst,
+            const FileFormat &export_format,
+            std::unique_ptr<FileFormatManager> &ffm)
+{
+    std::optional<FileFormat> format = ffm->findFormat(getExtension(src));
+    // Should already have a valid import extension if this method is called.
+    assert(format);
 
     Score score;
     try
@@ -50,7 +58,7 @@ std::optional<std::string> convertFile(const std::filesystem::path& src,
 
     try
     {
-        ffm->exportFile(score, dst, FileFormat(getPowerTabFileFormat()));
+        ffm->exportFile(score, dst, export_format);
     }
     catch (const std::exception &e)
     {
@@ -75,6 +83,8 @@ BulkConverterWorker::~BulkConverterWorker()
 
 void BulkConverterWorker::walkAndConvert()
 {
+    FileFormat export_format = getPowerTabFileFormat();
+
     std::vector<std::filesystem::path> children;
 
     children.emplace_back(mySrc);
@@ -95,9 +105,7 @@ void BulkConverterWorker::walkAndConvert()
             }
 
             const bool isRegularFile = std::filesystem::is_regular_file(entry);
-            std::string extension = entry.path().extension().string();
-            extension.erase(std::remove(extension.begin(), extension.end(), '.'),
-                            extension.end());
+            std::string extension = getExtension(entry.path());
             const bool isSupportedFormat = myFileFormatManager->extensionImportSupported(extension);
 
             if (!(isRegularFile && isSupportedFormat)) {
@@ -109,15 +117,16 @@ void BulkConverterWorker::walkAndConvert()
             myFileCount++;
 
             auto toPath = myDst / entry.path().lexically_relative(mySrc);
-            toPath.replace_extension("pt2");
+            toPath.replace_extension(export_format.primaryExtension());
 
             if (myDryRun) continue;
 
             auto destBaseDir = toPath.parent_path();
             if (!std::filesystem::exists(destBaseDir))
-                std::filesystem::create_directory(destBaseDir);
+                std::filesystem::create_directories(destBaseDir);
 
-            std::optional<std::string> error = convertFile(entry, toPath, myFileFormatManager);
+            std::optional<std::string> error =
+                convertFile(entry, toPath, export_format, myFileFormatManager);
             if (error != std::nullopt) {
                 QString err = QString::fromStdString(error.value());
                 emit message("error processing file: " + err);

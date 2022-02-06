@@ -39,6 +39,8 @@ public:
 
     std::string allExtensions() const;
 
+    const std::string &primaryExtension() const { return myFileExtensions.front(); }
+
     bool contains(const std::string &extension) const;
 
 private:
