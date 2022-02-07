@@ -42,6 +42,7 @@ public:
     explicit BulkConverterWorker(std::filesystem::path& source,
                                  std::filesystem::path& destination,
                                  bool dryRun,
+                                 const FileFormat &export_format,
                                  std::unique_ptr<FileFormatManager>& fileFormatManager);
     ~BulkConverterWorker();
 
@@ -61,6 +62,7 @@ private:
     std::filesystem::path myDst;
     bool myDryRun;
     std::size_t myFileCount;
+    FileFormat myExportFormat;
     std::unique_ptr<FileFormatManager>& myFileFormatManager;
 };
 

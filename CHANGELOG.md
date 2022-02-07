@@ -7,6 +7,7 @@ Thanks to the following contributors who worked on this release:
 - @cameronwhite
 
 ### Added
+- The Bulk Converter dialog can now export to MIDI files (and any export formats added in the future) instead of only `.pt2` files (#69)
 
 ### Changed
 - Tuning dictionary changes (#367)

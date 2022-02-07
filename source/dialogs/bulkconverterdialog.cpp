@@ -68,12 +68,17 @@ convertFile(const std::filesystem::path &src, const std::filesystem::path &dst,
     return std::nullopt;
 }
 
-BulkConverterWorker::BulkConverterWorker(std::filesystem::path& source,
-                                         std::filesystem::path& destination,
-                                         bool dryRun,
-                                         std::unique_ptr<FileFormatManager>& fileFormatManager)
-  : QObject(), mySrc(source), myDst(destination), myDryRun(dryRun),
-    myFileCount(0), myFileFormatManager(fileFormatManager)
+BulkConverterWorker::BulkConverterWorker(
+    std::filesystem::path &source, std::filesystem::path &destination,
+    bool dryRun, const FileFormat &export_format,
+    std::unique_ptr<FileFormatManager> &fileFormatManager)
+    : QObject(),
+      mySrc(source),
+      myDst(destination),
+      myDryRun(dryRun),
+      myFileCount(0),
+      myExportFormat(export_format),
+      myFileFormatManager(fileFormatManager)
 {
 }
 
@@ -83,8 +88,6 @@ BulkConverterWorker::~BulkConverterWorker()
 
 void BulkConverterWorker::walkAndConvert()
 {
-    FileFormat export_format = getPowerTabFileFormat();
-
     std::vector<std::filesystem::path> children;
 
     children.emplace_back(mySrc);
@@ -117,7 +120,7 @@ void BulkConverterWorker::walkAndConvert()
             myFileCount++;
 
             auto toPath = myDst / entry.path().lexically_relative(mySrc);
-            toPath.replace_extension(export_format.primaryExtension());
+            toPath.replace_extension(myExportFormat.primaryExtension());
 
             if (myDryRun) continue;
 
@@ -126,7 +129,7 @@ void BulkConverterWorker::walkAndConvert()
                 std::filesystem::create_directories(destBaseDir);
 
             std::optional<std::string> error =
-                convertFile(entry, toPath, export_format, myFileFormatManager);
+                convertFile(entry, toPath, myExportFormat, myFileFormatManager);
             if (error != std::nullopt) {
                 QString err = QString::fromStdString(error.value());
                 emit message("error processing file: " + err);
@@ -159,9 +162,15 @@ BulkConverterDialog::BulkConverterDialog(QWidget *parent,
         setPath(ui->destinationPathEdit);
     });
 
+    for (const FileFormat &format : myFileFormatManager->exportFormats())
+    {
+        ui->convertToComboBox->addItem(
+            QString::fromStdString(format.fileFilter()));
+    }
+
+    convertButton()->setEnabled(false);
     convertButton()->setText(tr("Convert"));
     connect(convertButton(), &QAbstractButton::clicked, [=](){ convert(); });
-
     connect(ui->buttonBox, &QDialogButtonBox::rejected, this, &QDialog::reject);
 }
 
@@ -191,12 +200,16 @@ void BulkConverterDialog::convert()
 {
     convertButton()->setEnabled(false);
 
+    const int format_idx = ui->convertToComboBox->currentIndex();
+    FileFormat export_format = myFileFormatManager->exportFormats()[format_idx];
+
     std::filesystem::path src = Paths::fromQString(ui->sourcePathEdit->text());
     std::filesystem::path dst = Paths::fromQString(ui->destinationPathEdit->text());
 
     {
         // set default max.
-        BulkConverterWorker bcw(src, dst, true, myFileFormatManager);
+        BulkConverterWorker bcw(src, dst, true, export_format,
+                                myFileFormatManager);
         bcw.walkAndConvert();
         const std::size_t fileCountToConvert = bcw.fileCount();
         ui->progressBar->setMaximum((int) fileCountToConvert);
@@ -207,7 +220,8 @@ void BulkConverterDialog::convert()
     // update the progress bar with each step informing the user of the
     // current state of bulk conversion.
     myBulkWorkerThread = new QThread;
-    myBulkConverterWorker = new BulkConverterWorker(src, dst, false, myFileFormatManager);
+    myBulkConverterWorker = new BulkConverterWorker(
+        src, dst, false, export_format, myFileFormatManager);
     myBulkConverterWorker->moveToThread(myBulkWorkerThread);
 
     connect(myBulkWorkerThread, &QThread::started,

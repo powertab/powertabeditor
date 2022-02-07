@@ -122,8 +122,21 @@ void FileFormatManager::exportFile(const Score &score,
     throw std::runtime_error("Unknown file format");
 }
 
-bool FileFormatManager::extensionImportSupported(const std::string& extension) const {
-    for (auto const& importer : myImporters)
-        if (importer->fileFormat().contains(extension)) return true;
+bool
+FileFormatManager::extensionImportSupported(const std::string &extension) const
+{
+    for (auto const &importer : myImporters)
+        if (importer->fileFormat().contains(extension))
+            return true;
     return false;
+}
+
+std::vector<FileFormat>
+FileFormatManager::exportFormats() const
+{
+    std::vector<FileFormat> formats;
+    for (auto &&exporter : myExporters)
+        formats.push_back(exporter->fileFormat());
+
+    return formats;
 }

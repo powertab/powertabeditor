@@ -57,6 +57,10 @@ public:
 
     // Checks to see if there is an importer for the designated extension
     bool extensionImportSupported(const std::string& extension) const;
+
+    /// Returns a list of the supported export file formats.
+    std::vector<FileFormat> exportFormats() const;
+
 private:
     template <typename Importer>
     void registerImporter();
