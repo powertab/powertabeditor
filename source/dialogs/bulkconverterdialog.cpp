@@ -159,9 +159,10 @@ BulkConverterDialog::BulkConverterDialog(QWidget *parent,
         setPath(ui->destinationPathEdit);
     });
 
-    connect(ui->convertButton, &QAbstractButton::clicked, [=](){ convert(); });
+    convertButton()->setText(tr("Convert"));
+    connect(convertButton(), &QAbstractButton::clicked, [=](){ convert(); });
 
-    connect(ui->exitButton, &QAbstractButton::clicked, this, &QDialog::reject);
+    connect(ui->buttonBox, &QDialogButtonBox::rejected, this, &QDialog::reject);
 }
 
 BulkConverterDialog::~BulkConverterDialog()
@@ -183,12 +184,12 @@ void BulkConverterDialog::setPath(QLineEdit *edit)
     QString src = ui->sourcePathEdit->text();
     QString dst = ui->destinationPathEdit->text();
     const bool bothEditsHaveValues = !src.isEmpty() && !dst.isEmpty();
-    ui->convertButton->setEnabled(bothEditsHaveValues);
+    convertButton()->setEnabled(bothEditsHaveValues);
 }
 
 void BulkConverterDialog::convert()
 {
-    ui->convertButton->setEnabled(false);
+    convertButton()->setEnabled(false);
 
     std::filesystem::path src = Paths::fromQString(ui->sourcePathEdit->text());
     std::filesystem::path dst = Paths::fromQString(ui->destinationPathEdit->text());
@@ -237,10 +238,16 @@ void BulkConverterDialog::progress(int pos)
 
 void BulkConverterDialog::enableConvertButton(void)
 {
-    ui->convertButton->setEnabled(true);
+    convertButton()->setEnabled(true);
 }
 
 void BulkConverterDialog::consumeMessage(QString message)
 {
     ui->logger->appendPlainText(message);
+}
+
+QPushButton *
+BulkConverterDialog::convertButton()
+{
+    return ui->buttonBox->button(QDialogButtonBox::Apply);
 }

@@ -82,6 +82,8 @@ private slots:
     void enableConvertButton(void);
 
 private:
+    QPushButton *convertButton();
+
     Ui::BulkConverterDialog *ui;
     QThread* myBulkWorkerThread;
     BulkConverterWorker* myBulkConverterWorker;
