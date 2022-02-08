@@ -1,5 +1,5 @@
 /*
- * Copyright (C) 2020 Cameron White
+ * Copyright (C) 2022 Cameron White
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -15,8 +15,8 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-#ifndef FORMATS_GP7_CONVERTER_H
-#define FORMATS_GP7_CONVERTER_H
+#ifndef FORMATS_GP7_FROM_PT2_H
+#define FORMATS_GP7_FROM_PT2_H
 
 class Score;
 
@@ -24,8 +24,8 @@ namespace Gp7
 {
 struct Document;
 
-/// Converts the Guitar Pro document into the provided score.
-void convert(const Gp7::Document &doc, Score &score);
+/// Converts the provided score into a Guitar Pro document.
+Gp7::Document convert(const Score &score);
 
 } // namespace Gp7
 

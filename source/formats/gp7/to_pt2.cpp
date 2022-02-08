@@ -15,7 +15,7 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-#include "converter.h"
+#include "to_pt2.h"
 #include "document.h"
 
 #include <boost/date_time/gregorian/gregorian_types.hpp>

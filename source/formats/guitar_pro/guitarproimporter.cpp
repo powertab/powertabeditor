@@ -18,8 +18,8 @@
 #include "guitarproimporter.h"
 #include "gp345to7converter.h"
 
-#include <formats/gp7/converter.h>
 #include <formats/gp7/document.h>
+#include <formats/gp7/to_pt2.h>
 #include <formats/guitar_pro/document.h>
 #include <formats/guitar_pro/inputstream.h>
 #include <fstream>

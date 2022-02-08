@@ -4,10 +4,11 @@ set( srcs
     fileformat.cpp
     fileformatmanager.cpp
 
-    gp7/converter.cpp
+    gp7/from_pt2.cpp
+    gp7/from_xml.cpp
     gp7/gp7exporter.cpp
     gp7/gp7importer.cpp
-    gp7/from_xml.cpp
+    gp7/to_pt2.cpp
     gp7/to_xml.cpp
 
     gpx/bitstream.cpp
@@ -63,10 +64,11 @@ set( headers
     fileformat.h
     fileformatmanager.h
 
-    gp7/converter.h
     gp7/document.h
+    gp7/from_pt2.h
     gp7/gp7exporter.h
     gp7/gp7importer.h
+    gp7/to_pt2.h
 
     gpx/bitstream.h
     gpx/filesystem.h

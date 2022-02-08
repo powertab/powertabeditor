@@ -17,6 +17,7 @@
 
 #include "gp7exporter.h"
 
+#include "from_pt2.h"
 #include "gp7importer.h"
 #include "document.h"
 
@@ -121,8 +122,7 @@ writeScore(zipFile file, const Score &score)
 {
     ZipFileEntry entry(file, "Content/score.gpif");
 
-    // TODO - convert score to GP7
-    Gp7::Document doc;
+    Gp7::Document doc = Gp7::convert(score);
     pugi::xml_document xml_doc = Gp7::to_xml(doc);
 
     zip_entry_writer writer(file);

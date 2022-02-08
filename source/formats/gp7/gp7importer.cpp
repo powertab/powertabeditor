@@ -17,8 +17,8 @@
 
 #include "gp7importer.h"
 
-#include "converter.h"
 #include "document.h"
+#include "to_pt2.h"
 
 #include <minizip/unzip.h>
 #ifdef _WIN32

@@ -20,7 +20,7 @@
 #include "filesystem.h"
 
 #include <formats/gp7/document.h>
-#include <formats/gp7/converter.h>
+#include <formats/gp7/to_pt2.h>
 #include <score/score.h>
 
 #include <fstream>
