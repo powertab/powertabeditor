@@ -1,5 +1,5 @@
 /*
- * Copyright (C) 2020 Cameron White
+ * Copyright (C) 2022 Cameron White
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -15,20 +15,17 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
 */
 
-#ifndef FORMATS_GP7IMPORTER_H
-#define FORMATS_GP7IMPORTER_H
+#include "gp7exporter.h"
 
-#include <formats/fileformat.h>
+#include "gp7importer.h"
 
-class Gp7Importer : public FileFormatImporter
+Gp7Exporter::Gp7Exporter()
+    : FileFormatExporter(Gp7Importer::getFileFormat())
 {
-public:
-    Gp7Importer();
+}
 
-    void load(const std::filesystem::path &filename, Score &score) override;
-
-    static FileFormat getFileFormat();
-};
-
-#endif
-
+void
+Gp7Exporter::save(const std::filesystem::path &filename, const Score &score)
+{
+    // TODO
+}

@@ -31,8 +31,14 @@
 #include <score/score.h>
 #include <util/scopeexit.h>
 
+FileFormat
+Gp7Importer::getFileFormat()
+{
+    return FileFormat("Guitar Pro 7", { "gp" });
+}
+
 Gp7Importer::Gp7Importer()
-    : FileFormatImporter(FileFormat("Guitar Pro 7", { "gp" }))
+    : FileFormatImporter(getFileFormat())
 {
 }
 

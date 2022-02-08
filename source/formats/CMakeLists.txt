@@ -5,6 +5,7 @@ set( srcs
     fileformatmanager.cpp
 
     gp7/converter.cpp
+    gp7/gp7exporter.cpp
     gp7/gp7importer.cpp
     gp7/parser.cpp
 
@@ -62,6 +63,7 @@ set( headers
     fileformatmanager.h
 
     gp7/converter.h
+    gp7/gp7exporter.h
     gp7/gp7importer.h
     gp7/parser.h
 
