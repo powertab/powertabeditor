@@ -98,8 +98,8 @@ writeVersionInfo(zipFile file)
 {
     ZipFileEntry entry(file, "VERSION");
 
-    const char *contents = "7.0";
-    zipWriteInFileInZip(file, contents, strlen(contents));
+    const std::string contents = "7.0";
+    zipWriteInFileInZip(file, contents.data(), contents.size());
 }
 
 /// pugi::xml_writer implementation for writing chunks to a zip entry.
