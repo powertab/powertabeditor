@@ -1,5 +1,5 @@
 /*
- * Copyright (C) 2020 Cameron White
+ * Copyright (C) 2022 Cameron White
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -15,17 +15,17 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-#ifndef FORMATS_GP_GP345TO7CONVERTER_H
-#define FORMATS_GP_GP345TO7CONVERTER_H
-
 #include "document.h"
-#include <formats/gp7/document.h>
 
-namespace Gp
+namespace Gp7
 {
-/// Converts the Guitar Pro 3/4/5 document into a GP 7 document.
-Gp7::Document convertToGp7(const Gp::Document &doc);
+pugi::xml_document
+to_xml(const Document &doc)
+{
+    pugi::xml_document root;
+
+    // TODO
+
+    return root;
 }
-
-#endif
-
+} // namespace Gp7

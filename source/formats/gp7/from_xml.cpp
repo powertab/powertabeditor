@@ -15,7 +15,7 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-#include "parser.h"
+#include "document.h"
 
 #include <formats/fileformat.h>
 #include <score/generalmidi.h>
@@ -871,7 +871,7 @@ Gp7::Document::addRhythm(Beat &beat, Rhythm rhythm)
 }
 
 Gp7::Document
-Gp7::parse(const pugi::xml_document &root, Version version)
+Gp7::from_xml(const pugi::xml_document &root, Version version)
 {
     Gp7::Document doc;
 

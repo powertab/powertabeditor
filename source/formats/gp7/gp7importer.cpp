@@ -18,7 +18,7 @@
 #include "gp7importer.h"
 
 #include "converter.h"
-#include "parser.h"
+#include "document.h"
 
 #include <minizip/unzip.h>
 #ifdef _WIN32
@@ -145,6 +145,6 @@ void Gp7Importer::load(const std::filesystem::path &filename, Score &score)
     if (!result)
         throw FileFormatException(result.description());
 
-    Gp7::Document doc = Gp7::parse(xml_doc, Gp7::Version::V7);
+    Gp7::Document doc = Gp7::from_xml(xml_doc, Gp7::Version::V7);
     Gp7::convert(doc, score);
 }

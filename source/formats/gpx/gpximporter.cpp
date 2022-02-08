@@ -19,7 +19,7 @@
 
 #include "filesystem.h"
 
-#include <formats/gp7/parser.h>
+#include <formats/gp7/document.h>
 #include <formats/gp7/converter.h>
 #include <score/score.h>
 
@@ -53,6 +53,6 @@ GpxImporter::load(const std::filesystem::path &filename, Score &score)
     xml_doc.print(std::cerr);
 #endif
 
-    Gp7::Document doc = Gp7::parse(xml_doc, Gp7::Version::V6);
+    Gp7::Document doc = Gp7::from_xml(xml_doc, Gp7::Version::V6);
     Gp7::convert(doc, score);
 }

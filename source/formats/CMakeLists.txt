@@ -7,7 +7,8 @@ set( srcs
     gp7/converter.cpp
     gp7/gp7exporter.cpp
     gp7/gp7importer.cpp
-    gp7/parser.cpp
+    gp7/from_xml.cpp
+    gp7/to_xml.cpp
 
     gpx/bitstream.cpp
     gpx/filesystem.cpp
@@ -63,9 +64,9 @@ set( headers
     fileformatmanager.h
 
     gp7/converter.h
+    gp7/document.h
     gp7/gp7exporter.h
     gp7/gp7importer.h
-    gp7/parser.h
 
     gpx/bitstream.h
     gpx/filesystem.h

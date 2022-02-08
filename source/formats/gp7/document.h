@@ -15,10 +15,9 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-#ifndef FORMATS_GP7_PARSER_H
-#define FORMATS_GP7_PARSER_H
+#ifndef FORMATS_GP7_DOCUMENT_H
+#define FORMATS_GP7_DOCUMENT_H
 
-#include "score/timesignature.h"
 #include <bitset>
 #include <boost/rational.hpp>
 #include <optional>
@@ -391,7 +390,10 @@ struct Document
 };
 
 /// Parses the score.gpif XML file.
-Document parse(const pugi::xml_document &root, Version version);
+Document from_xml(const pugi::xml_document &root, Version version);
+
+/// Creates the score.gpif XML file from the intermediate representation.
+pugi::xml_document to_xml(const Document &doc);
 
 } // namespace Gp7
 

@@ -16,7 +16,7 @@
  */
 
 #include "converter.h"
-#include "parser.h"
+#include "document.h"
 
 #include <boost/date_time/gregorian/gregorian_types.hpp>
 #include <boost/rational.hpp>
