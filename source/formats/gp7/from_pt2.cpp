@@ -66,11 +66,54 @@ convertScoreInfo(const ScoreInfo &info)
     return gp_info;
 }
 
+static std::vector<Gp7::Track>
+convertTracks(const Score &score)
+{
+    std::vector<Gp7::Track> tracks;
+
+    for (const Player &player : score.getPlayers())
+    {
+        Gp7::Track track;
+        track.myName = player.getDescription();
+
+        // TODO - export only instruments that this player uses in the score?
+        for (const Instrument &inst : score.getInstruments())
+        {
+            Gp7::Sound sound;
+            sound.myLabel = inst.getDescription();
+            sound.myMidiPreset = inst.getMidiPreset();
+
+            track.mySounds.push_back(sound);
+        }
+
+        const Tuning &tuning = player.getTuning();
+        const std::vector<uint8_t> &notes = tuning.getNotes();
+
+        Gp7::Staff staff;
+        staff.myCapo = tuning.getCapo();
+        staff.myTuning.assign(notes.rbegin(), notes.rend());
+        track.myStaves.push_back(staff);
+
+        // TODO - export chords
+
+        tracks.push_back(std::move(track));
+    }
+
+    return tracks;
+}
+
 Gp7::Document
 Gp7::convert(const Score &score)
 {
     Gp7::Document gp_doc;
     gp_doc.myScoreInfo = convertScoreInfo(score.getScoreInfo());
+
+    gp_doc.myTracks = convertTracks(score);
+
+    // TODO - convert master bars. For now, one is needed for tracks to appear
+    // in GP.
+    MasterBar master_bar;
+    gp_doc.myMasterBars.push_back(master_bar);
 
     return gp_doc;
 }
