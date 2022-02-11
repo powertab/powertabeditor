@@ -49,7 +49,7 @@ public:
     /// Returns the tuning of a specific string.
     uint8_t getNote(int string, bool includeMusicNotationOffset) const;
     /// Returns all of the tuning notes.
-    std::vector<uint8_t> getNotes() const;
+    const std::vector<uint8_t> &getNotes() const;
     /// Sets the tuning of a specific string.
     void setNote(int string, uint8_t note);
     /// Sets all of the notes of the tuning.
