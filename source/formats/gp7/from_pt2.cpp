@@ -20,6 +20,7 @@
 #include "document.h"
 
 #include <score/score.h>
+#include <score/scorelocation.h>
 #include <score/scoreinfo.h>
 
 /// Convert the Guitar Pro file metadata.
@@ -102,6 +103,74 @@ convertTracks(const Score &score)
     return tracks;
 }
 
+/// Create a GP master bar, from a pair of barlines in the score.
+static Gp7::MasterBar
+convertMasterBar(const Barline &start_line, const Barline &end_line)
+{
+    Gp7::MasterBar master_bar;
+
+    if (start_line.hasRehearsalSign())
+    {
+        const RehearsalSign &sign = start_line.getRehearsalSign();
+        master_bar.mySection = { sign.getLetters(), sign.getDescription() };
+    }
+
+    if (end_line.getBarType() == Barline::RepeatEnd)
+    {
+        master_bar.myRepeatEnd = true;
+        master_bar.myRepeatCount = end_line.getRepeatCount();
+    }
+
+    master_bar.myRepeatStart =
+        (start_line.getBarType() == Barline::RepeatStart);
+    master_bar.myDoubleBar = (end_line.getBarType() == Barline::DoubleBar);
+    master_bar.myFreeTime = (end_line.getBarType() == Barline::FreeTimeBar);
+
+    // Time signature.
+    const TimeSignature &time_sig = start_line.getTimeSignature();
+    master_bar.myTimeSig.myBeats = time_sig.getNumPulses();
+    master_bar.myTimeSig.myBeatValue = time_sig.getBeatValue();
+
+    // Key signature.
+    const KeySignature &key_sig = start_line.getKeySignature();
+    master_bar.myKeySig.myAccidentalCount = key_sig.getNumAccidentals();
+    master_bar.myKeySig.myMinor = key_sig.getKeyType() == KeySignature::Minor;
+    master_bar.myKeySig.mySharps = key_sig.usesSharps();
+
+    return master_bar;
+}
+
+static std::vector<Gp7::MasterBar>
+convertMasterBars(const Score &score)
+{
+    std::vector<Gp7::MasterBar> master_bars;
+
+    ConstScoreLocation location(score);
+    while (location.getSystemIndex() <
+           static_cast<int>(score.getSystems().size()))
+    {
+        const System &system = location.getSystem();
+
+        auto [current_bar, next_bar] = SystemUtils::getSurroundingBarlines(
+            system, location.getPositionIndex());
+
+        // TODO - skip "empty" bars due to adjacent repeat end / start
+
+        master_bars.emplace_back(convertMasterBar(current_bar, next_bar));
+
+        // Move to next bar / system.
+        if (&next_bar == &system.getBarlines().back())
+        {
+            location.setSystemIndex(location.getSystemIndex() + 1);
+            location.setPositionIndex(0);
+        }
+        else
+            location.setPositionIndex(next_bar.getPosition());
+    }
+
+    return master_bars;
+}
+
 Gp7::Document
 Gp7::convert(const Score &score)
 {
@@ -109,11 +178,7 @@ Gp7::convert(const Score &score)
     gp_doc.myScoreInfo = convertScoreInfo(score.getScoreInfo());
 
     gp_doc.myTracks = convertTracks(score);
-
-    // TODO - convert master bars. For now, one is needed for tracks to appear
-    // in GP.
-    MasterBar master_bar;
-    gp_doc.myMasterBars.push_back(master_bar);
+    gp_doc.myMasterBars = convertMasterBars(score);
 
     return gp_doc;
 }

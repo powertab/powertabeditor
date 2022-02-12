@@ -149,9 +149,52 @@ saveMasterBars(pugi::xml_node &gpif, const std::vector<MasterBar> &master_bars)
     {
         auto bar_node = bars_node.append_child("MasterBar");
 
-        // TODO - implement
-        (void)bar_node;
-        (void)master_bar;
+        addValueNode(bar_node, "Bars", listToString(master_bar.myBarIds));
+
+        if (master_bar.mySection)
+        {
+            auto section = bar_node.append_child("Section");
+            addValueNode(section, "Letter", master_bar.mySection->myLetter);
+            addValueNode(section, "Text", master_bar.mySection->myText);
+        }
+
+        // Time signature - e.g. "3/4"
+        {
+            std::string time_sig =
+                std::to_string(master_bar.myTimeSig.myBeats) + "/" +
+                std::to_string(master_bar.myTimeSig.myBeatValue);
+            addValueNode(bar_node, "Time", time_sig);
+        }
+
+        // Key signature
+        {
+            auto key_sig = bar_node.append_child("Key");
+            addValueNode(key_sig, "AccidentalCount",
+                         master_bar.myKeySig.myAccidentalCount *
+                             (master_bar.myKeySig.mySharps ? 1 : -1));
+            addValueNode(key_sig, "Mode",
+                         master_bar.myKeySig.myMinor ? "Minor"s : "Major"s);
+        }
+
+        // Bar types
+        if (master_bar.myDoubleBar)
+            bar_node.append_child("DoubleBar");
+        if (master_bar.myFreeTime)
+            bar_node.append_child("FreeTime");
+
+        if (master_bar.myRepeatStart || master_bar.myRepeatEnd)
+        {
+            auto node = bar_node.append_child("Repeat");
+            node.append_attribute("start").set_value(master_bar.myRepeatStart);
+            node.append_attribute("end").set_value(master_bar.myRepeatEnd);
+            node.append_attribute("count").set_value(master_bar.myRepeatCount);
+        }
+
+        // TODO
+        // - alternate endings
+        // - directions
+        // - tempo changes (these are actually part of the master track)
+        // - fermatas
     }
 }
 
