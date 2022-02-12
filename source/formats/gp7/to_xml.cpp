@@ -19,6 +19,8 @@
 
 #include <numeric>
 
+using namespace std::string_literals;
+
 /// Utility function to add a node with a CDATA child, i.e. <![CDATA[text]]>.
 static void
 addCDataNode(pugi::xml_node &node, const char *name, const std::string &value)
@@ -94,6 +96,13 @@ saveTracks(pugi::xml_node &gpif, const std::vector<Track> &tracks)
 
         addCDataNode(track_node, "Name", track.myName);
 
+        // Set the instrument type. I'm not sure if this needs to be configured
+        // differently for basses, etc, but this needs to be set to avoid being
+        // interpreted as a drum track.
+        auto inst_set = track_node.append_child("InstrumentSet");
+        addValueNode(inst_set, "Type", "electricGuitar"s);
+        addValueNode(inst_set, "LineCount", 5); // standard notation staff
+
         auto sounds_node = track_node.append_child("Sounds");
         for (const Sound &sound : track.mySounds)
         {
@@ -101,9 +110,14 @@ saveTracks(pugi::xml_node &gpif, const std::vector<Track> &tracks)
             addCDataNode(sound_node, "Name", sound.myLabel);
             addCDataNode(sound_node, "Label", sound.myLabel);
 
-            auto midi_node = sounds_node.append_child("MIDI");
+            auto midi_node = sound_node.append_child("MIDI");
+            addValueNode(midi_node, "LSB", 0);
+            addValueNode(midi_node, "MSB", 0);
             addValueNode(midi_node, "Program", sound.myMidiPreset);
         }
+
+        // Use MIDI playback.
+        addValueNode(track_node, "AudioEngineState", "MIDI"s);
 
         auto staves_node = track_node.append_child("Staves");
         for (const Staff &staff : track.myStaves)
@@ -147,7 +161,7 @@ to_xml(const Document &doc)
     pugi::xml_document root;
 
     auto gpif = root.append_child("GPIF");
-    addValueNode(gpif, "GPVersion", "7.6.0");
+    addValueNode(gpif, "GPVersion", "7.6.0"s);
 
     auto score = gpif.append_child("Score");
     saveScoreInfo(score, doc.myScoreInfo);
