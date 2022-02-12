@@ -180,6 +180,10 @@ void shiftBackward(System &system, int position);
 /// Shifts everything by the given offset.
 void shift(System &system, int position, int offset);
 
+/// Returns the start and end barline around the given position, assuming that
+/// the position index is valid.
+std::pair<const Barline &, const Barline &> getSurroundingBarlines(
+    const System &system, int position);
 }
 
 #endif

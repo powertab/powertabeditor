@@ -127,24 +127,6 @@ static SystemLocation moveToNextBar(MidiEventList &event_list, int ticks,
     return location;
 }
 
-/// Returns the start and end barline around the given position.
-std::pair<const Barline &, const Barline &>
-getSurroundingBarlines(const System &system, int position)
-{
-    // If we're exactly on top of a barline, use that instead of grabbing the
-    // preceding barline.
-    const Barline *current_bar = ScoreUtils::findByPosition(
-        system.getBarlines(), position);
-    if (!current_bar)
-        current_bar = system.getPreviousBarline(position);
-
-    const Barline *next_bar = system.getNextBarline(position);
-    assert(next_bar);
-
-    return { *current_bar, *next_bar };
-}
-
-
 MidiFile::MidiFile() : myTicksPerBeat(0)
 {
 }
@@ -191,7 +173,7 @@ void MidiFile::load(const Score &score, const LoadOptions &options)
     {
         const System &system = score.getSystems()[location.getSystem()];
         auto [current_bar, next_bar] =
-            getSurroundingBarlines(system, location.getPosition());
+            SystemUtils::getSurroundingBarlines(system, location.getPosition());
 
         if (location.getSystem() != system_index)
         {
@@ -359,7 +341,7 @@ findNextTempoMarker(const Score &score, SystemLocation location,
     {
         const System &system = score.getSystems()[location.getSystem()];
         auto [current_bar, next_bar] =
-            getSurroundingBarlines(system, location.getPosition());
+            SystemUtils::getSurroundingBarlines(system, location.getPosition());
 
         // Loop until we find the next tempo marker.
         auto markers = ScoreUtils::findInRange(system.getTempoMarkers(),
