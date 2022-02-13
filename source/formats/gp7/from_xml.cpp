@@ -777,8 +777,6 @@ parseNotes(const pugi::xml_node &notes_node)
                 throw FileFormatException("Unexpected finger type.");
         }
 
-        // TODO - import bends.
-
         const int id = node.attribute("id").as_int();
         notes.emplace(id, note);
     }

@@ -275,6 +275,12 @@ addNoteProperty(pugi::xml_node &props_node, const char *name)
 }
 
 static void
+addBoolNoteProperty(pugi::xml_node &props_node, const char *name)
+{
+    addNoteProperty(props_node, name).append_child("Enable");
+}
+
+static void
 savePitch(pugi::xml_node &props_node, const char *name,
           const Gp7::Note::Pitch &pitch)
 {
@@ -313,21 +319,36 @@ saveNotes(pugi::xml_node &gpif, const std::unordered_map<int, Note> &notes_map)
         savePitch(props_node, "ConcertPitch", note.myConcertPitch);
         savePitch(props_node, "TransposedPitch", note.myTransposedPitch);
 
+        if (note.myPalmMuted)
+            addBoolNoteProperty(props_node, "PalmMuted");
+        if (note.myMuted)
+            addBoolNoteProperty(props_node, "Muted");
+        if (note.myTapped)
+            addBoolNoteProperty(props_node, "Tapped");
+        if (note.myLeftHandTapped)
+            addBoolNoteProperty(props_node, "LeftHandTapped");
+        if (note.myHammerOn)
+            addBoolNoteProperty(props_node, "HopoOrigin");
+
+        if (note.myLetRing)
+            note_node.append_child("LetRing");
+
+        if (note.myVibrato)
+            addValueNode(note_node, "Vibrato", "Slight"s);
+        else if (note.myWideVibrato)
+            addValueNode(note_node, "Vibrato", "Wide"s);
+
+        if (note.myGhost)
+            addValueNode(note_node, "AntiAccent", "Normal"s);
+
+        if (note.myTrillNote)
+            addValueNode(note_node, "Trill", *note.myTrillNote);
+
         // TODO
-        // - palm mute
-        // - muted
         // - ties
-        // - ghost
-        // - tapped
-        // - hammeron
-        // - left hand tap
-        // - vibrato
-        // - wide vibrato
-        // - let ring
         // - accents
         // - harmonics
         // - slides
-        // - trills
         // - left hand fingering
         // - bends
     }

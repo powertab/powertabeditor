@@ -166,6 +166,24 @@ convertBeat(Gp7::Document &doc, Gp7::Beat &beat, const Tuning &tuning,
         gp_note.myConcertPitch = convertPitch(tuning, key, note, false);
         gp_note.myTransposedPitch = convertPitch(tuning, key, note, true);
 
+        // Note / position properties
+        gp_note.myPalmMuted = pos.hasProperty(Position::PalmMuting);
+        gp_note.myTapped = pos.hasProperty(Position::Tap);
+        gp_note.myHammerOn = note.hasProperty(Note::HammerOnOrPullOff);
+        gp_note.myLeftHandTapped = note.hasProperty(Note::HammerOnFromNowhere);
+        gp_note.myMuted = note.hasProperty(Note::Muted);
+        gp_note.myGhost = note.hasProperty(Note::GhostNote);
+        gp_note.myVibrato = pos.hasProperty(Position::Vibrato);
+        gp_note.myWideVibrato = pos.hasProperty(Position::WideVibrato);
+        gp_note.myLetRing = pos.hasProperty(Position::LetRing);
+
+        // The GP trill is the midi note value, not the fret number!
+        if (note.hasTrill())
+        {
+            gp_note.myTrillNote =
+                tuning.getNote(note.getString(), false) + note.getTrilledFret();
+        }
+
         const int note_id = doc.myNotes.size();
         doc.myNotes.emplace(note_id, gp_note);
         beat.myNoteIds.push_back(note_id);
