@@ -2186,8 +2186,9 @@ void PowerTabEditor::createCommands()
 
     mySaveAsCommand = new Command(tr("Save As..."), "File.SaveAs",
                                   QKeySequence::SaveAs, this);
-    connect(mySaveAsCommand, &QAction::triggered, this,
-            &PowerTabEditor::saveFileAs);
+    connect(mySaveAsCommand, &QAction::triggered, this, [this]() {
+        saveFileAs(myDocumentManager->getCurrentDocumentIndex());
+    });
 
     myPrintCommand = new Command(tr("Print..."), "File.Print",
                                  QKeySequence::Print, this);
