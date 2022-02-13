@@ -153,6 +153,12 @@ convertBeat(Gp7::Document &doc, Gp7::Beat &beat, const Voice &voice,
             const Tuning &tuning, const KeySignature &key, const Position &pos)
 {
     beat.myGraceNote = pos.hasProperty(Position::Acciaccatura);
+    beat.myTremoloPicking = pos.hasProperty(Position::TremoloPicking);
+
+    beat.myBrushDown = pos.hasProperty(Position::PickStrokeDown);
+    beat.myBrushUp = pos.hasProperty(Position::PickStrokeUp);
+    beat.myArpeggioUp = pos.hasProperty(Position::ArpeggioUp);
+    beat.myArpeggioDown = pos.hasProperty(Position::ArpeggioDown);
 
     for (const Note &note: pos.getNotes())
     {
@@ -216,6 +222,16 @@ convertBeat(Gp7::Document &doc, Gp7::Beat &beat, const Voice &voice,
                                  note.hasProperty(Note::SlideIntoFromAbove));
         gp_note.mySlideTypes.set(int(GpSlideType::SlideInBelow),
                                  note.hasProperty(Note::SlideIntoFromBelow));
+
+        // Octaves are stored on the beat in GP
+        if (note.hasProperty(Note::Octave8va))
+            beat.myOttavia = Gp7::Beat::Ottavia::O8va;
+        else if (note.hasProperty(Note::Octave8vb))
+            beat.myOttavia = Gp7::Beat::Ottavia::O8vb;
+        else if (note.hasProperty(Note::Octave15ma))
+            beat.myOttavia = Gp7::Beat::Ottavia::O15ma;
+        else if (note.hasProperty(Note::Octave15mb))
+            beat.myOttavia = Gp7::Beat::Ottavia::O15mb;
 
         const int note_id = doc.myNotes.size();
         doc.myNotes.emplace(note_id, gp_note);

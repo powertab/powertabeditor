@@ -237,6 +237,14 @@ saveVoices(pugi::xml_node &gpif,
     }
 }
 
+static pugi::xml_node
+addPropertyNode(pugi::xml_node &props_node, const char *name)
+{
+    auto prop_node = props_node.append_child("Property");
+    prop_node.append_attribute("name").set_value(name);
+    return prop_node;
+}
+
 static void
 saveBeats(pugi::xml_node &gpif, const std::unordered_map<int, Beat> &beats_map)
 {
@@ -255,10 +263,48 @@ saveBeats(pugi::xml_node &gpif, const std::unordered_map<int, Beat> &beats_map)
         if (beat.myGraceNote)
             addValueNode(beat_node, "GraceNotes", "BeforeBeat"s);
 
+        // Tremolo picking is only a 32nd note in PT currently
+        if (beat.myTremoloPicking)
+            addValueNode(beat_node, "Tremolo", "1/8"s);
+
+        if (beat.myOttavia)
+        {
+            // TODO - unify the enum <-> string conversion with from_xml.cpp
+            std::string text;
+            switch (*beat.myOttavia)
+            {
+                case Gp7::Beat::Ottavia::O8va:
+                    text = "8va";
+                    break;
+                case Gp7::Beat::Ottavia::O8vb:
+                    text = "8vb";
+                    break;
+                case Gp7::Beat::Ottavia::O15ma:
+                    text = "15ma";
+                    break;
+                case Gp7::Beat::Ottavia::O15mb:
+                    text = "15mb";
+                    break;
+            }
+
+            addValueNode(beat_node, "Ottavia", text);
+        }
+
+        if (beat.myArpeggioUp || beat.myArpeggioDown)
+        {
+            addValueNode(beat_node, "Arpeggio",
+                         beat.myArpeggioUp ? "Up"s : "Down"s);
+        }
+
+        auto props_node = beat_node.append_child("Properties");
+        if (beat.myBrushUp || beat.myBrushDown)
+        {
+            auto brush = addPropertyNode(props_node, "Brush");
+            addValueNode(brush, "Direction", beat.myBrushUp ? "Up"s : "Down"s);
+        }
+
         // TODO
         // - chord ids
-        // - 8va etc
-        // - tremolo picking
         // - brush up/down
         // - arpeggio up/down
         // - free text
@@ -266,25 +312,17 @@ saveBeats(pugi::xml_node &gpif, const std::unordered_map<int, Beat> &beats_map)
     }
 }
 
-static pugi::xml_node
-addNoteProperty(pugi::xml_node &props_node, const char *name)
-{
-    auto prop_node = props_node.append_child("Property");
-    prop_node.append_attribute("name").set_value(name);
-    return prop_node;
-}
-
 static void
 addBoolNoteProperty(pugi::xml_node &props_node, const char *name)
 {
-    addNoteProperty(props_node, name).append_child("Enable");
+    addPropertyNode(props_node, name).append_child("Enable");
 }
 
 static void
 savePitch(pugi::xml_node &props_node, const char *name,
           const Gp7::Note::Pitch &pitch)
 {
-    auto prop_node = addNoteProperty(props_node, name);
+    auto prop_node = addPropertyNode(props_node, name);
     auto pitch_node = prop_node.append_child("Pitch");
     addValueNode(pitch_node, "Step", std::string{ pitch.myNote });
     addValueNode(pitch_node, "Accidental", pitch.myAccidental);
@@ -305,11 +343,11 @@ saveNotes(pugi::xml_node &gpif, const std::unordered_map<int, Note> &notes_map)
 
         // String and fret.
         {
-            auto prop_node = addNoteProperty(props_node, "String");
+            auto prop_node = addPropertyNode(props_node, "String");
             addValueNode(prop_node, "String", note.myString);
         }
         {
-            auto prop_node = addNoteProperty(props_node, "Fret");
+            auto prop_node = addPropertyNode(props_node, "Fret");
             addValueNode(prop_node, "Fret", note.myFret);
         }
 
@@ -332,7 +370,7 @@ saveNotes(pugi::xml_node &gpif, const std::unordered_map<int, Note> &notes_map)
 
         if (note.mySlideTypes.any())
         {
-            auto prop_node = addNoteProperty(props_node, "Slide");
+            auto prop_node = addPropertyNode(props_node, "Slide");
             addValueNode(prop_node, "Flags", note.mySlideTypes.to_ulong());
         }
 
