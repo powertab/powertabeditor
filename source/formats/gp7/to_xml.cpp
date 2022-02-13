@@ -134,6 +134,12 @@ saveTracks(pugi::xml_node &gpif, const std::vector<Track> &tracks)
             addValueNode(tuning, "Pitches", listToString(staff.myTuning));
         }
 
+        // In Power Tab the notes are implicitly transposed down in the
+        // standard notation staff.
+        auto transpose = track_node.append_child("Transpose");
+        addValueNode(transpose, "Chromatic", 0);
+        addValueNode(transpose, "Octave", -1);
+
         // TODO - export chords
 
         ++track_idx;
@@ -241,13 +247,89 @@ saveBeats(pugi::xml_node &gpif, const std::unordered_map<int, Beat> &beats_map)
         auto beat_node = beats_node.append_child("Beat");
         beat_node.append_attribute("id").set_value(id);
 
+        addValueNode(beat_node, "Notes", listToString(beat.myNoteIds));
+
         auto rhythm = beat_node.append_child("Rhythm");
         rhythm.append_attribute("ref").set_value(beat.myRhythmId);
 
         if (beat.myGraceNote)
             addValueNode(beat_node, "GraceNotes", "BeforeBeat"s);
 
-        // TODO - import other beat properties, notes, etc
+        // TODO
+        // - chord ids
+        // - 8va etc
+        // - tremolo picking
+        // - brush up/down
+        // - arpeggio up/down
+        // - free text
+        // - whammy
+    }
+}
+
+static pugi::xml_node
+addNoteProperty(pugi::xml_node &props_node, const char *name)
+{
+    auto prop_node = props_node.append_child("Property");
+    prop_node.append_attribute("name").set_value(name);
+    return prop_node;
+}
+
+static void
+savePitch(pugi::xml_node &props_node, const char *name,
+          const Gp7::Note::Pitch &pitch)
+{
+    auto prop_node = addNoteProperty(props_node, name);
+    auto pitch_node = prop_node.append_child("Pitch");
+    addValueNode(pitch_node, "Step", std::string{ pitch.myNote });
+    addValueNode(pitch_node, "Accidental", pitch.myAccidental);
+    addValueNode(pitch_node, "Octave", pitch.myOctave);
+}
+
+static void
+saveNotes(pugi::xml_node &gpif, const std::unordered_map<int, Note> &notes_map)
+{
+    auto notes_node = gpif.append_child("Notes");
+
+    for (auto &&[id, note] : notes_map)
+    {
+        auto note_node = notes_node.append_child("Note");
+        note_node.append_attribute("id").set_value(id);
+
+        auto props_node = note_node.append_child("Properties");
+
+        // String and fret.
+        {
+            auto prop_node = addNoteProperty(props_node, "String");
+            addValueNode(prop_node, "String", note.myString);
+        }
+        {
+            auto prop_node = addNoteProperty(props_node, "Fret");
+            addValueNode(prop_node, "Fret", note.myFret);
+        }
+
+        // Record the pitch. GP ignores the note entirely if this isn't
+        // present, and uses it for notation rather than computing it from the
+        // tuning and string/fret.
+        savePitch(props_node, "ConcertPitch", note.myConcertPitch);
+        savePitch(props_node, "TransposedPitch", note.myTransposedPitch);
+
+        // TODO
+        // - palm mute
+        // - muted
+        // - ties
+        // - ghost
+        // - tapped
+        // - hammeron
+        // - left hand tap
+        // - vibrato
+        // - wide vibrato
+        // - let ring
+        // - accents
+        // - harmonics
+        // - slides
+        // - trills
+        // - left hand fingering
+        // - bends
     }
 }
 
@@ -301,6 +383,7 @@ to_xml(const Document &doc)
     saveBars(gpif, doc.myBars);
     saveVoices(gpif, doc.myVoices);
     saveBeats(gpif, doc.myBeats);
+    saveNotes(gpif, doc.myNotes);
     saveRhythms(gpif, doc.myRhythms);
 
     return root;

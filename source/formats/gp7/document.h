@@ -346,8 +346,18 @@ struct Note
         P
     };
 
+    struct Pitch
+    {
+        char myNote = 'A';
+        std::string myAccidental;
+        int myOctave = 0;
+    };
+
     int myString = 0;
     int myFret = 0;
+    Pitch myConcertPitch; // Used only for export
+    Pitch myTransposedPitch;
+
     bool myPalmMuted = false;
     bool myMuted = false;
     bool myTieOrigin = false;

@@ -19,6 +19,7 @@
 
 #include "document.h"
 
+#include <score/generalmidi.h>
 #include <score/score.h>
 #include <score/scorelocation.h>
 #include <score/scoreinfo.h>
@@ -127,8 +128,53 @@ convertRhythm(const Voice &voice, const Position &pos)
     return rhythm;
 }
 
+static Gp7::Note::Pitch
+convertPitch(const Tuning &tuning, const KeySignature &key, const Note &note,
+             bool transpose)
+{
+    Gp7::Note::Pitch pitch;
+
+    const uint8_t midi_note =
+        tuning.getNote(note.getString(), transpose) + note.getFretNumber();
+
+    std::string text = Midi::getMidiNoteText(
+        midi_note, key.getKeyType() == KeySignature::Minor, key.usesSharps(),
+        key.getNumAccidentals(), false);
+
+    pitch.myNote = text[0];
+    pitch.myAccidental = text.substr(1);
+    pitch.myOctave = Midi::getMidiNoteOctave(midi_note, pitch.myNote) + 1;
+
+    return pitch;
+}
+
 static void
-convertBar(Gp7::Document &doc, Gp7::Bar &bar, const Staff &staff, int start_idx,
+convertBeat(Gp7::Document &doc, Gp7::Beat &beat, const Tuning &tuning,
+            const KeySignature &key, const Position &pos)
+{
+    beat.myGraceNote = pos.hasProperty(Position::Acciaccatura);
+
+    for (const Note &note: pos.getNotes())
+    {
+        Gp7::Note gp_note;
+
+        // String numbers are flipped around
+        gp_note.myString = tuning.getStringCount() - note.getString() - 1;
+        gp_note.myFret = note.getFretNumber();
+
+        // GP needs the actual pitch or else the note is ignored..
+        gp_note.myConcertPitch = convertPitch(tuning, key, note, false);
+        gp_note.myTransposedPitch = convertPitch(tuning, key, note, true);
+
+        const int note_id = doc.myNotes.size();
+        doc.myNotes.emplace(note_id, gp_note);
+        beat.myNoteIds.push_back(note_id);
+    }
+}
+
+static void
+convertBar(Gp7::Document &doc, Gp7::Bar &bar, const Staff &staff,
+           const Tuning &tuning, const KeySignature &key, int start_idx,
            int end_idx)
 {
     switch (staff.getClefType())
@@ -149,7 +195,7 @@ convertBar(Gp7::Document &doc, Gp7::Bar &bar, const Staff &staff, int start_idx,
              ScoreUtils::findInRange(voice.getPositions(), start_idx, end_idx))
         {
             Gp7::Beat beat;
-            beat.myGraceNote = pos.hasProperty(Position::Acciaccatura);
+            convertBeat(doc, beat, tuning, key, pos);
 
             Gp7::Rhythm rhythm = convertRhythm(voice, pos);
 
@@ -230,21 +276,29 @@ convertScore(const Score &score, Gp7::Document &doc)
         int staff_idx = 0;
         for (const Staff &staff : system.getStaves())
         {
+            if (!active_players ||
+                active_players->getActivePlayers(staff_idx).empty())
+            {
+                continue;
+            }
+
+            int player_idx = active_players->getActivePlayers(staff_idx)[0].getPlayerNumber();
+            const Tuning &tuning = score.getPlayers()[player_idx].getTuning();
+            if (tuning.getStringCount() != staff.getStringCount())
+                continue; // Something is incorrect in the file...
+
             Gp7::Bar bar;
-            convertBar(doc, bar, staff, current_bar.getPosition(),
-                       next_bar.getPosition());
+            convertBar(doc, bar, staff, tuning, current_bar.getKeySignature(),
+                       current_bar.getPosition(), next_bar.getPosition());
 
             const int bar_id = doc.myBars.size();
             doc.myBars.emplace(bar_id, bar);
 
             // Assign the bar to each player (track) in this staff.
-            if (active_players)
+            for (const ActivePlayer &player :
+                 active_players->getActivePlayers(staff_idx))
             {
-                for (const ActivePlayer &player :
-                     active_players->getActivePlayers(staff_idx))
-                {
-                    master_bar.myBarIds[player.getPlayerNumber()] = bar_id;
-                }
+                master_bar.myBarIds[player.getPlayerNumber()] = bar_id;
             }
 
             ++staff_idx;
