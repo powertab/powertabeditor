@@ -330,6 +330,12 @@ saveNotes(pugi::xml_node &gpif, const std::unordered_map<int, Note> &notes_map)
         if (note.myHammerOn)
             addBoolNoteProperty(props_node, "HopoOrigin");
 
+        if (note.mySlideTypes.any())
+        {
+            auto prop_node = addNoteProperty(props_node, "Slide");
+            addValueNode(prop_node, "Flags", note.mySlideTypes.to_ulong());
+        }
+
         if (note.myLetRing)
             note_node.append_child("LetRing");
 
@@ -344,11 +350,18 @@ saveNotes(pugi::xml_node &gpif, const std::unordered_map<int, Note> &notes_map)
         if (note.myTrillNote)
             addValueNode(note_node, "Trill", *note.myTrillNote);
 
+        if (note.myTieDest || note.myTieOrigin)
+        {
+            auto tie_node = note_node.append_child("Tie");
+            tie_node.append_attribute("origin").set_value(note.myTieOrigin);
+            tie_node.append_attribute("destination").set_value(note.myTieDest);
+        }
+
+        if (note.myAccentTypes.any())
+            addValueNode(note_node, "Accent", note.myAccentTypes.to_ulong());
+
         // TODO
-        // - ties
-        // - accents
         // - harmonics
-        // - slides
         // - left hand fingering
         // - bends
     }

@@ -149,8 +149,8 @@ convertPitch(const Tuning &tuning, const KeySignature &key, const Note &note,
 }
 
 static void
-convertBeat(Gp7::Document &doc, Gp7::Beat &beat, const Tuning &tuning,
-            const KeySignature &key, const Position &pos)
+convertBeat(Gp7::Document &doc, Gp7::Beat &beat, const Voice &voice,
+            const Tuning &tuning, const KeySignature &key, const Position &pos)
 {
     beat.myGraceNote = pos.hasProperty(Position::Acciaccatura);
 
@@ -184,6 +184,39 @@ convertBeat(Gp7::Document &doc, Gp7::Beat &beat, const Tuning &tuning,
                 tuning.getNote(note.getString(), false) + note.getTrilledFret();
         }
 
+        // Ties
+        gp_note.myTieDest = note.hasProperty(Note::Tied);
+        // TODO - handle ties between systems by providing the next_voice argument.
+        if (auto next_note = VoiceUtils::getNextNote(voice, pos.getPosition(),
+                                                     note.getString(), nullptr))
+        {
+            gp_note.myTieOrigin = next_note->hasProperty(Note::Tied);
+        }
+
+        // Accents
+        using GpAccentType = Gp7::Note::AccentType;
+        gp_note.myAccentTypes.set(int(GpAccentType::Staccato),
+                                  pos.hasProperty(Position::Staccato));
+        gp_note.myAccentTypes.set(int(GpAccentType::HeavyAccent),
+                                  pos.hasProperty(Position::Sforzando));
+        gp_note.myAccentTypes.set(int(GpAccentType::Accent),
+                                  pos.hasProperty(Position::Marcato));
+
+        // Slides
+        using GpSlideType = Gp7::Note::SlideType;
+        gp_note.mySlideTypes.set(int(GpSlideType::Shift),
+                                 note.hasProperty(Note::ShiftSlide));
+        gp_note.mySlideTypes.set(int(GpSlideType::Legato),
+                                 note.hasProperty(Note::LegatoSlide));
+        gp_note.mySlideTypes.set(int(GpSlideType::SlideOutDown),
+                                 note.hasProperty(Note::SlideOutOfDownwards));
+        gp_note.mySlideTypes.set(int(GpSlideType::SlideOutUp),
+                                 note.hasProperty(Note::SlideOutOfUpwards));
+        gp_note.mySlideTypes.set(int(GpSlideType::SlideInAbove),
+                                 note.hasProperty(Note::SlideIntoFromAbove));
+        gp_note.mySlideTypes.set(int(GpSlideType::SlideInBelow),
+                                 note.hasProperty(Note::SlideIntoFromBelow));
+
         const int note_id = doc.myNotes.size();
         doc.myNotes.emplace(note_id, gp_note);
         beat.myNoteIds.push_back(note_id);
@@ -213,7 +246,7 @@ convertBar(Gp7::Document &doc, Gp7::Bar &bar, const Staff &staff,
              ScoreUtils::findInRange(voice.getPositions(), start_idx, end_idx))
         {
             Gp7::Beat beat;
-            convertBeat(doc, beat, tuning, key, pos);
+            convertBeat(doc, beat, voice, tuning, key, pos);
 
             Gp7::Rhythm rhythm = convertRhythm(voice, pos);
 
