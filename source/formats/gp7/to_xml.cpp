@@ -198,6 +198,93 @@ saveMasterBars(pugi::xml_node &gpif, const std::vector<MasterBar> &master_bars)
     }
 }
 
+static void
+saveBars(pugi::xml_node &gpif, const std::unordered_map<int, Bar> &bars_map)
+{
+    auto bars_node = gpif.append_child("Bars");
+
+    for (auto &&[id, bar] : bars_map)
+    {
+        auto bar_node = bars_node.append_child("Bar");
+        bar_node.append_attribute("id").set_value(id);
+
+        // Only bass / treble clefs are needed for exporting pt2 files.
+        std::string clef_str =
+            (bar.myClefType == Bar::ClefType::F4) ? "F4"s : "G2"s;
+        addValueNode(bar_node, "Clef", clef_str);
+
+        addValueNode(bar_node, "Voices", listToString(bar.myVoiceIds));
+    }
+}
+
+static void
+saveVoices(pugi::xml_node &gpif,
+           const std::unordered_map<int, Voice> &voices_map)
+{
+    auto voices_node = gpif.append_child("Voices");
+
+    for (auto &&[id, voice] : voices_map)
+    {
+        auto voice_node = voices_node.append_child("Voice");
+        voice_node.append_attribute("id").set_value(id);
+        addValueNode(voice_node, "Beats", listToString(voice.myBeatIds));
+    }
+}
+
+static void
+saveBeats(pugi::xml_node &gpif, const std::unordered_map<int, Beat> &beats_map)
+{
+    auto beats_node = gpif.append_child("Beats");
+
+    for (auto &&[id, beat] : beats_map)
+    {
+        auto beat_node = beats_node.append_child("Beat");
+        beat_node.append_attribute("id").set_value(id);
+
+        auto rhythm = beat_node.append_child("Rhythm");
+        rhythm.append_attribute("ref").set_value(beat.myRhythmId);
+
+        if (beat.myGraceNote)
+            addValueNode(beat_node, "GraceNotes", "BeforeBeat"s);
+
+        // TODO - import other beat properties, notes, etc
+    }
+}
+
+static void
+saveRhythms(pugi::xml_node &gpif,
+            const std::unordered_map<int, Rhythm> &rhythms_map)
+{
+    static const std::unordered_map<int, std::string> theNoteNamesMap = {
+        { 1, "Whole"s }, { 2, "Half"s }, { 4, "Quarter"s }, { 8, "Eighth" },
+        { 16, "16th" },  { 32, "32nd" }, { 64, "64th" }
+    };
+
+    auto rhythms_node = gpif.append_child("Rhythms");
+
+    for (auto &&[id, rhythm] : rhythms_map)
+    {
+        auto rhythm_node = rhythms_node.append_child("Rhythm");
+        rhythm_node.append_attribute("id").set_value(id);
+
+        addValueNode(rhythm_node, "NoteValue",
+                     theNoteNamesMap.at(rhythm.myDuration));
+
+        if (rhythm.myDots > 0)
+        {
+            auto dots_node = rhythm_node.append_child("AugmentationDot");
+            dots_node.append_attribute("count").set_value(rhythm.myDots);
+        }
+
+        if (rhythm.myTupletDenom > 0)
+        {
+            auto tuplet_node = rhythm_node.append_child("PrimaryTuplet");
+            tuplet_node.append_attribute("num").set_value(rhythm.myTupletNum);
+            tuplet_node.append_attribute("den").set_value(rhythm.myTupletDenom);
+        }
+    }
+}
+
 pugi::xml_document
 to_xml(const Document &doc)
 {
@@ -211,6 +298,10 @@ to_xml(const Document &doc)
 
     saveTracks(gpif, doc.myTracks);
     saveMasterBars(gpif, doc.myMasterBars);
+    saveBars(gpif, doc.myBars);
+    saveVoices(gpif, doc.myVoices);
+    saveBeats(gpif, doc.myBeats);
+    saveRhythms(gpif, doc.myRhythms);
 
     return root;
 }
