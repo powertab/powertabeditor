@@ -26,6 +26,9 @@
 #include <score/utils.h>
 #include <score/voiceutils.h>
 
+#include <set>
+#include <unordered_map>
+
 /// Convert the Guitar Pro file metadata.
 static Gp7::ScoreInfo
 convertScoreInfo(const ScoreInfo &info)
@@ -70,19 +73,49 @@ convertScoreInfo(const ScoreInfo &info)
     return gp_info;
 }
 
+using PlayerInstrumentMap = std::unordered_map<const Player *, std::set<int>>;
+
+/// Find all of the instruments assigned to each player in the score.
+static PlayerInstrumentMap
+findPlayerInstruments(const Score &score)
+{
+    PlayerInstrumentMap map;
+
+    for (const System &system : score.getSystems())
+    {
+        for (const PlayerChange &change : system.getPlayerChanges())
+        {
+            for (size_t staff = 0; staff < system.getStaves().size(); ++staff)
+            {
+                for (const ActivePlayer &active :
+                     change.getActivePlayers(staff))
+                {
+                    const Player *player =
+                        &score.getPlayers()[active.getPlayerNumber()];
+                    map[player].insert(active.getInstrumentNumber());
+                }
+            }
+        }
+    }
+
+    return map;
+}
+
 static std::vector<Gp7::Track>
 convertTracks(const Score &score)
 {
     std::vector<Gp7::Track> tracks;
 
+    PlayerInstrumentMap player_instruments = findPlayerInstruments(score);
     for (const Player &player : score.getPlayers())
     {
         Gp7::Track track;
         track.myName = player.getDescription();
 
-        // TODO - export only instruments that this player uses in the score?
-        for (const Instrument &inst : score.getInstruments())
+        // Include only instruments that this player uses.
+        for (int instrument_idx : player_instruments[&player])
         {
+            const Instrument &inst = score.getInstruments()[instrument_idx];
             Gp7::Sound sound;
             sound.myLabel = inst.getDescription();
             sound.myMidiPreset = inst.getMidiPreset();

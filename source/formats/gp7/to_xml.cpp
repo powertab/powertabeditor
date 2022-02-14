@@ -305,8 +305,6 @@ saveBeats(pugi::xml_node &gpif, const std::unordered_map<int, Beat> &beats_map)
 
         // TODO
         // - chord ids
-        // - brush up/down
-        // - arpeggio up/down
         // - free text
         // - whammy
     }
