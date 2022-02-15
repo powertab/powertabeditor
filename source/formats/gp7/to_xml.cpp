@@ -39,8 +39,9 @@ addValueNode(pugi::xml_node &node, const char *name, const std::string &value)
         .set_value(value.c_str());
 }
 
+template <typename T>
 static void
-addValueNode(pugi::xml_node &node, const char *name, int value)
+addValueNode(pugi::xml_node &node, const char *name, T value)
 {
     addValueNode(node, name, std::to_string(value));
 }
@@ -107,8 +108,10 @@ saveTracks(pugi::xml_node &gpif, const std::vector<Track> &tracks)
         for (const Sound &sound : track.mySounds)
         {
             auto sound_node = sounds_node.append_child("Sound");
-            addCDataNode(sound_node, "Name", sound.myLabel);
+            addCDataNode(sound_node, "Name", sound.myName);
             addCDataNode(sound_node, "Label", sound.myLabel);
+            addValueNode(sound_node, "Path", sound.myPath);
+            addValueNode(sound_node, "Role", sound.myRole);
 
             auto midi_node = sound_node.append_child("MIDI");
             addValueNode(midi_node, "LSB", 0);
@@ -139,6 +142,22 @@ saveTracks(pugi::xml_node &gpif, const std::vector<Track> &tracks)
         auto transpose = track_node.append_child("Transpose");
         addValueNode(transpose, "Chromatic", 0);
         addValueNode(transpose, "Octave", -1);
+
+        auto automations = track_node.append_child("Automations");
+        for (const SoundChange &change : track.mySoundChanges)
+        {
+            auto node = automations.append_child("Automation");
+
+            addValueNode(node, "Type", "Sound"s);
+            addValueNode(node, "Linear", "false"s);
+            addValueNode(node, "Bar", change.myBar);
+            addValueNode(node, "Position", change.myPosition);
+            addValueNode(node, "Visible", "true"s);
+
+            const Sound &sound = track.mySounds[change.mySoundId];
+            addCDataNode(node, "Value",
+                         sound.myPath + ";" + sound.myName + ";" + sound.myRole);
+        }
 
         // TODO - export chords
 

@@ -89,6 +89,10 @@ struct Staff
 struct Sound
 {
     std::string myLabel;
+    // Unique name, path, and role. Used for sound changes.
+    std::string myName;
+    std::string myPath;
+    std::string myRole = "User";
     int myMidiPreset = -1;
 };
 
@@ -141,6 +145,13 @@ struct Chord
     ChordDiagram myDiagram;
 };
 
+struct SoundChange
+{
+    int myBar = -1;
+    double myPosition = -1; // Number of beats within the bar.
+    int mySoundId = -1;
+};
+
 struct Track
 {
     std::string myName;
@@ -152,6 +163,7 @@ struct Track
     /// the same active sound). Automations describe when the sounds are
     /// changed.
     std::vector<Sound> mySounds;
+    std::vector<SoundChange> mySoundChanges;
 
     std::unordered_map<int, Chord> myChords;
 };

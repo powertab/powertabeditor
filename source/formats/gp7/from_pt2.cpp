@@ -118,6 +118,8 @@ convertTracks(const Score &score)
             const Instrument &inst = score.getInstruments()[instrument_idx];
             Gp7::Sound sound;
             sound.myLabel = inst.getDescription();
+            sound.myName = "Instrument_" + std::to_string(instrument_idx);
+            sound.myPath = "Midi/" + sound.myName;
             sound.myMidiPreset = inst.getMidiPreset();
 
             track.mySounds.push_back(sound);
@@ -132,6 +134,10 @@ convertTracks(const Score &score)
         track.myStaves.push_back(staff);
 
         // TODO - export chords
+
+        // TODO - export player changes as sound automations
+        // For now we just assign an initial instrument
+        track.mySoundChanges.push_back({ 0, 0, 0 });
 
         tracks.push_back(std::move(track));
     }
