@@ -97,12 +97,26 @@ saveTracks(pugi::xml_node &gpif, const std::vector<Track> &tracks)
 
         addCDataNode(track_node, "Name", track.myName);
 
+        // Seems to be important for MIDI playback to work.
+        track_node.append_child("UseOneChannelPerString");
+
         // Set the instrument type. I'm not sure if this needs to be configured
         // differently for basses, etc, but this needs to be set to avoid being
         // interpreted as a drum track.
-        auto inst_set = track_node.append_child("InstrumentSet");
-        addValueNode(inst_set, "Type", "electricGuitar"s);
-        addValueNode(inst_set, "LineCount", 5); // standard notation staff
+        {
+            auto inst_set = track_node.append_child("InstrumentSet");
+            addValueNode(inst_set, "Type", "electricGuitar"s);
+            addValueNode(inst_set, "LineCount", 5); // standard notation staff
+
+            auto element =
+                inst_set.append_child("Elements").append_child("Element");
+            addValueNode(element, "Name", "Pitched"s);
+            addValueNode(element, "Type", "pitched"s);
+
+            auto articulation = element.append_child("Articulations")
+                                    .append_child("Articulation");
+            addValueNode(articulation, "OutputMidiNumber", 0);
+        }
 
         auto sounds_node = track_node.append_child("Sounds");
         for (const Sound &sound : track.mySounds)
@@ -121,6 +135,20 @@ saveTracks(pugi::xml_node &gpif, const std::vector<Track> &tracks)
 
         // Use MIDI playback.
         addValueNode(track_node, "AudioEngineState", "MIDI"s);
+
+        // Assign MIDI channels
+        {
+            auto connection = track_node.append_child("MidiConnection");
+            connection.append_child("Port").text() = 0;
+
+            connection.append_child("PrimaryChannel").text() =
+                track.myMidiChannel;
+            connection.append_child("SecondaryChannel").text() =
+                track.myMidiChannel;
+
+            // This is a typo in GP's XML format.
+            connection.append_child("ForeOneChannelPerString").text() = false;
+        }
 
         auto staves_node = track_node.append_child("Staves");
         for (const Staff &staff : track.myStaves)
@@ -463,6 +491,17 @@ to_xml(const Document &doc)
 
     auto gpif = root.append_child("GPIF");
     addValueNode(gpif, "GPVersion", "7.6.0"s);
+
+    // These values are from a recent GP version when this was implemented.
+    // It needs to be sufficiently new in order for the generated XML data to
+    // be interpreted correctly by GP.
+    auto revision = gpif.append_child("GPRevision");
+    revision.append_attribute("required").set_value("12021");
+    revision.append_attribute("recommended").set_value("12023");
+    revision.text().set("12025");
+
+    auto encoding = gpif.append_child("Encoding");
+    addValueNode(encoding, "EncodingDescription", "GP7"s);
 
     auto score = gpif.append_child("Score");
     saveScoreInfo(score, doc.myScoreInfo);

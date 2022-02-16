@@ -107,6 +107,7 @@ convertTracks(const Score &score)
     std::vector<Gp7::Track> tracks;
 
     PlayerInstrumentMap player_instruments = findPlayerInstruments(score);
+    int player_idx = 0;
     for (const Player &player : score.getPlayers())
     {
         Gp7::Track track;
@@ -139,7 +140,10 @@ convertTracks(const Score &score)
         // For now we just assign an initial instrument
         track.mySoundChanges.push_back({ 0, 0, 0 });
 
+        track.myMidiChannel = Midi::getPlayerChannel(player_idx);
+
         tracks.push_back(std::move(track));
+        ++player_idx;
     }
 
     return tracks;

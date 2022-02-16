@@ -30,8 +30,7 @@
 #include <score/utils.h>
 #include <score/voiceutils.h>
 
-static constexpr int PERCUSSION_CHANNEL = 9;
-static constexpr int METRONOME_CHANNEL = PERCUSSION_CHANNEL;
+static constexpr int METRONOME_CHANNEL = Midi::PERCUSSION_CHANNEL;
 static constexpr int DEFAULT_PPQ = 480;
 
 static constexpr int PITCH_BEND_RANGE = 24;
@@ -55,19 +54,9 @@ enum Velocity : uint8_t
     PalmMutedVelocity = 112
 };
 
-/// Returns the MIDI channel that should be used for the player.
-/// Since channel 10 is reserved for percussion, we can't use that
-/// channel for regular instruments.
-static int getChannel(int player)
-{
-    if (player >= PERCUSSION_CHANNEL)
-        player++;
-    return player;
-}
-
 static int getChannel(const ActivePlayer &player)
 {
-    return getChannel(player.getPlayerNumber());
+    return Midi::getPlayerChannel(player.getPlayerNumber());
 }
 
 static bool findPositionChange(MidiEventList &event_list, int ticks,
@@ -161,7 +150,7 @@ void MidiFile::load(const Score &score, const LoadOptions &options)
     // Set the initial channel volume and pitch bend range..
     std::vector<MidiEventList> regular_tracks(score.getPlayers().size());
     for (unsigned int i = 0; i < score.getPlayers().size(); ++i)
-        initializeChannel(regular_tracks[i], getChannel(i));
+        initializeChannel(regular_tracks[i], Midi::getPlayerChannel(i));
 
     SystemLocation location(0, 0);
     std::vector<uint8_t> active_bends;
@@ -1266,7 +1255,7 @@ MidiFile::loadSingleNote(const Score &score,
     for (size_t i = 0; i < staff_players.size(); ++i)
     {
         const int player_index = staff_players[i].getPlayerNumber();
-        const int channel = getChannel(player_index);
+        const int channel = Midi::getPlayerChannel(player_index);
         MidiEventList &track = myTracks[i];
 
         initializeChannel(track, channel);

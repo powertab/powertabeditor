@@ -164,6 +164,8 @@ struct Track
     /// changed.
     std::vector<Sound> mySounds;
     std::vector<SoundChange> mySoundChanges;
+    // For export only. MIDI channels are normally automatically determined.
+    int myMidiChannel = -1;
 
     std::unordered_map<int, Chord> myChords;
 };
