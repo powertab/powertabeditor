@@ -80,14 +80,43 @@ saveScoreInfo(pugi::xml_node &node, const ScoreInfo &info)
 }
 
 static void
-saveTracks(pugi::xml_node &gpif, const std::vector<Track> &tracks)
+saveMasterTrack(pugi::xml_node &gpif, const std::vector<Track> &tracks,
+                const std::vector<MasterBar> &master_bars)
 {
     // In the master track, record the space-separated list of track ids.
-    auto master_track_node = gpif.append_child("MasterTrack");
+    auto master_track = gpif.append_child("MasterTrack");
     std::vector<int> ids(tracks.size());
     std::iota(ids.begin(), ids.end(), 0);
-    addValueNode(master_track_node, "Tracks", listToString(ids));
+    addValueNode(master_track, "Tracks", listToString(ids));
 
+    // Record tempo automations
+    auto automations = master_track.append_child("Automations");
+    int bar_idx = 0;
+    for (const MasterBar &master_bar : master_bars)
+    {
+        for (const TempoChange &change : master_bar.myTempoChanges)
+        {
+            auto node = automations.append_child("Automation");
+
+            node.append_child("Type").text() = "Tempo";
+            node.append_child("Linear").text() = false;
+            node.append_child("Bar").text() = bar_idx;
+            node.append_child("Position").text() = change.myPosition;
+            node.append_child("Visible").text() = change.myIsVisible;
+            node.append_child("Text").text() = change.myDescription.c_str();
+
+            std::string value = std::to_string(change.myBeatsPerMinute) + " " +
+                                std::to_string(int(change.myBeatType));
+            node.append_child("Value").text() = value.c_str();
+        }
+
+        ++bar_idx;
+    }
+}
+
+static void
+saveTracks(pugi::xml_node &gpif, const std::vector<Track> &tracks)
+{
     auto tracks_node = gpif.append_child("Tracks");
     int track_idx = 0;
     for (const Track &track : tracks)
@@ -506,6 +535,7 @@ to_xml(const Document &doc)
     auto score = gpif.append_child("Score");
     saveScoreInfo(score, doc.myScoreInfo);
 
+    saveMasterTrack(gpif, doc.myTracks, doc.myMasterBars);
     saveTracks(gpif, doc.myTracks);
     saveMasterBars(gpif, doc.myMasterBars);
     saveBars(gpif, doc.myBars);

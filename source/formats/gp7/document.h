@@ -58,11 +58,11 @@ struct TempoChange
 {
     enum class BeatType
     {
-        Eighth,
-        Quarter,
-        QuarterDotted,
-        Half,
-        HalfDotted
+        Eighth = 1,
+        Quarter = 2,
+        QuarterDotted = 3,
+        Half = 4,
+        HalfDotted = 5
     };
 
     /// Specifies the location within the bar, from 0 to 1. (e.g. if 0.75 and
@@ -238,6 +238,8 @@ struct MasterBar
     std::vector<DirectionTarget> myDirectionTargets;
     std::vector<DirectionJump> myDirectionJumps;
 
+    // These are actually stored on the MasterTrack in the XML data, but are
+    // stored on the appropriate master bar for convenience
     std::vector<TempoChange> myTempoChanges;
 
     /// Fermatas apply to all tracks, and are applied at a specific beat

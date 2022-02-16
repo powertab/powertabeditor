@@ -328,7 +328,8 @@ convertBar(Gp7::Document &doc, Gp7::Bar &bar, const Staff &staff,
 
 /// Create a GP master bar, from a pair of barlines in the score.
 static Gp7::MasterBar
-convertMasterBar(const Barline &start_line, const Barline &end_line)
+convertMasterBar(const System &system, const Barline &start_line,
+                 const Barline &end_line)
 {
     Gp7::MasterBar master_bar;
 
@@ -360,6 +361,46 @@ convertMasterBar(const Barline &start_line, const Barline &end_line)
     master_bar.myKeySig.myMinor = key_sig.getKeyType() == KeySignature::Minor;
     master_bar.myKeySig.mySharps = key_sig.usesSharps();
 
+    // Tempo markers.
+    for (const TempoMarker &marker : ScoreUtils::findInRange(
+             system.getTempoMarkers(), start_line.getPosition(),
+             end_line.getPosition() - 1))
+    {
+        Gp7::TempoChange change;
+        change.myPosition = 0; // TODO - compute location within bar.
+        change.myIsLinear = false; // TODO - handle alterations of pace.
+        change.myIsVisible = true;
+        change.myDescription = marker.getDescription();
+        change.myBeatsPerMinute = marker.getBeatsPerMinute();
+
+        switch (marker.getBeatType())
+        {
+            using BeatType = Gp7::TempoChange::BeatType;
+
+            case TempoMarker::Eighth:
+                change.myBeatType = BeatType::Eighth;
+                break;
+            case TempoMarker::Half:
+                change.myBeatType = BeatType::Half;
+                break;
+            case TempoMarker::HalfDotted:
+                change.myBeatType = BeatType::HalfDotted;
+                break;
+            case TempoMarker::Quarter:
+                change.myBeatType = BeatType::Quarter;
+                break;
+            case TempoMarker::QuarterDotted:
+                change.myBeatType = BeatType::QuarterDotted;
+                break;
+
+            default:
+                // Other types aren't supported in GP
+                break;
+        }
+
+        master_bar.myTempoChanges.push_back(change);
+    }
+
     return master_bar;
 }
 
@@ -380,7 +421,8 @@ convertScore(const Score &score, Gp7::Document &doc)
             score, location.getSystemIndex(), location.getPositionIndex());
 
         // TODO - skip "empty" bars due to adjacent repeat end / start
-        Gp7::MasterBar master_bar = convertMasterBar(current_bar, next_bar);
+        Gp7::MasterBar master_bar =
+            convertMasterBar(system, current_bar, next_bar);
         master_bar.myBarIds.assign(doc.myTracks.size(), -1);
 
         int staff_idx = 0;
