@@ -275,7 +275,6 @@ saveMasterBars(pugi::xml_node &gpif, const std::vector<MasterBar> &master_bars)
         // TODO
         // - alternate endings
         // - directions
-        // - tempo changes (these are actually part of the master track)
         // - fermatas
     }
 }
@@ -472,10 +471,29 @@ saveNotes(pugi::xml_node &gpif, const std::unordered_map<int, Note> &notes_map)
         if (note.myAccentTypes.any())
             addValueNode(note_node, "Accent", note.myAccentTypes.to_ulong());
 
+        if (note.myBend)
+        {
+            addBoolNoteProperty(props_node, "Bended");
+
+            auto addBendProperty = [&](const char *name, double value)
+            {
+                auto prop = addPropertyNode(props_node, name);
+                prop.append_child("Float").text() = value;
+            };
+
+            const Bend &bend = *note.myBend;
+            addBendProperty("BendOriginValue", bend.myOriginValue);
+            addBendProperty("BendOriginOffset", bend.myOriginOffset);
+            addBendProperty("BendMiddleValue", bend.myMiddleValue);
+            addBendProperty("BendMiddleOffset1", bend.myMiddleOffset1);
+            addBendProperty("BendMiddleOffset2", bend.myMiddleOffset2);
+            addBendProperty("BendDestinationValue", bend.myDestValue);
+            addBendProperty("BendDestinationOffset", bend.myDestOffset);
+        }
+
         // TODO
         // - harmonics
         // - left hand fingering
-        // - bends
     }
 }
 

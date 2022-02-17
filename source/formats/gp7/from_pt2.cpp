@@ -192,6 +192,72 @@ convertPitch(const Tuning &tuning, const KeySignature &key, const Note &note,
     return pitch;
 }
 
+static Gp7::Bend
+convertBend(const Bend &bend)
+{
+    // Convert from PT bend values (quarter steps) to GP bend values
+    // (percentage of full steps)
+    auto convertQuarterStepToPitch = [](int steps) -> double {
+        return steps * 25.0;
+    };
+
+    // TODO - handle bends stretching over multiple notes
+
+    const double bent_pitch = convertQuarterStepToPitch(bend.getBentPitch());
+    const double release_pitch = convertQuarterStepToPitch(bend.getReleasePitch());
+
+    Gp7::Bend gp_bend;
+    gp_bend.myDestOffset = 100;
+    double middle_offset = 50;
+    double middle_value = 0;
+    double start_value = 0;
+    double end_value = 0;
+
+    switch (bend.getType())
+    {
+        case Bend::PreBendAndRelease:
+            start_value = bent_pitch;
+            middle_value = 0.5 * bent_pitch;
+            end_value = 0;
+            break;
+
+        case Bend::PreBend:
+        case Bend::PreBendAndHold:
+            // Same behaviour, the only different for GP is if ties are present
+            start_value = middle_value = end_value = bent_pitch;
+            break;
+
+        case Bend::NormalBend:
+        case Bend::BendAndHold:
+            middle_offset = 10; // Short bend
+            middle_value = end_value = bent_pitch;
+            break;
+
+        case Bend::BendAndRelease:
+            middle_value = bent_pitch;
+            end_value = release_pitch;
+            break;
+
+        // TODO - these two modes probably need to locate the pitch from the
+        // previous bend to get the correct starting point.
+        case Bend::GradualRelease:
+            start_value = bent_pitch;
+            middle_value = 0.5 * (bent_pitch + release_pitch);
+            end_value = release_pitch;
+            break;
+        case Bend::ImmediateRelease:
+            start_value = middle_value = end_value = bent_pitch;
+            break;
+    }
+
+    gp_bend.myOriginValue = start_value;
+    gp_bend.myMiddleOffset1 = gp_bend.myMiddleOffset2 = middle_offset;
+    gp_bend.myMiddleValue = middle_value;
+    gp_bend.myDestValue = end_value;
+
+    return gp_bend;
+}
+
 static void
 convertBeat(Gp7::Document &doc, Gp7::Beat &beat, const Voice &voice,
             const Tuning &tuning, const KeySignature &key, const Position &pos)
@@ -276,6 +342,9 @@ convertBeat(Gp7::Document &doc, Gp7::Beat &beat, const Voice &voice,
             beat.myOttavia = Gp7::Beat::Ottavia::O15ma;
         else if (note.hasProperty(Note::Octave15mb))
             beat.myOttavia = Gp7::Beat::Ottavia::O15mb;
+
+        if (note.hasBend())
+            gp_note.myBend = convertBend(note.getBend());
 
         const int note_id = doc.myNotes.size();
         doc.myNotes.emplace(note_id, gp_note);
