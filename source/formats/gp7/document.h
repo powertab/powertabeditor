@@ -20,6 +20,7 @@
 
 #include <bitset>
 #include <boost/rational.hpp>
+#include <boost/functional/hash.hpp>
 #include <optional>
 #include <pugixml.hpp>
 #include <set>
@@ -310,6 +311,13 @@ struct Beat
 /// A duration, which is shared across many beats.
 struct Rhythm
 {
+    bool operator==(const Rhythm&other) const
+    {
+        return myDuration == other.myDuration && myDots == other.myDots &&
+               myTupletNum == other.myTupletNum &&
+               myTupletDenom == other.myTupletDenom;
+    }
+
     /// Duration, where a whole note is 1, quarter note is 4, etc.
     int myDuration = 4;
     /// Number of dots (0-2).
@@ -422,5 +430,20 @@ Document from_xml(const pugi::xml_document &root, Version version);
 pugi::xml_document to_xml(const Document &doc);
 
 } // namespace Gp7
+
+/// Support for std::unordered_set etc
+template<>
+struct std::hash<Gp7::Rhythm>
+{
+    size_t operator()(const Gp7::Rhythm &rhythm) const noexcept
+    {
+        size_t seed = 0;
+        boost::hash_combine(seed, rhythm.myDuration);
+        boost::hash_combine(seed, rhythm.myDots);
+        boost::hash_combine(seed, rhythm.myTupletNum);
+        boost::hash_combine(seed, rhythm.myTupletDenom);
+        return seed;
+    }
+};
 
 #endif
