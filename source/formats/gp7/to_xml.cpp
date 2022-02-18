@@ -378,10 +378,23 @@ saveBeats(pugi::xml_node &gpif, const std::unordered_map<int, Beat> &beats_map)
             addValueNode(brush, "Direction", beat.myBrushUp ? "Up"s : "Down"s);
         }
 
+        if (beat.myWhammy)
+        {
+            const Bend &whammy = *beat.myWhammy;
+
+            auto node = beat_node.append_child("Whammy");
+            node.append_attribute("originValue").set_value(whammy.myOriginValue);
+            node.append_attribute("originOffset").set_value(whammy.myOriginOffset);
+            node.append_attribute("middleValue").set_value(whammy.myMiddleValue);
+            node.append_attribute("middleOffset1").set_value(whammy.myMiddleOffset1);
+            node.append_attribute("middleOffset2").set_value(whammy.myMiddleOffset2);
+            node.append_attribute("destinationValue").set_value(whammy.myDestValue);
+            node.append_attribute("destinationOffset").set_value(whammy.myDestOffset);
+        }
+
         // TODO
         // - chord ids
         // - free text
-        // - whammy
     }
 }
 

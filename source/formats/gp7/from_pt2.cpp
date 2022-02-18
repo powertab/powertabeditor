@@ -192,15 +192,17 @@ convertPitch(const Tuning &tuning, const KeySignature &key, const Note &note,
     return pitch;
 }
 
+/// Convert from PT bend values (quarter steps) to GP bend values
+/// (percentage of full steps)
+static double
+convertQuarterStepToPitch(int steps)
+{
+    return steps * 25.0;
+}
+
 static Gp7::Bend
 convertBend(const Bend &bend)
 {
-    // Convert from PT bend values (quarter steps) to GP bend values
-    // (percentage of full steps)
-    auto convertQuarterStepToPitch = [](int steps) -> double {
-        return steps * 25.0;
-    };
-
     // TODO - handle bends stretching over multiple notes
 
     const double bent_pitch = convertQuarterStepToPitch(bend.getBentPitch());
@@ -258,6 +260,61 @@ convertBend(const Bend &bend)
     return gp_bend;
 }
 
+static Gp7::Bend
+convertTremoloBar(const TremoloBar &trem)
+{
+    // TODO - handle events stretching over multiple notes
+
+    const double pitch = convertQuarterStepToPitch(trem.getPitch());
+
+    Gp7::Bend gp_bend;
+    double middle_offset = 50;
+    double middle_value = 0;
+    double start_value = 0;
+    double end_value = 0;
+    double end_offset = 100;
+
+    static constexpr double dip_middle = 15; // Short dip length
+    static constexpr double dip_end = 30;
+
+    switch (trem.getType())
+    {
+        case TremoloBar::Type::Dip:
+            middle_offset = dip_middle;
+            end_offset = dip_end;
+            middle_value = -pitch;
+            break;
+        case TremoloBar::Type::InvertedDip:
+            middle_offset = dip_middle;
+            end_offset = dip_end;
+            middle_value = pitch;
+            break;
+        case TremoloBar::Type::DiveAndRelease:
+        case TremoloBar::Type::DiveAndHold:
+            end_value = -pitch;
+            middle_value = 0.5 * end_value;
+            break;
+        case TremoloBar::Type::Release:
+            start_value = middle_value = end_value = pitch;
+            break;
+        // TODO - these two modes probably need to locate the pitch from the
+        // previous bend to get the correct starting point.
+        case TremoloBar::Type::ReturnAndRelease:
+        case TremoloBar::Type::ReturnAndHold:
+            end_value = pitch;
+            middle_value = 0.5 * end_value;
+            break;
+    }
+
+    gp_bend.myOriginValue = start_value;
+    gp_bend.myMiddleOffset1 = gp_bend.myMiddleOffset2 = middle_offset;
+    gp_bend.myMiddleValue = middle_value;
+    gp_bend.myDestValue = end_value;
+    gp_bend.myDestOffset = end_offset;
+
+    return gp_bend;
+}
+
 static void
 convertBeat(Gp7::Document &doc, Gp7::Beat &beat, const Voice &voice,
             const Tuning &tuning, const KeySignature &key, const Position &pos)
@@ -269,6 +326,9 @@ convertBeat(Gp7::Document &doc, Gp7::Beat &beat, const Voice &voice,
     beat.myBrushUp = pos.hasProperty(Position::PickStrokeUp);
     beat.myArpeggioUp = pos.hasProperty(Position::ArpeggioUp);
     beat.myArpeggioDown = pos.hasProperty(Position::ArpeggioDown);
+
+    if (pos.hasTremoloBar())
+        beat.myWhammy = convertTremoloBar(pos.getTremoloBar());
 
     for (const Note &note: pos.getNotes())
     {
