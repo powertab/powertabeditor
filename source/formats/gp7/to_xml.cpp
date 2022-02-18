@@ -77,6 +77,9 @@ saveScoreInfo(pugi::xml_node &node, const ScoreInfo &info)
     addCDataNode(node, "Tabber", info.myTabber);
     addCDataNode(node, "Instructions", info.myInstructions);
     addCDataNode(node, "Notices", info.myNotices);
+
+    addValueNode(node, "ScoreSystemsLayout",
+                 listToString(info.myScoreSystemsLayout));
 }
 
 static void
@@ -397,7 +400,6 @@ saveBeats(pugi::xml_node &gpif, const std::unordered_map<int, Beat> &beats_map)
 
         // TODO
         // - chord ids
-        // - free text
     }
 }
 

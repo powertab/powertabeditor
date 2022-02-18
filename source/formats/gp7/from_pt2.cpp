@@ -32,8 +32,9 @@
 
 /// Convert the Guitar Pro file metadata.
 static Gp7::ScoreInfo
-convertScoreInfo(const ScoreInfo &info)
+convertScoreInfo(const Score &score)
 {
+    const ScoreInfo &info = score.getScoreInfo();
     Gp7::ScoreInfo gp_info;
 
     if (info.getScoreType() == ScoreInfo::ScoreType::Song)
@@ -70,6 +71,11 @@ convertScoreInfo(const ScoreInfo &info)
         gp_info.myCopyright = lesson_data.getCopyright();
         gp_info.myInstructions = lesson_data.getNotes();
     }
+
+    // Record the number of bars in each system (one less than the number of
+    // barlines).
+    for (const System &system : score.getSystems())
+        gp_info.myScoreSystemsLayout.push_back(system.getBarlines().size() - 1);
 
     return gp_info;
 }
@@ -644,7 +650,7 @@ Gp7::Document
 Gp7::convert(const Score &score)
 {
     Gp7::Document gp_doc;
-    gp_doc.myScoreInfo = convertScoreInfo(score.getScoreInfo());
+    gp_doc.myScoreInfo = convertScoreInfo(score);
 
     gp_doc.myTracks = convertTracks(score);
     convertScore(score, gp_doc);

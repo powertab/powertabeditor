@@ -1046,14 +1046,17 @@ convertSystem(const Gp7::Document &doc, Score &score, int bar_begin,
             const Tuning &tuning = player.getTuning();
 
             const int gp_bar_idx = master_bar.myBarIds[staff_idx];
+            if (gp_bar_idx < 0)
+                continue; // Empty bar
             const Gp7::Bar &gp_bar = doc.myBars.at(gp_bar_idx);
 
             // For the first bar in the system, set the staff's clefy type.
             if (bar_idx == bar_begin)
                 staff.setClefType(convertClefType(gp_bar.myClefType));
 
-            assert(gp_bar.myVoiceIds.size() == 4);
-            for (int voice_idx = 0; voice_idx < Staff::NUM_VOICES; ++voice_idx)
+            const int num_voices =
+                std::min<int>(Staff::NUM_VOICES, gp_bar.myVoiceIds.size());
+            for (int voice_idx = 0; voice_idx < num_voices; ++voice_idx)
             {
                 const int gp_voice_idx = gp_bar.myVoiceIds[voice_idx];
                 // Voice might not be used.
