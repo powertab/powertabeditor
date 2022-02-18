@@ -468,8 +468,8 @@ convertBar(Gp7::Document &doc,
 
 /// Create a GP master bar, from a pair of barlines in the score.
 static Gp7::MasterBar
-convertMasterBar(const System &system, const Barline &start_line,
-                 const Barline &end_line)
+convertMasterBar(const Gp7::Document &doc, const System &system,
+                 const Barline &start_line, const Barline &end_line)
 {
     Gp7::MasterBar master_bar;
 
@@ -508,34 +508,56 @@ convertMasterBar(const System &system, const Barline &start_line,
     {
         Gp7::TempoChange change;
         change.myPosition = 0; // TODO - compute location within bar.
-        change.myIsLinear = false; // TODO - handle alterations of pace.
         change.myIsVisible = true;
         change.myDescription = marker.getDescription();
-        change.myBeatsPerMinute = marker.getBeatsPerMinute();
 
-        switch (marker.getBeatType())
+        change.myIsLinear =
+            (marker.getMarkerType() == TempoMarker::AlterationOfPace);
+
+        if (change.myIsLinear)
         {
-            using BeatType = Gp7::TempoChange::BeatType;
+            // Copy the previous tempo, since this starts a linear change from
+            // the current tempo to whatever the next tempo is.
+            for (auto it = doc.myMasterBars.rbegin();
+                 it != doc.myMasterBars.rend(); ++it)
+            {
+                if (!it->myTempoChanges.empty())
+                {
+                    const Gp7::TempoChange &last = it->myTempoChanges.back();
+                    change.myBeatsPerMinute = last.myBeatsPerMinute;
+                    change.myBeatType = last.myBeatType;
+                    break;
+                }
+            }
+        }
+        else
+        {
+            change.myBeatsPerMinute = marker.getBeatsPerMinute();
 
-            case TempoMarker::Eighth:
-                change.myBeatType = BeatType::Eighth;
-                break;
-            case TempoMarker::Half:
-                change.myBeatType = BeatType::Half;
-                break;
-            case TempoMarker::HalfDotted:
-                change.myBeatType = BeatType::HalfDotted;
-                break;
-            case TempoMarker::Quarter:
-                change.myBeatType = BeatType::Quarter;
-                break;
-            case TempoMarker::QuarterDotted:
-                change.myBeatType = BeatType::QuarterDotted;
-                break;
+            switch (marker.getBeatType())
+            {
+                using BeatType = Gp7::TempoChange::BeatType;
 
-            default:
-                // Other types aren't supported in GP
-                break;
+                case TempoMarker::Eighth:
+                    change.myBeatType = BeatType::Eighth;
+                    break;
+                case TempoMarker::Half:
+                    change.myBeatType = BeatType::Half;
+                    break;
+                case TempoMarker::HalfDotted:
+                    change.myBeatType = BeatType::HalfDotted;
+                    break;
+                case TempoMarker::Quarter:
+                    change.myBeatType = BeatType::Quarter;
+                    break;
+                case TempoMarker::QuarterDotted:
+                    change.myBeatType = BeatType::QuarterDotted;
+                    break;
+
+                default:
+                    // Other types aren't supported in GP
+                    break;
+            }
         }
 
         master_bar.myTempoChanges.push_back(change);
@@ -563,7 +585,7 @@ convertScore(const Score &score, Gp7::Document &doc)
 
         // TODO - skip "empty" bars due to adjacent repeat end / start
         Gp7::MasterBar master_bar =
-            convertMasterBar(system, current_bar, next_bar);
+            convertMasterBar(doc, system, current_bar, next_bar);
         master_bar.myBarIds.assign(doc.myTracks.size(), -1);
 
         int staff_idx = 0;
