@@ -342,6 +342,9 @@ saveBeats(pugi::xml_node &gpif, const std::unordered_map<int, Beat> &beats_map)
         if (beat.myTremoloPicking)
             addValueNode(beat_node, "Tremolo", "1/8"s);
 
+        if (!beat.myFreeText.empty())
+            addCDataNode(beat_node, "FreeText", beat.myFreeText);
+
         if (beat.myOttavia)
         {
             // TODO - unify the enum <-> string conversion with from_xml.cpp
