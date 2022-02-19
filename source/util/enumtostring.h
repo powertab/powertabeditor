@@ -21,6 +21,7 @@
 #include "enumtostring_fwd.h"
 
 #include <algorithm>
+#include <cassert>
 #include <exception>
 #include <string>
 #include <utility>
