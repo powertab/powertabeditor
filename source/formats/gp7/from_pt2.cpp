@@ -509,6 +509,82 @@ convertBar(Gp7::Document &doc,
     }
 }
 
+static void
+convertDirection(const Direction &dir, Gp7::MasterBar &master_bar)
+{
+    using DirectionTarget = Gp7::MasterBar::DirectionTarget;
+    using DirectionJump = Gp7::MasterBar::DirectionJump;
+    std::vector<DirectionTarget> &targets = master_bar.myDirectionTargets;
+    std::vector<DirectionJump> &jumps = master_bar.myDirectionJumps;
+
+    for (const DirectionSymbol &symbol : dir.getSymbols())
+    {
+        switch (symbol.getSymbolType())
+        {
+            case DirectionSymbol::Coda:
+                targets.push_back(DirectionTarget::Coda);
+                break;
+            case DirectionSymbol::DoubleCoda:
+                targets.push_back(DirectionTarget::DoubleCoda);
+                break;
+            case DirectionSymbol::Segno:
+                targets.push_back(DirectionTarget::Segno);
+                break;
+            case DirectionSymbol::SegnoSegno:
+                targets.push_back(DirectionTarget::SegnoSegno);
+                break;
+            case DirectionSymbol::Fine:
+                targets.push_back(DirectionTarget::Fine);
+                break;
+            case DirectionSymbol::DaCapo:
+                jumps.push_back(DirectionJump::DaCapo);
+                break;
+            case DirectionSymbol::DalSegno:
+                jumps.push_back(DirectionJump::DaSegno);
+                break;
+            case DirectionSymbol::DalSegnoSegno:
+                jumps.push_back(DirectionJump::DaSegnoSegno);
+                break;
+            case DirectionSymbol::ToCoda:
+                jumps.push_back(DirectionJump::DaCoda);
+                break;
+            case DirectionSymbol::ToDoubleCoda:
+                jumps.push_back(DirectionJump::DaDoubleCoda);
+                break;
+            case DirectionSymbol::DaCapoAlCoda:
+                jumps.push_back(DirectionJump::DaCapoAlCoda);
+                break;
+            case DirectionSymbol::DaCapoAlDoubleCoda:
+                jumps.push_back(DirectionJump::DaCapoAlDoubleCoda);
+                break;
+            case DirectionSymbol::DalSegnoAlCoda:
+                jumps.push_back(DirectionJump::DaSegnoAlCoda);
+                break;
+            case DirectionSymbol::DalSegnoAlDoubleCoda:
+                jumps.push_back(DirectionJump::DaSegnoAlDoubleCoda);
+                break;
+            case DirectionSymbol::DalSegnoSegnoAlCoda:
+                jumps.push_back(DirectionJump::DaSegnoSegnoAlCoda);
+                break;
+            case DirectionSymbol::DalSegnoSegnoAlDoubleCoda:
+                jumps.push_back(DirectionJump::DaSegnoSegnoAlDoubleCoda);
+                break;
+            case DirectionSymbol::DaCapoAlFine:
+                jumps.push_back(DirectionJump::DaCapoAlFine);
+                break;
+            case DirectionSymbol::DalSegnoAlFine:
+                jumps.push_back(DirectionJump::DaSegnoAlFine);
+                break;
+            case DirectionSymbol::DalSegnoSegnoAlFine:
+                jumps.push_back(DirectionJump::DaSegnoSegnoAlFine);
+                break;
+            case DirectionSymbol::NumSymbolTypes:
+                // Do nothing
+                break;
+        }
+    }
+}
+
 /// Create a GP master bar, from a pair of barlines in the score.
 static Gp7::MasterBar
 convertMasterBar(const Gp7::Document &doc, const System &system,
@@ -551,6 +627,14 @@ convertMasterBar(const Gp7::Document &doc, const System &system,
     {
         for (int number : ending.getNumbers())
             master_bar.myAlternateEndings.push_back(number);
+    }
+
+    // Directions
+    for (const Direction &direction : ScoreUtils::findInRange(
+             system.getDirections(), start_line.getPosition() + 1,
+             end_line.getPosition()))
+    {
+        convertDirection(direction, master_bar);
     }
 
     // Tempo markers.

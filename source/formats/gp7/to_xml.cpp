@@ -281,8 +281,21 @@ saveMasterBars(pugi::xml_node &gpif, const std::vector<MasterBar> &master_bars)
                          listToString(master_bar.myAlternateEndings));
         }
 
+        if (!master_bar.myDirectionJumps.empty() ||
+            !master_bar.myDirectionTargets.empty())
+        {
+            auto directions_node = bar_node.append_child("Directions");
+
+            using DirectionTarget = Gp7::MasterBar::DirectionTarget;
+            for (DirectionTarget target : master_bar.myDirectionTargets)
+                addValueNode(directions_node, "Target", Util::toString(target));
+
+            using DirectionJump = Gp7::MasterBar::DirectionJump;
+            for (DirectionJump jump : master_bar.myDirectionJumps)
+                addValueNode(directions_node, "Jump", Util::toString(jump));
+        }
+
         // TODO
-        // - directions
         // - fermatas
     }
 }
