@@ -17,9 +17,54 @@
 
 #include "document.h"
 
-using Ottavia = Gp7::Beat::Ottavia;
+#include <util/enumtostring.h>
 
-UTIL_DEFINE_ENUMTOSTRING(Ottavia, { { Ottavia::O8va, "8va" },
-                                    { Ottavia::O8vb, "8vb" },
-                                    { Ottavia::O15ma, "15ma" },
-                                    { Ottavia::O15mb, "15mb" } })
+using Ottavia = Gp7::Beat::Ottavia;
+using Alteration = Gp7::ChordName::Degree::Alteration;
+using DirectionTarget = Gp7::MasterBar::DirectionTarget;
+using DirectionJump = Gp7::MasterBar::DirectionJump;
+using ClefType = Gp7::Bar::ClefType;
+
+using namespace std::string_literals;
+
+UTIL_DEFINE_ENUMTOSTRING(Ottavia, { { Ottavia::O8va, "8va"s },
+                                    { Ottavia::O8vb, "8vb"s },
+                                    { Ottavia::O15ma, "15ma"s },
+                                    { Ottavia::O15mb, "15mb"s } })
+
+UTIL_DEFINE_ENUMTOSTRING(Alteration,
+                         { { Alteration::Perfect, "Perfect"s },
+                           { Alteration::Diminished, "Diminished"s },
+                           { Alteration::Augmented, "Augmented"s },
+                           { Alteration::Major, "Major"s },
+                           { Alteration::Minor, "Minor"s } })
+
+UTIL_DEFINE_ENUMTOSTRING(DirectionTarget,
+                         { { DirectionTarget::Fine, "Fine"s },
+                           { DirectionTarget::Coda, "Coda"s },
+                           { DirectionTarget::DoubleCoda, "DoubleCoda"s },
+                           { DirectionTarget::Segno, "Segno"s },
+                           { DirectionTarget::SegnoSegno, "SegnoSegno"s } })
+
+UTIL_DEFINE_ENUMTOSTRING(
+    DirectionJump,
+    { { DirectionJump::DaCapo, "DaCapo"s },
+      { DirectionJump::DaCapoAlCoda, "DaCapoAlCoda"s },
+      { DirectionJump::DaCapoAlDoubleCoda, "DaCapoAlDoubleCoda"s },
+      { DirectionJump::DaCapoAlFine, "DaCapoAlFine"s },
+      { DirectionJump::DaSegno, "DaSegno"s },
+      { DirectionJump::DaSegnoAlCoda, "DaSegnoAlCoda"s },
+      { DirectionJump::DaSegnoAlDoubleCoda, "DaSegnoAlDoubleCoda"s },
+      { DirectionJump::DaSegnoAlFine, "DaSegnoAlFine"s },
+      { DirectionJump::DaSegnoSegno, "DaSegnoSegno"s },
+      { DirectionJump::DaSegnoSegnoAlCoda, "DaSegnoSegnoAlCoda"s },
+      { DirectionJump::DaSegnoSegnoAlDoubleCoda, "DaSegnoSegnoAlDoubleCoda"s },
+      { DirectionJump::DaSegnoSegnoAlFine, "DaSegnoSegnoAlFine"s },
+      { DirectionJump::DaCoda, "DaCoda"s },
+      { DirectionJump::DaDoubleCoda, "DaDoubleCoda"s } })
+
+UTIL_DEFINE_ENUMTOSTRING(ClefType, { { ClefType::G2, "G2" },
+                                     { ClefType::F4, "F4" },
+                                     { ClefType::C3, "C3" },
+                                     { ClefType::C4, "C4" },
+                                     { ClefType::Neutral, "Neutral" } })

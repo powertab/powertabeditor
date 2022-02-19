@@ -297,11 +297,7 @@ saveBars(pugi::xml_node &gpif, const std::unordered_map<int, Bar> &bars_map)
         auto bar_node = bars_node.append_child("Bar");
         bar_node.append_attribute("id").set_value(id);
 
-        // Only bass / treble clefs are needed for exporting pt2 files.
-        std::string clef_str =
-            (bar.myClefType == Bar::ClefType::F4) ? "F4"s : "G2"s;
-        addValueNode(bar_node, "Clef", clef_str);
-
+        addValueNode(bar_node, "Clef", Util::toString(bar.myClefType));
         addValueNode(bar_node, "Voices", listToString(bar.myVoiceIds));
     }
 }

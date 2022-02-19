@@ -26,7 +26,7 @@
 #include <set>
 #include <string>
 #include <unordered_map>
-#include <util/enumtostring.h>
+#include <util/enumtostring_fwd.h>
 #include <vector>
 
 namespace Gp7
@@ -452,5 +452,9 @@ struct std::hash<Gp7::Rhythm>
 
 // Enum to string conversions
 UTIL_DECLARE_ENUMTOSTRING(Gp7::Beat::Ottavia)
+UTIL_DECLARE_ENUMTOSTRING(Gp7::ChordName::Degree::Alteration)
+UTIL_DECLARE_ENUMTOSTRING(Gp7::MasterBar::DirectionTarget)
+UTIL_DECLARE_ENUMTOSTRING(Gp7::MasterBar::DirectionJump)
+UTIL_DECLARE_ENUMTOSTRING(Gp7::Bar::ClefType)
 
 #endif

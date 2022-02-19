@@ -184,25 +184,21 @@ parseChordDegree(const pugi::xml_node &chord_node, const char *name)
     if (!node)
         return {};
 
-    using namespace std::string_literals;
-    using Alteration = Gp7::ChordName::Degree::Alteration;
 
     Gp7::ChordName::Degree degree;
     degree.myOmitted = node.attribute("omitted").as_bool();
 
-    static const std::unordered_map<std::string, Alteration> theAlterations = {
-        { "Perfect"s, Alteration::Perfect },
-        { "Diminished"s, Alteration::Diminished },
-        { "Augmented"s, Alteration::Augmented },
-        { "Major"s, Alteration::Major },
-        { "Minor"s, Alteration::Minor }
-    };
+    std::string text = node.attribute("alteration").as_string();
+    try
+    {
+        using Alteration = Gp7::ChordName::Degree::Alteration;
+        degree.myAlteration = Util::toEnum<Alteration>(text);
+    }
+    catch (const std::exception &)
+    {
+        std::cerr << "Unknown alteration type: " << text << std::endl;
+    }
 
-    auto it = theAlterations.find(node.attribute("alteration").as_string());
-    if (it == theAlterations.end())
-        throw FileFormatException("Unknown alteration type");
-
-    degree.myAlteration = it->second;
     return degree;
 }
 
@@ -412,56 +408,35 @@ parseMasterBars(const pugi::xml_node &master_bars_node)
         {
             using DirectionTarget = Gp7::MasterBar::DirectionTarget;
             using DirectionJump = Gp7::MasterBar::DirectionJump;
-            using namespace std::string_literals;
-
-            static const std::unordered_map<std::string, DirectionTarget>
-                theTargetNames = {
-                    { "Fine"s, DirectionTarget::Fine },
-                    { "Coda"s, DirectionTarget::Coda },
-                    { "DoubleCoda"s, DirectionTarget::DoubleCoda },
-                    { "Segno"s, DirectionTarget::Segno },
-                    { "SegnoSegno"s, DirectionTarget::SegnoSegno },
-                };
-
-            static const std::unordered_map<std::string, DirectionJump>
-                theJumpNames = {
-                    { "DaCapo"s, DirectionJump::DaCapo },
-                    { "DaCapoAlCoda"s, DirectionJump::DaCapoAlCoda },
-                    { "DaCapoAlDoubleCoda"s,
-                      DirectionJump::DaCapoAlDoubleCoda },
-                    { "DaCapoAlFine"s, DirectionJump::DaCapoAlFine },
-                    { "DaSegno"s, DirectionJump::DaSegno },
-                    { "DaSegnoAlCoda"s, DirectionJump::DaSegnoAlCoda },
-                    { "DaSegnoAlDoubleCoda"s,
-                      DirectionJump::DaSegnoAlDoubleCoda },
-                    { "DaSegnoAlFine"s, DirectionJump::DaSegnoAlFine },
-                    { "DaSegnoSegno"s, DirectionJump::DaSegnoSegno },
-                    { "DaSegnoSegnoAlCoda"s,
-                      DirectionJump::DaSegnoSegnoAlCoda },
-                    { "DaSegnoSegnoAlDoubleCoda"s,
-                      DirectionJump::DaSegnoSegnoAlDoubleCoda },
-                    { "DaSegnoSegnoAlFine"s,
-                      DirectionJump::DaSegnoSegnoAlFine },
-                    { "DaCoda"s, DirectionJump::DaCoda },
-                    { "DaDoubleCoda"s, DirectionJump::DaDoubleCoda }
-                };
 
             for (auto target : dirnode.children("Target"))
             {
-                auto it = theTargetNames.find(target.text().as_string());
-                if (it == theTargetNames.end())
-                    throw FileFormatException("Invalid direction target type");
-
-                master_bar.myDirectionTargets.push_back(it->second);
+                std::string target_str = target.text().as_string();
+                try
+                {
+                    master_bar.myDirectionTargets.push_back(
+                        Util::toEnum<DirectionTarget>(target_str));
+                }
+                catch (const std::exception &)
+                {
+                    std::cerr << "Invalid direction target type: " << target_str
+                              << std::endl;
+                }
             }
 
             for (auto jump : dirnode.children("Jump"))
             {
-                auto it = theJumpNames.find(jump.text().as_string());
-                if (it == theJumpNames.end())
-                    throw FileFormatException("Invalid direction jump type");
-
-                master_bar.myDirectionJumps.push_back(it->second);
+                std::string jump_str = jump.text().as_string();
+                try
+                {
+                    master_bar.myDirectionJumps.push_back(
+                        Util::toEnum<DirectionJump>(jump_str));
+                }
+                catch (const std::exception &)
+                {
+                    std::cerr << "Invalid direction jump type: " << jump_str
+                              << std::endl;
+                }
             }
         }
 
@@ -480,20 +455,15 @@ parseBars(const pugi::xml_node &bars_node)
         Gp7::Bar bar;
         bar.myVoiceIds = toIntList(splitString(node.child_value("Voices")));
 
-        using ClefType = Gp7::Bar::ClefType;
         std::string clef_name = node.child_value("Clef");
-        if (clef_name == "G2")
-            bar.myClefType = ClefType::G2;
-        else if (clef_name == "F4")
-            bar.myClefType = ClefType::F4;
-        else if (clef_name == "C3")
-            bar.myClefType = ClefType::C3;
-        else if (clef_name == "C4")
-            bar.myClefType = ClefType::C4;
-        else if (clef_name == "Neutral")
-            bar.myClefType = ClefType::Neutral;
-        else
-            throw FileFormatException("Unknown clef type");
+        try
+        {
+            bar.myClefType = Util::toEnum<Gp7::Bar::ClefType>(clef_name);
+        }
+        catch (const std::exception &)
+        {
+            std::cerr << "Invalid clef type: " << clef_name << std::endl;
+        }
 
         // TODO - import the 'Ottavia' key if the clef has 8va, etc
 
