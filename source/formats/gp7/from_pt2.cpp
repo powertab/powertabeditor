@@ -354,6 +354,8 @@ convertBeat(Gp7::Document &doc, Gp7::Beat &beat, const System &system,
         // GP needs the actual pitch or else the note is ignored..
         gp_note.myConcertPitch = convertPitch(tuning, key, note, false);
         gp_note.myTransposedPitch = convertPitch(tuning, key, note, true);
+        gp_note.myMidiPitch =
+            tuning.getNote(note.getString(), false) + note.getFretNumber();
 
         // Note / position properties
         gp_note.myPalmMuted = pos.hasProperty(Position::PalmMuting);

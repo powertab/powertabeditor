@@ -445,8 +445,14 @@ saveNotes(pugi::xml_node &gpif, const std::unordered_map<int, Note> &notes_map)
         // Record the pitch. GP ignores the note entirely if this isn't
         // present, and uses it for notation rather than computing it from the
         // tuning and string/fret.
+        // Recording the MIDI pitch is also necessary for slides to play back
+        // correctly in GP.
         savePitch(props_node, "ConcertPitch", note.myConcertPitch);
         savePitch(props_node, "TransposedPitch", note.myTransposedPitch);
+        {
+            auto prop_node = addPropertyNode(props_node, "Midi");
+            addValueNode(prop_node, "Number", note.myMidiPitch);
+        }
 
         if (note.myPalmMuted)
             addBoolNoteProperty(props_node, "PalmMuted");

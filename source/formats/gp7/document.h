@@ -379,8 +379,11 @@ struct Note
 
     int myString = 0;
     int myFret = 0;
-    Pitch myConcertPitch; // Used only for export
+
+    // Used only for export
+    Pitch myConcertPitch;
     Pitch myTransposedPitch;
+    int myMidiPitch = 0;
 
     bool myPalmMuted = false;
     bool myMuted = false;
