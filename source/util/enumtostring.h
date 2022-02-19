@@ -18,26 +18,12 @@
 #ifndef UTIL_ENUMTOSTRING_H
 #define UTIL_ENUMTOSTRING_H
 
+#include "enumtostring_fwd.h"
+
 #include <algorithm>
 #include <exception>
 #include <string>
 #include <utility>
-
-namespace Util
-{
-// Declaration for template specializations added via the macro.
-template <typename Enum>
-Enum toEnum(const std::string &str);
-}
-
-/// Forward declaration for the conversion functions.
-#define UTIL_DECLARE_ENUMTOSTRING(EnumType)                                    \
-    namespace Util                                                             \
-    {                                                                          \
-        std::string toString(EnumType value) noexcept;                         \
-        template <>                                                            \
-        EnumType toEnum<EnumType>(const std::string &str);                     \
-    }
 
 /// Macro for defining enum to string conversion (and vice versa). Hopefully
 /// someday this will be less ugly to do in C++!
@@ -48,27 +34,27 @@ Enum toEnum(const std::string &str);
 #define UTIL_DEFINE_ENUMTOSTRING(EnumType, ...)                                \
     namespace Util                                                             \
     {                                                                          \
-        static const std::pair<EnumType, std::string> theMap##__LINE__[] =     \
-            __VA_ARGS__;                                                       \
-        std::string toString(EnumType value) noexcept                          \
-        {                                                                      \
-            auto it = std::find_if(                                            \
-                std::begin(theMap##__LINE__), std::end(theMap##__LINE__),      \
-                [&](auto &entry) { return entry.first == value; });            \
-            assert(it != std::end(theMap##__LINE__));                          \
-            return it->second;                                                 \
-        }                                                                      \
-        template <>                                                            \
-        EnumType toEnum<EnumType>(const std::string &str)                      \
-        {                                                                      \
-            auto it = std::find_if(                                            \
-                std::begin(theMap##__LINE__), std::end(theMap##__LINE__),      \
-                [&](auto &entry) { return entry.second == str; });             \
-            if (it == std::end(theMap##__LINE__))                              \
-                throw std::invalid_argument(str);                              \
+    std::string toString(EnumType value) noexcept                              \
+    {                                                                          \
+        static const std::pair<EnumType, std::string> map[] = __VA_ARGS__;     \
+        auto it =                                                              \
+            std::find_if(std::begin(map), std::end(map),                       \
+                         [&](auto &entry) { return entry.first == value; });   \
+        assert(it != std::end(map));                                           \
+        return it->second;                                                     \
+    }                                                                          \
+    template <>                                                                \
+    EnumType toEnum<EnumType>(const std::string &str)                          \
+    {                                                                          \
+        static const std::pair<EnumType, std::string> map[] = __VA_ARGS__;     \
+        auto it =                                                              \
+            std::find_if(std::begin(map), std::end(map),                       \
+                         [&](auto &entry) { return entry.second == str; });    \
+        if (it == std::end(map))                                               \
+            throw std::invalid_argument(str);                                  \
                                                                                \
-            return it->first;                                                  \
-        }                                                                      \
+        return it->first;                                                      \
+    }                                                                          \
     }
 
 #endif
