@@ -25,6 +25,10 @@ add_definitions( -DPTE_VERSION=${_version} )
 set( platform_srcs )
 if ( PLATFORM_OSX )
     set( platform_srcs settingstree_plist.mm )
+    # This is Objective-C++, so don't merge with other files for unity builds.
+    set_source_files_properties( settingstree_plist.mm PROPERTIES
+        SKIP_UNITY_BUILD_INCLUSION TRUE
+    )
 endif ()
 
 set( srcs
