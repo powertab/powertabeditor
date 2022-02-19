@@ -275,8 +275,13 @@ saveMasterBars(pugi::xml_node &gpif, const std::vector<MasterBar> &master_bars)
             node.append_attribute("count").set_value(master_bar.myRepeatCount);
         }
 
+        if (!master_bar.myAlternateEndings.empty())
+        {
+            addValueNode(bar_node, "AlternateEndings",
+                         listToString(master_bar.myAlternateEndings));
+        }
+
         // TODO
-        // - alternate endings
         // - directions
         // - fermatas
     }

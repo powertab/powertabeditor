@@ -516,6 +516,15 @@ convertMasterBar(const Gp7::Document &doc, const System &system,
     master_bar.myKeySig.myMinor = key_sig.getKeyType() == KeySignature::Minor;
     master_bar.myKeySig.mySharps = key_sig.usesSharps();
 
+    // Alternate endings.
+    for (const AlternateEnding &ending : ScoreUtils::findInRange(
+             system.getAlternateEndings(), start_line.getPosition(),
+             end_line.getPosition() - 1))
+    {
+        for (int number : ending.getNumbers())
+            master_bar.myAlternateEndings.push_back(number);
+    }
+
     // Tempo markers.
     for (const TempoMarker &marker : ScoreUtils::findInRange(
              system.getTempoMarkers(), start_line.getPosition(),
