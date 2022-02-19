@@ -18,6 +18,7 @@
 #ifndef UTIL_ENUMTOSTRING_H
 #define UTIL_ENUMTOSTRING_H
 
+#include <algorithm>
 #include <exception>
 #include <string>
 #include <utility>
