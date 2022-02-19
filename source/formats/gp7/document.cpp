@@ -24,6 +24,8 @@ using Alteration = Gp7::ChordName::Degree::Alteration;
 using DirectionTarget = Gp7::MasterBar::DirectionTarget;
 using DirectionJump = Gp7::MasterBar::DirectionJump;
 using ClefType = Gp7::Bar::ClefType;
+using HarmonicType = Gp7::Note::HarmonicType;
+using FingerType = Gp7::Note::FingerType;
 
 using namespace std::string_literals;
 
@@ -68,3 +70,18 @@ UTIL_DEFINE_ENUMTOSTRING(ClefType, { { ClefType::G2, "G2" },
                                      { ClefType::C3, "C3" },
                                      { ClefType::C4, "C4" },
                                      { ClefType::Neutral, "Neutral" } })
+
+UTIL_DEFINE_ENUMTOSTRING(HarmonicType,
+                         { { HarmonicType::Natural, "Natural" },
+                           { HarmonicType::Artificial, "Artificial" },
+                           { HarmonicType::Pinch, "Pinch" },
+                           { HarmonicType::Tap, "Tap" },
+                           { HarmonicType::Semi, "Semi" },
+                           { HarmonicType::Feedback, "Feedback" } })
+
+UTIL_DEFINE_ENUMTOSTRING(FingerType, { { FingerType::Open, "Open" },
+                                       { FingerType::C, "C" },
+                                       { FingerType::A, "A" },
+                                       { FingerType::M, "M" },
+                                       { FingerType::I, "I" },
+                                       { FingerType::P, "P" } })

@@ -653,24 +653,15 @@ parseNotes(const pugi::xml_node &notes_node)
                 note.mySlideTypes = property.child("Flags").text().as_int();
             else if (name == "HarmonicType")
             {
-                using HarmonicType = Gp7::Note::HarmonicType;
-
-                std::string_view harmonic_type = property.child_value("HType");
-                if (harmonic_type == "Natural")
-                    note.myHarmonic = HarmonicType::Natural;
-                else if (harmonic_type == "Artificial")
-                    note.myHarmonic = HarmonicType::Artificial;
-                else if (harmonic_type == "Pinch")
-                    note.myHarmonic = HarmonicType::Pinch;
-                else if (harmonic_type == "Tap")
-                    note.myHarmonic = HarmonicType::Tap;
-                else if (harmonic_type == "Semi")
-                    note.myHarmonic = HarmonicType::Semi;
-                else if (harmonic_type == "Feedback")
-                    note.myHarmonic = HarmonicType::Feedback;
-                else
+                std::string harmonic_type = property.child_value("HType");
+                try
                 {
-                    std::cerr << "Unexpected harmonic type: " << harmonic_type
+                    using HarmonicType = Gp7::Note::HarmonicType;
+                    note.myHarmonic = Util::toEnum<HarmonicType>(harmonic_type);
+                }
+                catch (const std::exception &)
+                {
+                    std::cerr << "Unknown harmonic type: " << harmonic_type
                               << std::endl;
                 }
             }
@@ -728,23 +719,17 @@ parseNotes(const pugi::xml_node &notes_node)
 
         if (auto fingering = node.child("LeftFingering"))
         {
-            using FingerType = Gp7::Note::FingerType;
-
-            std::string_view text = fingering.text().as_string();
-            if (text == "Open")
-                note.myLeftFinger = FingerType::Open;
-            else if (text == "C")
-                note.myLeftFinger = FingerType::C;
-            else if (text == "A")
-                note.myLeftFinger = FingerType::A;
-            else if (text == "M")
-                note.myLeftFinger = FingerType::M;
-            else if (text == "I")
-                note.myLeftFinger = FingerType::I;
-            else if (text == "P")
-                note.myLeftFinger = FingerType::P;
-            else
-                throw FileFormatException("Unexpected finger type.");
+            std::string finger_type = fingering.text().as_string();
+            try
+            {
+                using FingerType = Gp7::Note::FingerType;
+                note.myLeftFinger = Util::toEnum<FingerType>(finger_type);
+            }
+            catch (const std::exception &)
+            {
+                std::cerr << "Unknown finger type: " << finger_type
+                          << std::endl;
+            }
         }
 
         const int id = node.attribute("id").as_int();

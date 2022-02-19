@@ -456,5 +456,7 @@ UTIL_DECLARE_ENUMTOSTRING(Gp7::ChordName::Degree::Alteration)
 UTIL_DECLARE_ENUMTOSTRING(Gp7::MasterBar::DirectionTarget)
 UTIL_DECLARE_ENUMTOSTRING(Gp7::MasterBar::DirectionJump)
 UTIL_DECLARE_ENUMTOSTRING(Gp7::Bar::ClefType)
+UTIL_DECLARE_ENUMTOSTRING(Gp7::Note::HarmonicType)
+UTIL_DECLARE_ENUMTOSTRING(Gp7::Note::FingerType)
 
 #endif
