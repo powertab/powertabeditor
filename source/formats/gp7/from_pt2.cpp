@@ -321,6 +321,28 @@ convertTremoloBar(const TremoloBar &trem)
     return gp_bend;
 }
 
+static Gp7::Note::FingerType
+convertFingering(LeftHandFingering::Finger f)
+{
+    using Finger = LeftHandFingering::Finger;
+    using GpFingerType = Gp7::Note::FingerType;
+    switch (f)
+    {
+        case Finger::None:
+            return GpFingerType::Open;
+        case Finger::Index:
+            return GpFingerType::I;
+        case Finger::Middle:
+            return GpFingerType::M;
+        case Finger::Ring:
+            return GpFingerType::A;
+        case Finger::Little:
+            return GpFingerType::C;
+        case Finger::Thumb:
+            return GpFingerType::P;
+    }
+}
+
 static void
 convertBeat(Gp7::Document &doc, Gp7::Beat &beat, const System &system,
             const Voice &voice, const Tuning &tuning, const KeySignature &key,
@@ -420,6 +442,12 @@ convertBeat(Gp7::Document &doc, Gp7::Beat &beat, const System &system,
 
         if (note.hasBend())
             gp_note.myBend = convertBend(note.getBend());
+
+        if (note.hasLeftHandFingering())
+        {
+            gp_note.myLeftFinger =
+                convertFingering(note.getLeftHandFingering().getFinger());
+        }
 
         const int note_id = doc.myNotes.size();
         doc.myNotes.emplace(note_id, gp_note);

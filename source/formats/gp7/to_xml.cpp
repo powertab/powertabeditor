@@ -496,9 +496,14 @@ saveNotes(pugi::xml_node &gpif, const std::unordered_map<int, Note> &notes_map)
             addBendProperty("BendDestinationOffset", bend.myDestOffset);
         }
 
+        if (note.myLeftFinger)
+        {
+            addValueNode(note_node, "LeftFingering",
+                         Util::toString(*note.myLeftFinger));
+        }
+
         // TODO
         // - harmonics
-        // - left hand fingering
     }
 }
 
