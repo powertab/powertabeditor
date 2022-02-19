@@ -354,27 +354,7 @@ saveBeats(pugi::xml_node &gpif, const std::unordered_map<int, Beat> &beats_map)
             addCDataNode(beat_node, "FreeText", beat.myFreeText);
 
         if (beat.myOttavia)
-        {
-            // TODO - unify the enum <-> string conversion with from_xml.cpp
-            std::string text;
-            switch (*beat.myOttavia)
-            {
-                case Gp7::Beat::Ottavia::O8va:
-                    text = "8va";
-                    break;
-                case Gp7::Beat::Ottavia::O8vb:
-                    text = "8vb";
-                    break;
-                case Gp7::Beat::Ottavia::O15ma:
-                    text = "15ma";
-                    break;
-                case Gp7::Beat::Ottavia::O15mb:
-                    text = "15mb";
-                    break;
-            }
-
-            addValueNode(beat_node, "Ottavia", text);
-        }
+            addValueNode(beat_node, "Ottavia", Util::toString(*beat.myOttavia));
 
         if (beat.myArpeggioUp || beat.myArpeggioDown)
         {

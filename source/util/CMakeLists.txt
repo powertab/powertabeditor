@@ -36,6 +36,7 @@ set( srcs
 
 set( headers
     date.h
+    enumtostring.h
     settingstree.h
     tostring.h
     scopeexit.h

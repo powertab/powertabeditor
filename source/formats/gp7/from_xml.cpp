@@ -532,17 +532,17 @@ parseBeats(const pugi::xml_node &beats_node, Gp7::Version version)
         if (auto chord_id = node.child("Chord"))
             beat.myChordId = chord_id.text().as_int(-1);
 
-        std::string_view ottavia = node.child_value("Ottavia");
+        std::string ottavia = node.child_value("Ottavia");
         if (!ottavia.empty())
         {
-            if (ottavia == "8va")
-                beat.myOttavia = Gp7::Beat::Ottavia::O8va;
-            else if (ottavia == "8vb")
-                beat.myOttavia = Gp7::Beat::Ottavia::O8vb;
-            else if (ottavia == "15ma")
-                beat.myOttavia = Gp7::Beat::Ottavia::O15ma;
-            else if (ottavia == "15mb")
-                beat.myOttavia = Gp7::Beat::Ottavia::O15mb;
+            try
+            {
+                beat.myOttavia = Util::toEnum<Gp7::Beat::Ottavia>(ottavia);
+            }
+            catch (const std::exception &)
+            {
+                std::cerr << "Invalid ottavia value: " << ottavia << std::endl;
+            }
         }
 
         beat.myFreeText = node.child_value("FreeText");

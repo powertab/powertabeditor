@@ -4,6 +4,7 @@ set( srcs
     fileformat.cpp
     fileformatmanager.cpp
 
+    gp7/document.cpp
     gp7/from_pt2.cpp
     gp7/from_xml.cpp
     gp7/gp7exporter.cpp

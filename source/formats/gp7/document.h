@@ -26,6 +26,7 @@
 #include <set>
 #include <string>
 #include <unordered_map>
+#include <util/enumtostring.h>
 #include <vector>
 
 namespace Gp7
@@ -448,5 +449,8 @@ struct std::hash<Gp7::Rhythm>
         return seed;
     }
 };
+
+// Enum to string conversions
+UTIL_DECLARE_ENUMTOSTRING(Gp7::Beat::Ottavia)
 
 #endif
