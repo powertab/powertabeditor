@@ -18,22 +18,24 @@
 #ifndef UTIL_ENUMTOSTRING_FWD_H
 #define UTIL_ENUMTOSTRING_FWD_H
 
+#include <optional>
 #include <string>
 
 namespace Util
 {
-// Declaration for template specializations added via the macro.
+// Declaration for the template specializations added via the macro.
 template <typename Enum>
-Enum toEnum(const std::string &str);
+std::optional<Enum> toEnum(const std::string &str);
 }
 
 /// Forward declaration for the conversion functions.
 #define UTIL_DECLARE_ENUMTOSTRING(EnumType)                                    \
     namespace Util                                                             \
     {                                                                          \
-        std::string toString(EnumType value) noexcept;                         \
+        std::string toString(EnumType value);                                  \
+                                                                               \
         template <>                                                            \
-        EnumType toEnum<EnumType>(const std::string &str);                     \
+        std::optional<EnumType> toEnum<EnumType>(const std::string &str);      \
     }
 
 #endif

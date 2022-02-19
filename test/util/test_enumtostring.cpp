@@ -39,5 +39,5 @@ TEST_CASE("Util/EnumToString/Basic")
 
     REQUIRE(Util::toEnum<MyEnum>("textA") == MyEnum::ValueA);
     REQUIRE(Util::toEnum<MyEnum>("textB") == MyEnum::ValueB);
-    REQUIRE_THROWS(Util::toEnum<MyEnum>("invalid"));
+    REQUIRE(!Util::toEnum<MyEnum>("invalid").has_value());
 }

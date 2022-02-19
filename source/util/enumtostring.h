@@ -22,20 +22,19 @@
 
 #include <algorithm>
 #include <cassert>
-#include <exception>
+#include <optional>
 #include <string>
 #include <utility>
 
 /// Macro for defining enum to string conversion (and vice versa). Hopefully
 /// someday this will be less ugly to do in C++!
-/// toEnum() will throw an exception if the string is invalid.
 /// The implementation is inspired by NLOHMANN_JSON_SERIALIZE_ENUM
 ///
 /// Usage: UTIL_DECLARE_ENUMTOSTRING(MyEnum, {{MyEnum::ValueA, "textA"}, ...})
 #define UTIL_DEFINE_ENUMTOSTRING(EnumType, ...)                                \
     namespace Util                                                             \
     {                                                                          \
-    std::string toString(EnumType value) noexcept                              \
+    std::string toString(EnumType value)                                       \
     {                                                                          \
         static const std::pair<EnumType, std::string> map[] = __VA_ARGS__;     \
         auto it =                                                              \
@@ -45,14 +44,14 @@
         return it->second;                                                     \
     }                                                                          \
     template <>                                                                \
-    EnumType toEnum<EnumType>(const std::string &str)                          \
+    std::optional<EnumType> toEnum<EnumType>(const std::string &str)           \
     {                                                                          \
         static const std::pair<EnumType, std::string> map[] = __VA_ARGS__;     \
         auto it =                                                              \
             std::find_if(std::begin(map), std::end(map),                       \
                          [&](auto &entry) { return entry.second == str; });    \
         if (it == std::end(map))                                               \
-            throw std::invalid_argument(str);                                  \
+            return std::nullopt;                                               \
                                                                                \
         return it->first;                                                      \
     }                                                                          \

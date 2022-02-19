@@ -184,20 +184,15 @@ parseChordDegree(const pugi::xml_node &chord_node, const char *name)
     if (!node)
         return {};
 
-
+    using Alteration = Gp7::ChordName::Degree::Alteration;
     Gp7::ChordName::Degree degree;
     degree.myOmitted = node.attribute("omitted").as_bool();
 
     std::string text = node.attribute("alteration").as_string();
-    try
-    {
-        using Alteration = Gp7::ChordName::Degree::Alteration;
-        degree.myAlteration = Util::toEnum<Alteration>(text);
-    }
-    catch (const std::exception &)
-    {
+    if (auto alteration = Util::toEnum<Alteration>(text))
+        degree.myAlteration = *alteration;
+    else
         std::cerr << "Unknown alteration type: " << text << std::endl;
-    }
 
     return degree;
 }
@@ -409,30 +404,26 @@ parseMasterBars(const pugi::xml_node &master_bars_node)
             using DirectionTarget = Gp7::MasterBar::DirectionTarget;
             using DirectionJump = Gp7::MasterBar::DirectionJump;
 
-            for (auto target : dirnode.children("Target"))
+            for (auto target_node : dirnode.children("Target"))
             {
-                std::string target_str = target.text().as_string();
-                try
-                {
-                    master_bar.myDirectionTargets.push_back(
-                        Util::toEnum<DirectionTarget>(target_str));
-                }
-                catch (const std::exception &)
+                std::string target_str = target_node.text().as_string();
+
+                if (auto target = Util::toEnum<DirectionTarget>(target_str))
+                    master_bar.myDirectionTargets.push_back(*target);
+                else
                 {
                     std::cerr << "Invalid direction target type: " << target_str
                               << std::endl;
                 }
             }
 
-            for (auto jump : dirnode.children("Jump"))
+            for (auto jump_node : dirnode.children("Jump"))
             {
-                std::string jump_str = jump.text().as_string();
-                try
-                {
-                    master_bar.myDirectionJumps.push_back(
-                        Util::toEnum<DirectionJump>(jump_str));
-                }
-                catch (const std::exception &)
+                std::string jump_str = jump_node.text().as_string();
+
+                if (auto jump = Util::toEnum<DirectionJump>(jump_str))
+                    master_bar.myDirectionJumps.push_back(*jump);
+                else
                 {
                     std::cerr << "Invalid direction jump type: " << jump_str
                               << std::endl;
@@ -456,14 +447,10 @@ parseBars(const pugi::xml_node &bars_node)
         bar.myVoiceIds = toIntList(splitString(node.child_value("Voices")));
 
         std::string clef_name = node.child_value("Clef");
-        try
-        {
-            bar.myClefType = Util::toEnum<Gp7::Bar::ClefType>(clef_name);
-        }
-        catch (const std::exception &)
-        {
+        if (auto clef_type = Util::toEnum<Gp7::Bar::ClefType>(clef_name))
+            bar.myClefType = *clef_type;
+        else
             std::cerr << "Invalid clef type: " << clef_name << std::endl;
-        }
 
         // TODO - import the 'Ottavia' key if the clef has 8va, etc
 
@@ -505,14 +492,9 @@ parseBeats(const pugi::xml_node &beats_node, Gp7::Version version)
         std::string ottavia = node.child_value("Ottavia");
         if (!ottavia.empty())
         {
-            try
-            {
-                beat.myOttavia = Util::toEnum<Gp7::Beat::Ottavia>(ottavia);
-            }
-            catch (const std::exception &)
-            {
+            beat.myOttavia = Util::toEnum<Gp7::Beat::Ottavia>(ottavia);
+            if (!beat.myOttavia)
                 std::cerr << "Invalid ottavia value: " << ottavia << std::endl;
-            }
         }
 
         beat.myFreeText = node.child_value("FreeText");
@@ -654,12 +636,10 @@ parseNotes(const pugi::xml_node &notes_node)
             else if (name == "HarmonicType")
             {
                 std::string harmonic_type = property.child_value("HType");
-                try
-                {
-                    using HarmonicType = Gp7::Note::HarmonicType;
-                    note.myHarmonic = Util::toEnum<HarmonicType>(harmonic_type);
-                }
-                catch (const std::exception &)
+
+                using HarmonicType = Gp7::Note::HarmonicType;
+                note.myHarmonic = Util::toEnum<HarmonicType>(harmonic_type);
+                if (!note.myHarmonic)
                 {
                     std::cerr << "Unknown harmonic type: " << harmonic_type
                               << std::endl;
@@ -720,12 +700,10 @@ parseNotes(const pugi::xml_node &notes_node)
         if (auto fingering = node.child("LeftFingering"))
         {
             std::string finger_type = fingering.text().as_string();
-            try
-            {
-                using FingerType = Gp7::Note::FingerType;
-                note.myLeftFinger = Util::toEnum<FingerType>(finger_type);
-            }
-            catch (const std::exception &)
+
+            using FingerType = Gp7::Note::FingerType;
+            note.myLeftFinger = Util::toEnum<FingerType>(finger_type);
+            if (!note.myLeftFinger)
             {
                 std::cerr << "Unknown finger type: " << finger_type
                           << std::endl;
