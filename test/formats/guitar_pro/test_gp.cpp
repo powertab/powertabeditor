@@ -17,14 +17,14 @@
 
 #include <doctest/doctest.h>
 
-#include <app/appinfo.h>
+#include <app/paths.h>
 #include <formats/guitar_pro/guitarproimporter.h>
 #include <score/score.h>
 
 static void loadTest(GuitarProImporter &importer, const char *filename,
                      Score &score)
 {
-    importer.load(AppInfo::getAbsolutePath(filename), score);
+    importer.load(Paths::getAppDirPath(filename), score);
 }
 
 TEST_CASE("Formats/GuitarPro/Barlines")
@@ -333,7 +333,7 @@ TEST_CASE("Formats/GuitarPro/Harmonics")
 {
     Score score;
     GuitarProImporter importer;
-    importer.load(AppInfo::getAbsolutePath("data/harmonics.gp5"), score);
+    importer.load(Paths::getAppDirPath("data/harmonics.gp5"), score);
 
     using Octave = ArtificialHarmonic::Octave;
 
@@ -376,7 +376,7 @@ TEST_CASE("Formats/GuitarPro/Directions")
 {
     Score score;
     GuitarProImporter importer;
-    importer.load(AppInfo::getAbsolutePath("data/directions.gp5"), score);
+    importer.load(Paths::getAppDirPath("data/directions.gp5"), score);
 
     {
         const System &system = score.getSystems()[0];
@@ -438,7 +438,7 @@ TEST_CASE("Formats/GuitarPro/Bends")
 {
     Score score;
     GuitarProImporter importer;
-    importer.load(AppInfo::getAbsolutePath("data/bends.gp5"), score);
+    importer.load(Paths::getAppDirPath("data/bends.gp5"), score);
 
     const Voice &voice = score.getSystems()[0].getStaves()[0].getVoices()[0];
     {
@@ -507,7 +507,7 @@ TEST_CASE("Formats/GuitarPro/TremoloBars")
 {
     Score score;
     GuitarProImporter importer;
-    importer.load(AppInfo::getAbsolutePath("data/tremolo_bars.gp5"), score);
+    importer.load(Paths::getAppDirPath("data/tremolo_bars.gp5"), score);
 
     const Voice &voice = score.getSystems()[0].getStaves()[0].getVoices()[0];
     {

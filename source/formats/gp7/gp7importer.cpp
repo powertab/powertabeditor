@@ -17,8 +17,8 @@
 
 #include "gp7importer.h"
 
-#include "converter.h"
-#include "parser.h"
+#include "document.h"
+#include "to_pt2.h"
 
 #include <minizip/unzip.h>
 #ifdef _WIN32
@@ -31,8 +31,14 @@
 #include <score/score.h>
 #include <util/scopeexit.h>
 
+FileFormat
+Gp7Importer::getFileFormat()
+{
+    return FileFormat("Guitar Pro 7", { "gp" });
+}
+
 Gp7Importer::Gp7Importer()
-    : FileFormatImporter(FileFormat("Guitar Pro 7", { "gp" }))
+    : FileFormatImporter(getFileFormat())
 {
 }
 
@@ -139,6 +145,6 @@ void Gp7Importer::load(const std::filesystem::path &filename, Score &score)
     if (!result)
         throw FileFormatException(result.description());
 
-    Gp7::Document doc = Gp7::parse(xml_doc, Gp7::Version::V7);
+    Gp7::Document doc = Gp7::from_xml(xml_doc, Gp7::Version::V7);
     Gp7::convert(doc, score);
 }

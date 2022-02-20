@@ -17,7 +17,7 @@
   
 #include <doctest/doctest.h>
 
-#include <app/appinfo.h>
+#include <app/paths.h>
 #include <formats/powertab/powertabimporter.h>
 #include <score/score.h>
 
@@ -105,7 +105,7 @@ TEST_CASE("Score/Score/Deserialization")
 {
     Score score;
     PowerTabImporter importer;
-    importer.load(AppInfo::getAbsolutePath("data/reordered.pt2"), score);
+    importer.load(Paths::getAppDirPath("data/reordered.pt2"), score);
 
     REQUIRE(score.getSystems().size() == 2);
     REQUIRE(score.getSystems()[0].getAlternateEndings().size() == 2);

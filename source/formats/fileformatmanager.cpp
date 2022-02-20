@@ -17,6 +17,7 @@
 
 #include "fileformatmanager.h"
 
+#include <formats/gp7/gp7exporter.h>
 #include <formats/gp7/gp7importer.h>
 #include <formats/gpx/gpximporter.h>
 #include <formats/guitar_pro/guitarproimporter.h>
@@ -34,6 +35,7 @@ FileFormatManager::FileFormatManager(const SettingsManager &settings_manager)
     myImporters.emplace_back(new Gp7Importer());
 
     myExporters.emplace_back(new PowerTabExporter());
+    myExporters.emplace_back(new Gp7Exporter());
     myExporters.emplace_back(new MidiExporter(settings_manager));
 }
 

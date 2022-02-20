@@ -15,8 +15,8 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-#include "converter.h"
-#include "parser.h"
+#include "to_pt2.h"
+#include "document.h"
 
 #include <boost/date_time/gregorian/gregorian_types.hpp>
 #include <boost/rational.hpp>
@@ -37,8 +37,10 @@
 #include <score/utils.h>
 #include <score/utils/scorepolisher.h>
 #include <score/voiceutils.h>
+#include <util/tostring.h>
 
 #include <iostream>
+#include <unordered_set>
 
 /// Convert the Guitar Pro file metadata.
 static void
@@ -987,16 +989,25 @@ convertChordDiagram(const Gp7::Chord &gp_chord)
 static void
 convertChordDiagrams(const Gp7::Document &doc, Score &score)
 {
-    // TODO - consolidate identical diagrams from different tracks?
+    std::unordered_set<ChordDiagram> unique_diagrams;
     for (const Gp7::Track &track : doc.myTracks)
     {
-        // Sort by id to insert in a deterministic order..
-        std::map<int, Gp7::Chord> ordered_chords(track.myChords.begin(),
-                                                 track.myChords.end());
-
-        for (auto &&[_, chord] : ordered_chords)
-            score.insertChordDiagram(convertChordDiagram(chord));
+        for (auto &&[_, chord] : track.myChords)
+            unique_diagrams.insert(convertChordDiagram(chord));
     }
+
+    // Sort by chord name to insert in a deterministic order.
+    std::vector<ChordDiagram> diagrams(unique_diagrams.begin(),
+                                       unique_diagrams.end());
+    std::sort(diagrams.begin(), diagrams.end(),
+              [](const ChordDiagram &d1, const ChordDiagram &d2)
+              {
+                  return Util::toString(d1.getChordName()) <
+                         Util::toString(d2.getChordName());
+              });
+
+    for (const ChordDiagram &diagram : diagrams)
+        score.insertChordDiagram(diagram);
 }
 
 static void
@@ -1046,14 +1057,17 @@ convertSystem(const Gp7::Document &doc, Score &score, int bar_begin,
             const Tuning &tuning = player.getTuning();
 
             const int gp_bar_idx = master_bar.myBarIds[staff_idx];
+            if (gp_bar_idx < 0)
+                continue; // Empty bar
             const Gp7::Bar &gp_bar = doc.myBars.at(gp_bar_idx);
 
             // For the first bar in the system, set the staff's clefy type.
             if (bar_idx == bar_begin)
                 staff.setClefType(convertClefType(gp_bar.myClefType));
 
-            assert(gp_bar.myVoiceIds.size() == 4);
-            for (int voice_idx = 0; voice_idx < Staff::NUM_VOICES; ++voice_idx)
+            const int num_voices =
+                std::min<int>(Staff::NUM_VOICES, gp_bar.myVoiceIds.size());
+            for (int voice_idx = 0; voice_idx < num_voices; ++voice_idx)
             {
                 const int gp_voice_idx = gp_bar.myVoiceIds[voice_idx];
                 // Voice might not be used.
@@ -1087,7 +1101,14 @@ convertSystem(const Gp7::Document &doc, Score &score, int bar_begin,
                             doc.myTracks[track_idx].myChords.at(*gp_beat.myChordId);
 
                         ChordName chord_name = convertChordName(gp_chord.myName);
-                        system.insertChord(ChordText(voice_pos, chord_name));
+                        // Avoid inserting duplicates since many tracks may
+                        // have the same chord name.
+                        if (!ScoreUtils::findByPosition(system.getChords(),
+                                                        voice_pos))
+                        {
+                            system.insertChord(
+                                ChordText(voice_pos, chord_name));
+                        }
                     }
 
                     Position pos = convertPosition(gp_beat, gp_rhythm);

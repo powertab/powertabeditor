@@ -40,6 +40,9 @@ namespace Paths {
     /// Return a path to the user's home directory.
     path getHomeDir();
 
+    /// Combine the relative path with the location of the executable.
+    path getAppDirPath(const path &relative_path);
+
     /// Convert a QString to a boost::filesystem::path.
     path fromQString(const QString &str);
 

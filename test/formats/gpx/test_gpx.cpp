@@ -17,7 +17,7 @@
 
 #include <doctest/doctest.h>
 
-#include <app/appinfo.h>
+#include <app/paths.h>
 #include <formats/gpx/gpximporter.h>
 #include <score/score.h>
 #include <util/tostring.h>
@@ -26,7 +26,7 @@ TEST_CASE("Formats/GpxImport/Text")
 {
     Score score;
     GpxImporter importer;
-    importer.load(AppInfo::getAbsolutePath("data/text.gpx"), score);
+    importer.load(Paths::getAppDirPath("data/text.gpx"), score);
 
     const System &system = score.getSystems()[0];
 
@@ -39,7 +39,7 @@ TEST_CASE("Formats/GpxImport/TremoloBar")
 {
     Score score;
     GpxImporter importer;
-    importer.load(AppInfo::getAbsolutePath("data/tremolo_bars.gpx"), score);
+    importer.load(Paths::getAppDirPath("data/tremolo_bars.gpx"), score);
 
     const Voice &voice = score.getSystems()[0].getStaves()[0].getVoices()[0];
     {
@@ -85,18 +85,16 @@ TEST_CASE("Formats/GpxImport/ChordDiagrams")
 {
     Score score;
     GpxImporter importer;
-    importer.load(AppInfo::getAbsolutePath("data/chord_diagrams.gpx"), score);
+    importer.load(Paths::getAppDirPath("data/chord_diagrams.gpx"), score);
 
-    REQUIRE(score.getChordDiagrams().size() == 5);
+    REQUIRE(score.getChordDiagrams().size() == 4);
 
     REQUIRE(Util::toString(score.getChordDiagrams()[0]) ==
-            "E: 0 2 2 1 0 0");
+            "Asus2: x 0 2 2 0 0");
     REQUIRE(Util::toString(score.getChordDiagrams()[1]) ==
             "Bb: 6 8 8 7 6 x (6)");
     REQUIRE(Util::toString(score.getChordDiagrams()[2]) ==
+            "E: 0 2 2 1 0 0");
+    REQUIRE(Util::toString(score.getChordDiagrams()[3]) ==
             "F#: x 2 4 4 3 x x");
-    REQUIRE(Util::toString(score.getChordDiagrams()[4]) ==
-            "Asus2: x 0 2 2 0 0");
-    // Duplicates aren't detected currently.
-    REQUIRE(score.getChordDiagrams()[3] == score.getChordDiagrams()[0]);
 }

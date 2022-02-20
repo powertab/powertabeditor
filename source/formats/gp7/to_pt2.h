@@ -13,22 +13,20 @@
  *
  * You should have received a copy of the GNU General Public License
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
-*/
+ */
 
-#ifndef FORMATS_GP7IMPORTER_H
-#define FORMATS_GP7IMPORTER_H
+#ifndef FORMATS_GP7_TO_PT2_H
+#define FORMATS_GP7_TO_PT2_H
 
-#include <formats/fileformat.h>
+class Score;
 
-class Gp7Importer : public FileFormatImporter
+namespace Gp7
 {
-public:
-    Gp7Importer();
+struct Document;
 
-    void load(const std::filesystem::path &filename, Score &score) override;
+/// Converts the Guitar Pro document into the provided score.
+void convert(const Gp7::Document &doc, Score &score);
 
-    static FileFormat getFileFormat();
-};
+} // namespace Gp7
 
 #endif
-

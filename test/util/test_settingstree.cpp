@@ -17,7 +17,7 @@
   
 #include <doctest/doctest.h>
 
-#include <app/appinfo.h>
+#include <app/paths.h>
 #include <fstream>
 #include <sstream>
 #include <util/settingstree.h>
@@ -107,7 +107,7 @@ TEST_CASE("Util/SettingsTree/JSON/Export")
     settings.saveToJSON(output);
 
     std::ifstream expected_file(
-        AppInfo::getAbsolutePath("data/test_settingstree_expected.json"));
+        Paths::getAppDirPath("data/test_settingstree_expected.json"));
     std::stringstream expected;
     expected << expected_file.rdbuf();
 
@@ -117,7 +117,7 @@ TEST_CASE("Util/SettingsTree/JSON/Export")
 TEST_CASE("Util/SettingsTree/JSON/Import")
 {
     std::ifstream input_file(
-        AppInfo::getAbsolutePath("data/test_settingstree_expected.json"));
+        Paths::getAppDirPath("data/test_settingstree_expected.json"));
 
     SettingsTree settings;
     settings.loadFromJSON(input_file);

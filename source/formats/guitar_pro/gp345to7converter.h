@@ -19,7 +19,7 @@
 #define FORMATS_GP_GP345TO7CONVERTER_H
 
 #include "document.h"
-#include <formats/gp7/parser.h>
+#include <formats/gp7/document.h>
 
 namespace Gp
 {

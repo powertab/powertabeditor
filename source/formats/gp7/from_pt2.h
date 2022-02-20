@@ -1,5 +1,5 @@
 /*
- * Copyright (C) 2020 Cameron White
+ * Copyright (C) 2022 Cameron White
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -13,22 +13,20 @@
  *
  * You should have received a copy of the GNU General Public License
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
-*/
+ */
 
-#ifndef FORMATS_GP7IMPORTER_H
-#define FORMATS_GP7IMPORTER_H
+#ifndef FORMATS_GP7_FROM_PT2_H
+#define FORMATS_GP7_FROM_PT2_H
 
-#include <formats/fileformat.h>
+class Score;
 
-class Gp7Importer : public FileFormatImporter
+namespace Gp7
 {
-public:
-    Gp7Importer();
+struct Document;
 
-    void load(const std::filesystem::path &filename, Score &score) override;
+/// Converts the provided score into a Guitar Pro document.
+Gp7::Document convert(const Score &score);
 
-    static FileFormat getFileFormat();
-};
+} // namespace Gp7
 
 #endif
-

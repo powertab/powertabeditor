@@ -30,8 +30,7 @@
 #include <score/utils.h>
 #include <score/voiceutils.h>
 
-static constexpr int PERCUSSION_CHANNEL = 9;
-static constexpr int METRONOME_CHANNEL = PERCUSSION_CHANNEL;
+static constexpr int METRONOME_CHANNEL = Midi::PERCUSSION_CHANNEL;
 static constexpr int DEFAULT_PPQ = 480;
 
 static constexpr int PITCH_BEND_RANGE = 24;
@@ -55,19 +54,9 @@ enum Velocity : uint8_t
     PalmMutedVelocity = 112
 };
 
-/// Returns the MIDI channel that should be used for the player.
-/// Since channel 10 is reserved for percussion, we can't use that
-/// channel for regular instruments.
-static int getChannel(int player)
-{
-    if (player >= PERCUSSION_CHANNEL)
-        player++;
-    return player;
-}
-
 static int getChannel(const ActivePlayer &player)
 {
-    return getChannel(player.getPlayerNumber());
+    return Midi::getPlayerChannel(player.getPlayerNumber());
 }
 
 static bool findPositionChange(MidiEventList &event_list, int ticks,
@@ -127,24 +116,6 @@ static SystemLocation moveToNextBar(MidiEventList &event_list, int ticks,
     return location;
 }
 
-/// Returns the start and end barline around the given position.
-std::pair<const Barline &, const Barline &>
-getSurroundingBarlines(const System &system, int position)
-{
-    // If we're exactly on top of a barline, use that instead of grabbing the
-    // preceding barline.
-    const Barline *current_bar = ScoreUtils::findByPosition(
-        system.getBarlines(), position);
-    if (!current_bar)
-        current_bar = system.getPreviousBarline(position);
-
-    const Barline *next_bar = system.getNextBarline(position);
-    assert(next_bar);
-
-    return { *current_bar, *next_bar };
-}
-
-
 MidiFile::MidiFile() : myTicksPerBeat(0)
 {
 }
@@ -179,7 +150,7 @@ void MidiFile::load(const Score &score, const LoadOptions &options)
     // Set the initial channel volume and pitch bend range..
     std::vector<MidiEventList> regular_tracks(score.getPlayers().size());
     for (unsigned int i = 0; i < score.getPlayers().size(); ++i)
-        initializeChannel(regular_tracks[i], getChannel(i));
+        initializeChannel(regular_tracks[i], Midi::getPlayerChannel(i));
 
     SystemLocation location(0, 0);
     std::vector<uint8_t> active_bends;
@@ -191,7 +162,7 @@ void MidiFile::load(const Score &score, const LoadOptions &options)
     {
         const System &system = score.getSystems()[location.getSystem()];
         auto [current_bar, next_bar] =
-            getSurroundingBarlines(system, location.getPosition());
+            SystemUtils::getSurroundingBarlines(system, location.getPosition());
 
         if (location.getSystem() != system_index)
         {
@@ -359,7 +330,7 @@ findNextTempoMarker(const Score &score, SystemLocation location,
     {
         const System &system = score.getSystems()[location.getSystem()];
         auto [current_bar, next_bar] =
-            getSurroundingBarlines(system, location.getPosition());
+            SystemUtils::getSurroundingBarlines(system, location.getPosition());
 
         // Loop until we find the next tempo marker.
         auto markers = ScoreUtils::findInRange(system.getTempoMarkers(),
@@ -490,12 +461,8 @@ static int getActualNotePitch(const Note &note, const Tuning &tuning)
 
     if (note.hasArtificialHarmonic())
     {
-        static const int theKeyOffsets[] = { 0, 2, 4, 5, 7, 9, 10 };
-
-        ArtificialHarmonic harmonic = note.getArtificialHarmonic();
-        pitch = (Midi::getMidiNoteOctave(pitch) +
-                 static_cast<int>(harmonic.getOctave()) + 2) * 12 +
-                theKeyOffsets[harmonic.getKey()] + harmonic.getVariation();
+        pitch = Harmonics::getArtificialHarmonicPitch(
+            pitch, note.getArtificialHarmonic());
     }
 
     return pitch;
@@ -1284,7 +1251,7 @@ MidiFile::loadSingleNote(const Score &score,
     for (size_t i = 0; i < staff_players.size(); ++i)
     {
         const int player_index = staff_players[i].getPlayerNumber();
-        const int channel = getChannel(player_index);
+        const int channel = Midi::getPlayerChannel(player_index);
         MidiEventList &track = myTracks[i];
 
         initializeChannel(track, channel);

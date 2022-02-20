@@ -15,17 +15,18 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-#ifndef FORMATS_GP7_PARSER_H
-#define FORMATS_GP7_PARSER_H
+#ifndef FORMATS_GP7_DOCUMENT_H
+#define FORMATS_GP7_DOCUMENT_H
 
-#include "score/timesignature.h"
 #include <bitset>
 #include <boost/rational.hpp>
+#include <boost/functional/hash.hpp>
 #include <optional>
 #include <pugixml.hpp>
 #include <set>
 #include <string>
 #include <unordered_map>
+#include <util/enumtostring_fwd.h>
 #include <vector>
 
 namespace Gp7
@@ -59,11 +60,11 @@ struct TempoChange
 {
     enum class BeatType
     {
-        Eighth,
-        Quarter,
-        QuarterDotted,
-        Half,
-        HalfDotted
+        Eighth = 1,
+        Quarter = 2,
+        QuarterDotted = 3,
+        Half = 4,
+        HalfDotted = 5
     };
 
     /// Specifies the location within the bar, from 0 to 1. (e.g. if 0.75 and
@@ -90,6 +91,10 @@ struct Staff
 struct Sound
 {
     std::string myLabel;
+    // Unique name, path, and role. Used for sound changes.
+    std::string myName;
+    std::string myPath;
+    std::string myRole = "User";
     int myMidiPreset = -1;
 };
 
@@ -97,8 +102,17 @@ struct ChordName
 {
     struct Note
     {
+        enum class Accidental: int
+        {
+            DoubleFlat = -2,
+            Flat = -1,
+            Natural = 0,
+            Sharp = 1,
+            DoubleSharp = 2
+        };
+
         std::string myStep;
-        int myAccidental = 0;
+        Accidental myAccidental = Accidental::Natural;
     };
 
     struct Degree
@@ -111,6 +125,11 @@ struct ChordName
             Major,
             Minor
         };
+
+        Degree() = default;
+        Degree(Alteration alt) : myAlteration(alt)
+        {
+        }
 
         Alteration myAlteration = Alteration::Perfect;
         bool myOmitted = false;
@@ -138,8 +157,16 @@ struct ChordDiagram
 
 struct Chord
 {
+    std::string myDescription;
     ChordName myName;
     ChordDiagram myDiagram;
+};
+
+struct SoundChange
+{
+    int myBar = -1;
+    double myPosition = -1; // Number of beats within the bar.
+    int mySoundId = -1;
 };
 
 struct Track
@@ -153,6 +180,9 @@ struct Track
     /// the same active sound). Automations describe when the sounds are
     /// changed.
     std::vector<Sound> mySounds;
+    std::vector<SoundChange> mySoundChanges;
+    // For export only. MIDI channels are normally automatically determined.
+    int myMidiChannel = -1;
 
     std::unordered_map<int, Chord> myChords;
 };
@@ -225,6 +255,8 @@ struct MasterBar
     std::vector<DirectionTarget> myDirectionTargets;
     std::vector<DirectionJump> myDirectionJumps;
 
+    // These are actually stored on the MasterTrack in the XML data, but are
+    // stored on the appropriate master bar for convenience
     std::vector<TempoChange> myTempoChanges;
 
     /// Fermatas apply to all tracks, and are applied at a specific beat
@@ -295,6 +327,13 @@ struct Beat
 /// A duration, which is shared across many beats.
 struct Rhythm
 {
+    bool operator==(const Rhythm&other) const
+    {
+        return myDuration == other.myDuration && myDots == other.myDots &&
+               myTupletNum == other.myTupletNum &&
+               myTupletDenom == other.myTupletDenom;
+    }
+
     /// Duration, where a whole note is 1, quarter note is 4, etc.
     int myDuration = 4;
     /// Number of dots (0-2).
@@ -347,8 +386,21 @@ struct Note
         P
     };
 
+    struct Pitch
+    {
+        char myNote = 'A';
+        std::string myAccidental;
+        int myOctave = 0;
+    };
+
     int myString = 0;
     int myFret = 0;
+
+    // Used only for export
+    Pitch myConcertPitch;
+    Pitch myTransposedPitch;
+    int myMidiPitch = 0;
+
     bool myPalmMuted = false;
     bool myMuted = false;
     bool myTieOrigin = false;
@@ -391,8 +443,36 @@ struct Document
 };
 
 /// Parses the score.gpif XML file.
-Document parse(const pugi::xml_document &root, Version version);
+Document from_xml(const pugi::xml_document &root, Version version);
+
+/// Creates the score.gpif XML file from the intermediate representation.
+pugi::xml_document to_xml(const Document &doc);
 
 } // namespace Gp7
+
+/// Support for std::unordered_set etc
+template<>
+struct std::hash<Gp7::Rhythm>
+{
+    size_t operator()(const Gp7::Rhythm &rhythm) const noexcept
+    {
+        size_t seed = 0;
+        boost::hash_combine(seed, rhythm.myDuration);
+        boost::hash_combine(seed, rhythm.myDots);
+        boost::hash_combine(seed, rhythm.myTupletNum);
+        boost::hash_combine(seed, rhythm.myTupletDenom);
+        return seed;
+    }
+};
+
+// Enum to string conversions
+UTIL_DECLARE_ENUMTOSTRING(Gp7::Beat::Ottavia)
+UTIL_DECLARE_ENUMTOSTRING(Gp7::ChordName::Note::Accidental)
+UTIL_DECLARE_ENUMTOSTRING(Gp7::ChordName::Degree::Alteration)
+UTIL_DECLARE_ENUMTOSTRING(Gp7::MasterBar::DirectionTarget)
+UTIL_DECLARE_ENUMTOSTRING(Gp7::MasterBar::DirectionJump)
+UTIL_DECLARE_ENUMTOSTRING(Gp7::Bar::ClefType)
+UTIL_DECLARE_ENUMTOSTRING(Gp7::Note::HarmonicType)
+UTIL_DECLARE_ENUMTOSTRING(Gp7::Note::FingerType)
 
 #endif

@@ -68,4 +68,11 @@ void ChordDiagram::serialize(Archive &ar, const FileVersion /*version*/)
 
 std::ostream &operator<<(std::ostream &os, const ChordDiagram &diagram);
 
+/// Enable use as a key for std::unordered_map, etc.
+template<>
+struct std::hash<ChordDiagram>
+{
+    size_t operator()(const ChordDiagram &diagram) const;
+};
+
 #endif

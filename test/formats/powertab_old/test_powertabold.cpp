@@ -17,7 +17,7 @@
 
 #include <doctest/doctest.h>
 
-#include <app/appinfo.h>
+#include <app/paths.h>
 #include <formats/powertab/powertabimporter.h>
 #include <formats/powertab_old/powertaboldimporter.h>
 #include <formats/powertab_old/powertabdocument/powertabdocument.h>
@@ -27,7 +27,7 @@
 static void loadTest(FileFormatImporter &importer, const char *filename,
                      Score &score)
 {
-    importer.load(AppInfo::getAbsolutePath(filename), score);
+    importer.load(Paths::getAppDirPath(filename), score);
 }
 
 TEST_CASE("Formats/PowerTabOldImport/SongHeader")

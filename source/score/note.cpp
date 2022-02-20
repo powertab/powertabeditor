@@ -17,6 +17,7 @@
 
 #include "note.h"
 
+#include "generalmidi.h"
 #include "position.h"
 
 #include <map>
@@ -26,16 +27,14 @@
 const int Note::MIN_FRET_NUMBER = 0;
 const int Note::MAX_FRET_NUMBER = 29;
 
-namespace {
-    /// Mapping of frets to pitch offsets (counted in half-steps or frets).
-    /// For example, the natural harmonic at the 7th fret is an octave and
-    /// a fifth (19 frets) above the pitch of the open string.
-	const std::map<int, int> theHarmonicOffsets = {
-        {2, 38}, {3, 31}, {4, 28}, {5, 24}, {7, 19}, {9, 28}, {10, 38},
-        {12, 12}, {14, 38}, {15, 34}, {16, 28}, {17, 36}, {19, 19}, {22, 34},
-        {24, 24}, {28, 28}
-    };
-}
+/// Mapping of frets to pitch offsets (counted in half-steps or frets).
+/// For example, the natural harmonic at the 7th fret is an octave and
+/// a fifth (19 frets) above the pitch of the open string.
+static const std::map<int, int> theHarmonicOffsets = {
+    { 2, 38 },  { 3, 31 },  { 4, 28 },  { 5, 24 },  { 7, 19 },  { 9, 28 },
+    { 10, 38 }, { 12, 12 }, { 14, 38 }, { 15, 34 }, { 16, 28 }, { 17, 36 },
+    { 19, 19 }, { 22, 34 }, { 24, 24 }, { 28, 28 }
+};
 
 Note::Note()
     : myString(0),
@@ -296,6 +295,30 @@ int Harmonics::getPitchOffset(int fretOffset)
 {
     auto it = theHarmonicOffsets.find(fretOffset);
     return (it != theHarmonicOffsets.end()) ? it->second : 0;
+}
+
+int Harmonics::getFretOffset(int pitch_offset)
+{
+    for (auto &&[fret_offset, pitch] : theHarmonicOffsets)
+    {
+        if (pitch == pitch_offset)
+            return fret_offset;
+    }
+
+    assert(false);
+    return 0;
+}
+
+int
+Harmonics::getArtificialHarmonicPitch(int base_pitch,
+                                      const ArtificialHarmonic &harmonic)
+{
+    static const int theKeyOffsets[] = { 0, 2, 4, 5, 7, 9, 10 };
+
+    return (Midi::getMidiNoteOctave(base_pitch) +
+            static_cast<int>(harmonic.getOctave()) + 2) *
+               12 +
+           theKeyOffsets[harmonic.getKey()] + harmonic.getVariation();
 }
 
 ArtificialHarmonic::ArtificialHarmonic()

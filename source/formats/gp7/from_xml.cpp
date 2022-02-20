@@ -15,7 +15,7 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-#include "parser.h"
+#include "document.h"
 
 #include <formats/fileformat.h>
 #include <score/generalmidi.h>
@@ -160,19 +160,16 @@ parseChordNote(const pugi::xml_node &node)
     Gp7::ChordName::Note note;
     note.myStep = node.attribute("step").as_string();
 
-    static const std::unordered_map<std::string, int> theAccidentals = {
-        { "Natural"s, 0 },
-        { "Sharp"s, 1 },
-        { "DoubleSharp"s, 2 },
-        { "Flat"s, -1 },
-        { "DoubleFlat"s, -2 }
-    };
+    using Accidental = Gp7::ChordName::Note::Accidental;
+    std::string accidental_text = node.attribute("accidental").as_string();
 
-    auto it = theAccidentals.find(node.attribute("accidental").as_string());
-    if (it == theAccidentals.end())
-        throw FileFormatException("Unknown accidental type");
-
-    note.myAccidental = it->second;
+    if (auto accidental = Util::toEnum<Accidental>(accidental_text))
+        note.myAccidental = *accidental;
+    else
+    {
+        std::cerr << "Unknown accidental type: " << accidental_text
+                  << std::endl;
+    }
 
     return note;
 }
@@ -184,25 +181,16 @@ parseChordDegree(const pugi::xml_node &chord_node, const char *name)
     if (!node)
         return {};
 
-    using namespace std::string_literals;
     using Alteration = Gp7::ChordName::Degree::Alteration;
-
     Gp7::ChordName::Degree degree;
     degree.myOmitted = node.attribute("omitted").as_bool();
 
-    static const std::unordered_map<std::string, Alteration> theAlterations = {
-        { "Perfect"s, Alteration::Perfect },
-        { "Diminished"s, Alteration::Diminished },
-        { "Augmented"s, Alteration::Augmented },
-        { "Major"s, Alteration::Major },
-        { "Minor"s, Alteration::Minor }
-    };
+    std::string text = node.attribute("alteration").as_string();
+    if (auto alteration = Util::toEnum<Alteration>(text))
+        degree.myAlteration = *alteration;
+    else
+        std::cerr << "Unknown alteration type: " << text << std::endl;
 
-    auto it = theAlterations.find(node.attribute("alteration").as_string());
-    if (it == theAlterations.end())
-        throw FileFormatException("Unknown alteration type");
-
-    degree.myAlteration = it->second;
     return degree;
 }
 
@@ -412,56 +400,31 @@ parseMasterBars(const pugi::xml_node &master_bars_node)
         {
             using DirectionTarget = Gp7::MasterBar::DirectionTarget;
             using DirectionJump = Gp7::MasterBar::DirectionJump;
-            using namespace std::string_literals;
 
-            static const std::unordered_map<std::string, DirectionTarget>
-                theTargetNames = {
-                    { "Fine"s, DirectionTarget::Fine },
-                    { "Coda"s, DirectionTarget::Coda },
-                    { "DoubleCoda"s, DirectionTarget::DoubleCoda },
-                    { "Segno"s, DirectionTarget::Segno },
-                    { "SegnoSegno"s, DirectionTarget::SegnoSegno },
-                };
-
-            static const std::unordered_map<std::string, DirectionJump>
-                theJumpNames = {
-                    { "DaCapo"s, DirectionJump::DaCapo },
-                    { "DaCapoAlCoda"s, DirectionJump::DaCapoAlCoda },
-                    { "DaCapoAlDoubleCoda"s,
-                      DirectionJump::DaCapoAlDoubleCoda },
-                    { "DaCapoAlFine"s, DirectionJump::DaCapoAlFine },
-                    { "DaSegno"s, DirectionJump::DaSegno },
-                    { "DaSegnoAlCoda"s, DirectionJump::DaSegnoAlCoda },
-                    { "DaSegnoAlDoubleCoda"s,
-                      DirectionJump::DaSegnoAlDoubleCoda },
-                    { "DaSegnoAlFine"s, DirectionJump::DaSegnoAlFine },
-                    { "DaSegnoSegno"s, DirectionJump::DaSegnoSegno },
-                    { "DaSegnoSegnoAlCoda"s,
-                      DirectionJump::DaSegnoSegnoAlCoda },
-                    { "DaSegnoSegnoAlDoubleCoda"s,
-                      DirectionJump::DaSegnoSegnoAlDoubleCoda },
-                    { "DaSegnoSegnoAlFine"s,
-                      DirectionJump::DaSegnoSegnoAlFine },
-                    { "DaCoda"s, DirectionJump::DaCoda },
-                    { "DaDoubleCoda"s, DirectionJump::DaDoubleCoda }
-                };
-
-            for (auto target : dirnode.children("Target"))
+            for (auto target_node : dirnode.children("Target"))
             {
-                auto it = theTargetNames.find(target.text().as_string());
-                if (it == theTargetNames.end())
-                    throw FileFormatException("Invalid direction target type");
+                std::string target_str = target_node.text().as_string();
 
-                master_bar.myDirectionTargets.push_back(it->second);
+                if (auto target = Util::toEnum<DirectionTarget>(target_str))
+                    master_bar.myDirectionTargets.push_back(*target);
+                else
+                {
+                    std::cerr << "Invalid direction target type: " << target_str
+                              << std::endl;
+                }
             }
 
-            for (auto jump : dirnode.children("Jump"))
+            for (auto jump_node : dirnode.children("Jump"))
             {
-                auto it = theJumpNames.find(jump.text().as_string());
-                if (it == theJumpNames.end())
-                    throw FileFormatException("Invalid direction jump type");
+                std::string jump_str = jump_node.text().as_string();
 
-                master_bar.myDirectionJumps.push_back(it->second);
+                if (auto jump = Util::toEnum<DirectionJump>(jump_str))
+                    master_bar.myDirectionJumps.push_back(*jump);
+                else
+                {
+                    std::cerr << "Invalid direction jump type: " << jump_str
+                              << std::endl;
+                }
             }
         }
 
@@ -480,20 +443,11 @@ parseBars(const pugi::xml_node &bars_node)
         Gp7::Bar bar;
         bar.myVoiceIds = toIntList(splitString(node.child_value("Voices")));
 
-        using ClefType = Gp7::Bar::ClefType;
         std::string clef_name = node.child_value("Clef");
-        if (clef_name == "G2")
-            bar.myClefType = ClefType::G2;
-        else if (clef_name == "F4")
-            bar.myClefType = ClefType::F4;
-        else if (clef_name == "C3")
-            bar.myClefType = ClefType::C3;
-        else if (clef_name == "C4")
-            bar.myClefType = ClefType::C4;
-        else if (clef_name == "Neutral")
-            bar.myClefType = ClefType::Neutral;
+        if (auto clef_type = Util::toEnum<Gp7::Bar::ClefType>(clef_name))
+            bar.myClefType = *clef_type;
         else
-            throw FileFormatException("Unknown clef type");
+            std::cerr << "Invalid clef type: " << clef_name << std::endl;
 
         // TODO - import the 'Ottavia' key if the clef has 8va, etc
 
@@ -532,17 +486,12 @@ parseBeats(const pugi::xml_node &beats_node, Gp7::Version version)
         if (auto chord_id = node.child("Chord"))
             beat.myChordId = chord_id.text().as_int(-1);
 
-        std::string_view ottavia = node.child_value("Ottavia");
+        std::string ottavia = node.child_value("Ottavia");
         if (!ottavia.empty())
         {
-            if (ottavia == "8va")
-                beat.myOttavia = Gp7::Beat::Ottavia::O8va;
-            else if (ottavia == "8vb")
-                beat.myOttavia = Gp7::Beat::Ottavia::O8vb;
-            else if (ottavia == "15ma")
-                beat.myOttavia = Gp7::Beat::Ottavia::O15ma;
-            else if (ottavia == "15mb")
-                beat.myOttavia = Gp7::Beat::Ottavia::O15mb;
+            beat.myOttavia = Util::toEnum<Gp7::Beat::Ottavia>(ottavia);
+            if (!beat.myOttavia)
+                std::cerr << "Invalid ottavia value: " << ottavia << std::endl;
         }
 
         beat.myFreeText = node.child_value("FreeText");
@@ -683,24 +632,13 @@ parseNotes(const pugi::xml_node &notes_node)
                 note.mySlideTypes = property.child("Flags").text().as_int();
             else if (name == "HarmonicType")
             {
-                using HarmonicType = Gp7::Note::HarmonicType;
+                std::string harmonic_type = property.child_value("HType");
 
-                std::string_view harmonic_type = property.child_value("HType");
-                if (harmonic_type == "Natural")
-                    note.myHarmonic = HarmonicType::Natural;
-                else if (harmonic_type == "Artificial")
-                    note.myHarmonic = HarmonicType::Artificial;
-                else if (harmonic_type == "Pinch")
-                    note.myHarmonic = HarmonicType::Pinch;
-                else if (harmonic_type == "Tap")
-                    note.myHarmonic = HarmonicType::Tap;
-                else if (harmonic_type == "Semi")
-                    note.myHarmonic = HarmonicType::Semi;
-                else if (harmonic_type == "Feedback")
-                    note.myHarmonic = HarmonicType::Feedback;
-                else
+                using HarmonicType = Gp7::Note::HarmonicType;
+                note.myHarmonic = Util::toEnum<HarmonicType>(harmonic_type);
+                if (!note.myHarmonic)
                 {
-                    std::cerr << "Unexpected harmonic type: " << harmonic_type
+                    std::cerr << "Unknown harmonic type: " << harmonic_type
                               << std::endl;
                 }
             }
@@ -758,26 +696,16 @@ parseNotes(const pugi::xml_node &notes_node)
 
         if (auto fingering = node.child("LeftFingering"))
         {
+            std::string finger_type = fingering.text().as_string();
+
             using FingerType = Gp7::Note::FingerType;
-
-            std::string_view text = fingering.text().as_string();
-            if (text == "Open")
-                note.myLeftFinger = FingerType::Open;
-            else if (text == "C")
-                note.myLeftFinger = FingerType::C;
-            else if (text == "A")
-                note.myLeftFinger = FingerType::A;
-            else if (text == "M")
-                note.myLeftFinger = FingerType::M;
-            else if (text == "I")
-                note.myLeftFinger = FingerType::I;
-            else if (text == "P")
-                note.myLeftFinger = FingerType::P;
-            else
-                throw FileFormatException("Unexpected finger type.");
+            note.myLeftFinger = Util::toEnum<FingerType>(finger_type);
+            if (!note.myLeftFinger)
+            {
+                std::cerr << "Unknown finger type: " << finger_type
+                          << std::endl;
+            }
         }
-
-        // TODO - import bends.
 
         const int id = node.attribute("id").as_int();
         notes.emplace(id, note);
@@ -871,7 +799,7 @@ Gp7::Document::addRhythm(Beat &beat, Rhythm rhythm)
 }
 
 Gp7::Document
-Gp7::parse(const pugi::xml_document &root, Version version)
+Gp7::from_xml(const pugi::xml_document &root, Version version)
 {
     Gp7::Document doc;
 

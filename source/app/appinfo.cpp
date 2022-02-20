@@ -18,11 +18,7 @@
 #include <sstream>
 
 #include "appinfo.h"
-
 #include <util/version.h>
-
-#include <QCoreApplication>
-#include <QtGlobal>
 
 namespace AppInfo
 {
@@ -40,14 +36,6 @@ namespace AppInfo
     const char *ORGANIZATION_NAME = "powertab";
     const char *APPLICATION_ID = "powertabeditor";
 #endif
-
-    std::string getAbsolutePath(const char *relative_path)
-    {
-        std::string path = QCoreApplication::applicationDirPath().toStdString();
-        path += "/";
-        path += relative_path;
-        return path;
-    }
 
     std::string makeApplicationName(void)
     {

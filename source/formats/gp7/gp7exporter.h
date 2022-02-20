@@ -1,5 +1,5 @@
 /*
- * Copyright (C) 2020 Cameron White
+ * Copyright (C) 2022 Cameron White
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -13,20 +13,20 @@
  *
  * You should have received a copy of the GNU General Public License
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
- */
+*/
 
-#ifndef FORMATS_GP7_CONVERTER_H
-#define FORMATS_GP7_CONVERTER_H
+#ifndef FORMATS_GP7EXPORTER_H
+#define FORMATS_GP7EXPORTER_H
 
-class Score;
+#include <formats/fileformat.h>
 
-namespace Gp7
+class Gp7Exporter : public FileFormatExporter
 {
-struct Document;
+public:
+    Gp7Exporter();
 
-/// Converts the Guitar Pro document into the provided score.
-void convert(const Gp7::Document &doc, Score &score);
-
-} // namespace Gp7
+    void save(const std::filesystem::path &filename,
+              const Score &score) override;
+};
 
 #endif

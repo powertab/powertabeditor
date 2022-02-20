@@ -299,6 +299,14 @@ std::vector<int> getValidFretOffsets();
 /// For example, a fret offset of 12 has a pitch offset of 12 (one octave), and
 /// a fret offset of 7 has pitch offset 19 (octave and a fifth).
 int getPitchOffset(int fretOffset);
+
+/// Inverse of the above function, finding a fret offset that corresponds to
+/// the pitch offset. This is not unique since multiple frets can produce the
+/// same pitch offset.
+int getFretOffset(int pitch_offset);
+
+/// Returns the pitch applied by an artificial harmonic.
+int getArtificialHarmonicPitch(int base_pitch, const ArtificialHarmonic &h);
 }
 
 /// Creates a text representation of the note, including brackets for ghost

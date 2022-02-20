@@ -46,6 +46,8 @@ namespace Midi
     const uint8_t FIRST_MIDI_CHANNEL = 0;
     /// Last MIDI channel.
     const uint8_t LAST_MIDI_CHANNEL = 15;
+    /// Special channel for percussion.
+    inline constexpr int PERCUSSION_CHANNEL = 9;
 
     /// Minimum volume level for a MIDI channel.
     const uint8_t MIN_MIDI_CHANNEL_VOLUME = 0;
@@ -512,6 +514,16 @@ namespace Midi
 
     /// Returns a list of all MIDI percussion preset names.
     std::vector<std::string> getPercussionPresetNames();
+
+    /// Utility to determine the channel index from a player index, skipping
+    /// over the percussion channel.
+    inline int
+    getPlayerChannel(int player_idx)
+    {
+        if (player_idx >= PERCUSSION_CHANNEL)
+            player_idx++;
+        return player_idx;
+    }
 }
 
 #endif

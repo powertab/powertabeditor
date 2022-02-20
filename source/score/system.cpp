@@ -288,3 +288,19 @@ void SystemUtils::shiftBackward(System &system, int position)
 {
     shift(system, position, -1);
 }
+
+std::pair<const Barline &, const Barline &>
+SystemUtils::getSurroundingBarlines(const System &system, int position)
+{
+    // If we're exactly on top of a barline, use that instead of grabbing the
+    // preceding barline.
+    const Barline *current_bar = ScoreUtils::findByPosition(
+        system.getBarlines(), position);
+    if (!current_bar)
+        current_bar = system.getPreviousBarline(position);
+
+    const Barline *next_bar = system.getNextBarline(position);
+    assert(next_bar);
+
+    return { *current_bar, *next_bar };
+}

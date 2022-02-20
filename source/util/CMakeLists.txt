@@ -40,6 +40,8 @@ set( srcs
 
 set( headers
     date.h
+    enumtostring.h
+    enumtostring_fwd.h
     settingstree.h
     tostring.h
     scopeexit.h
