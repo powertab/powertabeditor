@@ -449,6 +449,30 @@ convertBeat(Gp7::Document &doc, Gp7::Beat &beat, const System &system,
                 convertFingering(note.getLeftHandFingering().getFinger());
         }
 
+        using HarmonicType = Gp7::Note::HarmonicType;
+        if (note.hasProperty(Note::NaturalHarmonic))
+        {
+            gp_note.myHarmonic = HarmonicType::Natural;
+        }
+        else if (note.hasTappedHarmonic())
+        {
+            gp_note.myHarmonic = HarmonicType::Tap;
+            gp_note.myHarmonicFret =
+                note.getTappedHarmonicFret() - note.getFretNumber();
+        }
+        else if (note.hasArtificialHarmonic())
+        {
+            gp_note.myHarmonic = HarmonicType::Artificial;
+
+            const int base_pitch = tuning.getNote(note.getString(), false) +
+                                   tuning.getCapo() + note.getFretNumber();
+            const int pitch = Harmonics::getArtificialHarmonicPitch(
+                base_pitch, note.getArtificialHarmonic());
+            const int pitch_offset = pitch - base_pitch;
+
+            gp_note.myHarmonicFret = Harmonics::getFretOffset(pitch_offset);
+        }
+
         const int note_id = doc.myNotes.size();
         doc.myNotes.emplace(note_id, gp_note);
         beat.myNoteIds.push_back(note_id);

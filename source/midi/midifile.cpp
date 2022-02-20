@@ -461,12 +461,8 @@ static int getActualNotePitch(const Note &note, const Tuning &tuning)
 
     if (note.hasArtificialHarmonic())
     {
-        static const int theKeyOffsets[] = { 0, 2, 4, 5, 7, 9, 10 };
-
-        ArtificialHarmonic harmonic = note.getArtificialHarmonic();
-        pitch = (Midi::getMidiNoteOctave(pitch) +
-                 static_cast<int>(harmonic.getOctave()) + 2) * 12 +
-                theKeyOffsets[harmonic.getKey()] + harmonic.getVariation();
+        pitch = Harmonics::getArtificialHarmonicPitch(
+            pitch, note.getArtificialHarmonic());
     }
 
     return pitch;

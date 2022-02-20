@@ -515,8 +515,19 @@ saveNotes(pugi::xml_node &gpif, const std::unordered_map<int, Note> &notes_map)
                          Util::toString(*note.myLeftFinger));
         }
 
-        // TODO
-        // - harmonics
+        if (note.myHarmonic)
+        {
+            addBoolNoteProperty(props_node, "Harmonic");
+
+            auto type_node = addPropertyNode(props_node, "HarmonicType");
+            addValueNode(type_node, "HType", Util::toString(*note.myHarmonic));
+
+            if (note.myHarmonicFret != 0)
+            {
+                auto fret_node = addPropertyNode(props_node, "HarmonicFret");
+                addValueNode(fret_node, "HFret", note.myHarmonicFret);
+            }
+        }
     }
 }
 
