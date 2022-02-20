@@ -940,7 +940,7 @@ TEST_CASE("Formats/Gp7Import/ChordDiagrams")
 
 TEST_CASE("Formats/Gp7Export")
 {
-    std::string test_files[] = {
+    std::filesystem::path test_files[] = {
         "data/alternate_endings.gp",
         "data/bars.gp",
         //"data/bends.gp",
@@ -961,13 +961,13 @@ TEST_CASE("Formats/Gp7Export")
 
     // Verify that importing, exporting, and re-importing produces identical
     // results.
-    for (const std::string &test_file : test_files)
+    for (const std::filesystem::path &test_file : test_files)
     {
         CAPTURE(test_file);
 
         Score score1;
         Gp7Importer importer;
-        importer.load(Paths::getAppDirPath(test_file.c_str()), score1);
+        importer.load(Paths::getAppDirPath(test_file), score1);
 
         Gp7Exporter exporter;
         std::filesystem::path temp_file =
