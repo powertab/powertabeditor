@@ -18,6 +18,7 @@
 #include <doctest/doctest.h>
 
 #include <app/appinfo.h>
+#include <formats/gp7/gp7exporter.h>
 #include <formats/gp7/gp7importer.h>
 #include <score/generalmidi.h>
 #include <score/keysignature.h>
@@ -25,6 +26,7 @@
 #include <score/playerchange.h>
 #include <score/score.h>
 #include <score/scoreinfo.h>
+#include <score/serialization.h>
 #include <score/tempomarker.h>
 #include <score/timesignature.h>
 #include <util/tostring.h>
@@ -934,4 +936,49 @@ TEST_CASE("Formats/Gp7Import/ChordDiagrams")
             "Asus2: x 0 2 2 0 0");
     // Duplicates aren't detected currently.
     REQUIRE(score.getChordDiagrams()[3] == score.getChordDiagrams()[0]);
+}
+
+TEST_CASE("Formats/Gp7Export")
+{
+    std::string test_files[] = {
+        "data/alternate_endings.gp",
+        "data/bars.gp",
+        //"data/bends.gp",
+        //"data/chord_diagrams.gp",
+        //"data/directions.gp",
+        "data/fermatas.gp",
+        //"data/harmonics.gp",
+        "data/irregular_groups.gp",
+        "data/notes.gp",
+        //"data/score_info.gp",
+        //"data/text.gp",
+        //"data/tracks.gp"
+    };
+
+    // Verify that importing, exporting, and re-importing produces identical
+    // results.
+    for (const std::string &test_file : test_files)
+    {
+        CAPTURE(test_file);
+
+        Score score1;
+        Gp7Importer importer;
+        importer.load(AppInfo::getAbsolutePath(test_file.c_str()), score1);
+
+        Gp7Exporter exporter;
+        std::filesystem::path temp_file =
+            AppInfo::getAbsolutePath("data/__generated.gp");
+        exporter.save(temp_file, score1);
+
+        Score score2;
+        importer.load(temp_file, score2);
+
+        std::ostringstream output1;
+        ScoreUtils::save(output1, "score", score1);
+
+        std::ostringstream output2;
+        ScoreUtils::save(output2, "score", score2);
+
+        REQUIRE(output1.str() == output2.str());
+    }
 }
