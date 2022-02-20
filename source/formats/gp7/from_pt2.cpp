@@ -662,9 +662,11 @@ convertMasterBar(const Gp7::Document &doc, const System &system,
     }
 
     // Directions
+    int direction_start =
+        (start_line.getPosition() == 0) ? 0 : (start_line.getPosition() + 1);
+    int direction_end = end_line.getPosition();
     for (const Direction &direction : ScoreUtils::findInRange(
-             system.getDirections(), start_line.getPosition() + 1,
-             end_line.getPosition()))
+             system.getDirections(), direction_start, direction_end))
     {
         convertDirection(direction, master_bar);
     }
