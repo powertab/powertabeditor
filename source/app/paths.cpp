@@ -17,6 +17,8 @@
 
 #include "paths.h"
 
+#include "appinfo.h"
+
 #include <QCoreApplication>
 #include <QLibraryInfo>
 #include <QString>
