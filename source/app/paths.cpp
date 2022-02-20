@@ -17,7 +17,7 @@
 
 #include "paths.h"
 
-#include <app/appinfo.h>
+#include <QCoreApplication>
 #include <QLibraryInfo>
 #include <QString>
 #include <QStandardPaths>
@@ -45,14 +45,14 @@ path getUserDataDir()
 
 std::vector<path> getDataDirs()
 {
-    QStringList q_paths =
-        QStandardPaths::standardLocations(QStandardPaths::DataLocation);
-    q_paths.append(QString::fromStdString(AppInfo::getAbsolutePath("data")));
-
     std::vector<path> paths;
-    for (const QString &p : q_paths)
+    for (const QString &p :
+         QStandardPaths::standardLocations(QStandardPaths::DataLocation))
+    {
         paths.push_back(fromQString(p));
+    }
 
+    paths.push_back(getAppDirPath("data"));
     return paths;
 }
 
@@ -75,6 +75,13 @@ path getHomeDir()
 {
     return fromQString(
         QStandardPaths::writableLocation(QStandardPaths::HomeLocation));
+}
+
+path
+getAppDirPath(const path &relative_path)
+{
+    path app_dir = fromQString(QCoreApplication::applicationDirPath());
+    return app_dir / relative_path;
 }
 
 path fromQString(const QString &str)

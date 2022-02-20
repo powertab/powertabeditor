@@ -18,7 +18,7 @@
 #include <doctest/doctest.h>
 
 #include <actions/editstaff.h>
-#include <app/appinfo.h>
+#include <app/paths.h>
 #include <formats/powertab/powertabimporter.h>
 #include <score/score.h>
 
@@ -27,7 +27,7 @@ TEST_CASE("Actions/EditStaff")
     Score score;
 
     PowerTabImporter importer;
-    importer.load(AppInfo::getAbsolutePath("data/test_editstaff.pt2"), score);
+    importer.load(Paths::getAppDirPath("data/test_editstaff.pt2"), score);
 
     ScoreLocation location(score, 0, 0);
     EditStaff action(location, Staff::TrebleClef, 5);

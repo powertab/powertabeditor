@@ -17,7 +17,7 @@
   
 #include <doctest/doctest.h>
 
-#include <app/appinfo.h>
+#include <app/paths.h>
 #include <formats/powertab/powertabimporter.h>
 #include <score/score.h>
 #include <score/viewfilter.h>
@@ -28,7 +28,7 @@ TEST_CASE("Score/ViewFilter/FilterRule")
     Score score;
 
     PowerTabImporter importer;
-    importer.load(AppInfo::getAbsolutePath("data/test_viewfilter.pt2"), score);
+    importer.load(Paths::getAppDirPath("data/test_viewfilter.pt2"), score);
 
     FilterRule rule(FilterRule::Subject::NumStrings,
                     FilterRule::Operation::Equal, 7);
@@ -47,7 +47,7 @@ TEST_CASE("Score/ViewFilter/ViewFilter")
     Score score;
 
     PowerTabImporter importer;
-    importer.load(AppInfo::getAbsolutePath("data/test_viewfilter.pt2"), score);
+    importer.load(Paths::getAppDirPath("data/test_viewfilter.pt2"), score);
 
     ViewFilter filter;
     filter.addRule(FilterRule(FilterRule::Subject::NumStrings,

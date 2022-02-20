@@ -17,7 +17,7 @@
 
 #include <doctest/doctest.h>
 
-#include <app/appinfo.h>
+#include <app/paths.h>
 #include <formats/gp7/gp7exporter.h>
 #include <formats/gp7/gp7importer.h>
 #include <score/generalmidi.h>
@@ -37,7 +37,7 @@ TEST_CASE("Formats/Gp7Import/ScoreInfo/Basic")
     Gp7Importer importer;
 
     REQUIRE_NOTHROW(
-        importer.load(AppInfo::getAbsolutePath("data/score_info.gp"), score));
+        importer.load(Paths::getAppDirPath("data/score_info.gp"), score));
 
     const ScoreInfo &info = score.getScoreInfo();
     REQUIRE(info.getScoreType() == ScoreInfo::ScoreType::Song);
@@ -63,7 +63,7 @@ TEST_CASE("Formats/Gp7Import/ScoreInfo/WordsAndMusic")
     Gp7Importer importer;
 
     REQUIRE_NOTHROW(importer.load(
-        AppInfo::getAbsolutePath("data/words_and_music.gp"), score));
+        Paths::getAppDirPath("data/words_and_music.gp"), score));
 
     const ScoreInfo &info = score.getScoreInfo();
     REQUIRE(info.getScoreType() == ScoreInfo::ScoreType::Song);
@@ -80,7 +80,7 @@ TEST_CASE("Formats/Gp7Import/Tracks")
     Gp7Importer importer;
 
     REQUIRE_NOTHROW(
-        importer.load(AppInfo::getAbsolutePath("data/tracks.gp"), score));
+        importer.load(Paths::getAppDirPath("data/tracks.gp"), score));
 
     REQUIRE(score.getPlayers().size() == 4);
     REQUIRE(score.getInstruments().size() == 3);
@@ -160,7 +160,7 @@ TEST_CASE("Formats/Gp7Import/Notes")
 {
     Score score;
     Gp7Importer importer;
-    importer.load(AppInfo::getAbsolutePath("data/notes.gp"), score);
+    importer.load(Paths::getAppDirPath("data/notes.gp"), score);
 
     const System &system = score.getSystems()[0];
     const Staff &staff = system.getStaves()[0];
@@ -382,7 +382,7 @@ TEST_CASE("Formats/Gp7Import/Bars")
 {
     Score score;
     Gp7Importer importer;
-    importer.load(AppInfo::getAbsolutePath("data/bars.gp"), score);
+    importer.load(Paths::getAppDirPath("data/bars.gp"), score);
 
     {
         const System &system = score.getSystems()[0];
@@ -510,7 +510,7 @@ TEST_CASE("Formats/Gp7Import/TempoChanges")
 {
     Score score;
     Gp7Importer importer;
-    importer.load(AppInfo::getAbsolutePath("data/bars.gp"), score);
+    importer.load(Paths::getAppDirPath("data/bars.gp"), score);
 
     const System &system = score.getSystems()[0];
     REQUIRE(system.getTempoMarkers().size() == 2);
@@ -536,7 +536,7 @@ TEST_CASE("Formats/Gp7Import/Fermatas")
 {
     Score score;
     Gp7Importer importer;
-    importer.load(AppInfo::getAbsolutePath("data/fermatas.gp"), score);
+    importer.load(Paths::getAppDirPath("data/fermatas.gp"), score);
 
     {
         const Voice &voice =
@@ -559,7 +559,7 @@ TEST_CASE("Formats/Gp7Import/Text")
 {
     Score score;
     Gp7Importer importer;
-    importer.load(AppInfo::getAbsolutePath("data/text.gp"), score);
+    importer.load(Paths::getAppDirPath("data/text.gp"), score);
 
     {
         const System &system = score.getSystems()[0];
@@ -617,7 +617,7 @@ TEST_CASE("Formats/Gp7Import/AlternateEndings")
 {
     Score score;
     Gp7Importer importer;
-    importer.load(AppInfo::getAbsolutePath("data/alternate_endings.gp"), score);
+    importer.load(Paths::getAppDirPath("data/alternate_endings.gp"), score);
 
     const System &system = score.getSystems()[0];
 
@@ -641,7 +641,7 @@ TEST_CASE("Formats/Gp7Import/Directions")
 {
     Score score;
     Gp7Importer importer;
-    importer.load(AppInfo::getAbsolutePath("data/directions.gp"), score);
+    importer.load(Paths::getAppDirPath("data/directions.gp"), score);
 
     {
         const System &system = score.getSystems()[0];
@@ -703,7 +703,7 @@ TEST_CASE("Formats/Gp7Import/IrregularGroups")
 {
     Score score;
     Gp7Importer importer;
-    importer.load(AppInfo::getAbsolutePath("data/irregular_groups.gp"), score);
+    importer.load(Paths::getAppDirPath("data/irregular_groups.gp"), score);
 
     const Voice &voice = score.getSystems()[0].getStaves()[0].getVoices()[0];
     REQUIRE(voice.getIrregularGroupings().size() == 5);
@@ -749,7 +749,7 @@ TEST_CASE("Formats/Gp7Import/Bends")
 {
     Score score;
     Gp7Importer importer;
-    importer.load(AppInfo::getAbsolutePath("data/bends.gp"), score);
+    importer.load(Paths::getAppDirPath("data/bends.gp"), score);
 
     const Voice &voice = score.getSystems()[0].getStaves()[0].getVoices()[0];
     {
@@ -818,7 +818,7 @@ TEST_CASE("Formats/Gp7Import/TremoloBars")
 {
     Score score;
     Gp7Importer importer;
-    importer.load(AppInfo::getAbsolutePath("data/tremolo_bars.gp"), score);
+    importer.load(Paths::getAppDirPath("data/tremolo_bars.gp"), score);
 
     const Voice &voice = score.getSystems()[0].getStaves()[0].getVoices()[0];
     {
@@ -881,7 +881,7 @@ TEST_CASE("Formats/Gp7Import/Harmonics")
 {
     Score score;
     Gp7Importer importer;
-    importer.load(AppInfo::getAbsolutePath("data/harmonics.gp"), score);
+    importer.load(Paths::getAppDirPath("data/harmonics.gp"), score);
 
     using Octave = ArtificialHarmonic::Octave;
 
@@ -922,7 +922,7 @@ TEST_CASE("Formats/Gp7Import/ChordDiagrams")
 {
     Score score;
     Gp7Importer importer;
-    importer.load(AppInfo::getAbsolutePath("data/chord_diagrams.gp"), score);
+    importer.load(Paths::getAppDirPath("data/chord_diagrams.gp"), score);
 
     REQUIRE(score.getChordDiagrams().size() == 5);
 
@@ -967,11 +967,11 @@ TEST_CASE("Formats/Gp7Export")
 
         Score score1;
         Gp7Importer importer;
-        importer.load(AppInfo::getAbsolutePath(test_file.c_str()), score1);
+        importer.load(Paths::getAppDirPath(test_file.c_str()), score1);
 
         Gp7Exporter exporter;
         std::filesystem::path temp_file =
-            AppInfo::getAbsolutePath("data/__generated.gp");
+            Paths::getAppDirPath("data/__generated.gp");
         exporter.save(temp_file, score1);
 
         Score score2;

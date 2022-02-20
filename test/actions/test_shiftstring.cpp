@@ -18,7 +18,7 @@
 #include <doctest/doctest.h>
 
 #include <actions/shiftstring.h>
-#include <app/appinfo.h>
+#include <app/paths.h>
 #include <formats/powertab/powertabimporter.h>
 #include <score/score.h>
 
@@ -27,7 +27,7 @@ TEST_CASE("Actions/ShiftString")
     Score score;
 
     PowerTabImporter importer;
-    importer.load(AppInfo::getAbsolutePath("data/test_shiftstring.pt2"), score);
+    importer.load(Paths::getAppDirPath("data/test_shiftstring.pt2"), score);
 
     SUBCASE("Single shift up")
     {
