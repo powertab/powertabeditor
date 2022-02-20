@@ -1001,10 +1001,7 @@ convertChordDiagrams(const Gp7::Document &doc, Score &score)
                                        unique_diagrams.end());
     std::sort(diagrams.begin(), diagrams.end(),
               [](const ChordDiagram &d1, const ChordDiagram &d2)
-              {
-                  return Util::toString(d1.getChordName()) <
-                         Util::toString(d2.getChordName());
-              });
+              { return Util::toString(d1) < Util::toString(d2); });
 
     for (const ChordDiagram &diagram : diagrams)
         score.insertChordDiagram(diagram);
