@@ -18,6 +18,7 @@
 #include "document.h"
 
 #include <numeric>
+#include <util/tostring.h>
 
 using namespace std::string_literals;
 
@@ -295,8 +296,18 @@ saveMasterBars(pugi::xml_node &gpif, const std::vector<MasterBar> &master_bars)
                 addValueNode(directions_node, "Jump", Util::toString(jump));
         }
 
-        // TODO
-        // - fermatas
+        if (!master_bar.myFermatas.empty())
+        {
+            auto fermatas_node = bar_node.append_child("Fermatas");
+
+            for (const boost::rational<int> &time : master_bar.myFermatas)
+            {
+                auto node = fermatas_node.append_child("Fermata");
+                addValueNode(node, "Type", "Medium"s);
+                addValueNode(node, "Length", 0.5);
+                addValueNode(node, "Offset", Util::toString(time));
+            }
+        }
     }
 }
 

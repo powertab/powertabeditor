@@ -344,8 +344,9 @@ convertFingering(LeftHandFingering::Finger f)
 }
 
 static void
-convertBeat(Gp7::Document &doc, Gp7::Beat &beat, const System &system,
-            const Voice &voice, const Tuning &tuning, const KeySignature &key,
+convertBeat(Gp7::Document &doc, Gp7::MasterBar &master_bar, Gp7::Beat &beat,
+            const System &system, const Voice &voice, const Tuning &tuning,
+            const KeySignature &key, const boost::rational<int> &bar_time,
             const Position &pos)
 {
     beat.myGraceNote = pos.hasProperty(Position::Acciaccatura);
@@ -355,6 +356,9 @@ convertBeat(Gp7::Document &doc, Gp7::Beat &beat, const System &system,
     beat.myBrushUp = pos.hasProperty(Position::PickStrokeUp);
     beat.myArpeggioUp = pos.hasProperty(Position::ArpeggioUp);
     beat.myArpeggioDown = pos.hasProperty(Position::ArpeggioDown);
+
+    if (pos.hasProperty(Position::Fermata))
+        master_bar.myFermatas.insert(bar_time);
 
     if (pos.hasTremoloBar())
         beat.myWhammy = convertTremoloBar(pos.getTremoloBar());
@@ -481,9 +485,10 @@ convertBeat(Gp7::Document &doc, Gp7::Beat &beat, const System &system,
 
 static void
 convertBar(Gp7::Document &doc,
-           std::unordered_map<Gp7::Rhythm, int> &unique_rhythms, Gp7::Bar &bar,
-           const System &system, const Staff &staff, const Tuning &tuning,
-           const KeySignature &key, int start_idx, int end_idx)
+           std::unordered_map<Gp7::Rhythm, int> &unique_rhythms,
+           Gp7::MasterBar &master_bar, Gp7::Bar &bar, const System &system,
+           const Staff &staff, const Tuning &tuning, const KeySignature &key,
+           int start_idx, int end_idx)
 {
     switch (staff.getClefType())
     {
@@ -499,11 +504,14 @@ convertBar(Gp7::Document &doc,
     {
         Gp7::Voice gp_voice;
 
+        boost::rational<int> bar_time;
         for (const Position &pos :
              ScoreUtils::findInRange(voice.getPositions(), start_idx, end_idx))
         {
             Gp7::Beat beat;
-            convertBeat(doc, beat, system, voice, tuning, key, pos);
+            convertBeat(doc, master_bar, beat, system, voice, tuning, key,
+                        bar_time, pos);
+            bar_time += VoiceUtils::getDurationTime(voice, pos);
 
             Gp7::Rhythm rhythm = convertRhythm(voice, pos);
             // Consolidate identical rhythms to reduce file size, which GP also
@@ -763,9 +771,9 @@ convertScore(const Score &score, Gp7::Document &doc)
                 continue; // Something is incorrect in the file...
 
             Gp7::Bar bar;
-            convertBar(doc, unique_rhythms, bar, system, staff, tuning,
-                       current_bar.getKeySignature(), current_bar.getPosition(),
-                       next_bar.getPosition());
+            convertBar(doc, unique_rhythms, master_bar, bar, system, staff,
+                       tuning, current_bar.getKeySignature(),
+                       current_bar.getPosition(), next_bar.getPosition());
 
             const int bar_id = doc.myBars.size();
             doc.myBars.emplace(bar_id, bar);
