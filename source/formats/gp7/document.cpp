@@ -20,6 +20,7 @@
 #include <util/enumtostring.h>
 
 using Ottavia = Gp7::Beat::Ottavia;
+using Accidental = Gp7::ChordName::Note::Accidental;
 using Alteration = Gp7::ChordName::Degree::Alteration;
 using DirectionTarget = Gp7::MasterBar::DirectionTarget;
 using DirectionJump = Gp7::MasterBar::DirectionJump;
@@ -33,6 +34,13 @@ UTIL_DEFINE_ENUMTOSTRING(Ottavia, { { Ottavia::O8va, "8va"s },
                                     { Ottavia::O8vb, "8vb"s },
                                     { Ottavia::O15ma, "15ma"s },
                                     { Ottavia::O15mb, "15mb"s } })
+
+UTIL_DEFINE_ENUMTOSTRING(Accidental,
+                         { { Accidental::DoubleFlat, "DoubleFlat"s },
+                           { Accidental::Flat, "Flat"s },
+                           { Accidental::Natural, "Natural"s },
+                           { Accidental::Sharp, "Sharp"s },
+                           { Accidental::DoubleSharp, "DoubleSharp"s } })
 
 UTIL_DEFINE_ENUMTOSTRING(Alteration,
                          { { Alteration::Perfect, "Perfect"s },

@@ -102,8 +102,17 @@ struct ChordName
 {
     struct Note
     {
+        enum class Accidental: int
+        {
+            DoubleFlat = -2,
+            Flat = -1,
+            Natural = 0,
+            Sharp = 1,
+            DoubleSharp = 2
+        };
+
         std::string myStep;
-        int myAccidental = 0;
+        Accidental myAccidental = Accidental::Natural;
     };
 
     struct Degree
@@ -116,6 +125,11 @@ struct ChordName
             Major,
             Minor
         };
+
+        Degree() = default;
+        Degree(Alteration alt) : myAlteration(alt)
+        {
+        }
 
         Alteration myAlteration = Alteration::Perfect;
         bool myOmitted = false;
@@ -143,6 +157,7 @@ struct ChordDiagram
 
 struct Chord
 {
+    std::string myDescription;
     ChordName myName;
     ChordDiagram myDiagram;
 };
@@ -452,6 +467,7 @@ struct std::hash<Gp7::Rhythm>
 
 // Enum to string conversions
 UTIL_DECLARE_ENUMTOSTRING(Gp7::Beat::Ottavia)
+UTIL_DECLARE_ENUMTOSTRING(Gp7::ChordName::Note::Accidental)
 UTIL_DECLARE_ENUMTOSTRING(Gp7::ChordName::Degree::Alteration)
 UTIL_DECLARE_ENUMTOSTRING(Gp7::MasterBar::DirectionTarget)
 UTIL_DECLARE_ENUMTOSTRING(Gp7::MasterBar::DirectionJump)

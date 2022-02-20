@@ -18,6 +18,7 @@
 #include "chorddiagram.h"
 
 #include "tuning.h"
+#include <boost/functional/hash.hpp>
 #include <ostream>
 
 ChordDiagram::ChordDiagram()
@@ -66,4 +67,14 @@ operator<<(std::ostream &os, const ChordDiagram &diagram)
         os << " (" << (diagram.getTopFret() + 1) << ")";
 
     return os;
+}
+
+size_t
+std::hash<ChordDiagram>::operator()(const ChordDiagram &diagram) const
+{
+    size_t seed = std::hash<ChordName>()(diagram.getChordName());
+    boost::hash_combine(seed, diagram.getTopFret());
+    boost::hash_range(seed, diagram.getFretNumbers().begin(),
+                      diagram.getFretNumbers().end());
+    return seed;
 }

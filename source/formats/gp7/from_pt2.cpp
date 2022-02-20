@@ -25,6 +25,7 @@
 #include <score/scoreinfo.h>
 #include <score/utils.h>
 #include <score/voiceutils.h>
+#include <util/tostring.h>
 
 #include <set>
 #include <unordered_map>
@@ -80,6 +81,216 @@ convertScoreInfo(const Score &score)
     return gp_info;
 }
 
+static Gp7::ChordName
+convertChordName(const ChordName &name)
+{
+    Gp7::ChordName gp_name;
+    using Accidental = Gp7::ChordName::Note::Accidental;
+    using Degree = Gp7::ChordName::Degree;
+    using Alteration = Degree::Alteration;
+
+    static const std::string theKeys[] = { "C", "D", "E", "F", "G", "A", "B" };
+    gp_name.myKeyNote.myStep = theKeys[name.getTonicKey()];
+    gp_name.myKeyNote.myAccidental =
+        static_cast<Accidental>(name.getTonicVariation());
+
+    gp_name.myBassNote.myStep = theKeys[name.getBassKey()];
+    gp_name.myBassNote.myAccidental =
+        static_cast<Accidental>(name.getBassVariation());
+
+    // Fifth
+    switch (name.getFormula())
+    {
+        case ChordName::Augmented:
+        case ChordName::Augmented7th:
+            gp_name.myFifth = Alteration::Augmented;
+            break;
+        case ChordName::Diminished:
+        case ChordName::Diminished7th:
+        case ChordName::Minor7thFlatted5th:
+            gp_name.myFifth = Alteration::Diminished;
+            break;
+        default:
+            if (name.hasModification(ChordName::Flatted5th))
+                gp_name.myFifth = Alteration::Diminished;
+            else if (name.hasModification(ChordName::Raised5th))
+                gp_name.myFifth = Alteration::Augmented;
+            else
+                gp_name.myFifth = Alteration::Perfect;
+            break;
+    }
+
+    // Third
+    switch (name.getFormula())
+    {
+        case ChordName::Major:
+        case ChordName::Augmented:
+        case ChordName::Major6th:
+        case ChordName::Dominant7th:
+        case ChordName::Major7th:
+        case ChordName::Augmented7th:
+            gp_name.myThird = Alteration::Major;
+            break;
+        case ChordName::Minor:
+        case ChordName::Diminished:
+        case ChordName::Minor6th:
+        case ChordName::Minor7th:
+        case ChordName::Diminished7th:
+        case ChordName::MinorMajor7th:
+        case ChordName::Minor7thFlatted5th:
+            gp_name.myThird = Alteration::Minor;
+            break;
+        default:
+            break;
+    }
+
+    // Second
+    if (name.hasModification(ChordName::Added2nd) ||
+        name.hasModification(ChordName::Suspended2nd))
+    {
+        gp_name.mySecond = Alteration::Perfect;
+    }
+
+    // Fourth
+    if (name.hasModification(ChordName::Added4th) ||
+        name.hasModification(ChordName::Suspended4th))
+    {
+        gp_name.myFourth = Alteration::Perfect;
+    }
+
+    // Clear out the third for sus chords.
+    if (name.hasModification(ChordName::Suspended2nd) ||
+        name.hasModification(ChordName::Suspended4th))
+    {
+        gp_name.myThird.reset();
+    }
+
+    // Sixth
+    switch (name.getFormula())
+    {
+        case ChordName::Major6th:
+        case ChordName::Minor6th:
+            gp_name.mySixth = Alteration::Major;
+            break;
+        default:
+            if (name.hasModification(ChordName::Added6th))
+                gp_name.mySixth = Alteration::Major;
+            break;
+    }
+
+    // Seventh
+    switch (name.getFormula())
+    {
+        case ChordName::Dominant7th:
+        case ChordName::Minor7th:
+        case ChordName::Augmented7th:
+        case ChordName::Minor7thFlatted5th:
+            gp_name.mySeventh = Alteration::Minor;
+            break;
+        case ChordName::Major7th:
+        case ChordName::MinorMajor7th:
+            gp_name.mySeventh = Alteration::Major;
+            break;
+        case ChordName::Diminished7th:
+            gp_name.mySeventh = Alteration::Diminished;
+            break;
+        default:
+            break;
+    }
+
+    // 9th
+    if (name.hasModification(ChordName::Extended9th) ||
+        name.hasModification(ChordName::Added9th))
+    {
+        gp_name.myNinth = Alteration::Perfect;
+    }
+    else if (name.hasModification(ChordName::Flatted9th))
+        gp_name.myNinth = Alteration::Diminished;
+    else if (name.hasModification(ChordName::Raised9th))
+        gp_name.myNinth = Alteration::Augmented;
+
+    // 11th
+    if (name.hasModification(ChordName::Extended11th) ||
+        name.hasModification(ChordName::Added11th))
+    {
+        gp_name.myEleventh = Alteration::Perfect;
+    }
+    else if (name.hasModification(ChordName::Raised11th))
+        gp_name.myEleventh = Alteration::Augmented;
+
+    // 13th
+    if (name.hasModification(ChordName::Extended13th))
+        gp_name.myThirteenth = Alteration::Perfect;
+    else if (name.hasModification(ChordName::Flatted13th))
+        gp_name.myThirteenth = Alteration::Diminished;
+
+    return gp_name;
+}
+
+static Gp7::ChordDiagram
+convertChordDiagram(const ChordDiagram &diagram)
+{
+    Gp7::ChordDiagram gp_diagram;
+    gp_diagram.myBaseFret = diagram.getTopFret();
+
+    gp_diagram.myFrets = diagram.getFretNumbers();
+    // Strings are in the opposite order, and frets are relative to the top
+    // fret.
+    std::reverse(gp_diagram.myFrets.begin(), gp_diagram.myFrets.end());
+    for (int &fret : gp_diagram.myFrets)
+    {
+        if (fret > 0)
+            fret -= diagram.getTopFret();
+    }
+
+    return gp_diagram;
+}
+
+using GpChordsMap = std::unordered_map<int, Gp7::Chord>;
+using ChordNameIdMap = std::unordered_map<ChordName, int>;
+
+static GpChordsMap
+convertChords(const Score &score, ChordNameIdMap &chord_name_ids)
+{
+    GpChordsMap chords;
+
+    // Add all chord diagrams. Note that their chord names may not be unique
+    // (same chord but different fingering).
+    for (const ChordDiagram &diagram : score.getChordDiagrams())
+    {
+        const int chord_id = chords.size();
+        chord_name_ids[diagram.getChordName()] = chord_id;
+
+        Gp7::Chord gp_chord;
+        gp_chord.myDescription = Util::toString(diagram.getChordName());
+        gp_chord.myName = convertChordName(diagram.getChordName());
+        gp_chord.myDiagram = convertChordDiagram(diagram);
+        chords.emplace(chord_id, gp_chord);
+    }
+
+    // Add all unique chord text items.
+    for (const System &system : score.getSystems())
+    {
+        for (const ChordText &text : system.getChords())
+        {
+            const ChordName &name = text.getChordName();
+
+            if (chord_name_ids.find(name) != chord_name_ids.end())
+                continue;
+
+            const int chord_id = chords.size();
+            chord_name_ids[name] = chord_id;
+
+            Gp7::Chord gp_chord;
+            gp_chord.myDescription = Util::toString(name);
+            gp_chord.myName = convertChordName(name);
+            chords.emplace(chord_id, gp_chord);
+        }
+    }
+
+    return chords;
+}
+
 using PlayerInstrumentMap = std::unordered_map<const Player *, std::set<int>>;
 
 /// Find all of the instruments assigned to each player in the score.
@@ -109,9 +320,11 @@ findPlayerInstruments(const Score &score)
 }
 
 static std::vector<Gp7::Track>
-convertTracks(const Score &score)
+convertTracks(const Score &score, ChordNameIdMap &chord_name_ids)
 {
     std::vector<Gp7::Track> tracks;
+
+    GpChordsMap chords = convertChords(score, chord_name_ids);
 
     PlayerInstrumentMap player_instruments = findPlayerInstruments(score);
     int player_idx = 0;
@@ -141,7 +354,10 @@ convertTracks(const Score &score)
         staff.myTuning.assign(notes.rbegin(), notes.rend());
         track.myStaves.push_back(staff);
 
-        // TODO - export chords
+        // Chords are the same for all players. In the future we could trim
+        // this based on which chord names are used while the player is active,
+        // but the chord diagrams apply to all players anyways
+        track.myChords = chords;
 
         // TODO - export player changes as sound automations
         // For now we just assign an initial instrument
@@ -345,9 +561,9 @@ convertFingering(LeftHandFingering::Finger f)
 
 static void
 convertBeat(Gp7::Document &doc, Gp7::MasterBar &master_bar, Gp7::Beat &beat,
-            const System &system, const Voice &voice, const Tuning &tuning,
-            const KeySignature &key, const boost::rational<int> &bar_time,
-            const Position &pos)
+            const ChordNameIdMap &chord_name_ids, const System &system,
+            const Voice &voice, const Tuning &tuning, const KeySignature &key,
+            const boost::rational<int> &bar_time, const Position &pos)
 {
     beat.myGraceNote = pos.hasProperty(Position::Acciaccatura);
     beat.myTremoloPicking = pos.hasProperty(Position::TremoloPicking);
@@ -367,6 +583,12 @@ convertBeat(Gp7::Document &doc, Gp7::MasterBar &master_bar, Gp7::Beat &beat,
                                                           pos.getPosition()))
     {
         beat.myFreeText = text->getContents();
+    }
+
+    if (const ChordText *text =
+            ScoreUtils::findByPosition(system.getChords(), pos.getPosition()))
+    {
+        beat.myChordId = chord_name_ids.at(text->getChordName());
     }
 
     for (const Note &note: pos.getNotes())
@@ -490,7 +712,7 @@ convertBeat(Gp7::Document &doc, Gp7::MasterBar &master_bar, Gp7::Beat &beat,
 }
 
 static void
-convertBar(Gp7::Document &doc,
+convertBar(Gp7::Document &doc, const ChordNameIdMap &chord_name_ids,
            std::unordered_map<Gp7::Rhythm, int> &unique_rhythms,
            Gp7::MasterBar &master_bar, Gp7::Bar &bar, const System &system,
            const Staff &staff, const Tuning &tuning, const KeySignature &key,
@@ -515,8 +737,8 @@ convertBar(Gp7::Document &doc,
              ScoreUtils::findInRange(voice.getPositions(), start_idx, end_idx))
         {
             Gp7::Beat beat;
-            convertBeat(doc, master_bar, beat, system, voice, tuning, key,
-                        bar_time, pos);
+            convertBeat(doc, master_bar, beat, chord_name_ids, system, voice,
+                        tuning, key, bar_time, pos);
             bar_time += VoiceUtils::getDurationTime(voice, pos);
 
             Gp7::Rhythm rhythm = convertRhythm(voice, pos);
@@ -743,7 +965,8 @@ convertMasterBar(const Gp7::Document &doc, const System &system,
 }
 
 static void
-convertScore(const Score &score, Gp7::Document &doc)
+convertScore(const Score &score, const ChordNameIdMap &chord_name_ids,
+             Gp7::Document &doc)
 {
     std::unordered_map<Gp7::Rhythm, int> unique_rhythms;
 
@@ -779,8 +1002,8 @@ convertScore(const Score &score, Gp7::Document &doc)
                 continue; // Something is incorrect in the file...
 
             Gp7::Bar bar;
-            convertBar(doc, unique_rhythms, master_bar, bar, system, staff,
-                       tuning, current_bar.getKeySignature(),
+            convertBar(doc, chord_name_ids, unique_rhythms, master_bar, bar,
+                       system, staff, tuning, current_bar.getKeySignature(),
                        current_bar.getPosition(), next_bar.getPosition());
 
             const int bar_id = doc.myBars.size();
@@ -815,8 +1038,9 @@ Gp7::convert(const Score &score)
     Gp7::Document gp_doc;
     gp_doc.myScoreInfo = convertScoreInfo(score);
 
-    gp_doc.myTracks = convertTracks(score);
-    convertScore(score, gp_doc);
+    ChordNameIdMap chord_name_ids;
+    gp_doc.myTracks = convertTracks(score, chord_name_ids);
+    convertScore(score, chord_name_ids, gp_doc);
 
     return gp_doc;
 }

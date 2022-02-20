@@ -63,6 +63,14 @@ listToString(const std::vector<T> &items, char sep = ' ')
     return s;
 }
 
+static pugi::xml_node
+addPropertyNode(pugi::xml_node &props_node, const char *name)
+{
+    auto prop_node = props_node.append_child("Property");
+    prop_node.append_attribute("name").set_value(name);
+    return prop_node;
+}
+
 namespace Gp7
 {
 static void
@@ -115,6 +123,100 @@ saveMasterTrack(pugi::xml_node &gpif, const std::vector<Track> &tracks,
         }
 
         ++bar_idx;
+    }
+}
+
+static void
+saveChordNote(pugi::xml_node chord_node, const char *name,
+                const ChordName::Note &note)
+{
+    auto node = chord_node.append_child(name);
+    node.append_attribute("step").set_value(note.myStep.c_str());
+    node.append_attribute("accidental")
+        .set_value(Util::toString(note.myAccidental).c_str());
+}
+
+static void
+saveChordDegree(pugi::xml_node chord_node, const char *interval,
+                const std::optional<ChordName::Degree> &degree)
+{
+    if (!degree)
+        return;
+
+    auto node = chord_node.append_child("Degree");
+    node.append_attribute("interval").set_value(interval);
+    node.append_attribute("alteration")
+        .set_value(Util::toString(degree->myAlteration).c_str());
+    node.append_attribute("omitted").set_value(degree->myOmitted);
+}
+
+static void
+saveDiagram(pugi::xml_node diagram_node, const ChordDiagram &diagram)
+{
+    diagram_node.append_attribute("baseFret").set_value(diagram.myBaseFret);
+    diagram_node.append_attribute("stringCount")
+        .set_value(diagram.myFrets.size());
+
+    int num_frets = 0;
+    for (size_t string = 0; string < diagram.myFrets.size(); ++string)
+    {
+        int fret = diagram.myFrets[string];
+        if (fret < 0)
+            continue;
+
+        ++num_frets;
+        auto fret_node = diagram_node.append_child("Fret");
+        fret_node.append_attribute("string").set_value(string);
+        fret_node.append_attribute("fret").set_value(fret);
+    }
+
+    diagram_node.append_attribute("fretCount").set_value(num_frets);
+
+    auto addDiagramProperty =
+        [](pugi::xml_node &diagram_node, const char *name, bool val)
+    {
+        auto prop = addPropertyNode(diagram_node, name);
+        prop.append_attribute("type").set_value("bool");
+        prop.append_attribute("value").set_value(val);
+    };
+
+    addDiagramProperty(diagram_node, "ShowName", true);
+    addDiagramProperty(diagram_node, "ShowDiagram", true);
+    addDiagramProperty(diagram_node, "ShowFingering", false);
+}
+
+static void
+saveChordDiagrams(pugi::xml_node chords_node, const Track &track)
+{
+    auto items_node = chords_node.append_child("Items");
+
+    for (auto &&[chord_id, chord] : track.myChords)
+    {
+        auto item = items_node.append_child("Item");
+        item.append_attribute("id").set_value(chord_id);
+        item.append_attribute("name").set_value(chord.myDescription.c_str());
+
+        // Chord diagram
+        auto diagram_node = item.append_child("Diagram");
+        const ChordDiagram &diagram = chord.myDiagram;
+        saveDiagram(diagram_node, diagram);
+
+        // Chord name
+        auto chord_node = item.append_child("Chord");
+        const ChordName &chord_name = chord.myName;
+
+        saveChordNote(chord_node, "KeyNote", chord_name.myKeyNote);
+        saveChordNote(chord_node, "BassNote", chord_name.myBassNote);
+
+        saveChordDegree(chord_node, "Second", chord_name.mySecond);
+        saveChordDegree(chord_node, "Third", chord_name.myThird);
+        saveChordDegree(chord_node, "Fourth", chord_name.myFourth);
+        saveChordDegree(chord_node, "Fifth", chord_name.myFifth);
+        saveChordDegree(chord_node, "Sixth", chord_name.mySixth);
+        saveChordDegree(chord_node, "Seventh", chord_name.mySeventh);
+        saveChordDegree(chord_node, "Ninth", chord_name.myNinth);
+        saveChordDegree(chord_node, "Eleventh", chord_name.myEleventh);
+        saveChordDegree(chord_node, "Thirteenth", chord_name.myThirteenth);
     }
 }
 
@@ -196,6 +298,9 @@ saveTracks(pugi::xml_node &gpif, const std::vector<Track> &tracks)
             auto tuning = props_node.append_child("Property");
             tuning.append_attribute("name").set_value("Tuning");
             addValueNode(tuning, "Pitches", listToString(staff.myTuning));
+
+            auto chords_node = addPropertyNode(props_node, "DiagramCollection");
+            saveChordDiagrams(chords_node, track);
         }
 
         // In Power Tab the notes are implicitly transposed down in the
@@ -219,8 +324,6 @@ saveTracks(pugi::xml_node &gpif, const std::vector<Track> &tracks)
             addCDataNode(node, "Value",
                          sound.myPath + ";" + sound.myName + ";" + sound.myRole);
         }
-
-        // TODO - export chords
 
         ++track_idx;
     }
@@ -340,14 +443,6 @@ saveVoices(pugi::xml_node &gpif,
     }
 }
 
-static pugi::xml_node
-addPropertyNode(pugi::xml_node &props_node, const char *name)
-{
-    auto prop_node = props_node.append_child("Property");
-    prop_node.append_attribute("name").set_value(name);
-    return prop_node;
-}
-
 static void
 saveBeats(pugi::xml_node &gpif, const std::unordered_map<int, Beat> &beats_map)
 {
@@ -403,8 +498,8 @@ saveBeats(pugi::xml_node &gpif, const std::unordered_map<int, Beat> &beats_map)
             node.append_attribute("destinationOffset").set_value(whammy.myDestOffset);
         }
 
-        // TODO
-        // - chord ids
+        if (beat.myChordId)
+            addCDataNode(beat_node, "Chord", std::to_string(*beat.myChordId));
     }
 }
 

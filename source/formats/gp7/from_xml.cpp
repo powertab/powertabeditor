@@ -160,19 +160,16 @@ parseChordNote(const pugi::xml_node &node)
     Gp7::ChordName::Note note;
     note.myStep = node.attribute("step").as_string();
 
-    static const std::unordered_map<std::string, int> theAccidentals = {
-        { "Natural"s, 0 },
-        { "Sharp"s, 1 },
-        { "DoubleSharp"s, 2 },
-        { "Flat"s, -1 },
-        { "DoubleFlat"s, -2 }
-    };
+    using Accidental = Gp7::ChordName::Note::Accidental;
+    std::string accidental_text = node.attribute("accidental").as_string();
 
-    auto it = theAccidentals.find(node.attribute("accidental").as_string());
-    if (it == theAccidentals.end())
-        throw FileFormatException("Unknown accidental type");
-
-    note.myAccidental = it->second;
+    if (auto accidental = Util::toEnum<Accidental>(accidental_text))
+        note.myAccidental = *accidental;
+    else
+    {
+        std::cerr << "Unknown accidental type: " << accidental_text
+                  << std::endl;
+    }
 
     return note;
 }

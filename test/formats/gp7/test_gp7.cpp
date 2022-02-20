@@ -924,18 +924,16 @@ TEST_CASE("Formats/Gp7Import/ChordDiagrams")
     Gp7Importer importer;
     importer.load(Paths::getAppDirPath("data/chord_diagrams.gp"), score);
 
-    REQUIRE(score.getChordDiagrams().size() == 5);
+    REQUIRE(score.getChordDiagrams().size() == 4);
 
     REQUIRE(Util::toString(score.getChordDiagrams()[0]) ==
-            "E: 0 2 2 1 0 0");
+            "Asus2: x 0 2 2 0 0");
     REQUIRE(Util::toString(score.getChordDiagrams()[1]) ==
             "Bb: 6 8 8 7 6 x (6)");
     REQUIRE(Util::toString(score.getChordDiagrams()[2]) ==
+            "E: 0 2 2 1 0 0");
+    REQUIRE(Util::toString(score.getChordDiagrams()[3]) ==
             "F#: x 2 4 4 3 x x");
-    REQUIRE(Util::toString(score.getChordDiagrams()[4]) ==
-            "Asus2: x 0 2 2 0 0");
-    // Duplicates aren't detected currently.
-    REQUIRE(score.getChordDiagrams()[3] == score.getChordDiagrams()[0]);
 }
 
 TEST_CASE("Formats/Gp7Export")
@@ -944,16 +942,14 @@ TEST_CASE("Formats/Gp7Export")
         "data/alternate_endings.gp",
         "data/bars.gp",
         //"data/bends.gp",
+        "data/chord_diagrams.gp",
         "data/directions.gp",
         "data/fermatas.gp",
         "data/harmonics.gp",
         "data/irregular_groups.gp",
         "data/notes.gp",
         //"data/score_info.gp",
-        //
-        // has chord names / diagrams
-        // "data/chord_diagrams.gp",
-        // "data/text.gp",
+        "data/text.gp",
         //
         // multi-staff tracks become separate tracks and get unique instruments
         // "data/tracks.gp"

@@ -37,8 +37,10 @@
 #include <score/utils.h>
 #include <score/utils/scorepolisher.h>
 #include <score/voiceutils.h>
+#include <util/tostring.h>
 
 #include <iostream>
+#include <unordered_set>
 
 /// Convert the Guitar Pro file metadata.
 static void
@@ -987,16 +989,25 @@ convertChordDiagram(const Gp7::Chord &gp_chord)
 static void
 convertChordDiagrams(const Gp7::Document &doc, Score &score)
 {
-    // TODO - consolidate identical diagrams from different tracks?
+    std::unordered_set<ChordDiagram> unique_diagrams;
     for (const Gp7::Track &track : doc.myTracks)
     {
-        // Sort by id to insert in a deterministic order..
-        std::map<int, Gp7::Chord> ordered_chords(track.myChords.begin(),
-                                                 track.myChords.end());
-
-        for (auto &&[_, chord] : ordered_chords)
-            score.insertChordDiagram(convertChordDiagram(chord));
+        for (auto &&[_, chord] : track.myChords)
+            unique_diagrams.insert(convertChordDiagram(chord));
     }
+
+    // Sort by chord name to insert in a deterministic order.
+    std::vector<ChordDiagram> diagrams(unique_diagrams.begin(),
+                                       unique_diagrams.end());
+    std::sort(diagrams.begin(), diagrams.end(),
+              [](const ChordDiagram &d1, const ChordDiagram &d2)
+              {
+                  return Util::toString(d1.getChordName()) <
+                         Util::toString(d2.getChordName());
+              });
+
+    for (const ChordDiagram &diagram : diagrams)
+        score.insertChordDiagram(diagram);
 }
 
 static void
@@ -1090,7 +1101,14 @@ convertSystem(const Gp7::Document &doc, Score &score, int bar_begin,
                             doc.myTracks[track_idx].myChords.at(*gp_beat.myChordId);
 
                         ChordName chord_name = convertChordName(gp_chord.myName);
-                        system.insertChord(ChordText(voice_pos, chord_name));
+                        // Avoid inserting duplicates since many tracks may
+                        // have the same chord name.
+                        if (!ScoreUtils::findByPosition(system.getChords(),
+                                                        voice_pos))
+                        {
+                            system.insertChord(
+                                ChordText(voice_pos, chord_name));
+                        }
                     }
 
                     Position pos = convertPosition(gp_beat, gp_rhythm);
