@@ -475,6 +475,12 @@ convertBeat(Gp7::Document &doc, Gp7::MasterBar &master_bar, Gp7::Beat &beat,
             const int pitch_offset = pitch - base_pitch;
 
             gp_note.myHarmonicFret = Harmonics::getFretOffset(pitch_offset);
+
+            // Fix up a couple issues from GP storing more precise fret offsets.
+            if (gp_note.myHarmonicFret == 3)
+                gp_note.myHarmonicFret = 3.2;
+            else if (gp_note.myHarmonicFret == 15)
+                gp_note.myHarmonicFret = 14.7;
         }
 
         const int note_id = doc.myNotes.size();

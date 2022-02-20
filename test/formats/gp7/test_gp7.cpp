@@ -946,7 +946,7 @@ TEST_CASE("Formats/Gp7Export")
         //"data/bends.gp",
         "data/directions.gp",
         "data/fermatas.gp",
-        //"data/harmonics.gp",
+        "data/harmonics.gp",
         "data/irregular_groups.gp",
         "data/notes.gp",
         //"data/score_info.gp",
