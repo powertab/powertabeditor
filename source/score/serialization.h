@@ -23,12 +23,14 @@
 #include "fileversion.h"
 #include <istream>
 #include <iomanip>
+#include <iostream>
 #include <map>
 #include <nlohmann/json.hpp>
 #include <optional>
 #include <stack>
 #include <stdexcept>
 #include <util/date.h>
+#include <util/enumtostring_fwd.h>
 #include <vector>
 
 namespace ScoreUtils
@@ -99,7 +101,23 @@ namespace detail
             if constexpr (std::is_class_v<T>)
                 val.serialize(*this, myVersion);
             else if constexpr (std::is_enum_v<T>)
-                val = static_cast<T>(value().get<int>());
+            {
+                // Convert from string to enum.
+                // In older files, enums were stored as ints.
+                if (myVersion < FileVersion::JSON_CLEANUP)
+                    val = static_cast<T>(value().get<int>());
+                else
+                {
+                    std::string text = value().get<std::string>();
+                    if (auto result = Util::toEnum<T>(text))
+                        val = *result;
+                    else
+                    {
+                        std::cerr << "Unknown enum value: " << text
+                                  << std::endl;
+                    }
+                }
+            }
             else
                 assert(false);
         }
@@ -152,7 +170,15 @@ namespace detail
         template <typename T>
         JSONValue convert(const T &obj)
         {
-            if constexpr (std::is_pod_v<T> || std::is_same_v<T, std::string>)
+            // Save enums as strings. The exception is the FileVersion enum
+            // which is left as an integer.
+            if constexpr (std::is_enum_v<T> && !std::is_same_v<T, FileVersion>)
+            {
+                return Util::enumToString(obj);
+            }
+            // Save ints / bools / etc or strings as-is.
+            else if constexpr (std::is_pod_v<T> ||
+                               std::is_same_v<T, std::string>)
             {
                 return obj;
             }

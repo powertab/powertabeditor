@@ -34,7 +34,8 @@
 #define UTIL_DEFINE_ENUMTOSTRING(EnumType, ...)                                \
     namespace Util                                                             \
     {                                                                          \
-    std::string enumToString(EnumType value)                                   \
+    template <>                                                                \
+    std::string enumToString<EnumType>(EnumType value)                         \
     {                                                                          \
         static const std::pair<EnumType, std::string> map[] = __VA_ARGS__;     \
         auto it =                                                              \

@@ -26,13 +26,17 @@ namespace Util
 // Declaration for the template specializations added via the macro.
 template <typename Enum>
 std::optional<Enum> toEnum(const std::string &str);
+
+template <typename Enum>
+std::string enumToString(Enum value);                              \
 }
 
 /// Forward declaration for the conversion functions.
 #define UTIL_DECLARE_ENUMTOSTRING(EnumType)                                    \
     namespace Util                                                             \
     {                                                                          \
-        std::string enumToString(EnumType value);                              \
+        template <>                                                            \
+        std::string enumToString<EnumType>(EnumType value);                    \
                                                                                \
         template <>                                                            \
         std::optional<EnumType> toEnum<EnumType>(const std::string &str);      \
