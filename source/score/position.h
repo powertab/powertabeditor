@@ -24,8 +24,8 @@
 
 #include <algorithm>
 #include <boost/range/iterator_range_core.hpp>
-#include <bitset>
 #include <optional>
+#include <util/enumflags.h>
 #include <util/enumtostring_fwd.h>
 #include <vector>
 
@@ -141,7 +141,7 @@ public:
         TripletFeelSecond,
         LetRing,
         Fermata,
-        NumSimpleProperties
+        NumFlags
     };
 
     Position();
@@ -216,7 +216,7 @@ public:
 private:
     int myPosition;
     DurationType myDurationType;
-    std::bitset<NumSimpleProperties> mySimpleProperties;
+    Util::EnumFlags<SimpleProperty> mySimpleProperties;
     int myMultiBarRestCount;
     std::optional<VolumeSwell> myVolumeSwell;
     std::optional<TremoloBar> myTremoloBar;

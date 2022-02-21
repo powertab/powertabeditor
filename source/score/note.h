@@ -18,11 +18,11 @@
 #ifndef SCORE_NOTE_H
 #define SCORE_NOTE_H
 
-#include <bitset>
 #include "chordname.h"
 #include "fileversion.h"
 #include <iosfwd>
 #include <optional>
+#include <util/enumflags.h>
 #include <util/enumtostring_fwd.h>
 #include <vector>
 
@@ -199,7 +199,7 @@ public:
         LegatoSlide,
         SlideOutOfDownwards,
         SlideOutOfUpwards,
-        NumSimpleProperties
+        NumFlags
     };
 
     Note() = default;
@@ -276,7 +276,7 @@ public:
 private:
     int myString = 0;
     int myFretNumber = 0;
-    std::bitset<NumSimpleProperties> mySimpleProperties;
+    Util::EnumFlags<SimpleProperty> mySimpleProperties;
     std::optional<int> myTrilledFret;
     std::optional<int> myTappedHarmonicFret;
     std::optional<ArtificialHarmonic> myArtificialHarmonic;

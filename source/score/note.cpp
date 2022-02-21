@@ -75,7 +75,7 @@ void Note::setFretNumber(int fret)
 
 bool Note::hasProperty(SimpleProperty property) const
 {
-    return mySimpleProperties.test(property);
+    return mySimpleProperties.getFlag(property);
 }
 
 void Note::setProperty(SimpleProperty property, bool set)
@@ -87,30 +87,30 @@ void Note::setProperty(SimpleProperty property, bool set)
         if (property >= Octave8va && property <= Octave15mb)
         {
             for (int p = Octave8va; p <= Octave15mb; ++p)
-                mySimpleProperties.set(static_cast<SimpleProperty>(p), false);
+                mySimpleProperties.setFlag(static_cast<SimpleProperty>(p), false);
         }
 
         // Clear all hammeron/pulloff properties.
         if (property >= HammerOnOrPullOff && property <= PullOffToNowhere)
         {
             for (int p = HammerOnOrPullOff; p <= PullOffToNowhere; ++p)
-                mySimpleProperties.set(static_cast<SimpleProperty>(p), false);
+                mySimpleProperties.setFlag(static_cast<SimpleProperty>(p), false);
         }
 
         // Clear any mutually-exclusive slide types.
         if (property == SlideIntoFromAbove)
-            mySimpleProperties.set(SlideIntoFromBelow, false);
+            mySimpleProperties.setFlag(SlideIntoFromBelow, false);
         if (property == SlideIntoFromBelow)
-            mySimpleProperties.set(SlideIntoFromAbove, false);
+            mySimpleProperties.setFlag(SlideIntoFromAbove, false);
 
         if (property >= ShiftSlide && property <= SlideOutOfUpwards)
         {
             for (int p = ShiftSlide; p <= SlideOutOfUpwards; ++p)
-                mySimpleProperties.set(static_cast<SimpleProperty>(p), false);
+                mySimpleProperties.setFlag(static_cast<SimpleProperty>(p), false);
         }
     }
 
-    mySimpleProperties.set(property, set);
+    mySimpleProperties.setFlag(property, set);
 }
 
 bool Note::hasTrill() const

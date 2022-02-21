@@ -127,7 +127,7 @@ void Position::setDurationType(DurationType type)
 
 bool Position::hasProperty(SimpleProperty property) const
 {
-    return mySimpleProperties.test(property);
+    return mySimpleProperties.getFlag(property);
 }
 
 void Position::setProperty(SimpleProperty property, bool set)
@@ -136,37 +136,37 @@ void Position::setProperty(SimpleProperty property, bool set)
     if (set)
     {
         if (property == PickStrokeUp && hasProperty(PickStrokeDown))
-            mySimpleProperties.set(PickStrokeDown, false);
+            mySimpleProperties.setFlag(PickStrokeDown, false);
         if (property == PickStrokeDown && hasProperty(PickStrokeUp))
-            mySimpleProperties.set(PickStrokeUp, false);
+            mySimpleProperties.setFlag(PickStrokeUp, false);
 
         if (property == Vibrato && hasProperty(WideVibrato))
-            mySimpleProperties.set(WideVibrato, false);
+            mySimpleProperties.setFlag(WideVibrato, false);
         if (property == WideVibrato && hasProperty(Vibrato))
-            mySimpleProperties.set(Vibrato, false);
+            mySimpleProperties.setFlag(Vibrato, false);
 
         if (property == ArpeggioUp && hasProperty(ArpeggioDown))
-            mySimpleProperties.set(ArpeggioDown, false);
+            mySimpleProperties.setFlag(ArpeggioDown, false);
         if (property == ArpeggioDown && hasProperty(ArpeggioUp))
-            mySimpleProperties.set(ArpeggioUp, false);
+            mySimpleProperties.setFlag(ArpeggioUp, false);
 
         if (property == Dotted && hasProperty(DoubleDotted))
-            mySimpleProperties.set(DoubleDotted, false);
+            mySimpleProperties.setFlag(DoubleDotted, false);
         if (property == DoubleDotted && hasProperty(Dotted))
-            mySimpleProperties.set(Dotted, false);
+            mySimpleProperties.setFlag(Dotted, false);
 
         if (property == Marcato && hasProperty(Sforzando))
-            mySimpleProperties.set(Sforzando, false);
+            mySimpleProperties.setFlag(Sforzando, false);
         if (property == Sforzando && hasProperty(Marcato))
-            mySimpleProperties.set(Marcato, false);
+            mySimpleProperties.setFlag(Marcato, false);
 
         if (property == TripletFeelFirst && hasProperty(TripletFeelSecond))
-            mySimpleProperties.set(TripletFeelSecond, false);
+            mySimpleProperties.setFlag(TripletFeelSecond, false);
         if (property == TripletFeelSecond && hasProperty(TripletFeelFirst))
-            mySimpleProperties.set(TripletFeelFirst, false);
+            mySimpleProperties.setFlag(TripletFeelFirst, false);
     }
 
-    mySimpleProperties.set(property, set);
+    mySimpleProperties.setFlag(property, set);
 }
 
 bool Position::isRest() const

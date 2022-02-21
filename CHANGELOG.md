@@ -15,6 +15,8 @@ Thanks to the following contributors who worked on this release:
   - The tuning dictionary in the user prefs folder (`tunings.json`) now only stores custom tunings instead of the entire tuning dictionary
   - The user tuning dictionary is now combined with the default tuning dictionary when loaded, ensuring that updates to the default tunings take effect
   - Reordered the default tuning dictionary so that "Down 1/2 Step", "Down 1 Step" etc tunings are next to the standard tuning (#363)
+- Several changes to the `.pt2` JSON format to make it easier for other applications to parse (#368)
+  - Note that older releases will likely be unable to open newly-saved `.pt2` files
 
 ### Fixed
 - Fixed an error with importing `.gpx` or `.gp` files with artificial harmonics for which the harmonic type was set to `Pinch`

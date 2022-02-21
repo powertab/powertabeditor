@@ -18,20 +18,21 @@
 #ifndef SCORE_ALTERNATEENDING_H
 #define SCORE_ALTERNATEENDING_H
 
-#include <bitset>
 #include "fileversion.h"
 #include <iosfwd>
+#include <util/enumflags.h>
+#include <util/enumtostring_fwd.h>
 #include <vector>
 
 class AlternateEnding
 {
 public:
-    enum SpecialAlternateEndings
+    enum SpecialEndingSymbol
     {
         DaCapo,
         DalSegno,
         DalSegnoSegno,
-        NumSpecialAlternateEndings
+        NumFlags
     };
 
     AlternateEnding();
@@ -69,8 +70,10 @@ public:
 private:
     int myPosition;
     std::vector<int> myNumbers;
-    std::bitset<NumSpecialAlternateEndings> mySpecialEndings;
+    Util::EnumFlags<SpecialEndingSymbol> mySpecialEndings;
 };
+
+UTIL_DECLARE_ENUMTOSTRING(AlternateEnding::SpecialEndingSymbol)
 
 template <class Archive>
 void AlternateEnding::serialize(Archive &ar, const FileVersion /*version*/)

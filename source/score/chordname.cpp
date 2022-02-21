@@ -78,13 +78,13 @@ void ChordName::setFormula(Formula formula)
 bool ChordName::hasModification(
     ChordName::FormulaModification modification) const
 {
-    return myModifications.test(modification);
+    return myModifications.getFlag(modification);
 }
 
 void ChordName::setModification(ChordName::FormulaModification modification,
                                 bool set)
 {
-    myModifications.set(modification, set);
+    myModifications.setFlag(modification, set);
 }
 
 ChordName::Variation ChordName::getBassVariation() const
@@ -209,7 +209,7 @@ std::hash<ChordName>::operator()(const ChordName &name) const
     boost::hash_combine(seed, name.getBassKey());
     boost::hash_combine(seed, name.getBassVariation());
     boost::hash_combine(seed, name.getFormula());
-    boost::hash_combine(seed, name.getModifications().to_ulong());
+    boost::hash_combine(seed, name.getModifications().toUInt());
     boost::hash_combine(seed, name.hasBrackets());
     boost::hash_combine(seed, name.isNoChord());
     return seed;

@@ -18,10 +18,10 @@
 #ifndef SCORE_CHORDNAME_H
 #define SCORE_CHORDNAME_H
 
-#include <bitset>
 #include "fileversion.h"
 #include <iosfwd>
 #include <memory>
+#include <util/enumflags.h>
 #include <util/enumtostring_fwd.h>
 
 class ChordName
@@ -84,7 +84,7 @@ public:
         Flatted13th,
         Suspended2nd,
         Suspended4th,
-        NumModifications
+        NumFlags
     };
 
     ChordName();
@@ -111,7 +111,7 @@ public:
 
     bool hasModification(FormulaModification modification) const;
     void setModification(FormulaModification modification, bool set = true);
-    const std::bitset<NumModifications> &getModifications() const { return myModifications; }
+    const Util::EnumFlags<FormulaModification> &getModifications() const { return myModifications; }
 
     bool hasBrackets() const;
     void setBrackets(bool value);
@@ -125,7 +125,7 @@ private:
     Key myBassKey;
     Variation myBassVariation;
     Formula myFormula;
-    std::bitset<NumModifications> myModifications;
+    Util::EnumFlags<FormulaModification> myModifications;
     bool myHasBrackets;
     bool myIsNoChord;
 };

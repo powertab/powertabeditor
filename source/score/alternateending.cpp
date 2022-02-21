@@ -22,6 +22,7 @@
 #include <ostream>
 #include <stdexcept>
 #include <string>
+#include <util/enumtostring.h>
 
 const int AlternateEnding::MIN_NUMBER = 1;
 const int AlternateEnding::MAX_NUMBER = 8;
@@ -77,32 +78,32 @@ const std::vector<int> &AlternateEnding::getNumbers() const
 
 bool AlternateEnding::hasDaCapo() const
 {
-    return mySpecialEndings[DaCapo];
+    return mySpecialEndings.getFlag(DaCapo);
 }
 
 void AlternateEnding::setDaCapo(bool set)
 {
-    mySpecialEndings[DaCapo] = set;
+    mySpecialEndings.setFlag(DaCapo, set);
 }
 
 bool AlternateEnding::hasDalSegno() const
 {
-    return mySpecialEndings[DalSegno];
+    return mySpecialEndings.getFlag(DalSegno);
 }
 
 void AlternateEnding::setDalSegno(bool set)
 {
-    mySpecialEndings[DalSegno] = set;
+    mySpecialEndings.setFlag(DalSegno, set);
 }
 
 bool AlternateEnding::hasDalSegnoSegno() const
 {
-    return mySpecialEndings[DalSegnoSegno];
+    return mySpecialEndings.getFlag(DalSegnoSegno);
 }
 
 void AlternateEnding::setDalSegnoSegno(bool set)
 {
-    mySpecialEndings[DalSegnoSegno] = set;
+    mySpecialEndings.setFlag(DalSegnoSegno, set);
 }
 
 std::ostream &operator<<(std::ostream &os, const AlternateEnding &ending)
@@ -131,3 +132,11 @@ std::ostream &operator<<(std::ostream &os, const AlternateEnding &ending)
 
     return os;
 }
+
+using SpecialEndingSymbol = AlternateEnding::SpecialEndingSymbol;
+
+UTIL_DEFINE_ENUMTOSTRING(SpecialEndingSymbol, {
+    { SpecialEndingSymbol::DaCapo, "DaCapo" },
+    { SpecialEndingSymbol::DalSegno, "DalSegno" },
+    { SpecialEndingSymbol::DalSegnoSegno, "DalSegnoSegno" },
+})

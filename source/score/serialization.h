@@ -19,7 +19,6 @@
 #define SCORE_SERIALIZATION_H
 
 #include <array>
-#include <bitset>
 #include "fileversion.h"
 #include <istream>
 #include <iomanip>
@@ -30,6 +29,7 @@
 #include <stack>
 #include <stdexcept>
 #include <util/date.h>
+#include <util/enumflags.h>
 #include <util/enumtostring_fwd.h>
 #include <vector>
 
@@ -87,8 +87,8 @@ namespace detail
         template <typename T, size_t N>
         void read(std::array<T, N> &arr);
 
-        template <size_t N>
-        void read(std::bitset<N> &bits);
+        template <typename EnumT>
+        void read(Util::EnumFlags<EnumT> &bits);
 
         template <typename T>
         void read(std::optional<T> &val);
@@ -156,11 +156,8 @@ namespace detail
         template <typename T, size_t N>
         JSONValue convert(const std::array<T, N> &arr);
 
-        template <size_t N>
-        JSONValue convert(const std::bitset<N> &bits)
-        {
-            return bits.to_string();
-        }
+        template <typename EnumT>
+        JSONValue convert(const Util::EnumFlags<EnumT> &flags);
 
         template <typename T>
         JSONValue convert(const std::optional<T> &val);
@@ -273,12 +270,28 @@ namespace detail
             (*this)(std::to_string(i), arr[i]);
     }
 
-    template <size_t N>
-    void InputArchive::read(std::bitset<N> &bits)
+    template <typename EnumT>
+    void InputArchive::read(Util::EnumFlags<EnumT> &flags)
     {
-        std::string data;
-        read(data);
-        bits = std::bitset<N>(data);
+        // In old files, the flags were stored as a string of 0's or 1's
+        // In new file, they are stored as a string array containing the active
+        // enum values.
+        if (myVersion < FileVersion::JSON_CLEANUP)
+        {
+            std::string data;
+            read(data);
+            flags.setFromString(data);
+        }
+        else
+        {
+            const JSONValue &json_array = value();
+            for (const JSONValue &entry : json_array)
+            {
+                auto flag = Util::toEnum<EnumT>(entry.get<std::string>());
+                if (flag) // Ignore any unknown flags from future file versions.
+                    flags.setFlag(*flag, true);
+            }
+        }
     }
 
     template <typename T>
@@ -325,6 +338,23 @@ namespace detail
             obj[std::to_string(i)] = convert(arr[i]);
 
         return obj;
+    }
+
+    template <typename EnumT>
+    JSONValue OutputArchive::convert(const Util::EnumFlags<EnumT> &flags)
+    {
+        JSONValue arr = JSONValue::array();
+
+        // Convert to an array of strings, with the enum values for the active
+        // flags.
+        for (size_t i = 0; i < Util::EnumFlags<EnumT>::NumFlags; ++i)
+        {
+            auto flag = static_cast<EnumT>(i);
+            if (flags.getFlag(flag))
+                arr.push_back(Util::enumToString(flag));
+        }
+
+        return arr;
     }
 
     template <typename T>
