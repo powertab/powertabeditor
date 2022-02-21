@@ -34,8 +34,8 @@ UTIL_DEFINE_ENUMTOSTRING(MyEnum, { { MyEnum::ValueA, "textA" },
 
 TEST_CASE("Util/EnumToString/Basic")
 {
-    REQUIRE(Util::toString(MyEnum::ValueA) == "textA");
-    REQUIRE(Util::toString(MyEnum::ValueC) == "textC");
+    REQUIRE(Util::enumToString(MyEnum::ValueA) == "textA");
+    REQUIRE(Util::enumToString(MyEnum::ValueC) == "textC");
 
     REQUIRE(Util::toEnum<MyEnum>("textA") == MyEnum::ValueA);
     REQUIRE(Util::toEnum<MyEnum>("textB") == MyEnum::ValueB);

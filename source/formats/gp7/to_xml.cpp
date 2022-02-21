@@ -133,7 +133,7 @@ saveChordNote(pugi::xml_node chord_node, const char *name,
     auto node = chord_node.append_child(name);
     node.append_attribute("step").set_value(note.myStep.c_str());
     node.append_attribute("accidental")
-        .set_value(Util::toString(note.myAccidental).c_str());
+        .set_value(Util::enumToString(note.myAccidental).c_str());
 }
 
 static void
@@ -146,7 +146,7 @@ saveChordDegree(pugi::xml_node chord_node, const char *interval,
     auto node = chord_node.append_child("Degree");
     node.append_attribute("interval").set_value(interval);
     node.append_attribute("alteration")
-        .set_value(Util::toString(degree->myAlteration).c_str());
+        .set_value(Util::enumToString(degree->myAlteration).c_str());
     node.append_attribute("omitted").set_value(degree->myOmitted);
 }
 
@@ -392,11 +392,14 @@ saveMasterBars(pugi::xml_node &gpif, const std::vector<MasterBar> &master_bars)
 
             using DirectionTarget = Gp7::MasterBar::DirectionTarget;
             for (DirectionTarget target : master_bar.myDirectionTargets)
-                addValueNode(directions_node, "Target", Util::toString(target));
+            {
+                addValueNode(directions_node, "Target",
+                             Util::enumToString(target));
+            }
 
             using DirectionJump = Gp7::MasterBar::DirectionJump;
             for (DirectionJump jump : master_bar.myDirectionJumps)
-                addValueNode(directions_node, "Jump", Util::toString(jump));
+                addValueNode(directions_node, "Jump", Util::enumToString(jump));
         }
 
         if (!master_bar.myFermatas.empty())
@@ -424,7 +427,7 @@ saveBars(pugi::xml_node &gpif, const std::unordered_map<int, Bar> &bars_map)
         auto bar_node = bars_node.append_child("Bar");
         bar_node.append_attribute("id").set_value(id);
 
-        addValueNode(bar_node, "Clef", Util::toString(bar.myClefType));
+        addValueNode(bar_node, "Clef", Util::enumToString(bar.myClefType));
         addValueNode(bar_node, "Voices", listToString(bar.myVoiceIds));
     }
 }
@@ -469,7 +472,10 @@ saveBeats(pugi::xml_node &gpif, const std::unordered_map<int, Beat> &beats_map)
             addCDataNode(beat_node, "FreeText", beat.myFreeText);
 
         if (beat.myOttavia)
-            addValueNode(beat_node, "Ottavia", Util::toString(*beat.myOttavia));
+        {
+            addValueNode(beat_node, "Ottavia",
+                         Util::enumToString(*beat.myOttavia));
+        }
 
         if (beat.myArpeggioUp || beat.myArpeggioDown)
         {
@@ -618,7 +624,7 @@ saveNotes(pugi::xml_node &gpif, const std::unordered_map<int, Note> &notes_map)
         if (note.myLeftFinger)
         {
             addValueNode(note_node, "LeftFingering",
-                         Util::toString(*note.myLeftFinger));
+                         Util::enumToString(*note.myLeftFinger));
         }
 
         if (note.myHarmonic)
@@ -626,7 +632,8 @@ saveNotes(pugi::xml_node &gpif, const std::unordered_map<int, Note> &notes_map)
             addBoolNoteProperty(props_node, "Harmonic");
 
             auto type_node = addPropertyNode(props_node, "HarmonicType");
-            addValueNode(type_node, "HType", Util::toString(*note.myHarmonic));
+            addValueNode(type_node, "HType",
+                         Util::enumToString(*note.myHarmonic));
 
             if (note.myHarmonicFret != 0)
             {

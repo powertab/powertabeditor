@@ -32,7 +32,7 @@ std::optional<Enum> toEnum(const std::string &str);
 #define UTIL_DECLARE_ENUMTOSTRING(EnumType)                                    \
     namespace Util                                                             \
     {                                                                          \
-        std::string toString(EnumType value);                                  \
+        std::string enumToString(EnumType value);                              \
                                                                                \
         template <>                                                            \
         std::optional<EnumType> toEnum<EnumType>(const std::string &str);      \
