@@ -193,7 +193,7 @@ public:
         NumSimpleProperties
     };
 
-    Note();
+    Note() = default;
     Note(int string, int fretNumber);
 
     bool operator==(const Note &other) const;
@@ -265,11 +265,11 @@ public:
     static const int MAX_FRET_NUMBER;
 
 private:
-    int myString;
-    int myFretNumber;
+    int myString = 0;
+    int myFretNumber = 0;
     std::bitset<NumSimpleProperties> mySimpleProperties;
-    int myTrilledFret;
-    int myTappedHarmonicFret;
+    std::optional<int> myTrilledFret;
+    std::optional<int> myTappedHarmonicFret;
     std::optional<ArtificialHarmonic> myArtificialHarmonic;
     std::optional<Bend> myBend;
     std::optional<LeftHandFingering> myLeftHandFingering;
@@ -281,8 +281,18 @@ void Note::serialize(Archive &ar, const FileVersion version)
     ar("string", myString);
     ar("fret", myFretNumber);
     ar("properties", mySimpleProperties);
+
     ar("trill", myTrilledFret);
     ar("tapped_harmonic", myTappedHarmonicFret);
+    if (version < FileVersion::JSON_CLEANUP)
+    {
+        // Before std::optional was used, -1 indicated no value
+        if (myTrilledFret < 0)
+            myTrilledFret.reset();
+        if (myTappedHarmonicFret < 0)
+            myTappedHarmonicFret.reset();
+    }
+
     ar("artificial_harmonic", myArtificialHarmonic);
     ar("bend", myBend);
     if (version >= FileVersion::LEFT_HAND_FINGERING)

@@ -40,7 +40,9 @@ enum class FileVersion : int
     TREMOLO_BAR = 8,
     /// Added chord diagrams.
     CHORD_DIAGRAMS = 9,
-    LATEST_VERSION = CHORD_DIAGRAMS
+    /// Changes to make the JSON format easier to parse in other applications.
+    JSON_CLEANUP = 10,
+    LATEST_VERSION = JSON_CLEANUP
 };
 
 #endif

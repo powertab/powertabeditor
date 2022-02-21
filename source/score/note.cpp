@@ -36,19 +36,9 @@ static const std::map<int, int> theHarmonicOffsets = {
     { 19, 19 }, { 22, 34 }, { 24, 24 }, { 28, 28 }
 };
 
-Note::Note()
-    : myString(0),
-      myFretNumber(0),
-      myTrilledFret(-1),
-      myTappedHarmonicFret(-1)
-{
-}
-
 Note::Note(int string, int fretNumber)
     : myString(string),
-      myFretNumber(fretNumber),
-      myTrilledFret(-1),
-      myTappedHarmonicFret(-1)
+      myFretNumber(fretNumber)
 {
 }
 
@@ -124,7 +114,7 @@ void Note::setProperty(SimpleProperty property, bool set)
 
 bool Note::hasTrill() const
 {
-    return myTrilledFret != -1;
+    return myTrilledFret.has_value();
 }
 
 int Note::getTrilledFret() const
@@ -132,7 +122,7 @@ int Note::getTrilledFret() const
     if (!hasTrill())
         throw std::logic_error("Note does not have a trill");
 
-    return myTrilledFret;
+    return *myTrilledFret;
 }
 
 void Note::setTrilledFret(int fret)
@@ -145,12 +135,12 @@ void Note::setTrilledFret(int fret)
 
 void Note::clearTrill()
 {
-    myTrilledFret = -1;
+    myTrilledFret.reset();
 }
 
 bool Note::hasTappedHarmonic() const
 {
-    return myTappedHarmonicFret != -1;
+    return myTappedHarmonicFret.has_value();
 }
 
 int Note::getTappedHarmonicFret() const
@@ -158,7 +148,7 @@ int Note::getTappedHarmonicFret() const
     if (!hasTappedHarmonic())
         throw std::logic_error("Note does not have a tapped harmonic");
 
-    return myTappedHarmonicFret;
+    return *myTappedHarmonicFret;
 }
 
 void Note::setTappedHarmonicFret(int fret)
@@ -171,7 +161,7 @@ void Note::setTappedHarmonicFret(int fret)
 
 void Note::clearTappedHarmonic()
 {
-    myTappedHarmonicFret = -1;
+    myTappedHarmonicFret.reset();
 }
 
 bool Note::hasArtificialHarmonic() const
