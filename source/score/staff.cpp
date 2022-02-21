@@ -17,6 +17,7 @@
 
 #include "staff.h"
 
+#include <util/enumtostring.h>
 #include "utils.h"
 
 Staff::Staff() : myClefType(TrebleClef), myStringCount(6)
@@ -99,3 +100,9 @@ void Staff::removeDynamic(const Dynamic &dynamic)
 {
     ScoreUtils::removeObject(myDynamics, dynamic);
 }
+
+using ClefType = Staff::ClefType;
+UTIL_DEFINE_ENUMTOSTRING(ClefType, {
+    { ClefType::TrebleClef, "Treble" },
+    { ClefType::BassClef, "Bass" },
+})

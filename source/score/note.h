@@ -23,6 +23,7 @@
 #include "fileversion.h"
 #include <iosfwd>
 #include <optional>
+#include <util/enumtostring_fwd.h>
 #include <vector>
 
 class ArtificialHarmonic
@@ -58,6 +59,8 @@ private:
     ChordName::Variation myVariation;
     Octave myOctave;
 };
+
+UTIL_DECLARE_ENUMTOSTRING(ArtificialHarmonic::Octave)
 
 class Bend
 {
@@ -117,6 +120,9 @@ private:
     DrawPoint myEndPoint;
 };
 
+UTIL_DECLARE_ENUMTOSTRING(Bend::BendType)
+UTIL_DECLARE_ENUMTOSTRING(Bend::DrawPoint)
+
 class LeftHandFingering
 {
 public:
@@ -167,6 +173,9 @@ private:
     Finger myFinger;
     DisplayPosition myDisplayPosition;
 };
+
+UTIL_DECLARE_ENUMTOSTRING(LeftHandFingering::Finger)
+UTIL_DECLARE_ENUMTOSTRING(LeftHandFingering::DisplayPosition)
 
 class Note
 {
@@ -274,6 +283,8 @@ private:
     std::optional<Bend> myBend;
     std::optional<LeftHandFingering> myLeftHandFingering;
 };
+
+UTIL_DECLARE_ENUMTOSTRING(Note::SimpleProperty)
 
 template <class Archive>
 void Note::serialize(Archive &ar, const FileVersion version)

@@ -18,6 +18,7 @@
 #include "tempomarker.h"
 
 #include <stdexcept>
+#include <util/enumtostring.h>
 
 const int TempoMarker::MIN_BEATS_PER_MINUTE = 1;
 const int TempoMarker::MAX_BEATS_PER_MINUTE = 300;
@@ -141,3 +142,42 @@ void TempoMarker::setDescription(const std::string &description)
 {
     myDescription = description;
 }
+
+using MarkerType = TempoMarker::MarkerType;
+using BeatType = TempoMarker::BeatType;
+using TripletFeelType = TempoMarker::TripletFeelType;
+using AlterationOfPaceType = TempoMarker::AlterationOfPaceType;
+
+UTIL_DEFINE_ENUMTOSTRING(MarkerType, {
+    { MarkerType::NotShown, "NotShown" },
+    { MarkerType::StandardMarker, "Standard" },
+    { MarkerType::ListessoMarker, "Listesso" },
+    { MarkerType::AlterationOfPace, "AlterationOfPace" },
+})
+
+UTIL_DEFINE_ENUMTOSTRING(BeatType, {
+    { BeatType::Half, "Half" },
+    { BeatType::HalfDotted, "HalfDotted" },
+    { BeatType::Quarter, "Quarter" },
+    { BeatType::QuarterDotted, "QuarterDotted" },
+    { BeatType::Eighth, "Eighth" },
+    { BeatType::EighthDotted, "EighthDotted" },
+    { BeatType::Sixteenth, "Sixteenth" },
+    { BeatType::SixteenthDotted, "SixteenthDotted" },
+    { BeatType::ThirtySecond, "ThirtySecond" },
+    { BeatType::ThirtySecondDotted, "ThirtySecondDotted" },
+})
+
+UTIL_DEFINE_ENUMTOSTRING(TripletFeelType, {
+    { TripletFeelType::NoTripletFeel, "None" },
+    { TripletFeelType::TripletFeelEighth, "Eighth" },
+    { TripletFeelType::TripletFeelSixteenth, "Sixteenth" },
+    { TripletFeelType::TripletFeelEighthOff, "EighthOff" },
+    { TripletFeelType::TripletFeelSixteenthOff, "SixteenthOff" },
+})
+
+UTIL_DEFINE_ENUMTOSTRING(AlterationOfPaceType, {
+    { AlterationOfPaceType::NoAlterationOfPace, "None" },
+    { AlterationOfPaceType::Accelerando, "Accelerando" },
+    { AlterationOfPaceType::Ritardando, "Ritardando" },
+})

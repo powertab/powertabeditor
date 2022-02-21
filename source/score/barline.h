@@ -24,6 +24,7 @@
 #include "timesignature.h"
 
 #include <optional>
+#include <util/enumtostring_fwd.h>
 
 class Barline
 {
@@ -92,6 +93,8 @@ private:
     TimeSignature myTimeSignature;
     std::optional<RehearsalSign> myRehearsalSign;
 };
+
+UTIL_DECLARE_ENUMTOSTRING(Barline::BarType)
 
 template <class Archive>
 void Barline::serialize(Archive &ar, const FileVersion /*version*/)

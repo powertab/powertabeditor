@@ -20,6 +20,7 @@
 
 #include <array>
 #include "fileversion.h"
+#include <util/enumtostring_fwd.h>
 
 class TimeSignature
 {
@@ -90,6 +91,8 @@ private:
     int myNumPulses;
     bool myIsVisible;
 };
+
+UTIL_DECLARE_ENUMTOSTRING(TimeSignature::MeterType)
 
 template <class Archive>
 void TimeSignature::serialize(Archive &ar, const FileVersion /*version*/)

@@ -17,6 +17,8 @@
 
 #include "barline.h"
 
+#include <util/enumtostring.h>
+
 const int Barline::MIN_REPEAT_COUNT = 2;
 
 Barline::Barline()
@@ -117,3 +119,14 @@ void Barline::clearRehearsalSign()
 {
     myRehearsalSign.reset();
 }
+
+using BarType = Barline::BarType;
+
+UTIL_DEFINE_ENUMTOSTRING(BarType, {
+    { BarType::SingleBar, "SingleBar" },
+    { BarType::DoubleBar, "DoubleBar" },
+    { BarType::FreeTimeBar, "FreeTimeBar" },
+    { BarType::RepeatStart, "RepeatStart" },
+    { BarType::RepeatEnd, "RepeatEnd" },
+    { BarType::DoubleBarFine, "DoubleBarFine" },
+})

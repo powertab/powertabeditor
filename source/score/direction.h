@@ -20,6 +20,7 @@
 
 #include <boost/range/iterator_range_core.hpp>
 #include "fileversion.h"
+#include <util/enumtostring_fwd.h>
 #include <vector>
 
 class DirectionSymbol
@@ -78,6 +79,9 @@ private:
     ActiveSymbolType myActiveSymbolType;
     int myRepeatNumber;
 };
+
+UTIL_DECLARE_ENUMTOSTRING(DirectionSymbol::SymbolType)
+UTIL_DECLARE_ENUMTOSTRING(DirectionSymbol::ActiveSymbolType)
 
 class Direction
 {

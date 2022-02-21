@@ -20,6 +20,7 @@
 
 #include "fileversion.h"
 #include <iosfwd>
+#include <util/enumtostring_fwd.h>
 
 class KeySignature
 {
@@ -75,6 +76,8 @@ private:
     bool myIsVisible;
     bool myIsCancellation;
 };
+
+UTIL_DECLARE_ENUMTOSTRING(KeySignature::KeyType)
 
 template <class Archive>
 void KeySignature::serialize(Archive &ar, const FileVersion /*version*/)

@@ -17,6 +17,8 @@
 
 #include "dynamic.h"
 
+#include <util/enumtostring.h>
+
 Dynamic::Dynamic()
     : myPosition(0),
       myVolume(VolumeLevel::fff)
@@ -55,3 +57,14 @@ void Dynamic::setVolume(VolumeLevel level)
     myVolume = level;
 }
 
+UTIL_DEFINE_ENUMTOSTRING(VolumeLevel, {
+    { VolumeLevel::Off, "Off" },
+    { VolumeLevel::ppp, "ppp" },
+    { VolumeLevel::pp, "pp" },
+    { VolumeLevel::p, "p" },
+    { VolumeLevel::mp, "mp" },
+    { VolumeLevel::mf, "mf" },
+    { VolumeLevel::f, "f" },
+    { VolumeLevel::ff, "ff" },
+    { VolumeLevel::fff, "fff" },
+})

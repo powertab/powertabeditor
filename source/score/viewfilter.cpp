@@ -20,6 +20,7 @@
 #include <score/score.h>
 #include <regex>
 #include <ostream>
+#include <util/enumtostring.h>
 
 struct FilterRule::RegexImpl
 {
@@ -214,3 +215,19 @@ std::ostream &operator<<(std::ostream &os, const ViewFilter &filter)
 
     return os;
 }
+
+using Subject = FilterRule::Subject;
+using Operation = FilterRule::Operation;
+
+UTIL_DEFINE_ENUMTOSTRING(Subject, {
+    { Subject::PlayerName, "PlayerName" },
+    { Subject::NumStrings, "NumStrings" }
+})
+
+UTIL_DEFINE_ENUMTOSTRING(Operation, {
+    { Operation::LessThan, "LessThan" },
+    { Operation::LessThanEqual, "LessThanEqual" },
+    { Operation::Equal, "Equal" },
+    { Operation::GreaterThanEqual, "GreaterThanEqual" },
+    { Operation::GreaterThan, "GreaterThan" },
+})

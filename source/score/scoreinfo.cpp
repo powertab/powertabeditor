@@ -19,6 +19,7 @@
 
 #include <boost/date_time/gregorian/greg_date.hpp>
 #include <boost/date_time/gregorian/gregorian_types.hpp>
+#include <util/enumtostring.h>
 
 SongData::AudioReleaseInfo::AudioReleaseInfo()
     : myReleaseType(ReleaseType::Album),
@@ -448,3 +449,44 @@ void ScoreInfo::setLessonData(const LessonData &data)
 	myLessonData = data;
 	mySongData.reset();
 }
+
+using ReleaseType = SongData::AudioReleaseInfo::ReleaseType;
+using MusicStyle = LessonData::MusicStyle;
+using DifficultyLevel = LessonData::DifficultyLevel;
+
+UTIL_DEFINE_ENUMTOSTRING(ReleaseType, {
+    { ReleaseType::Single, "Single" },
+    { ReleaseType::Ep, "EP" },
+    { ReleaseType::Album, "Album" },
+    { ReleaseType::DoubleAlbum, "DoubleAlbum" },
+    { ReleaseType::TripleAlbum, "TripleAlbum" },
+    { ReleaseType::Boxset, "BoxSet" }
+})
+
+UTIL_DEFINE_ENUMTOSTRING(MusicStyle, {
+    { MusicStyle::Alternative, "Alternative" },
+    { MusicStyle::Bluegrass, "Bluegrass" },
+    { MusicStyle::Blues, "Blues" },
+    { MusicStyle::Country, "Country" },
+    { MusicStyle::Fingerpick, "Fingerpick" },
+    { MusicStyle::Flamenco, "Flamenco" },
+    { MusicStyle::Folk, "Folk" },
+    { MusicStyle::Funk, "Funk" },
+    { MusicStyle::Fusion, "Fusion" },
+    { MusicStyle::General, "General" },
+    { MusicStyle::Jazz, "Jazz" },
+    { MusicStyle::Metal, "Metal" },
+    { MusicStyle::Other, "Other" },
+    { MusicStyle::Pop, "Pop" },
+    { MusicStyle::Progressive, "Progressive" },
+    { MusicStyle::Punk, "Punk" },
+    { MusicStyle::Reggae, "Reggae" },
+    { MusicStyle::Rock, "Rock" },
+    { MusicStyle::Swing, "Swing" },
+})
+
+UTIL_DEFINE_ENUMTOSTRING(DifficultyLevel, {
+    { DifficultyLevel::Beginner, "Beginner" },
+    { DifficultyLevel::Intermediate, "Intermediate" },
+    { DifficultyLevel::Advanced, "Advanced" }
+})

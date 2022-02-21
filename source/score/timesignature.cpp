@@ -18,6 +18,7 @@
 #include "timesignature.h"
 
 #include <stdexcept>
+#include <util/enumtostring.h>
 
 const int TimeSignature::MIN_BEATS_PER_MEASURE = 1;
 const int TimeSignature::MAX_BEATS_PER_MEASURE = 32;
@@ -147,3 +148,11 @@ void TimeSignature::setVisible(bool visible)
 {
     myIsVisible = visible;
 }
+
+using MeterType = TimeSignature::MeterType;
+
+UTIL_DEFINE_ENUMTOSTRING(MeterType, {
+    { MeterType::Normal, "Normal" },
+    { MeterType::CutTime, "CutTime" },
+    { MeterType::CommonTime, "CommonTime" },
+})

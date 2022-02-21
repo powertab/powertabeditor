@@ -17,6 +17,8 @@
 
 #include "direction.h"
 
+#include <util/enumtostring.h>
+
 Direction::Direction()
     : myPosition(0)
 {
@@ -99,3 +101,35 @@ int DirectionSymbol::getRepeatNumber() const
 {
     return myRepeatNumber;
 }
+
+using SymbolType = DirectionSymbol::SymbolType;
+using ActiveSymbolType = DirectionSymbol::ActiveSymbolType;
+
+UTIL_DEFINE_ENUMTOSTRING(SymbolType, {
+    { SymbolType::Coda, "Coda" },
+    { SymbolType::DoubleCoda, "DoubleCoda" },
+    { SymbolType::Segno, "Segno" },
+    { SymbolType::SegnoSegno, "SegnoSegno" },
+    { SymbolType::Fine, "Fine" },
+    { SymbolType::DaCapo, "DaCapo" },
+    { SymbolType::DalSegno, "DalSegno" },
+    { SymbolType::DalSegnoSegno, "DalSegnoSegno" },
+    { SymbolType::ToCoda, "ToCoda" },
+    { SymbolType::ToDoubleCoda, "ToDoubleCoda" },
+    { SymbolType::DaCapoAlCoda, "DaCapoAlCoda" },
+    { SymbolType::DaCapoAlDoubleCoda, "DaCapoAlDoubleCoda" },
+    { SymbolType::DalSegnoAlCoda, "DalSegnoAlCoda" },
+    { SymbolType::DalSegnoAlDoubleCoda, "DalSegnoAlDoubleCoda" },
+    { SymbolType::DalSegnoSegnoAlCoda, "DalSegnoSegnoAlCoda" },
+    { SymbolType::DalSegnoSegnoAlDoubleCoda, "DalSegnoSegnoAlDoubleCoda" },
+    { SymbolType::DaCapoAlFine, "DaCapoAlFine" },
+    { SymbolType::DalSegnoAlFine, "DalSegnoAlFine" },
+    { SymbolType::DalSegnoSegnoAlFine, "DalSegnoSegnoAlFine" },
+})
+
+UTIL_DEFINE_ENUMTOSTRING(ActiveSymbolType, {
+    { ActiveSymbolType::ActiveNone, "None" },
+    { ActiveSymbolType::ActiveDaCapo, "DaCapo" },
+    { ActiveSymbolType::ActiveDalSegno, "DalSegno" },
+    { ActiveSymbolType::ActiveDalSegnoSegno, "DalSegnoSegno" },
+})

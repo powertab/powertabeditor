@@ -26,6 +26,7 @@
 #include <boost/range/iterator_range_core.hpp>
 #include <bitset>
 #include <optional>
+#include <util/enumtostring_fwd.h>
 #include <vector>
 
 class VolumeSwell
@@ -98,6 +99,8 @@ private:
     int myPitch = 4;
     int myDuration = 0;
 };
+
+UTIL_DECLARE_ENUMTOSTRING(TremoloBar::Type)
 
 class Position
 {
@@ -219,6 +222,9 @@ private:
     std::optional<TremoloBar> myTremoloBar;
     std::vector<Note> myNotes;
 };
+
+UTIL_DECLARE_ENUMTOSTRING(Position::DurationType)
+UTIL_DECLARE_ENUMTOSTRING(Position::SimpleProperty)
 
 template <class Archive>
 void Position::serialize(Archive &ar, const FileVersion version)

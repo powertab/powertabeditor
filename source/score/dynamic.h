@@ -20,6 +20,7 @@
 
 #include "fileversion.h"
 #include <cstdint>
+#include <util/enumtostring_fwd.h>
 
 enum class VolumeLevel : int
 {
@@ -33,6 +34,7 @@ enum class VolumeLevel : int
     ff = 91,
     fff = 104
 };
+UTIL_DECLARE_ENUMTOSTRING(VolumeLevel)
 
 class Dynamic
 {

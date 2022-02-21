@@ -20,6 +20,7 @@
 
 #include "fileversion.h"
 #include <string>
+#include <util/enumtostring_fwd.h>
 
 class TempoMarker
 {
@@ -127,6 +128,11 @@ private:
     int myBeatsPerMinute;
     std::string myDescription;
 };
+
+UTIL_DECLARE_ENUMTOSTRING(TempoMarker::MarkerType)
+UTIL_DECLARE_ENUMTOSTRING(TempoMarker::BeatType)
+UTIL_DECLARE_ENUMTOSTRING(TempoMarker::TripletFeelType)
+UTIL_DECLARE_ENUMTOSTRING(TempoMarker::AlterationOfPaceType)
 
 template <class Archive>
 void TempoMarker::serialize(Archive &ar, const FileVersion /*version*/)

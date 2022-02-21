@@ -23,6 +23,7 @@
 #include <map>
 #include <ostream>
 #include <stdexcept>
+#include <util/enumtostring.h>
 
 const int Note::MIN_FRET_NUMBER = 0;
 const int Note::MAX_FRET_NUMBER = 29;
@@ -452,3 +453,73 @@ LeftHandFingering::getDisplayPosition() const
 {
     return myDisplayPosition;
 }
+
+using Octave = ArtificialHarmonic::Octave;
+using BendType = Bend::BendType;
+using DrawPoint = Bend::DrawPoint;
+using Finger = LeftHandFingering::Finger;
+using DisplayPosition = LeftHandFingering::DisplayPosition;
+using SimpleProperty = Note::SimpleProperty;
+
+UTIL_DEFINE_ENUMTOSTRING(Octave, {
+    { Octave::Loco, "Loco" },
+    { Octave::Octave8va, "8va" },
+    { Octave::Octave15ma, "15ma" },
+})
+
+UTIL_DEFINE_ENUMTOSTRING(BendType, {
+    { BendType::NormalBend, "NormalBend" },
+    { BendType::BendAndRelease, "BendAndRelease" },
+    { BendType::BendAndHold, "BendAndHold" },
+    { BendType::PreBend, "PreBend" },
+    { BendType::PreBendAndRelease, "PreBendAndRelease" },
+    { BendType::PreBendAndHold, "PreBendAndHold" },
+    { BendType::GradualRelease, "GradualRelease" },
+    { BendType::ImmediateRelease, "ImmediateRelease" },
+})
+
+UTIL_DEFINE_ENUMTOSTRING(DrawPoint, {
+    { DrawPoint::LowPoint, "Low" },
+    { DrawPoint::MidPoint, "Mid" },
+    { DrawPoint::HighPoint, "High" },
+})
+
+UTIL_DEFINE_ENUMTOSTRING(Finger, {
+    { Finger::None, "None" },
+    { Finger::Index, "Index" },
+    { Finger::Middle, "Middle" },
+    { Finger::Ring, "Ring" },
+    { Finger::Little, "Little" },
+    { Finger::Thumb, "Thumb" },
+})
+
+UTIL_DEFINE_ENUMTOSTRING(DisplayPosition, {
+    { DisplayPosition::Left, "Left" },
+    { DisplayPosition::AboveLeft, "AboveLeft" },
+    { DisplayPosition::Above, "Above" },
+    { DisplayPosition::AboveRight, "AboveRight" },
+    { DisplayPosition::Right, "Right" },
+    { DisplayPosition::BelowRight, "BelowRight" },
+    { DisplayPosition::Below, "Below" },
+    { DisplayPosition::BelowLeft, "BelowLeft" },
+})
+
+UTIL_DEFINE_ENUMTOSTRING(SimpleProperty, {
+    { SimpleProperty::Tied, "Tied" },
+    { SimpleProperty::Muted, "Muted" },
+    { SimpleProperty::HammerOnOrPullOff, "HammerOnOrPullOff" },
+    { SimpleProperty::HammerOnFromNowhere, "HammerOnFromNowhere" },
+    { SimpleProperty::PullOffToNowhere, "PullOffToNowhere" },
+    { SimpleProperty::NaturalHarmonic, "NaturalHarmonic" },
+    { SimpleProperty::GhostNote, "GhostNote" },
+    { SimpleProperty::Octave8va, "Octave8va" },
+    { SimpleProperty::Octave15ma, "Octave15ma" },
+    { SimpleProperty::Octave8vb, "Octave8vb" },
+    { SimpleProperty::Octave15mb, "Octave15mb" },
+    { SimpleProperty::SlideIntoFromBelow, "SlideIntoFromBelow" },
+    { SimpleProperty::SlideIntoFromAbove, "SlideIntoFromAbove" },
+    { SimpleProperty::ShiftSlide, "ShiftSlide" },
+    { SimpleProperty::LegatoSlide, "LegatoSlide" },
+    { SimpleProperty::SlideOutOfDownwards, "SlideOutOfDownwards" },
+    { SimpleProperty::SlideOutOfUpwards, "SlideOutOfUpwards" },
+})

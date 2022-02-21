@@ -20,6 +20,7 @@
 #include <ostream>
 #include <stdexcept>
 #include <string>
+#include <util/enumtostring.h>
 #include "generalmidi.h"
 
 const int KeySignature::MAX_NUM_ACCIDENTALS = 7;
@@ -129,3 +130,9 @@ std::ostream& operator<<(std::ostream &os, const KeySignature &key)
     return os;
 }
 
+using KeyType = KeySignature::KeyType;
+
+UTIL_DEFINE_ENUMTOSTRING(KeyType, {
+    { KeyType::Major, "Major" },
+    { KeyType::Minor, "Minor" },
+})

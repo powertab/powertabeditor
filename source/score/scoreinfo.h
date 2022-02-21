@@ -22,6 +22,7 @@
 #include <optional>
 #include <string>
 #include <util/date.h>
+#include <util/enumtostring_fwd.h>
 
 class SongData
 {
@@ -194,8 +195,9 @@ private:
     std::string myCopyright;
     std::string myLyrics;
     std::string myPerformanceNotes;
-    // TODO - add performance notes and transcriber credits for each view?
 };
+
+UTIL_DECLARE_ENUMTOSTRING(SongData::AudioReleaseInfo::ReleaseType)
 
 template <class Archive>
 void SongData::serialize(Archive &ar, const FileVersion version)
@@ -287,6 +289,9 @@ private:
     std::string myNotes;
     std::string myCopyright;
 };
+
+UTIL_DECLARE_ENUMTOSTRING(LessonData::MusicStyle)
+UTIL_DECLARE_ENUMTOSTRING(LessonData::DifficultyLevel)
 
 template <class Archive>
 void LessonData::serialize(Archive &ar, const FileVersion /*version*/)

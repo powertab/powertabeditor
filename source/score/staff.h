@@ -22,16 +22,15 @@
 #include <boost/range/iterator_range_core.hpp>
 #include "dynamic.h"
 #include "fileversion.h"
+#include <util/enumtostring_fwd.h>
 #include <vector>
 #include "voice.h"
 
 class Staff
 {
 public:
-    enum
-    {
-        NUM_VOICES = 2 ///< Number of voices in a staff.
-    };
+    /// Number of voices in a staff.
+    static inline constexpr int NUM_VOICES = 2;
 
     enum ClefType
     {
@@ -85,6 +84,8 @@ private:
     std::array<Voice, NUM_VOICES> myVoices;
     std::vector<Dynamic> myDynamics;
 };
+
+UTIL_DECLARE_ENUMTOSTRING(Staff::ClefType)
 
 template <class Archive>
 void Staff::serialize(Archive &ar, const FileVersion version)

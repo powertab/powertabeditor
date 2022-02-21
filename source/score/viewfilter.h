@@ -23,6 +23,7 @@
 #include "fileversion.h"
 #include <memory>
 #include <string>
+#include <util/enumtostring_fwd.h>
 #include <vector>
 
 class Player;
@@ -84,6 +85,9 @@ private:
     // Shield std::regex from the client code.
     std::unique_ptr<RegexImpl> myRegexImpl;
 };
+
+UTIL_DECLARE_ENUMTOSTRING(FilterRule::Subject)
+UTIL_DECLARE_ENUMTOSTRING(FilterRule::Operation)
 
 /// A filter that specifies which staves are visible.
 class ViewFilter

@@ -20,7 +20,7 @@
 #include <array>
 #include <boost/algorithm/string/replace.hpp>
 #include <boost/functional/hash.hpp>
-#include <iostream>
+#include <util/enumtostring.h>
 
 ChordName::ChordName()
     : myTonicKey(C),
@@ -214,3 +214,62 @@ std::hash<ChordName>::operator()(const ChordName &name) const
     boost::hash_combine(seed, name.isNoChord());
     return seed;
 }
+
+using Key = ChordName::Key;
+using Variation = ChordName::Variation;
+using Formula = ChordName::Formula;
+using FormulaModification = ChordName::FormulaModification;
+
+UTIL_DEFINE_ENUMTOSTRING(Key, {
+    { Key::C, "C" },
+    { Key::D, "D" },
+    { Key::E, "E" },
+    { Key::F, "F" },
+    { Key::G, "G" },
+    { Key::A, "A" },
+    { Key::B, "B" },
+})
+
+UTIL_DEFINE_ENUMTOSTRING(Variation, {
+    { Variation::DoubleFlat, "DoubleFlat" },
+    { Variation::Flat, "Flat" },
+    { Variation::NoVariation, "NoVariation" },
+    { Variation::Sharp, "Sharp" },
+    { Variation::DoubleSharp, "DoubleSharp" },
+})
+
+UTIL_DEFINE_ENUMTOSTRING(Formula, {
+    { Formula::Major, "Major" },
+    { Formula::Minor, "Minor" },
+    { Formula::Augmented, "Augmented" },
+    { Formula::Diminished, "Diminished" },
+    { Formula::PowerChord, "PowerChord" },
+    { Formula::Major6th, "Major6th" },
+    { Formula::Minor6th, "Minor6th" },
+    { Formula::Dominant7th, "Dominant7th" },
+    { Formula::Major7th, "Major7th" },
+    { Formula::Minor7th, "Minor7th" },
+    { Formula::Augmented7th, "Augmented7th" },
+    { Formula::Diminished7th, "Diminished7th" },
+    { Formula::MinorMajor7th, "MinorMajor7th" },
+    { Formula::Minor7thFlatted5th, "Minor7thFlatted5th" },
+})
+
+UTIL_DEFINE_ENUMTOSTRING(FormulaModification, {
+    { FormulaModification::Extended9th, "Extended9th" },
+    { FormulaModification::Extended11th, "Extended11th" },
+    { FormulaModification::Extended13th, "Extended13th" },
+    { FormulaModification::Added2nd, "Added2nd" },
+    { FormulaModification::Added4th, "Added4th" },
+    { FormulaModification::Added6th, "Added6th" },
+    { FormulaModification::Added9th, "Added9th" },
+    { FormulaModification::Added11th, "Added11th" },
+    { FormulaModification::Flatted5th, "Flatted5th" },
+    { FormulaModification::Raised5th, "Raised5th" },
+    { FormulaModification::Flatted9th, "Flatted9th" },
+    { FormulaModification::Raised9th, "Raised9th" },
+    { FormulaModification::Raised11th, "Raised11th" },
+    { FormulaModification::Flatted13th, "Flatted13th" },
+    { FormulaModification::Suspended2nd, "Suspended2nd" },
+    { FormulaModification::Suspended4th, "Suspended4th" },
+})

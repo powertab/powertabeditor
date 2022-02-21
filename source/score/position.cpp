@@ -20,6 +20,7 @@
 #include <algorithm>
 #include <sstream>
 #include <stdexcept>
+#include <util/enumtostring.h>
 
 VolumeSwell::VolumeSwell(VolumeLevel start, VolumeLevel end, int duration)
     : myStartVolume(start), myEndVolume(end), myDuration(duration)
@@ -353,3 +354,50 @@ bool Utils::hasNoteWithArtificialHarmonic(const Position &pos)
 
     return false;
 }
+
+using DurationType = Position::DurationType;
+using SimpleProperty = Position::SimpleProperty;
+using TremType = TremoloBar::Type;
+
+UTIL_DEFINE_ENUMTOSTRING(TremType, {
+    { TremType::Dip, "Dip" },
+    { TremType::DiveAndRelease, "DiveAndRelease" },
+    { TremType::DiveAndHold, "DiveAndHold" },
+    { TremType::Release, "Release" },
+    { TremType::ReturnAndRelease, "ReturnAndRelease" },
+    { TremType::ReturnAndHold, "ReturnAndHold" },
+    { TremType::InvertedDip, "InvertedDip" },
+})
+
+UTIL_DEFINE_ENUMTOSTRING(DurationType, {
+    { DurationType::WholeNote, "Whole" },
+    { DurationType::HalfNote, "Half" },
+    { DurationType::QuarterNote, "Quarter" },
+    { DurationType::EighthNote, "Eighth" },
+    { DurationType::SixteenthNote, "Sixteenth" },
+    { DurationType::ThirtySecondNote, "ThirtySecond" },
+    { DurationType::SixtyFourthNote, "SixtyFourth" },
+})
+
+UTIL_DEFINE_ENUMTOSTRING(SimpleProperty, {
+    { SimpleProperty::Dotted, "Dotted" },
+    { SimpleProperty::DoubleDotted, "DoubleDotted" },
+    { SimpleProperty::Rest, "Rest" },
+    { SimpleProperty::Vibrato, "Vibrato" },
+    { SimpleProperty::WideVibrato, "WideVibrato" },
+    { SimpleProperty::ArpeggioUp, "ArpeggioUp" },
+    { SimpleProperty::ArpeggioDown, "ArpeggioDown" },
+    { SimpleProperty::PickStrokeUp, "PickStrokeUp" },
+    { SimpleProperty::PickStrokeDown, "PickStrokeDown" },
+    { SimpleProperty::Staccato, "Staccato" },
+    { SimpleProperty::Marcato, "Marcato" },
+    { SimpleProperty::Sforzando, "Sforzando" },
+    { SimpleProperty::TremoloPicking, "TremoloPicking" },
+    { SimpleProperty::PalmMuting, "PalmMuting" },
+    { SimpleProperty::Tap, "Tap" },
+    { SimpleProperty::Acciaccatura, "Acciaccatura" },
+    { SimpleProperty::TripletFeelFirst, "TripletFeelFirst" },
+    { SimpleProperty::TripletFeelSecond, "TripletFeelSecond" },
+    { SimpleProperty::LetRing, "LetRing" },
+    { SimpleProperty::Fermata, "Fermata" },
+})

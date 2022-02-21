@@ -22,6 +22,7 @@
 #include "fileversion.h"
 #include <iosfwd>
 #include <memory>
+#include <util/enumtostring_fwd.h>
 
 class ChordName
 {
@@ -128,6 +129,11 @@ private:
     bool myHasBrackets;
     bool myIsNoChord;
 };
+
+UTIL_DECLARE_ENUMTOSTRING(ChordName::Key)
+UTIL_DECLARE_ENUMTOSTRING(ChordName::Variation)
+UTIL_DECLARE_ENUMTOSTRING(ChordName::Formula)
+UTIL_DECLARE_ENUMTOSTRING(ChordName::FormulaModification)
 
 template <class Archive>
 void ChordName::serialize(Archive &ar, const FileVersion /*version*/)
