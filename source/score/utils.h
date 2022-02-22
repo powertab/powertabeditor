@@ -20,38 +20,42 @@
 
 #include <algorithm>
 #include <boost/range/adaptor/filtered.hpp>
+#include <boost/range/algorithm/lower_bound.hpp>
 #include <boost/range/iterator_range_core.hpp>
 
 namespace ScoreUtils {
 
-    /// Returns the object at the given position index, or null.
-    template <typename T>
-    typename T::pointer findByPosition(const boost::iterator_range<T> &range,
-                                       int position)
+namespace Detail
+{
+    /// Comparison functor to sort objects by their positions in the system.
+    struct OrderByPosition
     {
-        size_t n = range.size();
-        for (size_t i = 0; i < n; ++i)
+        template <typename T>
+        bool operator()(const T &obj1, const T &obj2) const
         {
-            if (range[i].getPosition() == position)
-                return &range[i];
+            return obj1.getPosition() < obj2.getPosition();
         }
 
-        return nullptr;
-    }
-
-    template <typename T>
-    int findIndexByPosition(const boost::iterator_range<T> &range, int position)
-    {
-        const int n = static_cast<int>(range.size());
-        for (int i = 0; i < n; ++i)
+        template <typename T>
+        bool operator()(const T &obj1, int position) const
         {
-            if (range[i].getPosition() == position)
-                return i;
+            return obj1.getPosition() < position;
         }
+    };
 
-        return -1;
+    /// Equivalent of std::binary_search, but returning an iterator.
+    /// The positions are required to be unique so equal_range() is not needed.
+    template <typename Range>
+    auto binarySearch(const Range &range, int position)
+    {
+        auto it = boost::range::lower_bound(range, position, OrderByPosition());
+        if (it != range.end() && it->getPosition() == position)
+            return it;
+        else
+            return range.end();
     }
 
+    /// Functor to filter within a range of positions.
     struct InPositionRange
     {
         InPositionRange(int left, int right) : myLeft(left), myRight(right)
@@ -68,54 +72,58 @@ namespace ScoreUtils {
         const int myLeft;
         const int myRight;
     };
+} // namespace Detail
 
-    template <typename Range>
-    boost::filtered_range<InPositionRange, Range> findInRange(Range range,
-                                                              int left,
-                                                              int right)
+    /// Returns the object at the given position, or nullptr.
+    template <typename T>
+    typename T::pointer
+    findByPosition(const boost::iterator_range<T> &range, int position)
     {
-        return boost::adaptors::filter(
-            range, InPositionRange(left, right));
+        auto it = Detail::binarySearch(range, position);
+        return it != range.end() ? &*it : nullptr;
     }
 
-    // Some helper methods to reduce code duplication.
-
-    /// Sorts objects by their positions in the system.
+    /// Returns the index of the object with the given position, or -1.
     template <typename T>
-    struct OrderByPosition
+    int
+    findIndexByPosition(const boost::iterator_range<T> &range, int position)
     {
-        bool operator()(const T &obj1, const T &obj2) const
-        {
-            return obj1.getPosition() < obj2.getPosition();
-        }
-    };
+        auto it = Detail::binarySearch(range, position);
+        return it != range.end() ? std::distance(range.begin(), it) : -1;
+    }
 
+    /// Returns the objects within the specified position range (inclusive).
+    template <typename Range>
+    boost::filtered_range<Detail::InPositionRange, Range>
+    findInRange(Range range, int left, int right)
+    {
+        return boost::adaptors::filter(range,
+                                       Detail::InPositionRange(left, right));
+    }
+
+    /// Inserts the object, sorted by position.
     template <typename T>
     void insertObject(std::vector<T> &objects, const T &obj)
     {
-        // Avoid sorting unless we actually need to. This improves performance
-        // quite a bit when, for example, we are importing from other file
-        // formats and inserting objects in order.
-        const bool needsSort = !objects.empty() &&
-                objects.back().getPosition() > obj.getPosition();
+        auto it = boost::range::lower_bound(objects, obj.getPosition(),
+                                            Detail::OrderByPosition());
+        if (it != objects.end() && it->getPosition() == obj.getPosition())
+        {
+            assert(false); // Shouldn't insert duplicates!
+            return;
+        }
 
-#if 0 // For debugging.
-        assert(std::find_if(objects.begin(), objects.end(),
-                            [&](const T &other) {
-                                return other.getPosition() == obj.getPosition();
-                            }) == objects.end());
-#endif
-
-        objects.push_back(obj);
-        if (needsSort)
-            std::sort(objects.begin(), objects.end(), OrderByPosition<T>());
+        objects.insert(it, obj);
     }
 
+    /// Removes the object from a sorted list.
     template <typename T>
     void removeObject(std::vector<T> &objects, const T &obj)
     {
-        objects.erase(std::remove(objects.begin(), objects.end(), obj),
-                      objects.end());
+        auto it = Detail::binarySearch(objects, obj.getPosition());
+        assert(it != objects.end());
+        assert(*it == obj);
+        objects.erase(it);
     }
 }
 
