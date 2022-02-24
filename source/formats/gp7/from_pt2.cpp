@@ -173,7 +173,9 @@ convertChordName(const ChordName &name)
             gp_name.mySixth = Alteration::Major;
             break;
         default:
-            if (name.hasModification(ChordName::Added6th))
+            if (name.hasModification(ChordName::Flatted6th))
+                gp_name.mySixth = Alteration::Minor;
+            else if (name.hasModification(ChordName::Added6th))
                 gp_name.mySixth = Alteration::Major;
             break;
     }

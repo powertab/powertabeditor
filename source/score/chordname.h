@@ -84,6 +84,7 @@ public:
         Flatted13th,
         Suspended2nd,
         Suspended4th,
+        Flatted6th,
         NumFlags
     };
 

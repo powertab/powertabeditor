@@ -913,7 +913,10 @@ convertChordName(const Gp7::ChordName &gp_chord)
     if (chord.getFormula() != ChordName::Major6th &&
         chord.getFormula() != ChordName::Minor6th && gp_chord.mySixth)
     {
-        chord.setModification(ChordName::Added6th);
+        chord.setModification(
+            (gp_chord.mySixth->myAlteration == Alteration::Minor)
+                ? ChordName::Flatted6th
+                : ChordName::Added6th);
     }
 
     if (gp_chord.myThird && gp_chord.mySecond)

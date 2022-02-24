@@ -112,6 +112,7 @@ ChordNameDialog::ChordNameDialog(QWidget *parent,
 
     initCheckBox(ui->flat5CheckBox);
     initCheckBox(ui->raised5CheckBox);
+    initCheckBox(ui->flat6CheckBox);
     initCheckBox(ui->flat9CheckBox);
     initCheckBox(ui->raised9CheckBox);
     initCheckBox(ui->raised11CheckBox);
@@ -176,6 +177,8 @@ void ChordNameDialog::updateState()
                             ui->flat5CheckBox->isChecked());
     myChord.setModification(ChordName::Raised5th,
                             ui->raised5CheckBox->isChecked());
+    myChord.setModification(ChordName::Flatted6th,
+                            ui->flat6CheckBox->isChecked());
     myChord.setModification(ChordName::Flatted9th,
                             ui->flat9CheckBox->isChecked());
     myChord.setModification(ChordName::Raised9th,
@@ -266,6 +269,7 @@ ChordNameDialog::setToChord(const ChordName &chord)
     ui->flat5CheckBox->setChecked(chord.hasModification(ChordName::Flatted5th));
     ui->raised5CheckBox->setChecked(
         chord.hasModification(ChordName::Raised5th));
+    ui->flat6CheckBox->setChecked(chord.hasModification(ChordName::Flatted6th));
     ui->flat9CheckBox->setChecked(chord.hasModification(ChordName::Flatted9th));
     ui->raised9CheckBox->setChecked(
         chord.hasModification(ChordName::Raised9th));

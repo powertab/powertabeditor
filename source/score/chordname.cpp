@@ -134,18 +134,18 @@ std::ostream &operator<<(std::ostream &os, const ChordName &chord)
     static std::string theSuffixes[] = { "",   "m",  "+",      "°",    "5",
                                          "6",  "m6", "7",      "maj7", "m7",
                                          "+7", "°7", "m/maj7", "m7b5" };
-    static std::array<ChordName::FormulaModification, 13> theModifications = {
+    static std::array<ChordName::FormulaModification, 14> theModifications = {
         { ChordName::Suspended2nd, ChordName::Suspended4th,
           ChordName::Added2nd,     ChordName::Added4th,
           ChordName::Added6th,     ChordName::Added9th,
           ChordName::Added11th,    ChordName::Flatted13th,
           ChordName::Raised11th,   ChordName::Flatted9th,
           ChordName::Raised9th,    ChordName::Flatted5th,
-          ChordName::Raised5th }
+          ChordName::Raised5th,    ChordName::Flatted6th }
     };
     static std::string theModificationText[] = {
         "sus2", "sus4", "add2", "add4", "add6", "add9", "add11",
-        "b13",  "+11",  "b9",   "+9",   "b5",   "+5"
+        "b13",  "+11",  "b9",   "+9",   "b5",   "+5", "b6"
     };
 
     if (chord.isNoChord())
@@ -272,4 +272,5 @@ UTIL_DEFINE_ENUMTOSTRING(FormulaModification, {
     { FormulaModification::Flatted13th, "Flatted13th" },
     { FormulaModification::Suspended2nd, "Suspended2nd" },
     { FormulaModification::Suspended4th, "Suspended4th" },
+    { FormulaModification::Flatted6th, "Flatted6th" },
 })

@@ -579,6 +579,19 @@
           </widget>
          </item>
          <item>
+          <widget class="QCheckBox" name="flat6CheckBox">
+           <property name="minimumSize">
+            <size>
+             <width>55</width>
+             <height>0</height>
+            </size>
+           </property>
+           <property name="text">
+            <string notr="true">b6</string>
+           </property>
+          </widget>
+         </item>
+         <item>
           <widget class="QCheckBox" name="flat9CheckBox">
            <property name="minimumSize">
             <size>
