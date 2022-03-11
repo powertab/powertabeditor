@@ -41,6 +41,33 @@
   </provides>
 
   <releases>
+    <release version="2.0.0-alpha18" date="2022-03-10">
+      <url>https://github.com/powertab/powertabeditor/releases/tag/2.0.0-alpha18</url>
+      <description>
+        <p>New Features / Improvements</p>
+        <ul>
+          <li>Added support for exporting to Guitar Pro 7 (`.gp`) files (#350)</li>
+          <li>The Bulk Converter dialog can now export to MIDI files (and any export formats added in the future) instead of only `.pt2` files (#69)</li>
+        </ul>
+        <p>Changes</p>
+        <ul>
+          <li>Tuning dictionary changes (#367)
+          <ul>
+            <li>The tuning dictionary in the user prefs folder (`tunings.json`) now only stores custom tunings instead of the entire tuning dictionay</li>
+            <li>The user tuning dictionary is now combined with the default tuning dictionary when loaded, ensuring that updates to the default tunings take effey</li>
+            <li>Reordered the default tuning dictionary so that "Down 1/2 Step", "Down 1 Step" etc tunings are next to the standard tuning (#36y</li>
+          </ul>
+          </li>
+          <li>Several changes to the `.pt2` JSON format to make it easier for other applications to parse (#368). Note that older releases will likely be unable to open newly-saved `.pt2` files</li>
+        </ul>
+        <p>Bug Fixes</p>
+        <ul>
+          <li>Fixed an error with importing `.gpx` or `.gp` files with artificial harmonics for which the harmonic type was set to `Pinch`</li>
+          <li>Fixed a MIDI playback bug where let rings could ring forever in certain situations</li>
+          <li>Added a b6 alteration for chord names (#370)</li>
+        </ul>
+      </description>
+    </release>
     <release version="2.0.0-alpha17" date="2022-01-28">
       <url>https://github.com/powertab/powertabeditor/releases/tag/2.0.0-alpha17</url>
       <description>

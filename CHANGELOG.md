@@ -7,6 +7,17 @@ Thanks to the following contributors who worked on this release:
 - @cameronwhite
 
 ### Added
+
+### Changed
+
+### Fixed
+
+## [Alpha 18] - 2022-03-10
+
+Thanks to the following contributors who worked on this release:
+- @cameronwhite
+
+### Added
 - Added support for exporting to Guitar Pro 7 (`.gp`) files (#350)
 - The Bulk Converter dialog can now export to MIDI files (and any export formats added in the future) instead of only `.pt2` files (#69)
 
@@ -407,6 +418,7 @@ Thanks to the following contributors who worked on this release:
 * The first alpha release!
 
 [Unreleased]: https://github.com/powertab/powertabeditor/compare/2.0.0-alpha15...HEAD
+[Alpha 18]: https://github.com/powertab/powertabeditor/releases/tag/2.0.0-alpha18
 [Alpha 17]: https://github.com/powertab/powertabeditor/releases/tag/2.0.0-alpha17
 [Alpha 16]: https://github.com/powertab/powertabeditor/releases/tag/2.0.0-alpha16
 [Alpha 15]: https://github.com/powertab/powertabeditor/releases/tag/2.0.0-alpha15

@@ -4,7 +4,7 @@
 
 name: powertabeditor
 base: core20
-version: '2.0.0-alpha17'
+version: '2.0.0-alpha18'
 adopt-info: powertabeditor
 
 grade: stable
@@ -16,7 +16,7 @@ parts:
       - /root/parts/powertabeditor/install/usr/local/share/metainfo/powertabeditor.metainfo.xml
     plugin: cmake
     source: https://github.com/powertab/powertabeditor.git
-    source-tag: 2.0.0-alpha17
+    source-tag: 2.0.0-alpha18
     cmake-generator: Ninja
     cmake-parameters:
       - -DCMAKE_BUILD_TYPE=Release
