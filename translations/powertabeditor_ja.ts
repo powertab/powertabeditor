@@ -147,7 +147,7 @@
     <message>
         <location filename="../source/actions/editrehearsalsign.cpp" line="25"/>
         <source>Add Rehearsal Sign</source>
-        <translation type="unfinished"></translation>
+        <translation>リハーサルサインを追加</translation>
     </message>
 </context>
 <context>
@@ -155,7 +155,7 @@
     <message>
         <location filename="../source/actions/addrest.cpp" line="23"/>
         <source>Add Rest</source>
-        <translation type="unfinished"></translation>
+        <translation>休符を追加</translation>
     </message>
 </context>
 <context>
@@ -232,12 +232,12 @@
     <message>
         <location filename="../source/actions/adjustlinespacing.cpp" line="23"/>
         <source>Increase Line Spacing</source>
-        <translation type="unfinished"></translation>
+        <translation>行間を広げる</translation>
     </message>
     <message>
         <location filename="../source/actions/adjustlinespacing.cpp" line="24"/>
         <source>Decrease Line Spacing</source>
-        <translation type="unfinished"></translation>
+        <translation>行間を狭める</translation>
     </message>
 </context>
 <context>
@@ -308,7 +308,7 @@
         <location filename="../source/dialogs/artificialharmonicdialog.ui" line="44"/>
         <location filename="../build/source/dialogs/ui_artificialharmonicdialog.h" line="237"/>
         <source>Loco</source>
-        <translation type="unfinished"></translation>
+        <translation>ロコ</translation>
     </message>
     <message>
         <location filename="../source/dialogs/artificialharmonicdialog.ui" line="51"/>
@@ -398,7 +398,7 @@
     <message>
         <location filename="../source/dialogs/barlinedialog.cpp" line="37"/>
         <source>Free Time</source>
-        <translation type="unfinished"></translation>
+        <translation>フリータイム</translation>
     </message>
     <message>
         <location filename="../source/dialogs/barlinedialog.cpp" line="40"/>
@@ -413,7 +413,7 @@
     <message>
         <location filename="../source/dialogs/barlinedialog.cpp" line="46"/>
         <source>Double Bar Fine</source>
-        <translation type="unfinished"></translation>
+        <translation>終止線</translation>
     </message>
 </context>
 <context>
@@ -435,7 +435,7 @@
         <location filename="../source/dialogs/benddialog.ui" line="41"/>
         <location filename="../build/source/dialogs/ui_benddialog.h" line="169"/>
         <source>Bent Pitch:</source>
-        <translation type="unfinished"></translation>
+        <translation>ベンドピッチ:</translation>
     </message>
     <message>
         <location filename="../source/dialogs/benddialog.ui" line="51"/>
@@ -459,13 +459,13 @@
         <location filename="../source/dialogs/benddialog.ui" line="85"/>
         <location filename="../build/source/dialogs/ui_benddialog.h" line="173"/>
         <source>Current note duration + next</source>
-        <translation type="unfinished"></translation>
+        <translation>現在の音符の長さ + 次の</translation>
     </message>
     <message>
         <location filename="../source/dialogs/benddialog.ui" line="95"/>
         <location filename="../build/source/dialogs/ui_benddialog.h" line="174"/>
         <source>notes</source>
-        <translation type="unfinished"></translation>
+        <translation>つの音符</translation>
     </message>
     <message>
         <location filename="../source/dialogs/benddialog.ui" line="106"/>
@@ -482,12 +482,12 @@
     <message>
         <location filename="../source/dialogs/benddialog.cpp" line="34"/>
         <source>Bend and Release</source>
-        <translation>ベンド＆リリース</translation>
+        <translation>ベンド&amp;リリース</translation>
     </message>
     <message>
         <location filename="../source/dialogs/benddialog.cpp" line="34"/>
         <source>Bend and Hold</source>
-        <translation>ベンド＆ホールド</translation>
+        <translation>ベンド&amp;ホールド</translation>
     </message>
     <message>
         <location filename="../source/dialogs/benddialog.cpp" line="35"/>
@@ -517,12 +517,12 @@
     <message>
         <location filename="../source/dialogs/benddialog.cpp" line="110"/>
         <source>Low (Tablature Staff Line)</source>
-        <translation type="unfinished"></translation>
+        <translation>低(タブ譜線上)</translation>
     </message>
     <message>
         <location filename="../source/dialogs/benddialog.cpp" line="111"/>
         <source>Middle</source>
-        <translation>中央</translation>
+        <translation>中</translation>
     </message>
     <message>
         <location filename="../source/dialogs/benddialog.cpp" line="112"/>
@@ -542,13 +542,13 @@
         <location filename="../source/dialogs/bulkconverterdialog.ui" line="29"/>
         <location filename="../build/source/dialogs/ui_bulkconverterdialog.h" line="117"/>
         <source>E&amp;xit</source>
-        <translation type="unfinished"></translation>
+        <translation>閉じる(&amp;E)</translation>
     </message>
     <message>
         <location filename="../source/dialogs/bulkconverterdialog.ui" line="43"/>
         <location filename="../build/source/dialogs/ui_bulkconverterdialog.h" line="118"/>
         <source>Destination Directory</source>
-        <translation>指定ディレクトリ</translation>
+        <translation>変換先ディレクトリ</translation>
     </message>
     <message>
         <location filename="../source/dialogs/bulkconverterdialog.ui" line="50"/>
@@ -562,18 +562,18 @@
         <location filename="../source/dialogs/bulkconverterdialog.ui" line="60"/>
         <location filename="../build/source/dialogs/ui_bulkconverterdialog.h" line="120"/>
         <source>&amp;Convert</source>
-        <translation type="unfinished"></translation>
+        <translation>変換(&amp;C)</translation>
     </message>
     <message>
         <location filename="../source/dialogs/bulkconverterdialog.ui" line="81"/>
         <location filename="../build/source/dialogs/ui_bulkconverterdialog.h" line="122"/>
         <source>Source Directory</source>
-        <translation type="unfinished"></translation>
+        <translation>変換元ディレクトリ</translation>
     </message>
     <message>
         <location filename="../source/dialogs/bulkconverterdialog.cpp" line="171"/>
         <source>Directory To Convert</source>
-        <translation type="unfinished"></translation>
+        <translation>変換ディレクトリ</translation>
     </message>
 </context>
 <context>
@@ -581,12 +581,12 @@
     <message>
         <location filename="../source/actions/changepositionspacing.cpp" line="32"/>
         <source>Decrease Position Spacing</source>
-        <translation type="unfinished"></translation>
+        <translation>位置間隔を狭める</translation>
     </message>
     <message>
         <location filename="../source/actions/changepositionspacing.cpp" line="36"/>
         <source>Increase Position Spacing</source>
-        <translation type="unfinished"></translation>
+        <translation>位置間隔を広げる</translation>
     </message>
 </context>
 <context>
@@ -595,36 +595,36 @@
         <location filename="../source/dialogs/chorddiagramdialog.ui" line="9"/>
         <location filename="../build/source/dialogs/ui_chorddiagramdialog.h" line="110"/>
         <source>Chord Diagram</source>
-        <translation type="unfinished"></translation>
+        <translation>コードダイアグラム</translation>
     </message>
     <message>
         <location filename="../source/dialogs/chorddiagramdialog.ui" line="23"/>
         <location filename="../build/source/dialogs/ui_chorddiagramdialog.h" line="111"/>
         <source>Chord Name:</source>
-        <translation type="unfinished"></translation>
+        <translation>コードネーム:</translation>
     </message>
     <message>
         <location filename="../source/dialogs/chorddiagramdialog.ui" line="33"/>
         <location filename="../build/source/dialogs/ui_chorddiagramdialog.h" line="112"/>
         <source>Top Fret:</source>
-        <translation type="unfinished"></translation>
+        <translation>トップフレット:</translation>
     </message>
     <message>
         <location filename="../source/dialogs/chorddiagramdialog.ui" line="43"/>
         <location filename="../build/source/dialogs/ui_chorddiagramdialog.h" line="113"/>
         <source>Number of Strings:</source>
-        <translation type="unfinished"></translation>
+        <translation>弦の数:</translation>
     </message>
     <message>
         <location filename="../source/dialogs/chorddiagramdialog.ui" line="53"/>
         <location filename="../build/source/dialogs/ui_chorddiagramdialog.h" line="114"/>
         <source>Diagram:</source>
-        <translation type="unfinished"></translation>
+        <translation>ダイアグラム:</translation>
     </message>
     <message>
         <location filename="../source/dialogs/chorddiagramdialog.cpp" line="48"/>
         <source>Click to edit chord name.</source>
-        <translation type="unfinished"></translation>
+        <translation>クリックでコードネームを編集できます。</translation>
     </message>
 </context>
 <context>
@@ -633,7 +633,7 @@
         <location filename="../source/dialogs/chordnamedialog.ui" line="17"/>
         <location filename="../build/source/dialogs/ui_chordnamedialog.h" line="549"/>
         <source>Chord Name</source>
-        <translation type="unfinished"></translation>
+        <translation>コードネーム</translation>
     </message>
     <message>
         <location filename="../source/dialogs/chordnamedialog.ui" line="36"/>
@@ -645,13 +645,13 @@
         <location filename="../source/dialogs/chordnamedialog.ui" line="53"/>
         <location filename="../build/source/dialogs/ui_chordnamedialog.h" line="551"/>
         <source>Key:</source>
-        <translation type="unfinished"></translation>
+        <translation>キー:</translation>
     </message>
     <message>
         <location filename="../source/dialogs/chordnamedialog.ui" line="65"/>
         <location filename="../build/source/dialogs/ui_chordnamedialog.h" line="552"/>
         <source>No Chord</source>
-        <translation type="unfinished"></translation>
+        <translation>No Chord</translation>
     </message>
     <message>
         <location filename="../source/dialogs/chordnamedialog.ui" line="95"/>
@@ -659,7 +659,7 @@
         <location filename="../build/source/dialogs/ui_chordnamedialog.h" line="553"/>
         <location filename="../build/source/dialogs/ui_chordnamedialog.h" line="569"/>
         <source>C</source>
-        <translation type="unfinished"></translation>
+        <translation>C</translation>
     </message>
     <message>
         <location filename="../source/dialogs/chordnamedialog.ui" line="115"/>
@@ -667,7 +667,7 @@
         <location filename="../build/source/dialogs/ui_chordnamedialog.h" line="554"/>
         <location filename="../build/source/dialogs/ui_chordnamedialog.h" line="570"/>
         <source>D</source>
-        <translation type="unfinished"></translation>
+        <translation>D</translation>
     </message>
     <message>
         <location filename="../source/dialogs/chordnamedialog.ui" line="135"/>
@@ -675,7 +675,7 @@
         <location filename="../build/source/dialogs/ui_chordnamedialog.h" line="555"/>
         <location filename="../build/source/dialogs/ui_chordnamedialog.h" line="571"/>
         <source>E</source>
-        <translation type="unfinished"></translation>
+        <translation>E</translation>
     </message>
     <message>
         <location filename="../source/dialogs/chordnamedialog.ui" line="155"/>
@@ -683,7 +683,7 @@
         <location filename="../build/source/dialogs/ui_chordnamedialog.h" line="556"/>
         <location filename="../build/source/dialogs/ui_chordnamedialog.h" line="572"/>
         <source>F</source>
-        <translation type="unfinished"></translation>
+        <translation>F</translation>
     </message>
     <message>
         <location filename="../source/dialogs/chordnamedialog.ui" line="175"/>
@@ -691,7 +691,7 @@
         <location filename="../build/source/dialogs/ui_chordnamedialog.h" line="557"/>
         <location filename="../build/source/dialogs/ui_chordnamedialog.h" line="573"/>
         <source>G</source>
-        <translation type="unfinished"></translation>
+        <translation>G</translation>
     </message>
     <message>
         <location filename="../source/dialogs/chordnamedialog.ui" line="195"/>
@@ -699,7 +699,7 @@
         <location filename="../build/source/dialogs/ui_chordnamedialog.h" line="558"/>
         <location filename="../build/source/dialogs/ui_chordnamedialog.h" line="574"/>
         <source>A</source>
-        <translation type="unfinished"></translation>
+        <translation>A</translation>
     </message>
     <message>
         <location filename="../source/dialogs/chordnamedialog.ui" line="215"/>
@@ -707,43 +707,43 @@
         <location filename="../build/source/dialogs/ui_chordnamedialog.h" line="559"/>
         <location filename="../build/source/dialogs/ui_chordnamedialog.h" line="575"/>
         <source>B</source>
-        <translation type="unfinished"></translation>
+        <translation>B</translation>
     </message>
     <message>
         <location filename="../source/dialogs/chordnamedialog.ui" line="300"/>
         <location filename="../build/source/dialogs/ui_chordnamedialog.h" line="562"/>
         <source>Brackets</source>
-        <translation type="unfinished"></translation>
+        <translation>括弧</translation>
     </message>
     <message>
         <location filename="../source/dialogs/chordnamedialog.ui" line="309"/>
         <location filename="../build/source/dialogs/ui_chordnamedialog.h" line="563"/>
         <source>Formula:</source>
-        <translation type="unfinished"></translation>
+        <translation>種類:</translation>
     </message>
     <message>
         <location filename="../source/dialogs/chordnamedialog.ui" line="316"/>
         <location filename="../build/source/dialogs/ui_chordnamedialog.h" line="564"/>
         <source>Additions:</source>
-        <translation type="unfinished"></translation>
+        <translation>add:</translation>
     </message>
     <message>
         <location filename="../source/dialogs/chordnamedialog.ui" line="323"/>
         <location filename="../build/source/dialogs/ui_chordnamedialog.h" line="565"/>
         <source>Extensions:</source>
-        <translation type="unfinished"></translation>
+        <translation>エクステンション:</translation>
     </message>
     <message>
         <location filename="../source/dialogs/chordnamedialog.ui" line="330"/>
         <location filename="../build/source/dialogs/ui_chordnamedialog.h" line="566"/>
         <source>Alterations:</source>
-        <translation type="unfinished"></translation>
+        <translation>オルタネーション:</translation>
     </message>
     <message>
         <location filename="../source/dialogs/chordnamedialog.ui" line="337"/>
         <location filename="../build/source/dialogs/ui_chordnamedialog.h" line="567"/>
         <source>Bass Note:</source>
-        <translation type="unfinished"></translation>
+        <translation>ルート音:</translation>
     </message>
     <message>
         <location filename="../source/dialogs/chordnamedialog.ui" line="898"/>
@@ -785,7 +785,7 @@
         <location filename="../source/dialogs/directiondialog.ui" line="17"/>
         <location filename="../build/source/dialogs/ui_directiondialog.h" line="135"/>
         <source>Musical Direction</source>
-        <translation type="unfinished"></translation>
+        <translation>反復記号</translation>
     </message>
     <message>
         <location filename="../source/dialogs/directiondialog.ui" line="28"/>
@@ -2235,7 +2235,7 @@
     <message>
         <location filename="../source/app/powertabeditor.cpp" line="1047"/>
         <source>Edit Chord Diagram</source>
-        <translation type="unfinished"></translation>
+        <translation>コードダイアグラムを編集</translation>
     </message>
     <message>
         <location filename="../source/app/powertabeditor.cpp" line="1145"/>
@@ -2265,7 +2265,7 @@
     <message>
         <location filename="../source/app/powertabeditor.cpp" line="1547"/>
         <source>Edit Musical Direction</source>
-        <translation type="unfinished"></translation>
+        <translation>反復記号を編集</translation>
     </message>
     <message>
         <location filename="../source/app/powertabeditor.cpp" line="1585"/>
@@ -2510,7 +2510,7 @@
     <message>
         <location filename="../source/app/powertabeditor.cpp" line="2438"/>
         <source>Chord Name...</source>
-        <translation type="unfinished"></translation>
+        <translation>コードネーム...</translation>
     </message>
     <message>
         <location filename="../source/app/powertabeditor.cpp" line="2444"/>
@@ -2520,7 +2520,7 @@
     <message>
         <location filename="../source/app/powertabeditor.cpp" line="2452"/>
         <source>Add Chord Diagram...</source>
-        <translation type="unfinished"></translation>
+        <translation>コードダイアグラムを追加...</translation>
     </message>
     <message>
         <location filename="../source/app/powertabeditor.cpp" line="2457"/>
@@ -2778,7 +2778,7 @@
     <message>
         <location filename="../source/app/powertabeditor.cpp" line="2739"/>
         <source>Musical Direction...</source>
-        <translation type="unfinished"></translation>
+        <translation>反復記号...</translation>
     </message>
     <message>
         <location filename="../source/app/powertabeditor.cpp" line="2747"/>
@@ -3375,7 +3375,7 @@
     <message>
         <location filename="../source/actions/removedirection.cpp" line="24"/>
         <source>Remove Musical Direction</source>
-        <translation type="unfinished"></translation>
+        <translation>反復記号を削除</translation>
     </message>
 </context>
 <context>
@@ -3550,7 +3550,7 @@
     <message>
         <location filename="../source/painters/directions.cpp" line="54"/>
         <source>Double-click to edit musical direction.</source>
-        <translation type="unfinished"></translation>
+        <translation>ダブルクリックで反復記号を編集できます。</translation>
     </message>
     <message>
         <location filename="../source/painters/keysignaturepainter.cpp" line="33"/>
@@ -3718,7 +3718,7 @@
     <message>
         <location filename="../source/widgets/toolbox/scorepage.cpp" line="121"/>
         <source>Add Musical Direction</source>
-        <translation type="unfinished"></translation>
+        <translation>反復記号を追加</translation>
     </message>
     <message>
         <location filename="../source/widgets/toolbox/scorepage.cpp" line="125"/>
