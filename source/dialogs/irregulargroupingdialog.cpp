@@ -26,11 +26,14 @@ IrregularGroupingDialog::IrregularGroupingDialog(QWidget *parent)
     connect(ui->buttonBox, &QDialogButtonBox::accepted, this, &QDialog::accept);
     connect(ui->buttonBox, &QDialogButtonBox::rejected, this, &QDialog::reject);
 
-    ui->notesPlayedSpinBox->setMinimum(2);
-    ui->notesPlayedSpinBox->setMaximum(16);
+    static constexpr int min_val = 2;
+    static constexpr int max_val = 256;
 
-    ui->notesPlayedOverSpinBox->setMinimum(2);
-    ui->notesPlayedOverSpinBox->setMaximum(8);
+    ui->notesPlayedSpinBox->setMinimum(min_val);
+    ui->notesPlayedSpinBox->setMaximum(max_val);
+
+    ui->notesPlayedOverSpinBox->setMinimum(min_val);
+    ui->notesPlayedOverSpinBox->setMaximum(max_val);
 
     ui->notesPlayedSpinBox->setValue(6);
     ui->notesPlayedOverSpinBox->setValue(4);
