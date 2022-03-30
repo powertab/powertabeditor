@@ -7,8 +7,10 @@ Thanks to the following contributors who worked on this release:
 - @cameronwhite
 
 ### Added
+- Added Japanese translation
 
 ### Changed
+- Increased the upper limit for irregular grouping values (#376)
 
 ### Fixed
 
