@@ -163,7 +163,7 @@
     <message>
         <location filename="../source/actions/addstaff.cpp" line="23"/>
         <source>Add Staff</source>
-        <translation>五線譜を追加</translation>
+        <translation>譜表を追加</translation>
     </message>
 </context>
 <context>
@@ -459,7 +459,7 @@
         <location filename="../source/dialogs/benddialog.ui" line="85"/>
         <location filename="../build/source/dialogs/ui_benddialog.h" line="173"/>
         <source>Current note duration + next</source>
-        <translation>現在の音符の長さ + 次の</translation>
+        <translation>現在の音符の音価 + 次の</translation>
     </message>
     <message>
         <location filename="../source/dialogs/benddialog.ui" line="95"/>
@@ -581,12 +581,12 @@
     <message>
         <location filename="../source/actions/changepositionspacing.cpp" line="32"/>
         <source>Decrease Position Spacing</source>
-        <translation>位置間隔を狭める</translation>
+        <translation>ポジション間隔を狭める</translation>
     </message>
     <message>
         <location filename="../source/actions/changepositionspacing.cpp" line="36"/>
         <source>Increase Position Spacing</source>
-        <translation>位置間隔を広げる</translation>
+        <translation>ポジション間隔を広げる</translation>
     </message>
 </context>
 <context>
@@ -651,7 +651,7 @@
         <location filename="../source/dialogs/chordnamedialog.ui" line="65"/>
         <location filename="../build/source/dialogs/ui_chordnamedialog.h" line="552"/>
         <source>No Chord</source>
-        <translation>No Chord</translation>
+        <translation>ノーコード(N.C.)</translation>
     </message>
     <message>
         <location filename="../source/dialogs/chordnamedialog.ui" line="95"/>
@@ -890,12 +890,12 @@
     <message>
         <location filename="../source/actions/editnoteduration.cpp" line="23"/>
         <source>Edit Rest Duration</source>
-        <translation>休符の長さを編集</translation>
+        <translation>休符の音価を編集</translation>
     </message>
     <message>
         <location filename="../source/actions/editnoteduration.cpp" line="24"/>
         <source>Edit Note Duration</source>
-        <translation>音符の長さを編集</translation>
+        <translation>音符の音価を編集</translation>
     </message>
 </context>
 <context>
@@ -919,7 +919,7 @@
     <message>
         <location filename="../source/actions/editstaff.cpp" line="24"/>
         <source>Edit Staff</source>
-        <translation type="unfinished"></translation>
+        <translation>譜表を編集</translation>
     </message>
 </context>
 <context>
@@ -927,7 +927,7 @@
     <message>
         <location filename="../source/actions/edittabnumber.cpp" line="21"/>
         <source>Edit Tab Number</source>
-        <translation type="unfinished"></translation>
+        <translation>タブ番号を編集</translation>
     </message>
 </context>
 <context>
@@ -1530,7 +1530,7 @@
         <location filename="../source/widgets/instruments/instrumentpanelitem.ui" line="60"/>
         <location filename="../build/source/widgets/ui_instrumentpanelitem.h" line="96"/>
         <source>Instrument</source>
-        <translation type="unfinished">楽器</translation>
+        <translation>楽器</translation>
     </message>
     <message>
         <location filename="../source/widgets/instruments/instrumentpanelitem.ui" line="117"/>
@@ -1572,7 +1572,7 @@
         <location filename="../source/dialogs/keysignaturedialog.ui" line="31"/>
         <location filename="../build/source/dialogs/ui_keysignaturedialog.h" line="112"/>
         <source>Visible:</source>
-        <translation type="unfinished"></translation>
+        <translation>可視:</translation>
     </message>
     <message>
         <location filename="../source/dialogs/keysignaturedialog.ui" line="41"/>
@@ -1907,7 +1907,7 @@
     <message>
         <location filename="../source/widgets/toolbox/notepage.cpp" line="166"/>
         <source>Rhythmic Devices</source>
-        <translation type="unfinished"></translation>
+        <translation>リズミックデバイス</translation>
     </message>
     <message>
         <location filename="../source/widgets/toolbox/notepage.cpp" line="170"/>
@@ -2053,7 +2053,7 @@
         <location filename="../source/widgets/playback/playbackwidget.ui" line="210"/>
         <location filename="../build/source/widgets/ui_playbackwidget.h" line="210"/>
         <source>System: 1, Staff: 1, Position: 1, String: 1</source>
-        <translation type="unfinished"></translation>
+        <translation>組段: 1, 譜表: 1, ポジション: 1, 弦: 1</translation>
     </message>
     <message>
         <location filename="../source/widgets/playback/playbackwidget.cpp" line="110"/>
@@ -2087,7 +2087,7 @@
     <message>
         <location filename="../source/dialogs/playerchangedialog.cpp" line="40"/>
         <source>Staff</source>
-        <translation type="unfinished"></translation>
+        <translation>譜表</translation>
     </message>
     <message>
         <location filename="../source/dialogs/playerchangedialog.cpp" line="41"/>
@@ -2118,7 +2118,7 @@
     <message>
         <location filename="../source/actions/polishsystem.cpp" line="23"/>
         <source>Polish System</source>
-        <translation type="unfinished"></translation>
+        <translation>組段を整形</translation>
     </message>
 </context>
 <context>
@@ -2126,112 +2126,112 @@
     <message>
         <location filename="../source/app/clipboard.cpp" line="129"/>
         <source>Cannot paste notes from a different tuning.</source>
-        <translation type="unfinished"></translation>
+        <translation>別のチューニングの音符を貼り付けることはできません。</translation>
     </message>
     <message>
         <location filename="../source/app/powertabeditor.cpp" line="174"/>
         <source>Toolbox</source>
-        <translation type="unfinished"></translation>
+        <translation>ツールボックス</translation>
     </message>
     <message>
         <location filename="../source/app/powertabeditor.cpp" line="247"/>
         <source>Open</source>
-        <translation type="unfinished"></translation>
+        <translation>開く</translation>
     </message>
     <message>
         <location filename="../source/app/powertabeditor.cpp" line="277"/>
         <location filename="../source/app/powertabeditor.cpp" line="302"/>
         <source>Error Opening File</source>
-        <translation type="unfinished"></translation>
+        <translation>ファイルオープンエラー</translation>
     </message>
     <message>
         <location filename="../source/app/powertabeditor.cpp" line="278"/>
         <location filename="../source/app/powertabeditor.cpp" line="399"/>
         <source>Unsupported file type.</source>
-        <translation type="unfinished"></translation>
+        <translation>サポートされていないファイルタイプです。</translation>
     </message>
     <message>
         <location filename="../source/app/powertabeditor.cpp" line="303"/>
         <source>Error opening file: %1</source>
-        <translation type="unfinished"></translation>
+        <translation>ファイルオープンエラー: %1</translation>
     </message>
     <message>
         <location filename="../source/app/powertabeditor.cpp" line="336"/>
         <source>Close Document</source>
-        <translation type="unfinished"></translation>
+        <translation>ドキュメントを閉じる</translation>
     </message>
     <message>
         <location filename="../source/app/powertabeditor.cpp" line="337"/>
         <source>The document has been modified.</source>
-        <translation type="unfinished"></translation>
+        <translation>ドキュメントを修正しました。</translation>
     </message>
     <message>
         <location filename="../source/app/powertabeditor.cpp" line="338"/>
         <source>Do you want to save your changes?</source>
-        <translation type="unfinished"></translation>
+        <translation>変更内容を保存しますか？</translation>
     </message>
     <message>
         <location filename="../source/app/powertabeditor.cpp" line="398"/>
         <location filename="../source/app/powertabeditor.cpp" line="413"/>
         <source>Error Saving File</source>
-        <translation type="unfinished"></translation>
+        <translation>ファイル保存エラー</translation>
     </message>
     <message>
         <location filename="../source/app/powertabeditor.cpp" line="414"/>
         <source>Error saving file: %1</source>
-        <translation type="unfinished"></translation>
+        <translation>ファイル保存エラー: %1</translation>
     </message>
     <message>
         <location filename="../source/app/powertabeditor.cpp" line="445"/>
         <source>Save As</source>
-        <translation type="unfinished"></translation>
+        <translation>名前を付けて保存</translation>
     </message>
     <message>
         <location filename="../source/app/powertabeditor.cpp" line="537"/>
         <source>Cut Notes</source>
-        <translation type="unfinished"></translation>
+        <translation>カットノート</translation>
     </message>
     <message>
         <location filename="../source/app/powertabeditor.cpp" line="553"/>
         <source>The clipboard does not contain any notes.</source>
-        <translation type="unfinished"></translation>
+        <translation>クリップボードに音符が含まれていません。</translation>
     </message>
     <message>
         <location filename="../source/app/powertabeditor.cpp" line="558"/>
         <source>Paste Notes</source>
-        <translation type="unfinished"></translation>
+        <translation>音符を貼り付け</translation>
     </message>
     <message>
         <location filename="../source/app/powertabeditor.cpp" line="603"/>
         <source>Midi Error</source>
-        <translation type="unfinished"></translation>
+        <translation>Midiエラー</translation>
     </message>
     <message>
         <location filename="../source/app/powertabeditor.cpp" line="625"/>
         <source>Pause</source>
-        <translation type="unfinished"></translation>
+        <translation>ポーズ</translation>
     </message>
     <message>
         <location filename="../source/app/powertabeditor.cpp" line="658"/>
         <location filename="../source/app/powertabeditor.cpp" line="2263"/>
         <source>Play</source>
-        <translation type="unfinished"></translation>
+        <translation>再生</translation>
     </message>
     <message>
         <location filename="../source/app/powertabeditor.cpp" line="881"/>
         <location filename="../source/app/powertabeditor.cpp" line="2420"/>
         <source>Remove Position</source>
-        <translation type="unfinished"></translation>
+        <translation>ポジションを削除</translation>
     </message>
     <message>
         <location filename="../source/app/powertabeditor.cpp" line="962"/>
         <source>Edit Chord Text</source>
-        <translation type="unfinished"></translation>
+        <translation>コードテキストを編集</translation>
     </message>
     <message>
         <location filename="../source/app/powertabeditor.cpp" line="999"/>
         <source>Edit Text Item</source>
-        <translation type="unfinished"></translation>
+        <translation>テキストアイテムを編集</translation>
     </message>
     <message>
         <location filename="../source/app/powertabeditor.cpp" line="1047"/>
@@ -2241,7 +2241,7 @@
     <message>
         <location filename="../source/app/powertabeditor.cpp" line="1145"/>
         <source>Edit Note Duration</source>
-        <translation type="unfinished"></translation>
+        <translation>音符の音価を編集</translation>
     </message>
     <message>
         <location filename="../source/app/powertabeditor.cpp" line="1366"/>
@@ -2256,12 +2256,12 @@
     <message>
         <location filename="../source/app/powertabeditor.cpp" line="1461"/>
         <source>Edit Tempo Marker</source>
-        <translation type="unfinished"></translation>
+        <translation>テンポマーカーを編集</translation>
     </message>
     <message>
         <location filename="../source/app/powertabeditor.cpp" line="1500"/>
         <source>Edit Alteration of Pace</source>
-        <translation type="unfinished"></translation>
+        <translation>ペースの変更を編集</translation>
     </message>
     <message>
         <location filename="../source/app/powertabeditor.cpp" line="1547"/>
@@ -2271,12 +2271,12 @@
     <message>
         <location filename="../source/app/powertabeditor.cpp" line="1585"/>
         <source>Edit Repeat Ending</source>
-        <translation type="unfinished"></translation>
+        <translation>繰り返し終了を編集</translation>
     </message>
     <message>
         <location filename="../source/app/powertabeditor.cpp" line="1689"/>
         <source>Edit Volume Swell</source>
-        <translation type="unfinished"></translation>
+        <translation>ボリュームスウェルを編集</translation>
     </message>
     <message>
         <location filename="../source/app/powertabeditor.cpp" line="1726"/>
@@ -2286,202 +2286,202 @@
     <message>
         <location filename="../source/app/powertabeditor.cpp" line="1826"/>
         <source>Edit Bend</source>
-        <translation type="unfinished"></translation>
+        <translation>ベンドを編集</translation>
     </message>
     <message>
         <location filename="../source/app/powertabeditor.cpp" line="1950"/>
         <source>Edit Player Change</source>
-        <translation type="unfinished"></translation>
+        <translation>プレイヤーの変更を編集</translation>
     </message>
     <message>
         <location filename="../source/app/powertabeditor.cpp" line="2153"/>
         <source>Untitled</source>
-        <translation type="unfinished"></translation>
+        <translation>名称未設定</translation>
     </message>
     <message>
         <location filename="../source/app/powertabeditor.cpp" line="2166"/>
         <source>&amp;New</source>
-        <translation type="unfinished"></translation>
+        <translation>新規(&amp;N)</translation>
     </message>
     <message>
         <location filename="../source/app/powertabeditor.cpp" line="2171"/>
         <source>&amp;Open...</source>
-        <translation type="unfinished"></translation>
+        <translation>開く(&amp;O)...</translation>
     </message>
     <message>
         <location filename="../source/app/powertabeditor.cpp" line="2176"/>
         <source>&amp;Close Tab</source>
-        <translation type="unfinished"></translation>
+        <translation>タブを閉じる(&amp;C)</translation>
     </message>
     <message>
         <location filename="../source/app/powertabeditor.cpp" line="2181"/>
         <source>Save</source>
-        <translation type="unfinished"></translation>
+        <translation>保存</translation>
     </message>
     <message>
         <location filename="../source/app/powertabeditor.cpp" line="2187"/>
         <source>Save As...</source>
-        <translation type="unfinished"></translation>
+        <translation>名前を付けて保存...</translation>
     </message>
     <message>
         <location filename="../source/app/powertabeditor.cpp" line="2192"/>
         <source>Print...</source>
-        <translation type="unfinished"></translation>
+        <translation>印刷...</translation>
     </message>
     <message>
         <location filename="../source/app/powertabeditor.cpp" line="2198"/>
         <source>Print Preview...</source>
-        <translation type="unfinished"></translation>
+        <translation>印刷プレビュー...</translation>
     </message>
     <message>
         <location filename="../source/app/powertabeditor.cpp" line="2202"/>
         <source>Bulk Converter...</source>
-        <translation type="unfinished"></translation>
+        <translation>バルクコンバーター...</translation>
     </message>
     <message>
         <location filename="../source/app/powertabeditor.cpp" line="2208"/>
         <source>Customize Shortcuts...</source>
-        <translation type="unfinished"></translation>
+        <translation>ショートカットの設定...</translation>
     </message>
     <message>
         <location filename="../source/app/powertabeditor.cpp" line="2214"/>
         <source>&amp;Preferences...</source>
-        <translation type="unfinished"></translation>
+        <translation>環境設定(&amp;P)...</translation>
     </message>
     <message>
         <location filename="../source/app/powertabeditor.cpp" line="2220"/>
         <source>&amp;Quit</source>
-        <translation type="unfinished"></translation>
+        <translation>終了(&amp;Q)</translation>
     </message>
     <message>
         <location filename="../source/app/powertabeditor.cpp" line="2225"/>
         <source>&amp;Undo</source>
-        <translation type="unfinished"></translation>
+        <translation>元に戻す(&amp;U)</translation>
     </message>
     <message>
         <location filename="../source/app/powertabeditor.cpp" line="2228"/>
         <source>&amp;Redo</source>
-        <translation type="unfinished"></translation>
+        <translation>やり直し(&amp;R)</translation>
     </message>
     <message>
         <location filename="../source/app/powertabeditor.cpp" line="2232"/>
         <source>Cut</source>
-        <translation type="unfinished"></translation>
+        <translation>切り取り</translation>
     </message>
     <message>
         <location filename="../source/app/powertabeditor.cpp" line="2236"/>
         <source>Copy</source>
-        <translation type="unfinished"></translation>
+        <translation>コピー</translation>
     </message>
     <message>
         <location filename="../source/app/powertabeditor.cpp" line="2241"/>
         <source>Paste</source>
-        <translation type="unfinished"></translation>
+        <translation>貼り付け</translation>
     </message>
     <message>
         <location filename="../source/app/powertabeditor.cpp" line="2245"/>
         <source>Polish Score</source>
-        <translation type="unfinished"></translation>
+        <translation>スコアを整形</translation>
     </message>
     <message>
         <location filename="../source/app/powertabeditor.cpp" line="2250"/>
         <source>Polish System</source>
-        <translation type="unfinished"></translation>
+        <translation>組段を整形</translation>
     </message>
     <message>
         <location filename="../source/app/powertabeditor.cpp" line="2257"/>
         <source>File Information...</source>
-        <translation type="unfinished"></translation>
+        <translation>ファイル情報...</translation>
     </message>
     <message>
         <location filename="../source/app/powertabeditor.cpp" line="2275"/>
         <source>Play From Start Of Measure</source>
-        <translation type="unfinished"></translation>
+        <translation>小節の先頭から再生</translation>
     </message>
     <message>
         <location filename="../source/app/powertabeditor.cpp" line="2282"/>
         <source>Stop</source>
-        <translation type="unfinished"></translation>
+        <translation>停止</translation>
     </message>
     <message>
         <location filename="../source/app/powertabeditor.cpp" line="2286"/>
         <source>Rewind</source>
-        <translation type="unfinished"></translation>
+        <translation>巻き戻し</translation>
     </message>
     <message>
         <location filename="../source/app/powertabeditor.cpp" line="2291"/>
         <source>Metronome</source>
-        <translation type="unfinished"></translation>
+        <translation>メトロノーム</translation>
     </message>
     <message>
         <location filename="../source/app/powertabeditor.cpp" line="2299"/>
         <source>First Section</source>
-        <translation type="unfinished"></translation>
+        <translation>最初のセクション</translation>
     </message>
     <message>
         <location filename="../source/app/powertabeditor.cpp" line="2305"/>
         <source>Next Section</source>
-        <translation type="unfinished"></translation>
+        <translation>次のセクション</translation>
     </message>
     <message>
         <location filename="../source/app/powertabeditor.cpp" line="2311"/>
         <source>Previous Section</source>
-        <translation type="unfinished"></translation>
+        <translation>前のセクション</translation>
     </message>
     <message>
         <location filename="../source/app/powertabeditor.cpp" line="2317"/>
         <source>Last Section</source>
-        <translation type="unfinished"></translation>
+        <translation>最後のセクション</translation>
     </message>
     <message>
         <location filename="../source/app/powertabeditor.cpp" line="2323"/>
         <source>Insert Space</source>
-        <translation type="unfinished"></translation>
+        <translation>スペースを挿入</translation>
     </message>
     <message>
         <location filename="../source/app/powertabeditor.cpp" line="2329"/>
         <source>Remove Space</source>
-        <translation type="unfinished"></translation>
+        <translation>スペースを削除</translation>
     </message>
     <message>
         <location filename="../source/app/powertabeditor.cpp" line="2345"/>
         <source>Move to &amp;Start</source>
-        <translation type="unfinished"></translation>
+        <translation>先頭へ移動(&amp;S)</translation>
     </message>
     <message>
         <location filename="../source/app/powertabeditor.cpp" line="2351"/>
         <source>&amp;Next Position</source>
-        <translation type="unfinished"></translation>
+        <translation>次のポジション(&amp;N)</translation>
     </message>
     <message>
         <location filename="../source/app/powertabeditor.cpp" line="2357"/>
         <source>&amp;Previous Position</source>
-        <translation type="unfinished"></translation>
+        <translation>前のポジション(&amp;P)</translation>
     </message>
     <message>
         <location filename="../source/app/powertabeditor.cpp" line="2363"/>
         <source>Next String</source>
-        <translation type="unfinished"></translation>
+        <translation>次の弦</translation>
     </message>
     <message>
         <location filename="../source/app/powertabeditor.cpp" line="2369"/>
         <source>Previous String</source>
-        <translation type="unfinished"></translation>
+        <translation>前の弦</translation>
     </message>
     <message>
         <location filename="../source/app/powertabeditor.cpp" line="2375"/>
         <source>Move to &amp;End</source>
-        <translation type="unfinished"></translation>
+        <translation>末尾へ移動(&amp;E)</translation>
     </message>
     <message>
         <location filename="../source/app/powertabeditor.cpp" line="2381"/>
         <source>Next Staff</source>
-        <translation type="unfinished"></translation>
+        <translation>次の譜表</translation>
     </message>
     <message>
         <location filename="../source/app/powertabeditor.cpp" line="2387"/>
         <source>Previous Staff</source>
-        <translation type="unfinished"></translation>
+        <translation>前の譜表</translation>
     </message>
     <message>
         <location filename="../source/app/powertabeditor.cpp" line="2392"/>
@@ -2496,7 +2496,7 @@
     <message>
         <location filename="../source/app/powertabeditor.cpp" line="2414"/>
         <source>Remove Selected Item</source>
-        <translation type="unfinished"></translation>
+        <translation>選択したアイテムの削除</translation>
     </message>
     <message>
         <location filename="../source/app/powertabeditor.cpp" line="2425"/>
@@ -2506,7 +2506,7 @@
     <message>
         <location filename="../source/app/powertabeditor.cpp" line="2431"/>
         <source>Go To Rehearsal Sign...</source>
-        <translation type="unfinished"></translation>
+        <translation>リハーサルサインへ移動...</translation>
     </message>
     <message>
         <location filename="../source/app/powertabeditor.cpp" line="2438"/>
@@ -2516,7 +2516,7 @@
     <message>
         <location filename="../source/app/powertabeditor.cpp" line="2444"/>
         <source>Text...</source>
-        <translation type="unfinished"></translation>
+        <translation>テキスト...</translation>
     </message>
     <message>
         <location filename="../source/app/powertabeditor.cpp" line="2452"/>
@@ -2526,215 +2526,215 @@
     <message>
         <location filename="../source/app/powertabeditor.cpp" line="2457"/>
         <source>Insert System At End</source>
-        <translation type="unfinished"></translation>
+        <translation>末尾に組段を挿入</translation>
     </message>
     <message>
         <location filename="../source/app/powertabeditor.cpp" line="2463"/>
         <source>Insert System Before</source>
-        <translation type="unfinished"></translation>
+        <translation>前に組段を挿入</translation>
     </message>
     <message>
         <location filename="../source/app/powertabeditor.cpp" line="2470"/>
         <source>Insert System After</source>
-        <translation type="unfinished"></translation>
+        <translation>後に組段を挿入</translation>
     </message>
     <message>
         <location filename="../source/app/powertabeditor.cpp" line="2477"/>
         <source>Remove Current System</source>
-        <translation type="unfinished"></translation>
+        <translation>現在の組段を削除</translation>
     </message>
     <message>
         <location filename="../source/app/powertabeditor.cpp" line="2485"/>
         <source>Insert Staff Before</source>
-        <translation type="unfinished"></translation>
+        <translation>前に譜表を挿入</translation>
     </message>
     <message>
         <location filename="../source/app/powertabeditor.cpp" line="2491"/>
         <source>Insert Staff After</source>
-        <translation type="unfinished"></translation>
+        <translation>後に譜表を挿入</translation>
     </message>
     <message>
         <location filename="../source/app/powertabeditor.cpp" line="2497"/>
         <source>Remove Current Staff</source>
-        <translation type="unfinished"></translation>
+        <translation>現在の譜表を削除</translation>
     </message>
     <message>
         <location filename="../source/app/powertabeditor.cpp" line="2502"/>
         <source>Increase</source>
-        <translation type="unfinished"></translation>
+        <translation>広げる</translation>
     </message>
     <message>
         <location filename="../source/app/powertabeditor.cpp" line="2509"/>
         <source>Decrease</source>
-        <translation type="unfinished"></translation>
+        <translation>狭める</translation>
     </message>
     <message>
         <location filename="../source/app/powertabeditor.cpp" line="2518"/>
         <location filename="../source/app/powertabeditor.cpp" line="2661"/>
         <source>Whole</source>
-        <translation type="unfinished"></translation>
+        <translation>全音</translation>
     </message>
     <message>
         <location filename="../source/app/powertabeditor.cpp" line="2521"/>
         <location filename="../source/app/powertabeditor.cpp" line="2663"/>
         <source>Half</source>
-        <translation type="unfinished"></translation>
+        <translation>2分</translation>
     </message>
     <message>
         <location filename="../source/app/powertabeditor.cpp" line="2524"/>
         <location filename="../source/app/powertabeditor.cpp" line="2665"/>
         <source>Quarter</source>
-        <translation type="unfinished"></translation>
+        <translation>4分</translation>
     </message>
     <message>
         <location filename="../source/app/powertabeditor.cpp" line="2527"/>
         <location filename="../source/app/powertabeditor.cpp" line="2667"/>
         <source>8th</source>
-        <translation type="unfinished"></translation>
+        <translation>8分</translation>
     </message>
     <message>
         <location filename="../source/app/powertabeditor.cpp" line="2530"/>
         <location filename="../source/app/powertabeditor.cpp" line="2669"/>
         <source>16th</source>
-        <translation type="unfinished"></translation>
+        <translation>16分</translation>
     </message>
     <message>
         <location filename="../source/app/powertabeditor.cpp" line="2533"/>
         <location filename="../source/app/powertabeditor.cpp" line="2671"/>
         <source>32nd</source>
-        <translation type="unfinished"></translation>
+        <translation>32分</translation>
     </message>
     <message>
         <location filename="../source/app/powertabeditor.cpp" line="2537"/>
         <location filename="../source/app/powertabeditor.cpp" line="2674"/>
         <source>64th</source>
-        <translation type="unfinished"></translation>
+        <translation>64分</translation>
     </message>
     <message>
         <location filename="../source/app/powertabeditor.cpp" line="2542"/>
         <source>Increase Duration</source>
-        <translation type="unfinished"></translation>
+        <translation>音価を伸ばす</translation>
     </message>
     <message>
         <location filename="../source/app/powertabeditor.cpp" line="2549"/>
         <source>Decrease Duration</source>
-        <translation type="unfinished"></translation>
+        <translation>音価を縮める</translation>
     </message>
     <message>
         <location filename="../source/app/powertabeditor.cpp" line="2556"/>
         <source>Dotted</source>
-        <translation type="unfinished"></translation>
+        <translation>付点</translation>
     </message>
     <message>
         <location filename="../source/app/powertabeditor.cpp" line="2560"/>
         <source>Double Dotted</source>
-        <translation type="unfinished"></translation>
+        <translation>複付点</translation>
     </message>
     <message>
         <location filename="../source/app/powertabeditor.cpp" line="2565"/>
         <source>Add Dot</source>
-        <translation type="unfinished"></translation>
+        <translation>付点を追加</translation>
     </message>
     <message>
         <location filename="../source/app/powertabeditor.cpp" line="2569"/>
         <source>Remove Dot</source>
-        <translation type="unfinished"></translation>
+        <translation>付点を削除</translation>
     </message>
     <message>
         <location filename="../source/app/powertabeditor.cpp" line="2573"/>
         <source>Left Hand Fingering...</source>
-        <translation type="unfinished"></translation>
+        <translation>左手の運指...</translation>
     </message>
     <message>
         <location filename="../source/app/powertabeditor.cpp" line="2582"/>
         <source>Shift String Up</source>
-        <translation type="unfinished"></translation>
+        <translation>上の弦へシフト</translation>
     </message>
     <message>
         <location filename="../source/app/powertabeditor.cpp" line="2588"/>
         <source>Shift String Down</source>
-        <translation type="unfinished"></translation>
+        <translation>下の弦へシフト</translation>
     </message>
     <message>
         <location filename="../source/app/powertabeditor.cpp" line="2593"/>
         <location filename="../source/app/powertabeditor.cpp" line="3885"/>
         <source>Tied</source>
-        <translation type="unfinished"></translation>
+        <translation>タイ</translation>
     </message>
     <message>
         <location filename="../source/app/powertabeditor.cpp" line="2598"/>
         <source>Muted</source>
-        <translation type="unfinished"></translation>
+        <translation>ミュート</translation>
     </message>
     <message>
         <location filename="../source/app/powertabeditor.cpp" line="2601"/>
         <source>Ghost Note</source>
-        <translation type="unfinished"></translation>
+        <translation>ゴーストノート</translation>
     </message>
     <message>
         <location filename="../source/app/powertabeditor.cpp" line="2605"/>
         <source>Fermata</source>
-        <translation type="unfinished"></translation>
+        <translation>フェルマータ</translation>
     </message>
     <message>
         <location filename="../source/app/powertabeditor.cpp" line="2609"/>
         <source>Let Ring</source>
-        <translation type="unfinished"></translation>
+        <translation>レット・リング</translation>
     </message>
     <message>
         <location filename="../source/app/powertabeditor.cpp" line="2613"/>
         <source>Grace Note</source>
-        <translation type="unfinished"></translation>
+        <translation>装飾音</translation>
     </message>
     <message>
         <location filename="../source/app/powertabeditor.cpp" line="2618"/>
         <source>Staccato</source>
-        <translation type="unfinished"></translation>
+        <translation>スタッカート</translation>
     </message>
     <message>
         <location filename="../source/app/powertabeditor.cpp" line="2622"/>
         <source>Accent</source>
-        <translation type="unfinished"></translation>
+        <translation>アクセント</translation>
     </message>
     <message>
         <location filename="../source/app/powertabeditor.cpp" line="2626"/>
         <source>Heavy Accent</source>
-        <translation type="unfinished"></translation>
+        <translation>ヘビーアクセント</translation>
     </message>
     <message>
         <location filename="../source/app/powertabeditor.cpp" line="2632"/>
         <source>8va</source>
-        <translation type="unfinished"></translation>
+        <translation>8va</translation>
     </message>
     <message>
         <location filename="../source/app/powertabeditor.cpp" line="2635"/>
         <source>15ma</source>
-        <translation type="unfinished"></translation>
+        <translation>15ma</translation>
     </message>
     <message>
         <location filename="../source/app/powertabeditor.cpp" line="2638"/>
         <source>8vb</source>
-        <translation type="unfinished"></translation>
+        <translation>8vb</translation>
     </message>
     <message>
         <location filename="../source/app/powertabeditor.cpp" line="2641"/>
         <source>15mb</source>
-        <translation type="unfinished"></translation>
+        <translation>15mb</translation>
     </message>
     <message>
         <location filename="../source/app/powertabeditor.cpp" line="2645"/>
         <source>Triplet</source>
-        <translation type="unfinished"></translation>
+        <translation>三連符</translation>
     </message>
     <message>
         <location filename="../source/app/powertabeditor.cpp" line="2652"/>
         <source>Irregular Grouping</source>
-        <translation type="unfinished"></translation>
+        <translation>連符</translation>
     </message>
     <message>
         <location filename="../source/app/powertabeditor.cpp" line="2678"/>
         <source>Add Rest</source>
-        <translation type="unfinished"></translation>
+        <translation>休符を追加</translation>
     </message>
     <message>
         <location filename="../source/app/powertabeditor.cpp" line="2684"/>
@@ -2744,27 +2744,27 @@
     <message>
         <location filename="../source/app/powertabeditor.cpp" line="2692"/>
         <source>Rehearsal Sign...</source>
-        <translation type="unfinished"></translation>
+        <translation>リハーサルサイン...</translation>
     </message>
     <message>
         <location filename="../source/app/powertabeditor.cpp" line="2699"/>
         <source>Tempo Marker...</source>
-        <translation type="unfinished"></translation>
+        <translation>テンポマーカー...</translation>
     </message>
     <message>
         <location filename="../source/app/powertabeditor.cpp" line="2706"/>
         <source>Alteration of Pace...</source>
-        <translation type="unfinished"></translation>
+        <translation>ペースの変更...</translation>
     </message>
     <message>
         <location filename="../source/app/powertabeditor.cpp" line="2712"/>
         <source>Edit Key Signature...</source>
-        <translation type="unfinished"></translation>
+        <translation>調号を編集...</translation>
     </message>
     <message>
         <location filename="../source/app/powertabeditor.cpp" line="2719"/>
         <source>Edit Time Signature...</source>
-        <translation type="unfinished"></translation>
+        <translation>拍子記号を編集...</translation>
     </message>
     <message>
         <location filename="../source/app/powertabeditor.cpp" line="2726"/>
@@ -2784,12 +2784,12 @@
     <message>
         <location filename="../source/app/powertabeditor.cpp" line="2747"/>
         <source>Repeat Ending...</source>
-        <translation type="unfinished"></translation>
+        <translation>繰り返し終了...</translation>
     </message>
     <message>
         <location filename="../source/app/powertabeditor.cpp" line="2755"/>
         <source>Dynamic...</source>
-        <translation type="unfinished"></translation>
+        <translation>ダイナミクス...</translation>
     </message>
     <message>
         <location filename="../source/app/powertabeditor.cpp" line="2762"/>
@@ -2801,47 +2801,47 @@
         <location filename="../source/app/powertabeditor.cpp" line="2780"/>
         <location filename="../source/app/powertabeditor.cpp" line="2783"/>
         <source>Dynamics</source>
-        <translation type="unfinished"></translation>
+        <translation>ダイナミクス</translation>
     </message>
     <message>
         <location filename="../source/app/powertabeditor.cpp" line="2788"/>
         <source>Volume Swell...</source>
-        <translation type="unfinished"></translation>
+        <translation>ボリュームスウェル...</translation>
     </message>
     <message>
         <location filename="../source/app/powertabeditor.cpp" line="2795"/>
         <source>Hammer On/Pull Off</source>
-        <translation type="unfinished"></translation>
+        <translation>ハンマーオン/プルオフ</translation>
     </message>
     <message>
         <location filename="../source/app/powertabeditor.cpp" line="2803"/>
         <source>Hammer On From Nowhere</source>
-        <translation type="unfinished"></translation>
+        <translation>どこからでもハンマーオン</translation>
     </message>
     <message>
         <location filename="../source/app/powertabeditor.cpp" line="2808"/>
         <source>Pull Off To Nowhere</source>
-        <translation type="unfinished"></translation>
+        <translation>どこへでもプルオフ</translation>
     </message>
     <message>
         <location filename="../source/app/powertabeditor.cpp" line="2812"/>
         <source>Natural Harmonic</source>
-        <translation type="unfinished"></translation>
+        <translation>ナチュラルハーモニクス</translation>
     </message>
     <message>
         <location filename="../source/app/powertabeditor.cpp" line="2817"/>
         <source>Artificial Harmonic...</source>
-        <translation type="unfinished"></translation>
+        <translation>人口ハーモニクス...</translation>
     </message>
     <message>
         <location filename="../source/app/powertabeditor.cpp" line="2824"/>
         <source>Tapped Harmonic...</source>
-        <translation type="unfinished"></translation>
+        <translation>タッピングハーモニクス...</translation>
     </message>
     <message>
         <location filename="../source/app/powertabeditor.cpp" line="2833"/>
         <source>Bend...</source>
-        <translation type="unfinished"></translation>
+        <translation>ベンド...</translation>
     </message>
     <message>
         <location filename="../source/app/powertabeditor.cpp" line="2840"/>
@@ -2851,157 +2851,157 @@
     <message>
         <location filename="../source/app/powertabeditor.cpp" line="2846"/>
         <source>Vibrato</source>
-        <translation type="unfinished"></translation>
+        <translation>ビブラート</translation>
     </message>
     <message>
         <location filename="../source/app/powertabeditor.cpp" line="2851"/>
         <source>Wide Vibrato</source>
-        <translation type="unfinished"></translation>
+        <translation>ワイドビブラート</translation>
     </message>
     <message>
         <location filename="../source/app/powertabeditor.cpp" line="2856"/>
         <source>Palm Mute</source>
-        <translation type="unfinished"></translation>
+        <translation>パームミュート</translation>
     </message>
     <message>
         <location filename="../source/app/powertabeditor.cpp" line="2860"/>
         <source>Tremolo Picking</source>
-        <translation type="unfinished"></translation>
+        <translation>トレモロピッキング</translation>
     </message>
     <message>
         <location filename="../source/app/powertabeditor.cpp" line="2864"/>
         <source>Arpeggio Up</source>
-        <translation type="unfinished"></translation>
+        <translation>アルペジオ・アップ</translation>
     </message>
     <message>
         <location filename="../source/app/powertabeditor.cpp" line="2869"/>
         <source>Arpeggio Down</source>
-        <translation type="unfinished"></translation>
+        <translation>アルペジオ・ダウン</translation>
     </message>
     <message>
         <location filename="../source/app/powertabeditor.cpp" line="2874"/>
         <source>Tap</source>
-        <translation type="unfinished"></translation>
+        <translation>タッピング</translation>
     </message>
     <message>
         <location filename="../source/app/powertabeditor.cpp" line="2878"/>
         <source>Trill...</source>
-        <translation type="unfinished"></translation>
+        <translation>トリル...</translation>
     </message>
     <message>
         <location filename="../source/app/powertabeditor.cpp" line="2884"/>
         <source>Pickstroke Up</source>
-        <translation type="unfinished"></translation>
+        <translation>アップピッキング</translation>
     </message>
     <message>
         <location filename="../source/app/powertabeditor.cpp" line="2889"/>
         <source>Pickstroke Down</source>
-        <translation type="unfinished"></translation>
+        <translation>ダウンピッキング</translation>
     </message>
     <message>
         <location filename="../source/app/powertabeditor.cpp" line="2895"/>
         <source>Slide Into From Above</source>
-        <translation type="unfinished"></translation>
+        <translation>上からスライドイン</translation>
     </message>
     <message>
         <location filename="../source/app/powertabeditor.cpp" line="2900"/>
         <source>Slide Into From Below</source>
-        <translation type="unfinished"></translation>
+        <translation>下からスライドイン</translation>
     </message>
     <message>
         <location filename="../source/app/powertabeditor.cpp" line="2905"/>
         <source>Shift Slide</source>
-        <translation type="unfinished"></translation>
+        <translation>シフトスライド</translation>
     </message>
     <message>
         <location filename="../source/app/powertabeditor.cpp" line="2909"/>
         <source>Legato Slide</source>
-        <translation type="unfinished"></translation>
+        <translation>レガートスライド</translation>
     </message>
     <message>
         <location filename="../source/app/powertabeditor.cpp" line="2915"/>
         <source>Slide Out Of Downwards</source>
-        <translation type="unfinished"></translation>
+        <translation>下へスライドアウト</translation>
     </message>
     <message>
         <location filename="../source/app/powertabeditor.cpp" line="2920"/>
         <source>Slide Out Of Upwards</source>
-        <translation type="unfinished"></translation>
+        <translation>上へスライドアウト</translation>
     </message>
     <message>
         <location filename="../source/app/powertabeditor.cpp" line="2927"/>
         <source>Add Player</source>
-        <translation type="unfinished"></translation>
+        <translation>プレイヤー追加</translation>
     </message>
     <message>
         <location filename="../source/app/powertabeditor.cpp" line="2932"/>
         <source>Add Instrument</source>
-        <translation type="unfinished"></translation>
+        <translation>楽器を追加</translation>
     </message>
     <message>
         <location filename="../source/app/powertabeditor.cpp" line="2936"/>
         <source>Player Change...</source>
-        <translation type="unfinished"></translation>
+        <translation>プレイヤーの変更...</translation>
     </message>
     <message>
         <location filename="../source/app/powertabeditor.cpp" line="2943"/>
         <source>Tuning Dictionary...</source>
-        <translation type="unfinished"></translation>
+        <translation>チューニング辞書...</translation>
     </message>
     <message>
         <location filename="../source/app/powertabeditor.cpp" line="2950"/>
         <source>Edit View Filters...</source>
-        <translation type="unfinished"></translation>
+        <translation>ビューフィルタを編集...</translation>
     </message>
     <message>
         <location filename="../source/app/powertabeditor.cpp" line="2967"/>
         <source>Next Tab</source>
-        <translation type="unfinished"></translation>
+        <translation>次のタブ</translation>
     </message>
     <message>
         <location filename="../source/app/powertabeditor.cpp" line="2973"/>
         <source>Previous Tab</source>
-        <translation type="unfinished"></translation>
+        <translation>前のタブ</translation>
     </message>
     <message>
         <location filename="../source/app/powertabeditor.cpp" line="2987"/>
         <source>Zoom In</source>
-        <translation type="unfinished"></translation>
+        <translation>ズームイン</translation>
     </message>
     <message>
         <location filename="../source/app/powertabeditor.cpp" line="2992"/>
         <source>Zoom Out</source>
-        <translation type="unfinished"></translation>
+        <translation>ズームアウト</translation>
     </message>
     <message>
         <location filename="../source/app/powertabeditor.cpp" line="2998"/>
         <source>Report Bug...</source>
-        <translation type="unfinished"></translation>
+        <translation>バグを報告する...</translation>
     </message>
     <message>
         <location filename="../source/app/powertabeditor.cpp" line="3004"/>
         <source>Translate This Application...</source>
-        <translation type="unfinished"></translation>
+        <translation>このアプリケーションを翻訳する...</translation>
     </message>
     <message>
         <location filename="../source/app/powertabeditor.cpp" line="3010"/>
         <source>Application Info...</source>
-        <translation type="unfinished"></translation>
+        <translation>アプリケーション情報...</translation>
     </message>
     <message>
         <location filename="../source/app/powertabeditor.cpp" line="3054"/>
         <source>Mixer</source>
-        <translation type="unfinished"></translation>
+        <translation>ミキサー</translation>
     </message>
     <message>
         <location filename="../source/app/powertabeditor.cpp" line="3079"/>
         <source>Instruments</source>
-        <translation type="unfinished"></translation>
+        <translation>楽器</translation>
     </message>
     <message>
         <location filename="../source/app/powertabeditor.cpp" line="3182"/>
         <source>&amp;File</source>
-        <translation type="unfinished"></translation>
+        <translation>ファイル(&amp;F)</translation>
     </message>
     <message>
         <location filename="../source/app/powertabeditor.cpp" line="3193"/>
@@ -3011,43 +3011,43 @@
     <message>
         <location filename="../source/app/powertabeditor.cpp" line="3203"/>
         <source>&amp;Edit</source>
-        <translation type="unfinished"></translation>
+        <translation>編集(&amp;E)</translation>
     </message>
     <message>
         <location filename="../source/app/powertabeditor.cpp" line="3219"/>
         <source>Play&amp;back</source>
-        <translation type="unfinished"></translation>
+        <translation>再生(&amp;B)</translation>
     </message>
     <message>
         <location filename="../source/app/powertabeditor.cpp" line="3227"/>
         <source>&amp;Position</source>
-        <translation type="unfinished"></translation>
+        <translation>ポジション(&amp;P)</translation>
     </message>
     <message>
         <location filename="../source/app/powertabeditor.cpp" line="3228"/>
         <location filename="../source/app/powertabeditor.cpp" line="3264"/>
         <source>&amp;Section</source>
-        <translation type="unfinished"></translation>
+        <translation>セクション(&amp;S)</translation>
     </message>
     <message>
         <location filename="../source/app/powertabeditor.cpp" line="3234"/>
         <source>&amp;Staff</source>
-        <translation type="unfinished"></translation>
+        <translation>譜表(&amp;S)</translation>
     </message>
     <message>
         <location filename="../source/app/powertabeditor.cpp" line="3257"/>
         <source>&amp;Text</source>
-        <translation type="unfinished"></translation>
+        <translation>テキスト(&amp;T)</translation>
     </message>
     <message>
         <location filename="../source/app/powertabeditor.cpp" line="3274"/>
         <source>&amp;Line Spacing</source>
-        <translation type="unfinished"></translation>
+        <translation>行間(&amp;L)</translation>
     </message>
     <message>
         <location filename="../source/app/powertabeditor.cpp" line="3279"/>
         <source>&amp;Notes</source>
-        <translation type="unfinished"></translation>
+        <translation>音符(&amp;N)</translation>
     </message>
     <message>
         <location filename="../source/app/powertabeditor.cpp" line="3313"/>
@@ -3062,12 +3062,12 @@
     <message>
         <location filename="../source/app/powertabeditor.cpp" line="3336"/>
         <source>&amp;Music Symbols</source>
-        <translation type="unfinished"></translation>
+        <translation>音楽記号(&amp;M)</translation>
     </message>
     <message>
         <location filename="../source/app/powertabeditor.cpp" line="3350"/>
         <source>&amp;Tab Symbols</source>
-        <translation type="unfinished"></translation>
+        <translation>タブ記号(&amp;T)</translation>
     </message>
     <message>
         <location filename="../source/app/powertabeditor.cpp" line="3351"/>
@@ -3102,7 +3102,7 @@
     <message>
         <location filename="../source/app/powertabeditor.cpp" line="3891"/>
         <source>Insert Tied Note</source>
-        <translation type="unfinished"></translation>
+        <translation>タイ付き音符を挿入</translation>
     </message>
     <message>
         <location filename="../source/app/powertabeditor.cpp" line="3986"/>
@@ -3416,7 +3416,7 @@
     <message>
         <location filename="../source/actions/removenote.cpp" line="23"/>
         <source>Clear Note</source>
-        <translation type="unfinished"></translation>
+        <translation>音符をクリア</translation>
     </message>
 </context>
 <context>
@@ -3477,7 +3477,7 @@
     <message>
         <location filename="../source/actions/removestaff.cpp" line="23"/>
         <source>Remove Staff</source>
-        <translation type="unfinished"></translation>
+        <translation>譜表を削除</translation>
     </message>
 </context>
 <context>
@@ -3485,7 +3485,7 @@
     <message>
         <location filename="../source/actions/removesystem.cpp" line="23"/>
         <source>Remove System</source>
-        <translation type="unfinished"></translation>
+        <translation>組段を削除</translation>
     </message>
 </context>
 <context>
@@ -3626,7 +3626,7 @@
     <message>
         <location filename="../source/painters/systemrenderer.cpp" line="2181"/>
         <source>Double-click to edit bend.</source>
-        <translation type="unfinished">ダブルクリックでベンドを編集できます。</translation>
+        <translation>ダブルクリックでベンドを編集できます。</translation>
     </message>
     <message>
         <location filename="../source/painters/timesignaturepainter.cpp" line="30"/>
@@ -3709,7 +3709,7 @@
     <message>
         <location filename="../source/widgets/toolbox/scorepage.cpp" line="113"/>
         <source>Flow &amp;&amp; Dynamics</source>
-        <translation type="unfinished"></translation>
+        <translation>フロー&amp;ダイナミクス(&amp;D)</translation>
     </message>
     <message>
         <location filename="../source/widgets/toolbox/scorepage.cpp" line="117"/>
@@ -3724,12 +3724,12 @@
     <message>
         <location filename="../source/widgets/toolbox/scorepage.cpp" line="125"/>
         <source>Add Tempo Marker</source>
-        <translation type="unfinished"></translation>
+        <translation>テンポマーカーを追加</translation>
     </message>
     <message>
         <location filename="../source/widgets/toolbox/scorepage.cpp" line="129"/>
         <source>Add Volume Marker</source>
-        <translation type="unfinished"></translation>
+        <translation>ボリュームマーカーを追加</translation>
     </message>
 </context>
 <context>
@@ -3737,12 +3737,12 @@
     <message>
         <location filename="../source/actions/shiftpositions.cpp" line="24"/>
         <source>Shift Forward</source>
-        <translation type="unfinished"></translation>
+        <translation>前方へシフト</translation>
     </message>
     <message>
         <location filename="../source/actions/shiftpositions.cpp" line="25"/>
         <source>Shift Backward</source>
-        <translation type="unfinished"></translation>
+        <translation>後方へシフト</translation>
     </message>
 </context>
 <context>
@@ -3750,12 +3750,12 @@
     <message>
         <location filename="../source/actions/shiftstring.cpp" line="25"/>
         <source>Shift String Up</source>
-        <translation type="unfinished"></translation>
+        <translation>上の弦へシフト</translation>
     </message>
     <message>
         <location filename="../source/actions/shiftstring.cpp" line="26"/>
         <source>Shift String Down</source>
-        <translation type="unfinished"></translation>
+        <translation>下の弦へシフト</translation>
     </message>
 </context>
 <context>
@@ -3764,19 +3764,19 @@
         <location filename="../source/dialogs/staffdialog.ui" line="17"/>
         <location filename="../build/source/dialogs/ui_staffdialog.h" line="85"/>
         <source>Staff</source>
-        <translation type="unfinished"></translation>
+        <translation>譜表</translation>
     </message>
     <message>
         <location filename="../source/dialogs/staffdialog.ui" line="31"/>
         <location filename="../build/source/dialogs/ui_staffdialog.h" line="86"/>
         <source>Number of Strings:</source>
-        <translation type="unfinished"></translation>
+        <translation>弦の数:</translation>
     </message>
     <message>
         <location filename="../source/dialogs/staffdialog.ui" line="41"/>
         <location filename="../build/source/dialogs/ui_staffdialog.h" line="87"/>
         <source>Clef Type:</source>
-        <translation type="unfinished"></translation>
+        <translation>音部記号:</translation>
     </message>
 </context>
 <context>
@@ -3785,19 +3785,19 @@
         <location filename="../source/dialogs/tappedharmonicdialog.ui" line="17"/>
         <location filename="../build/source/dialogs/ui_tappedharmonicdialog.h" line="86"/>
         <source>Tapped Harmonic</source>
-        <translation type="unfinished"></translation>
+        <translation>タッピングハーモニクス</translation>
     </message>
     <message>
         <location filename="../source/dialogs/tappedharmonicdialog.ui" line="31"/>
         <location filename="../build/source/dialogs/ui_tappedharmonicdialog.h" line="87"/>
         <source>Current Fret:</source>
-        <translation type="unfinished"></translation>
+        <translation>現在のフレット:</translation>
     </message>
     <message>
         <location filename="../source/dialogs/tappedharmonicdialog.ui" line="45"/>
         <location filename="../build/source/dialogs/ui_tappedharmonicdialog.h" line="88"/>
         <source>Tapped Fret:</source>
-        <translation type="unfinished"></translation>
+        <translation>タッピングするフレット:</translation>
     </message>
 </context>
 <context>
@@ -3806,55 +3806,55 @@
         <location filename="../source/dialogs/tempomarkerdialog.ui" line="17"/>
         <location filename="../build/source/dialogs/ui_tempomarkerdialog.h" line="416"/>
         <source>Tempo Marker</source>
-        <translation type="unfinished"></translation>
+        <translation>テンポマーカー</translation>
     </message>
     <message>
         <location filename="../source/dialogs/tempomarkerdialog.ui" line="34"/>
         <location filename="../build/source/dialogs/ui_tempomarkerdialog.h" line="417"/>
         <source>Description:</source>
-        <translation type="unfinished"></translation>
+        <translation>詳細:</translation>
     </message>
     <message>
         <location filename="../source/dialogs/tempomarkerdialog.ui" line="51"/>
         <location filename="../build/source/dialogs/ui_tempomarkerdialog.h" line="418"/>
         <source>Beat Type:</source>
-        <translation type="unfinished"></translation>
+        <translation>ビートタイプ:</translation>
     </message>
     <message>
         <location filename="../source/dialogs/tempomarkerdialog.ui" line="295"/>
         <location filename="../build/source/dialogs/ui_tempomarkerdialog.h" line="429"/>
         <source>BPM:</source>
-        <translation type="unfinished"></translation>
+        <translation>BPM:</translation>
     </message>
     <message>
         <location filename="../source/dialogs/tempomarkerdialog.ui" line="305"/>
         <location filename="../build/source/dialogs/ui_tempomarkerdialog.h" line="430"/>
         <source>L&apos;istesso:</source>
-        <translation type="unfinished"></translation>
+        <translation>リステッソ:</translation>
     </message>
     <message>
         <location filename="../source/dialogs/tempomarkerdialog.ui" line="317"/>
         <location filename="../build/source/dialogs/ui_tempomarkerdialog.h" line="431"/>
         <source>Enable</source>
-        <translation type="unfinished"></translation>
+        <translation>有効</translation>
     </message>
     <message>
         <location filename="../source/dialogs/tempomarkerdialog.ui" line="556"/>
         <location filename="../build/source/dialogs/ui_tempomarkerdialog.h" line="442"/>
         <source>Triplet Feel:</source>
-        <translation type="unfinished"></translation>
+        <translation>三連符のフィール:</translation>
     </message>
     <message>
         <location filename="../source/dialogs/tempomarkerdialog.ui" line="568"/>
         <location filename="../build/source/dialogs/ui_tempomarkerdialog.h" line="443"/>
         <source>None</source>
-        <translation type="unfinished"></translation>
+        <translation>なし</translation>
     </message>
     <message>
         <location filename="../source/dialogs/tempomarkerdialog.ui" line="648"/>
         <location filename="../build/source/dialogs/ui_tempomarkerdialog.h" line="448"/>
         <source>Show Metronome Marker:</source>
-        <translation type="unfinished"></translation>
+        <translation>メトロノームマーカーを表示:</translation>
     </message>
 </context>
 <context>
@@ -3864,18 +3864,18 @@
         <location filename="../build/source/dialogs/ui_textitemdialog.h" line="73"/>
         <location filename="../source/dialogs/textitemdialog.cpp" line="55"/>
         <source>Text</source>
-        <translation type="unfinished"></translation>
+        <translation>テキスト</translation>
     </message>
     <message>
         <location filename="../source/dialogs/textitemdialog.ui" line="28"/>
         <location filename="../build/source/dialogs/ui_textitemdialog.h" line="74"/>
         <source>Contents:</source>
-        <translation type="unfinished"></translation>
+        <translation>内容:</translation>
     </message>
     <message>
         <location filename="../source/dialogs/textitemdialog.cpp" line="56"/>
         <source>The text cannot be empty.</source>
-        <translation type="unfinished"></translation>
+        <translation>テキストを空にすることはできません。</translation>
     </message>
 </context>
 <context>
@@ -3885,54 +3885,54 @@
         <location filename="../build/source/dialogs/ui_timesignaturedialog.h" line="175"/>
         <location filename="../source/dialogs/timesignaturedialog.cpp" line="130"/>
         <source>Time Signature</source>
-        <translation type="unfinished"></translation>
+        <translation>拍子記号</translation>
     </message>
     <message>
         <location filename="../source/dialogs/timesignaturedialog.ui" line="31"/>
         <location filename="../build/source/dialogs/ui_timesignaturedialog.h" line="176"/>
         <source>Show Time Signature:</source>
-        <translation type="unfinished"></translation>
+        <translation>拍子記号を表示：</translation>
     </message>
     <message>
         <location filename="../source/dialogs/timesignaturedialog.ui" line="41"/>
         <location filename="../build/source/dialogs/ui_timesignaturedialog.h" line="177"/>
         <source>Common Time:</source>
-        <translation type="unfinished"></translation>
+        <translation>コモン・タイム:</translation>
     </message>
     <message>
         <location filename="../source/dialogs/timesignaturedialog.ui" line="51"/>
         <location filename="../build/source/dialogs/ui_timesignaturedialog.h" line="178"/>
         <source>Cut Time:</source>
-        <translation type="unfinished"></translation>
+        <translation>カット・タイム:</translation>
     </message>
     <message>
         <location filename="../source/dialogs/timesignaturedialog.ui" line="61"/>
         <location filename="../build/source/dialogs/ui_timesignaturedialog.h" line="179"/>
         <source>Beats Per Measure:</source>
-        <translation type="unfinished"></translation>
+        <translation>一小節あたりの拍:</translation>
     </message>
     <message>
         <location filename="../source/dialogs/timesignaturedialog.ui" line="78"/>
         <location filename="../build/source/dialogs/ui_timesignaturedialog.h" line="180"/>
         <source>Beat Value:</source>
-        <translation type="unfinished"></translation>
+        <translation>拍の音価:</translation>
     </message>
     <message>
         <location filename="../source/dialogs/timesignaturedialog.ui" line="95"/>
         <location filename="../build/source/dialogs/ui_timesignaturedialog.h" line="181"/>
         <source>Metronome Pulses Per Measure:</source>
-        <translation type="unfinished"></translation>
+        <translation>一小節あたりのメトロノームパルス:</translation>
     </message>
     <message>
         <location filename="../source/dialogs/timesignaturedialog.ui" line="112"/>
         <location filename="../build/source/dialogs/ui_timesignaturedialog.h" line="182"/>
         <source>Beaming Pattern:</source>
-        <translation type="unfinished"></translation>
+        <translation>ビーミングパターン:</translation>
     </message>
     <message>
         <location filename="../source/dialogs/timesignaturedialog.cpp" line="131"/>
         <source>Invalid beaming pattern.</source>
-        <translation type="unfinished"></translation>
+        <translation>無効なビーミングパターンです。</translation>
     </message>
 </context>
 <context>
@@ -3941,13 +3941,13 @@
         <location filename="../source/widgets/toolbox/toolbox.ui" line="20"/>
         <location filename="../build/source/widgets/ui_toolbox.h" line="747"/>
         <source>Form</source>
-        <translation type="unfinished"></translation>
+        <translation>フォーム</translation>
     </message>
     <message>
         <location filename="../source/widgets/toolbox/toolbox.ui" line="161"/>
         <location filename="../build/source/widgets/ui_toolbox.h" line="755"/>
         <source>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;&lt;br/&gt;&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</source>
-        <translation type="unfinished"></translation>
+        <translation>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;&lt;br/&gt;&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</translation>
     </message>
 </context>
 <context>
@@ -3980,7 +3980,7 @@
         <location filename="../source/dialogs/tremolobardialog.ui" line="63"/>
         <location filename="../build/source/dialogs/ui_tremolobardialog.h" line="121"/>
         <source>Current note duration + next</source>
-        <translation>現在の音符の長さ + 次の</translation>
+        <translation>現在の音符の音価 + 次の</translation>
     </message>
     <message>
         <location filename="../source/dialogs/tremolobardialog.ui" line="73"/>
@@ -4031,24 +4031,24 @@
         <location filename="../build/source/dialogs/ui_trilldialog.h" line="85"/>
         <location filename="../source/dialogs/trilldialog.cpp" line="60"/>
         <source>Trill</source>
-        <translation type="unfinished"></translation>
+        <translation>トリル</translation>
     </message>
     <message>
         <location filename="../source/dialogs/trilldialog.ui" line="31"/>
         <location filename="../build/source/dialogs/ui_trilldialog.h" line="86"/>
         <source>Current Fret:</source>
-        <translation type="unfinished"></translation>
+        <translation>現在のフレット:</translation>
     </message>
     <message>
         <location filename="../source/dialogs/trilldialog.ui" line="45"/>
         <location filename="../build/source/dialogs/ui_trilldialog.h" line="87"/>
         <source>Trill With Fret:</source>
-        <translation type="unfinished"></translation>
+        <translation>トリルするフレット:</translation>
     </message>
     <message>
         <location filename="../source/dialogs/trilldialog.cpp" line="61"/>
         <source>The trilled fret number cannot be the same as the original fret number.</source>
-        <translation type="unfinished"></translation>
+        <translation>トリルフレット番号は、元のフレット番号と同じにすることはできません。</translation>
     </message>
 </context>
 <context>
@@ -4057,49 +4057,49 @@
         <location filename="../source/dialogs/tuningdialog.ui" line="17"/>
         <location filename="../build/source/dialogs/ui_tuningdialog.h" line="197"/>
         <source>Tuning</source>
-        <translation type="unfinished"></translation>
+        <translation>チューニング</translation>
     </message>
     <message>
         <location filename="../source/dialogs/tuningdialog.ui" line="31"/>
         <location filename="../build/source/dialogs/ui_tuningdialog.h" line="198"/>
         <source>Name:</source>
-        <translation type="unfinished"></translation>
+        <translation>名前:</translation>
     </message>
     <message>
         <location filename="../source/dialogs/tuningdialog.ui" line="41"/>
         <location filename="../build/source/dialogs/ui_tuningdialog.h" line="199"/>
         <source>Sharps:</source>
-        <translation type="unfinished"></translation>
+        <translation>シャープ:</translation>
     </message>
     <message>
         <location filename="../source/dialogs/tuningdialog.ui" line="51"/>
         <location filename="../build/source/dialogs/ui_tuningdialog.h" line="200"/>
         <source>Music Notation Offset:</source>
-        <translation type="unfinished"></translation>
+        <translation>楽譜とのオフセット:</translation>
     </message>
     <message>
         <location filename="../source/dialogs/tuningdialog.ui" line="61"/>
         <location filename="../build/source/dialogs/ui_tuningdialog.h" line="201"/>
         <source>Number of Strings:</source>
-        <translation type="unfinished"></translation>
+        <translation>弦の数:</translation>
     </message>
     <message>
         <location filename="../source/dialogs/tuningdialog.ui" line="71"/>
         <location filename="../build/source/dialogs/ui_tuningdialog.h" line="202"/>
         <source>Tuning:</source>
-        <translation type="unfinished"></translation>
+        <translation>チューニング:</translation>
     </message>
     <message>
         <location filename="../source/dialogs/tuningdialog.ui" line="106"/>
         <location filename="../build/source/dialogs/ui_tuningdialog.h" line="203"/>
         <source>Preset:</source>
-        <translation type="unfinished"></translation>
+        <translation>プリセット:</translation>
     </message>
     <message>
         <location filename="../source/dialogs/tuningdialog.ui" line="120"/>
         <location filename="../build/source/dialogs/ui_tuningdialog.h" line="204"/>
         <source>Capo:</source>
-        <translation type="unfinished"></translation>
+        <translation>カポ:</translation>
     </message>
 </context>
 <context>
@@ -4108,41 +4108,41 @@
         <location filename="../source/dialogs/tuningdictionarydialog.ui" line="17"/>
         <location filename="../build/source/dialogs/ui_tuningdictionarydialog.h" line="121"/>
         <source>Tuning Dictionary</source>
-        <translation type="unfinished"></translation>
+        <translation>チューニング辞書</translation>
     </message>
     <message>
         <location filename="../source/dialogs/tuningdictionarydialog.ui" line="25"/>
         <location filename="../build/source/dialogs/ui_tuningdictionarydialog.h" line="122"/>
         <source>Number of Strings:</source>
-        <translation type="unfinished"></translation>
+        <translation>弦の数:</translation>
     </message>
     <message>
         <location filename="../source/dialogs/tuningdictionarydialog.ui" line="52"/>
         <location filename="../build/source/dialogs/ui_tuningdictionarydialog.h" line="123"/>
         <source>New...</source>
-        <translation type="unfinished"></translation>
+        <translation>新規...</translation>
     </message>
     <message>
         <location filename="../source/dialogs/tuningdictionarydialog.ui" line="62"/>
         <location filename="../build/source/dialogs/ui_tuningdictionarydialog.h" line="124"/>
         <source>Edit...</source>
-        <translation type="unfinished"></translation>
+        <translation>編集...</translation>
     </message>
     <message>
         <location filename="../source/dialogs/tuningdictionarydialog.ui" line="72"/>
         <location filename="../build/source/dialogs/ui_tuningdictionarydialog.h" line="125"/>
         <source>Delete</source>
-        <translation type="unfinished"></translation>
+        <translation>削除</translation>
     </message>
     <message>
         <location filename="../source/dialogs/tuningdictionarydialog.cpp" line="40"/>
         <source>Name</source>
-        <translation type="unfinished"></translation>
+        <translation>名前</translation>
     </message>
     <message>
         <location filename="../source/dialogs/tuningdictionarydialog.cpp" line="40"/>
         <source>Tuning (Low to High)</source>
-        <translation type="unfinished"></translation>
+        <translation>チューニング(低〜高)</translation>
     </message>
 </context>
 <context>
@@ -4151,13 +4151,13 @@
         <location filename="../source/dialogs/viewfilterdialog.ui" line="17"/>
         <location filename="../build/source/dialogs/ui_viewfilterdialog.h" line="240"/>
         <source>View Filters</source>
-        <translation type="unfinished"></translation>
+        <translation>ビューフィルター</translation>
     </message>
     <message>
         <location filename="../source/dialogs/viewfilterdialog.ui" line="76"/>
         <location filename="../build/source/dialogs/ui_viewfilterdialog.h" line="242"/>
         <source>Add Filter</source>
-        <translation type="unfinished"></translation>
+        <translation>フィルターを追加</translation>
     </message>
     <message>
         <location filename="../source/dialogs/viewfilterdialog.ui" line="79"/>
@@ -4165,43 +4165,43 @@
         <location filename="../build/source/dialogs/ui_viewfilterdialog.h" line="244"/>
         <location filename="../build/source/dialogs/ui_viewfilterdialog.h" line="254"/>
         <source>+</source>
-        <translation type="unfinished"></translation>
+        <translation>+</translation>
     </message>
     <message>
         <location filename="../source/dialogs/viewfilterdialog.ui" line="101"/>
         <location filename="../build/source/dialogs/ui_viewfilterdialog.h" line="246"/>
         <source>Remove Filter</source>
-        <translation type="unfinished"></translation>
+        <translation>フィルターを削除</translation>
     </message>
     <message>
         <location filename="../source/dialogs/viewfilterdialog.ui" line="104"/>
         <location filename="../build/source/dialogs/ui_viewfilterdialog.h" line="248"/>
         <source>-</source>
-        <translation type="unfinished"></translation>
+        <translation>-</translation>
     </message>
     <message>
         <location filename="../source/dialogs/viewfilterdialog.ui" line="139"/>
         <location filename="../build/source/dialogs/ui_viewfilterdialog.h" line="249"/>
         <source>Name:</source>
-        <translation type="unfinished"></translation>
+        <translation>名前:</translation>
     </message>
     <message>
         <location filename="../source/dialogs/viewfilterdialog.ui" line="149"/>
         <location filename="../build/source/dialogs/ui_viewfilterdialog.h" line="250"/>
         <source>Rules:</source>
-        <translation type="unfinished"></translation>
+        <translation>ルール:</translation>
     </message>
     <message>
         <location filename="../source/dialogs/viewfilterdialog.ui" line="276"/>
         <location filename="../build/source/dialogs/ui_viewfilterdialog.h" line="252"/>
         <source>Add Rule</source>
-        <translation type="unfinished"></translation>
+        <translation>ルールを追加</translation>
     </message>
     <message>
         <location filename="../source/dialogs/viewfilterdialog.ui" line="293"/>
         <location filename="../build/source/dialogs/ui_viewfilterdialog.h" line="255"/>
         <source>Matches:</source>
-        <translation type="unfinished"></translation>
+        <translation>マッチ:</translation>
     </message>
 </context>
 <context>
@@ -4210,13 +4210,13 @@
         <location filename="../source/dialogs/volumeswelldialog.ui" line="17"/>
         <location filename="../build/source/dialogs/ui_volumeswelldialog.h" line="352"/>
         <source>Volume Swell</source>
-        <translation type="unfinished"></translation>
+        <translation>ボリュームスウェル</translation>
     </message>
     <message>
         <location filename="../source/dialogs/volumeswelldialog.ui" line="34"/>
         <location filename="../build/source/dialogs/ui_volumeswelldialog.h" line="353"/>
         <source>Start Volume:</source>
-        <translation type="unfinished"></translation>
+        <translation>開始ボリューム:</translation>
     </message>
     <message>
         <location filename="../source/dialogs/volumeswelldialog.ui" line="61"/>
@@ -4224,37 +4224,37 @@
         <location filename="../build/source/dialogs/ui_volumeswelldialog.h" line="354"/>
         <location filename="../build/source/dialogs/ui_volumeswelldialog.h" line="364"/>
         <source>Off</source>
-        <translation type="unfinished"></translation>
+        <translation>オフ</translation>
     </message>
     <message>
         <location filename="../source/dialogs/volumeswelldialog.ui" line="317"/>
         <location filename="../build/source/dialogs/ui_volumeswelldialog.h" line="363"/>
         <source>End Volume:</source>
-        <translation type="unfinished"></translation>
+        <translation>終了ボリューム:</translation>
     </message>
     <message>
         <location filename="../source/dialogs/volumeswelldialog.ui" line="600"/>
         <location filename="../build/source/dialogs/ui_volumeswelldialog.h" line="373"/>
         <source>Swell Duration:</source>
-        <translation type="unfinished"></translation>
+        <translation>スウェルの長さ:</translation>
     </message>
     <message>
         <location filename="../source/dialogs/volumeswelldialog.ui" line="609"/>
         <location filename="../build/source/dialogs/ui_volumeswelldialog.h" line="374"/>
         <source>Current Note</source>
-        <translation type="unfinished"></translation>
+        <translation>現在の音符</translation>
     </message>
     <message>
         <location filename="../source/dialogs/volumeswelldialog.ui" line="616"/>
         <location filename="../build/source/dialogs/ui_volumeswelldialog.h" line="375"/>
         <source>Current Note and Following Notes</source>
-        <translation type="unfinished"></translation>
+        <translation>現在の音符と次の音符</translation>
     </message>
     <message>
         <location filename="../source/dialogs/volumeswelldialog.ui" line="625"/>
         <location filename="../build/source/dialogs/ui_volumeswelldialog.h" line="376"/>
         <source>Number of Notes:</source>
-        <translation type="unfinished"></translation>
+        <translation>音符の数:</translation>
     </message>
 </context>
 </TS>
