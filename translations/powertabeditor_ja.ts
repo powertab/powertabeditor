@@ -383,32 +383,32 @@
         <location filename="../source/dialogs/barlinedialog.ui" line="41"/>
         <location filename="../build/source/dialogs/ui_barlinedialog.h" line="87"/>
         <source>Play:</source>
-        <translation>再生:</translation>
+        <translation>繰り返し回数:</translation>
     </message>
     <message>
         <location filename="../source/dialogs/barlinedialog.cpp" line="35"/>
         <source>Single</source>
-        <translation>シングル</translation>
+        <translation>小節線(縦線)</translation>
     </message>
     <message>
         <location filename="../source/dialogs/barlinedialog.cpp" line="36"/>
         <source>Double</source>
-        <translation>ダブル</translation>
+        <translation>複縦線</translation>
     </message>
     <message>
         <location filename="../source/dialogs/barlinedialog.cpp" line="37"/>
         <source>Free Time</source>
-        <translation>フリータイム</translation>
+        <translation>破線</translation>
     </message>
     <message>
         <location filename="../source/dialogs/barlinedialog.cpp" line="40"/>
         <source>Repeat Start</source>
-        <translation>繰り返し開始</translation>
+        <translation>反復開始線</translation>
     </message>
     <message>
         <location filename="../source/dialogs/barlinedialog.cpp" line="45"/>
         <source>Repeat End</source>
-        <translation>繰り返し終了</translation>
+        <translation>反復終了線</translation>
     </message>
     <message>
         <location filename="../source/dialogs/barlinedialog.cpp" line="46"/>
@@ -639,7 +639,7 @@
         <location filename="../source/dialogs/chordnamedialog.ui" line="36"/>
         <location filename="../build/source/dialogs/ui_chordnamedialog.h" line="550"/>
         <source>Preview:</source>
-        <translation type="unfinished"></translation>
+        <translation>プレビュー:</translation>
     </message>
     <message>
         <location filename="../source/dialogs/chordnamedialog.ui" line="53"/>
@@ -749,7 +749,7 @@
         <location filename="../source/dialogs/chordnamedialog.ui" line="898"/>
         <location filename="../build/source/dialogs/ui_chordnamedialog.h" line="578"/>
         <source>Chords in Score:</source>
-        <translation type="unfinished"></translation>
+        <translation>スコア内のコード:</translation>
     </message>
 </context>
 <context>
@@ -758,25 +758,25 @@
         <location filename="../source/dialogs/crashdialog.ui" line="23"/>
         <location filename="../build/source/dialogs/ui_crashdialog.h" line="99"/>
         <source>Error</source>
-        <translation type="unfinished"></translation>
+        <translation>エラー</translation>
     </message>
     <message>
         <location filename="../source/dialogs/crashdialog.ui" line="37"/>
         <location filename="../build/source/dialogs/ui_crashdialog.h" line="100"/>
         <source>Oops! Something went wrong.</source>
-        <translation type="unfinished"></translation>
+        <translation>おっと、何かがうまくいきませんでした。</translation>
     </message>
     <message>
         <location filename="../source/dialogs/crashdialog.ui" line="74"/>
         <location filename="../build/source/dialogs/ui_crashdialog.h" line="101"/>
         <source>Report Bug...</source>
-        <translation type="unfinished"></translation>
+        <translation>バグを報告する...</translation>
     </message>
     <message>
         <location filename="../source/dialogs/crashdialog.ui" line="84"/>
         <location filename="../build/source/dialogs/ui_crashdialog.h" line="102"/>
         <source>Close</source>
-        <translation type="unfinished"></translation>
+        <translation>閉じる</translation>
     </message>
 </context>
 <context>
@@ -791,37 +791,37 @@
         <location filename="../source/dialogs/directiondialog.ui" line="28"/>
         <location filename="../build/source/dialogs/ui_directiondialog.h" line="136"/>
         <source>Symbol:</source>
-        <translation type="unfinished"></translation>
+        <translation>シンボル:</translation>
     </message>
     <message>
         <location filename="../source/dialogs/directiondialog.ui" line="38"/>
         <location filename="../build/source/dialogs/ui_directiondialog.h" line="137"/>
         <source>Active Symbol:</source>
-        <translation type="unfinished"></translation>
+        <translation>アクティブなシンボル:</translation>
     </message>
     <message>
         <location filename="../source/dialogs/directiondialog.ui" line="48"/>
         <location filename="../build/source/dialogs/ui_directiondialog.h" line="138"/>
         <source>Repeat Number:</source>
-        <translation type="unfinished"></translation>
+        <translation>繰り返し番号:</translation>
     </message>
     <message>
         <location filename="../source/dialogs/directiondialog.ui" line="58"/>
         <location filename="../build/source/dialogs/ui_directiondialog.h" line="139"/>
         <source>Direction:</source>
-        <translation type="unfinished"></translation>
+        <translation>反復記号:</translation>
     </message>
     <message>
         <location filename="../source/dialogs/directiondialog.ui" line="86"/>
         <location filename="../build/source/dialogs/ui_directiondialog.h" line="140"/>
         <source>Add</source>
-        <translation type="unfinished"></translation>
+        <translation>追加</translation>
     </message>
     <message>
         <location filename="../source/dialogs/directiondialog.ui" line="93"/>
         <location filename="../build/source/dialogs/ui_directiondialog.h" line="141"/>
         <source>Remove</source>
-        <translation type="unfinished"></translation>
+        <translation>削除</translation>
     </message>
 </context>
 <context>
@@ -842,7 +842,7 @@
         <location filename="../source/dialogs/dynamicdialog.ui" line="67"/>
         <location filename="../build/source/dialogs/ui_dynamicdialog.h" line="205"/>
         <source>Off</source>
-        <translation type="unfinished"></translation>
+        <translation>オフ</translation>
     </message>
 </context>
 <context>
@@ -850,7 +850,7 @@
     <message>
         <location filename="../source/actions/editbarline.cpp" line="22"/>
         <source>Edit Barline Type</source>
-        <translation type="unfinished"></translation>
+        <translation>小節線の種類を編集</translation>
     </message>
 </context>
 <context>
@@ -858,7 +858,7 @@
     <message>
         <location filename="../source/actions/editdynamic.cpp" line="25"/>
         <source>Edit Dynamic</source>
-        <translation type="unfinished"></translation>
+        <translation>ダイナミクスを編集</translation>
     </message>
 </context>
 <context>
@@ -866,7 +866,7 @@
     <message>
         <location filename="../source/actions/editfileinformation.cpp" line="24"/>
         <source>Edit File Information</source>
-        <translation type="unfinished"></translation>
+        <translation>ファイル情報を編集</translation>
     </message>
 </context>
 <context>
@@ -874,7 +874,7 @@
     <message>
         <location filename="../source/actions/editinstrument.cpp" line="24"/>
         <source>Edit Instrument</source>
-        <translation type="unfinished"></translation>
+        <translation>楽器を編集</translation>
     </message>
 </context>
 <context>
@@ -882,7 +882,7 @@
     <message>
         <location filename="../source/actions/editkeysignature.cpp" line="25"/>
         <source>Edit Key Signature</source>
-        <translation type="unfinished"></translation>
+        <translation>調号を編集</translation>
     </message>
 </context>
 <context>
@@ -890,12 +890,12 @@
     <message>
         <location filename="../source/actions/editnoteduration.cpp" line="23"/>
         <source>Edit Rest Duration</source>
-        <translation type="unfinished"></translation>
+        <translation>休符の長さを編集</translation>
     </message>
     <message>
         <location filename="../source/actions/editnoteduration.cpp" line="24"/>
         <source>Edit Note Duration</source>
-        <translation type="unfinished"></translation>
+        <translation>音符の長さを編集</translation>
     </message>
 </context>
 <context>
@@ -903,7 +903,7 @@
     <message>
         <location filename="../source/actions/editplayer.cpp" line="23"/>
         <source>Edit Player</source>
-        <translation type="unfinished"></translation>
+        <translation>プレイヤーを編集</translation>
     </message>
 </context>
 <context>
@@ -911,7 +911,7 @@
     <message>
         <location filename="../source/actions/editrehearsalsign.cpp" line="48"/>
         <source>Edit Rehearsal Sign</source>
-        <translation type="unfinished"></translation>
+        <translation>リハーサルサインを編集</translation>
     </message>
 </context>
 <context>
@@ -935,7 +935,7 @@
     <message>
         <location filename="../source/actions/edittimesignature.cpp" line="25"/>
         <source>Edit Time Signature</source>
-        <translation type="unfinished"></translation>
+        <translation>拍子記号を編集</translation>
     </message>
 </context>
 <context>
@@ -943,7 +943,7 @@
     <message>
         <location filename="../source/actions/editviewfilters.cpp" line="24"/>
         <source>Edit View Filters</source>
-        <translation type="unfinished"></translation>
+        <translation>ビューフィルタを編集</translation>
     </message>
 </context>
 <context>
@@ -952,31 +952,31 @@
         <location filename="../source/dialogs/fileinformationdialog.ui" line="17"/>
         <location filename="../build/source/dialogs/ui_fileinformationdialog.h" line="706"/>
         <source>File Information</source>
-        <translation type="unfinished"></translation>
+        <translation>ファイル情報</translation>
     </message>
     <message>
         <location filename="../source/dialogs/fileinformationdialog.ui" line="30"/>
         <location filename="../build/source/dialogs/ui_fileinformationdialog.h" line="780"/>
         <source>Song Information</source>
-        <translation type="unfinished"></translation>
+        <translation>楽曲情報</translation>
     </message>
     <message>
         <location filename="../source/dialogs/fileinformationdialog.ui" line="51"/>
         <location filename="../build/source/dialogs/ui_fileinformationdialog.h" line="707"/>
         <source>Classification:</source>
-        <translation type="unfinished"></translation>
+        <translation>分類:</translation>
     </message>
     <message>
         <location filename="../source/dialogs/fileinformationdialog.ui" line="63"/>
         <location filename="../build/source/dialogs/ui_fileinformationdialog.h" line="708"/>
         <source>Song</source>
-        <translation type="unfinished"></translation>
+        <translation>楽曲</translation>
     </message>
     <message>
         <location filename="../source/dialogs/fileinformationdialog.ui" line="73"/>
         <location filename="../build/source/dialogs/ui_fileinformationdialog.h" line="709"/>
         <source>Lesson</source>
-        <translation type="unfinished"></translation>
+        <translation>レッスン</translation>
     </message>
     <message>
         <location filename="../source/dialogs/fileinformationdialog.ui" line="113"/>
@@ -984,7 +984,7 @@
         <location filename="../build/source/dialogs/ui_fileinformationdialog.h" line="710"/>
         <location filename="../build/source/dialogs/ui_fileinformationdialog.h" line="750"/>
         <source>Title:</source>
-        <translation type="unfinished"></translation>
+        <translation>タイトル:</translation>
     </message>
     <message>
         <location filename="../source/dialogs/fileinformationdialog.ui" line="123"/>
@@ -992,103 +992,103 @@
         <location filename="../build/source/dialogs/ui_fileinformationdialog.h" line="711"/>
         <location filename="../build/source/dialogs/ui_fileinformationdialog.h" line="751"/>
         <source>Subtitle:</source>
-        <translation type="unfinished"></translation>
+        <translation>サブタイトル:</translation>
     </message>
     <message>
         <location filename="../source/dialogs/fileinformationdialog.ui" line="133"/>
         <location filename="../build/source/dialogs/ui_fileinformationdialog.h" line="712"/>
         <source>Artist:</source>
-        <translation type="unfinished"></translation>
+        <translation>アーティスト:</translation>
     </message>
     <message>
         <location filename="../source/dialogs/fileinformationdialog.ui" line="152"/>
         <location filename="../build/source/dialogs/ui_fileinformationdialog.h" line="713"/>
         <source>Release Information</source>
-        <translation type="unfinished"></translation>
+        <translation>リリース情報</translation>
     </message>
     <message>
         <location filename="../source/dialogs/fileinformationdialog.ui" line="164"/>
         <location filename="../build/source/dialogs/ui_fileinformationdialog.h" line="714"/>
         <source>Release Type:</source>
-        <translation type="unfinished"></translation>
+        <translation>リリースタイプ:</translation>
     </message>
     <message>
         <location filename="../source/dialogs/fileinformationdialog.ui" line="178"/>
         <location filename="../build/source/dialogs/ui_fileinformationdialog.h" line="719"/>
         <source>Public Release (Audio)</source>
-        <translation type="unfinished"></translation>
+        <translation>一般公開(音声)</translation>
     </message>
     <message>
         <location filename="../source/dialogs/fileinformationdialog.ui" line="183"/>
         <location filename="../build/source/dialogs/ui_fileinformationdialog.h" line="721"/>
         <source>Public Release (Video)</source>
-        <translation type="unfinished"></translation>
+        <translation>一般公開(ビデオ)</translation>
     </message>
     <message>
         <location filename="../source/dialogs/fileinformationdialog.ui" line="188"/>
         <location filename="../build/source/dialogs/ui_fileinformationdialog.h" line="723"/>
         <source>Bootleg</source>
-        <translation type="unfinished"></translation>
+        <translation>海賊版</translation>
     </message>
     <message>
         <location filename="../source/dialogs/fileinformationdialog.ui" line="193"/>
         <location filename="../build/source/dialogs/ui_fileinformationdialog.h" line="725"/>
         <source>Not Released</source>
-        <translation type="unfinished"></translation>
+        <translation>未リリース</translation>
     </message>
     <message>
         <location filename="../source/dialogs/fileinformationdialog.ui" line="223"/>
         <location filename="../build/source/dialogs/ui_fileinformationdialog.h" line="728"/>
         <source>Album Title:</source>
-        <translation type="unfinished"></translation>
+        <translation>アルバムタイトル:</translation>
     </message>
     <message>
         <location filename="../source/dialogs/fileinformationdialog.ui" line="233"/>
         <location filename="../build/source/dialogs/ui_fileinformationdialog.h" line="729"/>
         <source>Album Type:</source>
-        <translation type="unfinished"></translation>
+        <translation>アルバムの種類:</translation>
     </message>
     <message>
         <location filename="../source/dialogs/fileinformationdialog.ui" line="241"/>
         <location filename="../build/source/dialogs/ui_fileinformationdialog.h" line="730"/>
         <source>Single</source>
-        <translation type="unfinished"></translation>
+        <translation>シングル</translation>
     </message>
     <message>
         <location filename="../source/dialogs/fileinformationdialog.ui" line="246"/>
         <location filename="../build/source/dialogs/ui_fileinformationdialog.h" line="731"/>
         <source>EP</source>
-        <translation type="unfinished"></translation>
+        <translation>EP</translation>
     </message>
     <message>
         <location filename="../source/dialogs/fileinformationdialog.ui" line="251"/>
         <location filename="../build/source/dialogs/ui_fileinformationdialog.h" line="732"/>
         <source>Album</source>
-        <translation type="unfinished"></translation>
+        <translation>アルバム</translation>
     </message>
     <message>
         <location filename="../source/dialogs/fileinformationdialog.ui" line="256"/>
         <location filename="../build/source/dialogs/ui_fileinformationdialog.h" line="733"/>
         <source>Double Album</source>
-        <translation type="unfinished"></translation>
+        <translation>2枚組アルバム</translation>
     </message>
     <message>
         <location filename="../source/dialogs/fileinformationdialog.ui" line="261"/>
         <location filename="../build/source/dialogs/ui_fileinformationdialog.h" line="734"/>
         <source>Triple Album</source>
-        <translation type="unfinished"></translation>
+        <translation>3枚組アルバム</translation>
     </message>
     <message>
         <location filename="../source/dialogs/fileinformationdialog.ui" line="266"/>
         <location filename="../build/source/dialogs/ui_fileinformationdialog.h" line="735"/>
         <source>Boxset</source>
-        <translation type="unfinished"></translation>
+        <translation>ボックスセット</translation>
     </message>
     <message>
         <location filename="../source/dialogs/fileinformationdialog.ui" line="274"/>
         <location filename="../build/source/dialogs/ui_fileinformationdialog.h" line="737"/>
         <source>Year:</source>
-        <translation type="unfinished"></translation>
+        <translation>年:</translation>
     </message>
     <message>
         <location filename="../source/dialogs/fileinformationdialog.ui" line="281"/>
@@ -1096,25 +1096,25 @@
         <location filename="../build/source/dialogs/ui_fileinformationdialog.h" line="738"/>
         <location filename="../build/source/dialogs/ui_fileinformationdialog.h" line="740"/>
         <source>Live Recording:</source>
-        <translation type="unfinished"></translation>
+        <translation>ライブレコーディング:</translation>
     </message>
     <message>
         <location filename="../source/dialogs/fileinformationdialog.ui" line="312"/>
         <location filename="../build/source/dialogs/ui_fileinformationdialog.h" line="739"/>
         <source>Video Title:</source>
-        <translation type="unfinished"></translation>
+        <translation>ビデオタイトル:</translation>
     </message>
     <message>
         <location filename="../source/dialogs/fileinformationdialog.ui" line="349"/>
         <location filename="../build/source/dialogs/ui_fileinformationdialog.h" line="741"/>
         <source>Bootleg Title:</source>
-        <translation type="unfinished"></translation>
+        <translation>海賊版のタイトル:</translation>
     </message>
     <message>
         <location filename="../source/dialogs/fileinformationdialog.ui" line="359"/>
         <location filename="../build/source/dialogs/ui_fileinformationdialog.h" line="742"/>
         <source>Bootleg Date:</source>
-        <translation type="unfinished"></translation>
+        <translation>海賊版の日付:</translation>
     </message>
     <message>
         <location filename="../source/dialogs/fileinformationdialog.ui" line="382"/>
@@ -1122,37 +1122,37 @@
         <location filename="../build/source/dialogs/ui_fileinformationdialog.h" line="743"/>
         <location filename="../build/source/dialogs/ui_fileinformationdialog.h" line="777"/>
         <source>Author Information</source>
-        <translation type="unfinished"></translation>
+        <translation>著者情報</translation>
     </message>
     <message>
         <location filename="../source/dialogs/fileinformationdialog.ui" line="400"/>
         <location filename="../build/source/dialogs/ui_fileinformationdialog.h" line="744"/>
         <source>Traditional (Author Unknown):</source>
-        <translation type="unfinished"></translation>
+        <translation>トラディショナル(作者不明):</translation>
     </message>
     <message>
         <location filename="../source/dialogs/fileinformationdialog.ui" line="410"/>
         <location filename="../build/source/dialogs/ui_fileinformationdialog.h" line="745"/>
         <source>Music By:</source>
-        <translation type="unfinished"></translation>
+        <translation>作曲:</translation>
     </message>
     <message>
         <location filename="../source/dialogs/fileinformationdialog.ui" line="420"/>
         <location filename="../build/source/dialogs/ui_fileinformationdialog.h" line="746"/>
         <source>Words By:</source>
-        <translation type="unfinished"></translation>
+        <translation>作詞:</translation>
     </message>
     <message>
         <location filename="../source/dialogs/fileinformationdialog.ui" line="430"/>
         <location filename="../build/source/dialogs/ui_fileinformationdialog.h" line="747"/>
         <source>Arranged By:</source>
-        <translation type="unfinished"></translation>
+        <translation>編曲:</translation>
     </message>
     <message>
         <location filename="../source/dialogs/fileinformationdialog.ui" line="440"/>
         <location filename="../build/source/dialogs/ui_fileinformationdialog.h" line="748"/>
         <source>Transcribed By:</source>
-        <translation type="unfinished"></translation>
+        <translation>耳コピ:</translation>
     </message>
     <message>
         <location filename="../source/dialogs/fileinformationdialog.ui" line="450"/>
@@ -1160,233 +1160,233 @@
         <location filename="../build/source/dialogs/ui_fileinformationdialog.h" line="749"/>
         <location filename="../build/source/dialogs/ui_fileinformationdialog.h" line="779"/>
         <source>Copyright:</source>
-        <translation type="unfinished"></translation>
+        <translation>著作権:</translation>
     </message>
     <message>
         <location filename="../source/dialogs/fileinformationdialog.ui" line="498"/>
         <location filename="../build/source/dialogs/ui_fileinformationdialog.h" line="752"/>
         <source>Style:</source>
-        <translation type="unfinished"></translation>
+        <translation>スタイル:</translation>
     </message>
     <message>
         <location filename="../source/dialogs/fileinformationdialog.ui" line="506"/>
         <location filename="../build/source/dialogs/ui_fileinformationdialog.h" line="753"/>
         <source>Alternative</source>
-        <translation type="unfinished"></translation>
+        <translation>オルタナティブ</translation>
     </message>
     <message>
         <location filename="../source/dialogs/fileinformationdialog.ui" line="511"/>
         <location filename="../build/source/dialogs/ui_fileinformationdialog.h" line="754"/>
         <source>Bluegrass</source>
-        <translation type="unfinished"></translation>
+        <translation>ブルーグラス</translation>
     </message>
     <message>
         <location filename="../source/dialogs/fileinformationdialog.ui" line="516"/>
         <location filename="../build/source/dialogs/ui_fileinformationdialog.h" line="755"/>
         <source>Blues</source>
-        <translation type="unfinished"></translation>
+        <translation>ブルース</translation>
     </message>
     <message>
         <location filename="../source/dialogs/fileinformationdialog.ui" line="521"/>
         <location filename="../build/source/dialogs/ui_fileinformationdialog.h" line="756"/>
         <source>Country</source>
-        <translation type="unfinished"></translation>
+        <translation>カントリー</translation>
     </message>
     <message>
         <location filename="../source/dialogs/fileinformationdialog.ui" line="526"/>
         <location filename="../build/source/dialogs/ui_fileinformationdialog.h" line="757"/>
         <source>Fingerpick</source>
-        <translation type="unfinished"></translation>
+        <translation>フィンガーピック</translation>
     </message>
     <message>
         <location filename="../source/dialogs/fileinformationdialog.ui" line="531"/>
         <location filename="../build/source/dialogs/ui_fileinformationdialog.h" line="758"/>
         <source>Flamenco</source>
-        <translation type="unfinished"></translation>
+        <translation>フラメンコ</translation>
     </message>
     <message>
         <location filename="../source/dialogs/fileinformationdialog.ui" line="536"/>
         <location filename="../build/source/dialogs/ui_fileinformationdialog.h" line="759"/>
         <source>Folk</source>
-        <translation type="unfinished"></translation>
+        <translation>フォーク</translation>
     </message>
     <message>
         <location filename="../source/dialogs/fileinformationdialog.ui" line="541"/>
         <location filename="../build/source/dialogs/ui_fileinformationdialog.h" line="760"/>
         <source>Funk</source>
-        <translation type="unfinished"></translation>
+        <translation>ファンク</translation>
     </message>
     <message>
         <location filename="../source/dialogs/fileinformationdialog.ui" line="546"/>
         <location filename="../build/source/dialogs/ui_fileinformationdialog.h" line="761"/>
         <source>Fusion</source>
-        <translation type="unfinished"></translation>
+        <translation>フュージョン</translation>
     </message>
     <message>
         <location filename="../source/dialogs/fileinformationdialog.ui" line="551"/>
         <location filename="../build/source/dialogs/ui_fileinformationdialog.h" line="762"/>
         <source>General</source>
-        <translation type="unfinished"></translation>
+        <translation>一般的</translation>
     </message>
     <message>
         <location filename="../source/dialogs/fileinformationdialog.ui" line="556"/>
         <location filename="../build/source/dialogs/ui_fileinformationdialog.h" line="763"/>
         <source>Jazz</source>
-        <translation type="unfinished"></translation>
+        <translation>ジャズ</translation>
     </message>
     <message>
         <location filename="../source/dialogs/fileinformationdialog.ui" line="561"/>
         <location filename="../build/source/dialogs/ui_fileinformationdialog.h" line="764"/>
         <source>Metal/Shred</source>
-        <translation type="unfinished"></translation>
+        <translation>メタル/シュレッド</translation>
     </message>
     <message>
         <location filename="../source/dialogs/fileinformationdialog.ui" line="566"/>
         <location filename="../build/source/dialogs/ui_fileinformationdialog.h" line="765"/>
         <source>Other</source>
-        <translation type="unfinished"></translation>
+        <translation>その他</translation>
     </message>
     <message>
         <location filename="../source/dialogs/fileinformationdialog.ui" line="571"/>
         <location filename="../build/source/dialogs/ui_fileinformationdialog.h" line="766"/>
         <source>Pop</source>
-        <translation type="unfinished"></translation>
+        <translation>ポップス</translation>
     </message>
     <message>
         <location filename="../source/dialogs/fileinformationdialog.ui" line="576"/>
         <location filename="../build/source/dialogs/ui_fileinformationdialog.h" line="767"/>
         <source>Progressive Rock</source>
-        <translation type="unfinished"></translation>
+        <translation>プログレッシブロック</translation>
     </message>
     <message>
         <location filename="../source/dialogs/fileinformationdialog.ui" line="581"/>
         <location filename="../build/source/dialogs/ui_fileinformationdialog.h" line="768"/>
         <source>Punk</source>
-        <translation type="unfinished"></translation>
+        <translation>パンク</translation>
     </message>
     <message>
         <location filename="../source/dialogs/fileinformationdialog.ui" line="586"/>
         <location filename="../build/source/dialogs/ui_fileinformationdialog.h" line="769"/>
         <source>Reggae</source>
-        <translation type="unfinished"></translation>
+        <translation>レゲエ</translation>
     </message>
     <message>
         <location filename="../source/dialogs/fileinformationdialog.ui" line="591"/>
         <location filename="../build/source/dialogs/ui_fileinformationdialog.h" line="770"/>
         <source>Rock</source>
-        <translation type="unfinished"></translation>
+        <translation>ロック</translation>
     </message>
     <message>
         <location filename="../source/dialogs/fileinformationdialog.ui" line="596"/>
         <location filename="../build/source/dialogs/ui_fileinformationdialog.h" line="771"/>
         <source>Swing</source>
-        <translation type="unfinished"></translation>
+        <translation>スイング</translation>
     </message>
     <message>
         <location filename="../source/dialogs/fileinformationdialog.ui" line="604"/>
         <location filename="../build/source/dialogs/ui_fileinformationdialog.h" line="773"/>
         <source>Level</source>
-        <translation type="unfinished"></translation>
+        <translation>レベル</translation>
     </message>
     <message>
         <location filename="../source/dialogs/fileinformationdialog.ui" line="613"/>
         <location filename="../build/source/dialogs/ui_fileinformationdialog.h" line="774"/>
         <source>Beginner</source>
-        <translation type="unfinished"></translation>
+        <translation>初級</translation>
     </message>
     <message>
         <location filename="../source/dialogs/fileinformationdialog.ui" line="623"/>
         <location filename="../build/source/dialogs/ui_fileinformationdialog.h" line="775"/>
         <source>Intermediate</source>
-        <translation type="unfinished"></translation>
+        <translation>中級</translation>
     </message>
     <message>
         <location filename="../source/dialogs/fileinformationdialog.ui" line="633"/>
         <location filename="../build/source/dialogs/ui_fileinformationdialog.h" line="776"/>
         <source>Advanced</source>
-        <translation type="unfinished"></translation>
+        <translation>上級</translation>
     </message>
     <message>
         <location filename="../source/dialogs/fileinformationdialog.ui" line="669"/>
         <location filename="../build/source/dialogs/ui_fileinformationdialog.h" line="778"/>
         <source>Author:</source>
-        <translation type="unfinished"></translation>
+        <translation>著者:</translation>
     </message>
     <message>
         <location filename="../source/dialogs/fileinformationdialog.ui" line="694"/>
         <location filename="../build/source/dialogs/ui_fileinformationdialog.h" line="782"/>
         <source>Performance Notes</source>
-        <translation type="unfinished"></translation>
+        <translation>パフォーマンスノート</translation>
     </message>
     <message>
         <location filename="../source/dialogs/fileinformationdialog.ui" line="718"/>
         <location filename="../build/source/dialogs/ui_fileinformationdialog.h" line="781"/>
         <source>Notes:</source>
-        <translation type="unfinished"></translation>
+        <translation>ノート:</translation>
     </message>
     <message>
         <location filename="../source/dialogs/fileinformationdialog.ui" line="734"/>
         <location filename="../build/source/dialogs/ui_fileinformationdialog.h" line="784"/>
         <source>Lyrics</source>
-        <translation type="unfinished"></translation>
+        <translation>歌詞</translation>
     </message>
     <message>
         <location filename="../source/dialogs/fileinformationdialog.ui" line="758"/>
         <location filename="../build/source/dialogs/ui_fileinformationdialog.h" line="783"/>
         <source>Lyrics:</source>
-        <translation type="unfinished"></translation>
+        <translation>歌詞:</translation>
     </message>
     <message>
         <location filename="../source/dialogs/fileinformationdialog.ui" line="774"/>
         <location filename="../build/source/dialogs/ui_fileinformationdialog.h" line="797"/>
         <source>Properties</source>
-        <translation type="unfinished"></translation>
+        <translation>プロパティ</translation>
     </message>
     <message>
         <location filename="../source/dialogs/fileinformationdialog.ui" line="798"/>
         <location filename="../build/source/dialogs/ui_fileinformationdialog.h" line="785"/>
         <source>Name:</source>
-        <translation type="unfinished"></translation>
+        <translation>名前:</translation>
     </message>
     <message>
         <location filename="../source/dialogs/fileinformationdialog.ui" line="812"/>
         <location filename="../build/source/dialogs/ui_fileinformationdialog.h" line="787"/>
         <source>Location:</source>
-        <translation type="unfinished"></translation>
+        <translation>場所:</translation>
     </message>
     <message>
         <location filename="../source/dialogs/fileinformationdialog.ui" line="826"/>
         <location filename="../build/source/dialogs/ui_fileinformationdialog.h" line="789"/>
         <source>Size:</source>
-        <translation type="unfinished"></translation>
+        <translation>サイズ:</translation>
     </message>
     <message>
         <location filename="../source/dialogs/fileinformationdialog.ui" line="840"/>
         <location filename="../build/source/dialogs/ui_fileinformationdialog.h" line="791"/>
         <source>Created:</source>
-        <translation type="unfinished"></translation>
+        <translation>作成日時:</translation>
     </message>
     <message>
         <location filename="../source/dialogs/fileinformationdialog.ui" line="854"/>
         <location filename="../build/source/dialogs/ui_fileinformationdialog.h" line="793"/>
         <source>Modified:</source>
-        <translation type="unfinished"></translation>
+        <translation>編集日時:</translation>
     </message>
     <message>
         <location filename="../source/dialogs/fileinformationdialog.ui" line="868"/>
         <location filename="../build/source/dialogs/ui_fileinformationdialog.h" line="795"/>
         <source>Accessed:</source>
-        <translation type="unfinished"></translation>
+        <translation>最終アクセス日時:</translation>
     </message>
     <message>
         <location filename="../source/dialogs/fileinformationdialog.cpp" line="165"/>
         <source>Untitled</source>
-        <translation type="unfinished"></translation>
+        <translation>名称未設定</translation>
     </message>
     <message>
         <location filename="../source/dialogs/fileinformationdialog.cpp" line="177"/>
         <source>%1 bytes</source>
-        <translation type="unfinished"></translation>
+        <translation>%1 バイト</translation>
     </message>
 </context>
 <context>
@@ -1395,55 +1395,55 @@
         <location filename="../source/dialogs/filterrulewidget.ui" line="14"/>
         <location filename="../build/source/dialogs/ui_filterrulewidget.h" line="132"/>
         <source>Form</source>
-        <translation type="unfinished"></translation>
+        <translation>フォーム</translation>
     </message>
     <message>
         <location filename="../source/dialogs/filterrulewidget.ui" line="42"/>
         <location filename="../build/source/dialogs/ui_filterrulewidget.h" line="133"/>
         <source>Player Name</source>
-        <translation type="unfinished"></translation>
+        <translation>プレイヤー名</translation>
     </message>
     <message>
         <location filename="../source/dialogs/filterrulewidget.ui" line="47"/>
         <location filename="../build/source/dialogs/ui_filterrulewidget.h" line="134"/>
         <source>Number of Strings</source>
-        <translation type="unfinished"></translation>
+        <translation>弦の本数</translation>
     </message>
     <message>
         <location filename="../source/dialogs/filterrulewidget.ui" line="71"/>
         <location filename="../build/source/dialogs/ui_filterrulewidget.h" line="136"/>
         <source>matches</source>
-        <translation type="unfinished"></translation>
+        <translation>マッチ</translation>
     </message>
     <message>
         <location filename="../source/dialogs/filterrulewidget.ui" line="98"/>
         <location filename="../build/source/dialogs/ui_filterrulewidget.h" line="137"/>
         <source>&lt;</source>
-        <translation type="unfinished"></translation>
+        <translation>&lt;</translation>
     </message>
     <message>
         <location filename="../source/dialogs/filterrulewidget.ui" line="103"/>
         <location filename="../build/source/dialogs/ui_filterrulewidget.h" line="138"/>
         <source>&lt;=</source>
-        <translation type="unfinished"></translation>
+        <translation>&lt;=</translation>
     </message>
     <message>
         <location filename="../source/dialogs/filterrulewidget.ui" line="108"/>
         <location filename="../build/source/dialogs/ui_filterrulewidget.h" line="139"/>
         <source>=</source>
-        <translation type="unfinished"></translation>
+        <translation>=</translation>
     </message>
     <message>
         <location filename="../source/dialogs/filterrulewidget.ui" line="113"/>
         <location filename="../build/source/dialogs/ui_filterrulewidget.h" line="140"/>
         <source>&gt;=</source>
-        <translation type="unfinished"></translation>
+        <translation>&gt;=</translation>
     </message>
     <message>
         <location filename="../source/dialogs/filterrulewidget.ui" line="118"/>
         <location filename="../build/source/dialogs/ui_filterrulewidget.h" line="141"/>
         <source>&gt;</source>
-        <translation type="unfinished"></translation>
+        <translation>&gt;</translation>
     </message>
 </context>
 <context>
@@ -1452,13 +1452,13 @@
         <location filename="../source/dialogs/gotobarlinedialog.ui" line="17"/>
         <location filename="../build/source/dialogs/ui_gotobarlinedialog.h" line="71"/>
         <source>Go To Barline</source>
-        <translation type="unfinished"></translation>
+        <translation>指定した小節へ移動</translation>
     </message>
     <message>
         <location filename="../source/dialogs/gotobarlinedialog.ui" line="28"/>
         <location filename="../build/source/dialogs/ui_gotobarlinedialog.h" line="72"/>
         <source>Barline:</source>
-        <translation type="unfinished"></translation>
+        <translation>小節:</translation>
     </message>
 </context>
 <context>
@@ -1467,13 +1467,13 @@
         <location filename="../source/dialogs/gotorehearsalsigndialog.ui" line="17"/>
         <location filename="../build/source/dialogs/ui_gotorehearsalsigndialog.h" line="73"/>
         <source>Go To Rehearsal Sign</source>
-        <translation type="unfinished"></translation>
+        <translation>リハーサルサインへ移動</translation>
     </message>
     <message>
         <location filename="../source/dialogs/gotorehearsalsigndialog.ui" line="28"/>
         <location filename="../build/source/dialogs/ui_gotorehearsalsigndialog.h" line="74"/>
         <source>Rehearsal Sign:</source>
-        <translation type="unfinished"></translation>
+        <translation>リハーサルサイン:</translation>
     </message>
 </context>
 <context>
@@ -1482,19 +1482,20 @@
         <location filename="../source/dialogs/infodialog.ui" line="14"/>
         <location filename="../build/source/dialogs/ui_infodialog.h" line="61"/>
         <source>Application Info</source>
-        <translation type="unfinished"></translation>
+        <translation>アプリケーション情報</translation>
     </message>
     <message>
         <location filename="../source/dialogs/infodialog.ui" line="39"/>
         <location filename="../build/source/dialogs/ui_infodialog.h" line="62"/>
         <source>&amp;Copy to Clipboard</source>
-        <translation type="unfinished"></translation>
+        <translation>クリップボードにコピー(&amp;C)</translation>
     </message>
     <message>
         <location filename="../source/dialogs/infodialog.cpp" line="47"/>
         <source>You can grab development binaries here:
   https://github.com/powertab/powertabeditor/actions</source>
-        <translation type="unfinished"></translation>
+        <translation>開発用バイナリーはこちらで入手できます:
+  https://github.com/powertab/powertabeditor/actions</translation>
     </message>
 </context>
 <context>
@@ -1502,7 +1503,7 @@
     <message>
         <location filename="../source/actions/insertnotes.cpp" line="27"/>
         <source>Insert Notes</source>
-        <translation type="unfinished"></translation>
+        <translation>音符を挿入</translation>
     </message>
 </context>
 <context>
@@ -1511,31 +1512,31 @@
         <location filename="../source/widgets/instruments/instrumentpanelitem.ui" line="26"/>
         <location filename="../build/source/widgets/ui_instrumentpanelitem.h" line="91"/>
         <source>Form</source>
-        <translation type="unfinished"></translation>
+        <translation>フォーム</translation>
     </message>
     <message>
         <location filename="../source/widgets/instruments/instrumentpanelitem.ui" line="50"/>
         <location filename="../build/source/widgets/ui_instrumentpanelitem.h" line="92"/>
         <source>1.</source>
-        <translation type="unfinished"></translation>
+        <translation>1.</translation>
     </message>
     <message>
         <location filename="../source/widgets/instruments/instrumentpanelitem.ui" line="57"/>
         <location filename="../build/source/widgets/ui_instrumentpanelitem.h" line="94"/>
         <source>Click to change instrument name.</source>
-        <translation type="unfinished"></translation>
+        <translation>クリックで楽器名を変更できます。</translation>
     </message>
     <message>
         <location filename="../source/widgets/instruments/instrumentpanelitem.ui" line="60"/>
         <location filename="../build/source/widgets/ui_instrumentpanelitem.h" line="96"/>
         <source>Instrument</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">楽器</translation>
     </message>
     <message>
         <location filename="../source/widgets/instruments/instrumentpanelitem.ui" line="117"/>
         <location filename="../build/source/widgets/ui_instrumentpanelitem.h" line="98"/>
         <source>Remove Instrument</source>
-        <translation type="unfinished"></translation>
+        <translation>楽器を削除</translation>
     </message>
 </context>
 <context>
@@ -1544,19 +1545,19 @@
         <location filename="../source/dialogs/irregulargroupingdialog.ui" line="17"/>
         <location filename="../build/source/dialogs/ui_irregulargroupingdialog.h" line="83"/>
         <source>Irregular Grouping</source>
-        <translation type="unfinished"></translation>
+        <translation>連符</translation>
     </message>
     <message>
         <location filename="../source/dialogs/irregulargroupingdialog.ui" line="28"/>
         <location filename="../build/source/dialogs/ui_irregulargroupingdialog.h" line="84"/>
         <source>Notes Played:</source>
-        <translation type="unfinished"></translation>
+        <translation>演奏される音符:</translation>
     </message>
     <message>
         <location filename="../source/dialogs/irregulargroupingdialog.ui" line="38"/>
         <location filename="../build/source/dialogs/ui_irregulargroupingdialog.h" line="85"/>
         <source>Notes Played Over:</source>
-        <translation type="unfinished"></translation>
+        <translation>評価される音符:</translation>
     </message>
 </context>
 <context>
@@ -1565,7 +1566,7 @@
         <location filename="../source/dialogs/keysignaturedialog.ui" line="17"/>
         <location filename="../build/source/dialogs/ui_keysignaturedialog.h" line="111"/>
         <source>Key Signature</source>
-        <translation type="unfinished"></translation>
+        <translation>調号</translation>
     </message>
     <message>
         <location filename="../source/dialogs/keysignaturedialog.ui" line="31"/>
@@ -1577,25 +1578,25 @@
         <location filename="../source/dialogs/keysignaturedialog.ui" line="41"/>
         <location filename="../build/source/dialogs/ui_keysignaturedialog.h" line="113"/>
         <source>Key Type:</source>
-        <translation type="unfinished"></translation>
+        <translation>調の種類:</translation>
     </message>
     <message>
         <location filename="../source/dialogs/keysignaturedialog.ui" line="50"/>
         <location filename="../build/source/dialogs/ui_keysignaturedialog.h" line="114"/>
         <source>Major</source>
-        <translation type="unfinished"></translation>
+        <translation>長調(メジャー)</translation>
     </message>
     <message>
         <location filename="../source/dialogs/keysignaturedialog.ui" line="57"/>
         <location filename="../build/source/dialogs/ui_keysignaturedialog.h" line="115"/>
         <source>Minor</source>
-        <translation type="unfinished"></translation>
+        <translation>短調(マイナー)</translation>
     </message>
     <message>
         <location filename="../source/dialogs/keysignaturedialog.ui" line="66"/>
         <location filename="../build/source/dialogs/ui_keysignaturedialog.h" line="116"/>
         <source>Key:</source>
-        <translation type="unfinished"></translation>
+        <translation>調:</translation>
     </message>
 </context>
 <context>
@@ -1604,50 +1605,50 @@
         <location filename="../source/dialogs/keyboardsettingsdialog.ui" line="23"/>
         <location filename="../build/source/dialogs/ui_keyboardsettingsdialog.h" line="101"/>
         <source>Edit Keyboard Shortcuts</source>
-        <translation type="unfinished"></translation>
+        <translation>キーボードショートカットを編集</translation>
     </message>
     <message>
         <location filename="../source/dialogs/keyboardsettingsdialog.ui" line="46"/>
         <location filename="../build/source/dialogs/ui_keyboardsettingsdialog.h" line="102"/>
         <source>Shortcut:</source>
-        <translation type="unfinished"></translation>
+        <translation>ショートカット:</translation>
     </message>
     <message>
         <location filename="../source/dialogs/keyboardsettingsdialog.ui" line="56"/>
         <location filename="../build/source/dialogs/ui_keyboardsettingsdialog.h" line="103"/>
         <source>Reset</source>
-        <translation type="unfinished"></translation>
+        <translation>リセット</translation>
     </message>
     <message>
         <location filename="../source/dialogs/keyboardsettingsdialog.ui" line="63"/>
         <location filename="../build/source/dialogs/ui_keyboardsettingsdialog.h" line="104"/>
         <source>Default</source>
-        <translation type="unfinished"></translation>
+        <translation>デフォルト</translation>
     </message>
     <message>
         <location filename="../source/dialogs/keyboardsettingsdialog.cpp" line="66"/>
         <source>Command</source>
-        <translation type="unfinished"></translation>
+        <translation>コマンド</translation>
     </message>
     <message>
         <location filename="../source/dialogs/keyboardsettingsdialog.cpp" line="66"/>
         <source>Label</source>
-        <translation type="unfinished"></translation>
+        <translation>ラベル</translation>
     </message>
     <message>
         <location filename="../source/dialogs/keyboardsettingsdialog.cpp" line="66"/>
         <source>Shortcut</source>
-        <translation type="unfinished"></translation>
+        <translation>ショートカット</translation>
     </message>
     <message>
         <location filename="../source/dialogs/keyboardsettingsdialog.cpp" line="189"/>
         <source>The shortcut %1 is already in use.</source>
-        <translation type="unfinished"></translation>
+        <translation>ショートカット %1 は既に使用されています。</translation>
     </message>
     <message>
         <location filename="../source/dialogs/keyboardsettingsdialog.cpp" line="191"/>
         <source>Do you want to use this shortcut and remove the shortcut of the &lt;b&gt;%1&lt;/b&gt; command?</source>
-        <translation type="unfinished"></translation>
+        <translation>このショートカットを使用して、&lt;b&gt;%1&lt;/b&gt; コマンドのショートカットを削除しますか?</translation>
     </message>
 </context>
 <context>
@@ -1656,89 +1657,89 @@
         <location filename="../source/dialogs/lefthandfingeringdialog.ui" line="17"/>
         <location filename="../build/source/dialogs/ui_lefthandfingeringdialog.h" line="84"/>
         <source>Left Hand Fingering</source>
-        <translation type="unfinished"></translation>
+        <translation>左手の運指</translation>
     </message>
     <message>
         <location filename="../source/dialogs/lefthandfingeringdialog.ui" line="31"/>
         <location filename="../build/source/dialogs/ui_lefthandfingeringdialog.h" line="85"/>
         <source>Finger:</source>
-        <translation type="unfinished"></translation>
+        <translation>指:</translation>
     </message>
     <message>
         <location filename="../source/dialogs/lefthandfingeringdialog.ui" line="41"/>
         <location filename="../build/source/dialogs/ui_lefthandfingeringdialog.h" line="86"/>
         <source>Position relative to note head:</source>
-        <translation type="unfinished"></translation>
+        <translation>符頭に対する相対位置:</translation>
     </message>
     <message>
         <location filename="../source/dialogs/lefthandfingeringdialog.cpp" line="31"/>
         <source>None (string empty)</source>
-        <translation type="unfinished"></translation>
+        <translation>なし(開放弦)</translation>
     </message>
     <message>
         <location filename="../source/dialogs/lefthandfingeringdialog.cpp" line="31"/>
         <source>Index finger</source>
-        <translation type="unfinished"></translation>
+        <translation>人差し指</translation>
     </message>
     <message>
         <location filename="../source/dialogs/lefthandfingeringdialog.cpp" line="31"/>
         <source>Middle finger</source>
-        <translation type="unfinished"></translation>
+        <translation>中指</translation>
     </message>
     <message>
         <location filename="../source/dialogs/lefthandfingeringdialog.cpp" line="32"/>
         <source>Ring finger</source>
-        <translation type="unfinished"></translation>
+        <translation>薬指</translation>
     </message>
     <message>
         <location filename="../source/dialogs/lefthandfingeringdialog.cpp" line="32"/>
         <source>Little finger</source>
-        <translation type="unfinished"></translation>
+        <translation>小指</translation>
     </message>
     <message>
         <location filename="../source/dialogs/lefthandfingeringdialog.cpp" line="32"/>
         <source>Thumb</source>
-        <translation type="unfinished"></translation>
+        <translation>親指</translation>
     </message>
     <message>
         <location filename="../source/dialogs/lefthandfingeringdialog.cpp" line="36"/>
         <source>Left</source>
-        <translation type="unfinished"></translation>
+        <translation>左</translation>
     </message>
     <message>
         <location filename="../source/dialogs/lefthandfingeringdialog.cpp" line="36"/>
         <source>Above and left</source>
-        <translation type="unfinished"></translation>
+        <translation>左上</translation>
     </message>
     <message>
         <location filename="../source/dialogs/lefthandfingeringdialog.cpp" line="36"/>
         <source>Above, centered</source>
-        <translation type="unfinished"></translation>
+        <translation>上</translation>
     </message>
     <message>
         <location filename="../source/dialogs/lefthandfingeringdialog.cpp" line="37"/>
         <source>Above and right</source>
-        <translation type="unfinished"></translation>
+        <translation>右上</translation>
     </message>
     <message>
         <location filename="../source/dialogs/lefthandfingeringdialog.cpp" line="37"/>
         <source>Right</source>
-        <translation type="unfinished"></translation>
+        <translation>右</translation>
     </message>
     <message>
         <location filename="../source/dialogs/lefthandfingeringdialog.cpp" line="37"/>
         <source>Below and right</source>
-        <translation type="unfinished"></translation>
+        <translation>右下</translation>
     </message>
     <message>
         <location filename="../source/dialogs/lefthandfingeringdialog.cpp" line="38"/>
         <source>Below, centered</source>
-        <translation type="unfinished"></translation>
+        <translation>下</translation>
     </message>
     <message>
         <location filename="../source/dialogs/lefthandfingeringdialog.cpp" line="38"/>
         <source>Below and left</source>
-        <translation type="unfinished"></translation>
+        <translation>左下</translation>
     </message>
 </context>
 <context>
@@ -1746,7 +1747,7 @@
     <message>
         <location filename="../source/audio/midiplayer.cpp" line="105"/>
         <source>Error initializing MIDI output device.</source>
-        <translation type="unfinished"></translation>
+        <translation>MIDI 出力デバイスの初期化中にエラーが発生しました。</translation>
     </message>
 </context>
 <context>
@@ -1755,55 +1756,55 @@
         <location filename="../source/widgets/mixer/mixeritem.ui" line="26"/>
         <location filename="../build/source/widgets/ui_mixeritem.h" line="113"/>
         <source>Form</source>
-        <translation type="unfinished"></translation>
+        <translation>フォーム</translation>
     </message>
     <message>
         <location filename="../source/widgets/mixer/mixeritem.ui" line="29"/>
         <location filename="../build/source/widgets/ui_mixeritem.h" line="115"/>
         <source>Click to change player name.</source>
-        <translation type="unfinished"></translation>
+        <translation>クリックでプレイヤー名を変更できます。</translation>
     </message>
     <message>
         <location filename="../source/widgets/mixer/mixeritem.ui" line="53"/>
         <location filename="../build/source/widgets/ui_mixeritem.h" line="117"/>
         <source>1.</source>
-        <translation type="unfinished"></translation>
+        <translation>1.</translation>
     </message>
     <message>
         <location filename="../source/widgets/mixer/mixeritem.ui" line="72"/>
         <location filename="../build/source/widgets/ui_mixeritem.h" line="118"/>
         <source>Player Name</source>
-        <translation type="unfinished"></translation>
+        <translation>プレイヤー名</translation>
     </message>
     <message>
         <location filename="../source/widgets/mixer/mixeritem.ui" line="107"/>
         <location filename="../build/source/widgets/ui_mixeritem.h" line="120"/>
         <source>Drag to adjust volume.</source>
-        <translation type="unfinished"></translation>
+        <translation>ドラッグで音量を調整できます。</translation>
     </message>
     <message>
         <location filename="../source/widgets/mixer/mixeritem.ui" line="129"/>
         <location filename="../build/source/widgets/ui_mixeritem.h" line="123"/>
         <source>Drag to adjust panning.</source>
-        <translation type="unfinished"></translation>
+        <translation>ドラッグでパンを調整できます。</translation>
     </message>
     <message>
         <location filename="../source/widgets/mixer/mixeritem.ui" line="148"/>
         <location filename="../build/source/widgets/ui_mixeritem.h" line="126"/>
         <source>Click to adjust tuning.</source>
-        <translation type="unfinished"></translation>
+        <translation>クリックでチューニングを調整できます。</translation>
     </message>
     <message>
         <location filename="../source/widgets/mixer/mixeritem.ui" line="151"/>
         <location filename="../build/source/widgets/ui_mixeritem.h" line="128"/>
         <source>Tuning</source>
-        <translation type="unfinished"></translation>
+        <translation>チューニング</translation>
     </message>
     <message>
         <location filename="../source/widgets/mixer/mixeritem.ui" line="176"/>
         <location filename="../build/source/widgets/ui_mixeritem.h" line="130"/>
         <source>Remove Player</source>
-        <translation type="unfinished"></translation>
+        <translation>プレイヤーを削除</translation>
     </message>
 </context>
 <context>
@@ -1812,13 +1813,13 @@
         <location filename="../source/dialogs/multibarrestdialog.ui" line="17"/>
         <location filename="../build/source/dialogs/ui_multibarrestdialog.h" line="72"/>
         <source>Multi-Bar Rest</source>
-        <translation type="unfinished"></translation>
+        <translation>長休符</translation>
     </message>
     <message>
         <location filename="../source/dialogs/multibarrestdialog.ui" line="31"/>
         <location filename="../build/source/dialogs/ui_multibarrestdialog.h" line="73"/>
         <source>Number of Bars:</source>
-        <translation type="unfinished"></translation>
+        <translation>小節数:</translation>
     </message>
 </context>
 <context>
@@ -1826,82 +1827,82 @@
     <message>
         <location filename="../source/widgets/toolbox/notepage.cpp" line="34"/>
         <source>Notes</source>
-        <translation type="unfinished"></translation>
+        <translation>音符</translation>
     </message>
     <message>
         <location filename="../source/widgets/toolbox/notepage.cpp" line="47"/>
         <source>Whole Note</source>
-        <translation type="unfinished"></translation>
+        <translation>全音符</translation>
     </message>
     <message>
         <location filename="../source/widgets/toolbox/notepage.cpp" line="52"/>
         <source>Half Note</source>
-        <translation type="unfinished"></translation>
+        <translation>2分音符</translation>
     </message>
     <message>
         <location filename="../source/widgets/toolbox/notepage.cpp" line="57"/>
         <source>Quarter Note</source>
-        <translation type="unfinished"></translation>
+        <translation>4分音符</translation>
     </message>
     <message>
         <location filename="../source/widgets/toolbox/notepage.cpp" line="62"/>
         <source>8th Note</source>
-        <translation type="unfinished"></translation>
+        <translation>8分音符</translation>
     </message>
     <message>
         <location filename="../source/widgets/toolbox/notepage.cpp" line="67"/>
         <source>16th Note</source>
-        <translation type="unfinished"></translation>
+        <translation>16分音符</translation>
     </message>
     <message>
         <location filename="../source/widgets/toolbox/notepage.cpp" line="72"/>
         <source>32nd Note</source>
-        <translation type="unfinished"></translation>
+        <translation>32分音符</translation>
     </message>
     <message>
         <location filename="../source/widgets/toolbox/notepage.cpp" line="77"/>
         <source>64th Note</source>
-        <translation type="unfinished"></translation>
+        <translation>64分音符</translation>
     </message>
     <message>
         <location filename="../source/widgets/toolbox/notepage.cpp" line="100"/>
         <source>Rests</source>
-        <translation type="unfinished"></translation>
+        <translation>休符</translation>
     </message>
     <message>
         <location filename="../source/widgets/toolbox/notepage.cpp" line="113"/>
         <source>Whole Rest</source>
-        <translation type="unfinished"></translation>
+        <translation>全休符</translation>
     </message>
     <message>
         <location filename="../source/widgets/toolbox/notepage.cpp" line="118"/>
         <source>Half Rest</source>
-        <translation type="unfinished"></translation>
+        <translation>2分休符</translation>
     </message>
     <message>
         <location filename="../source/widgets/toolbox/notepage.cpp" line="123"/>
         <source>Quarter Rest</source>
-        <translation type="unfinished"></translation>
+        <translation>4分休符</translation>
     </message>
     <message>
         <location filename="../source/widgets/toolbox/notepage.cpp" line="128"/>
         <source>8th Rest</source>
-        <translation type="unfinished"></translation>
+        <translation>8分休符</translation>
     </message>
     <message>
         <location filename="../source/widgets/toolbox/notepage.cpp" line="133"/>
         <source>16th Rest</source>
-        <translation type="unfinished"></translation>
+        <translation>16分休符</translation>
     </message>
     <message>
         <location filename="../source/widgets/toolbox/notepage.cpp" line="138"/>
         <source>32nd Rest</source>
-        <translation type="unfinished"></translation>
+        <translation>32分休符</translation>
     </message>
     <message>
         <location filename="../source/widgets/toolbox/notepage.cpp" line="143"/>
         <source>64th Rest</source>
-        <translation type="unfinished"></translation>
+        <translation>64分休符</translation>
     </message>
     <message>
         <location filename="../source/widgets/toolbox/notepage.cpp" line="166"/>
@@ -1911,97 +1912,97 @@
     <message>
         <location filename="../source/widgets/toolbox/notepage.cpp" line="170"/>
         <source>Dotted Note</source>
-        <translation type="unfinished"></translation>
+        <translation>付点音符</translation>
     </message>
     <message>
         <location filename="../source/widgets/toolbox/notepage.cpp" line="176"/>
         <source>Double Dotted Note</source>
-        <translation type="unfinished"></translation>
+        <translation>複付点音符</translation>
     </message>
     <message>
         <location filename="../source/widgets/toolbox/notepage.cpp" line="181"/>
         <source>Tie Note</source>
-        <translation type="unfinished"></translation>
+        <translation>タイ付き音符</translation>
     </message>
     <message>
         <location filename="../source/widgets/toolbox/notepage.cpp" line="186"/>
         <source>Group Note</source>
-        <translation type="unfinished"></translation>
+        <translation>連符</translation>
     </message>
     <message>
         <location filename="../source/widgets/toolbox/notepage.cpp" line="191"/>
         <source>Fermata</source>
-        <translation type="unfinished"></translation>
+        <translation>フェルマータ</translation>
     </message>
     <message>
         <location filename="../source/widgets/toolbox/notepage.cpp" line="211"/>
         <source>Slide &amp;&amp; Legato</source>
-        <translation type="unfinished"></translation>
+        <translation>スライド&amp;&amp;レガート</translation>
     </message>
     <message>
         <location filename="../source/widgets/toolbox/notepage.cpp" line="215"/>
         <source>Slide In From Below</source>
-        <translation type="unfinished"></translation>
+        <translation>下からスライドイン</translation>
     </message>
     <message>
         <location filename="../source/widgets/toolbox/notepage.cpp" line="220"/>
         <source>Slide In From Above</source>
-        <translation type="unfinished"></translation>
+        <translation>上からスライドイン</translation>
     </message>
     <message>
         <location filename="../source/widgets/toolbox/notepage.cpp" line="225"/>
         <source>Slide Out Downwards</source>
-        <translation type="unfinished"></translation>
+        <translation>下へスライドアウト</translation>
     </message>
     <message>
         <location filename="../source/widgets/toolbox/notepage.cpp" line="230"/>
         <source>Slide Out Upwards</source>
-        <translation type="unfinished"></translation>
+        <translation>上へスライドアウト</translation>
     </message>
     <message>
         <location filename="../source/widgets/toolbox/notepage.cpp" line="235"/>
         <source>Shift Slide</source>
-        <translation type="unfinished"></translation>
+        <translation>シフトスライド</translation>
     </message>
     <message>
         <location filename="../source/widgets/toolbox/notepage.cpp" line="240"/>
         <source>Legato Slide</source>
-        <translation type="unfinished"></translation>
+        <translation>レガートスライド</translation>
     </message>
     <message>
         <location filename="../source/widgets/toolbox/notepage.cpp" line="245"/>
         <source>Hammer On/Pull Off</source>
-        <translation type="unfinished"></translation>
+        <translation>ハンマーオン/プルオフ</translation>
     </message>
     <message>
         <location filename="../source/widgets/toolbox/notepage.cpp" line="265"/>
         <source>Vibrato &amp;&amp; Tremolo</source>
-        <translation type="unfinished"></translation>
+        <translation>ビブラート&amp;&amp;トレモロ</translation>
     </message>
     <message>
         <location filename="../source/widgets/toolbox/notepage.cpp" line="269"/>
         <source>Vibrato</source>
-        <translation type="unfinished"></translation>
+        <translation>ビブラート</translation>
     </message>
     <message>
         <location filename="../source/widgets/toolbox/notepage.cpp" line="274"/>
         <source>Wide Vibrato</source>
-        <translation type="unfinished"></translation>
+        <translation>ワイドビブラート</translation>
     </message>
     <message>
         <location filename="../source/widgets/toolbox/notepage.cpp" line="279"/>
         <source>Bend</source>
-        <translation type="unfinished"></translation>
+        <translation>ベンド</translation>
     </message>
     <message>
         <location filename="../source/widgets/toolbox/notepage.cpp" line="283"/>
         <source>Trill</source>
-        <translation type="unfinished"></translation>
+        <translation>トリル</translation>
     </message>
     <message>
         <location filename="../source/widgets/toolbox/notepage.cpp" line="288"/>
         <source>Tremolo</source>
-        <translation type="unfinished"></translation>
+        <translation>トレモロ</translation>
     </message>
 </context>
 <context>
@@ -2010,43 +2011,43 @@
         <location filename="../source/widgets/playback/playbackwidget.ui" line="14"/>
         <location filename="../build/source/widgets/ui_playbackwidget.h" line="197"/>
         <source>Form</source>
-        <translation type="unfinished"></translation>
+        <translation>フォーム</translation>
     </message>
     <message>
         <location filename="../source/widgets/playback/playbackwidget.ui" line="49"/>
         <location filename="../build/source/widgets/ui_playbackwidget.h" line="198"/>
         <source>Voice:</source>
-        <translation type="unfinished"></translation>
+        <translation>声部:</translation>
     </message>
     <message>
         <location filename="../source/widgets/playback/playbackwidget.ui" line="61"/>
         <location filename="../build/source/widgets/ui_playbackwidget.h" line="199"/>
         <source>1</source>
-        <translation type="unfinished"></translation>
+        <translation>1</translation>
     </message>
     <message>
         <location filename="../source/widgets/playback/playbackwidget.ui" line="71"/>
         <location filename="../build/source/widgets/ui_playbackwidget.h" line="200"/>
         <source>2</source>
-        <translation type="unfinished"></translation>
+        <translation>2</translation>
     </message>
     <message>
         <location filename="../source/widgets/playback/playbackwidget.ui" line="93"/>
         <location filename="../build/source/widgets/ui_playbackwidget.h" line="201"/>
         <source>Speed:</source>
-        <translation type="unfinished"></translation>
+        <translation>スピード:</translation>
     </message>
     <message>
         <location filename="../source/widgets/playback/playbackwidget.ui" line="103"/>
         <location filename="../build/source/widgets/ui_playbackwidget.h" line="203"/>
         <source>Adjusts the current playback speed.</source>
-        <translation type="unfinished"></translation>
+        <translation>現在の再生速度を調整します。</translation>
     </message>
     <message>
         <location filename="../source/widgets/playback/playbackwidget.ui" line="165"/>
         <location filename="../build/source/widgets/ui_playbackwidget.h" line="209"/>
         <source>Zoom:</source>
-        <translation type="unfinished"></translation>
+        <translation>ズーム:</translation>
     </message>
     <message>
         <location filename="../source/widgets/playback/playbackwidget.ui" line="210"/>
@@ -2057,22 +2058,22 @@
     <message>
         <location filename="../source/widgets/playback/playbackwidget.cpp" line="110"/>
         <source>Click to move playback to the beginning of the score%1.</source>
-        <translation type="unfinished"></translation>
+        <translation>クリックすると、スコアの先頭に移動します%1。</translation>
     </message>
     <message>
         <location filename="../source/widgets/playback/playbackwidget.cpp" line="117"/>
         <source>Click to start or pause playback%1.</source>
-        <translation type="unfinished"></translation>
+        <translation>クリックすると、再生を開始または一時停止します%1。</translation>
     </message>
     <message>
         <location filename="../source/widgets/playback/playbackwidget.cpp" line="124"/>
         <source>Click to stop playback and return to the initial location%1.</source>
-        <translation type="unfinished"></translation>
+        <translation>クリックすると、再生を停止して元の位置へ戻ります%1。</translation>
     </message>
     <message>
         <location filename="../source/widgets/playback/playbackwidget.cpp" line="133"/>
         <source>Click to toggle whether the metronome is turned on%1.</source>
-        <translation type="unfinished"></translation>
+        <translation>クリックすると、メトロノームをオンにするかどうかが切り替わります%1。</translation>
     </message>
 </context>
 <context>
@@ -2081,7 +2082,7 @@
         <location filename="../source/dialogs/playerchangedialog.ui" line="17"/>
         <location filename="../build/source/dialogs/ui_playerchangedialog.h" line="58"/>
         <source>Player Change</source>
-        <translation type="unfinished"></translation>
+        <translation>プレイヤーの変更</translation>
     </message>
     <message>
         <location filename="../source/dialogs/playerchangedialog.cpp" line="40"/>
@@ -2091,17 +2092,17 @@
     <message>
         <location filename="../source/dialogs/playerchangedialog.cpp" line="41"/>
         <source>Instrument</source>
-        <translation type="unfinished"></translation>
+        <translation>楽器</translation>
     </message>
     <message>
         <location filename="../source/dialogs/playerchangedialog.cpp" line="43"/>
         <source>Player</source>
-        <translation type="unfinished"></translation>
+        <translation>プレイヤー</translation>
     </message>
     <message>
         <location filename="../source/dialogs/playerchangedialog.cpp" line="114"/>
         <source>None</source>
-        <translation type="unfinished"></translation>
+        <translation>なし</translation>
     </message>
 </context>
 <context>
@@ -2109,7 +2110,7 @@
     <message>
         <location filename="../source/actions/polishscore.cpp" line="24"/>
         <source>Polish Score</source>
-        <translation type="unfinished"></translation>
+        <translation>スコアを整形</translation>
     </message>
 </context>
 <context>
@@ -2245,12 +2246,12 @@
     <message>
         <location filename="../source/app/powertabeditor.cpp" line="1366"/>
         <source>Cannot add a multi-bar rest to a non-empty measure.</source>
-        <translation type="unfinished"></translation>
+        <translation>空でない小節に長休符を追加することはできません。</translation>
     </message>
     <message>
         <location filename="../source/app/powertabeditor.cpp" line="1384"/>
         <source>Edit Multi-Bar Rest</source>
-        <translation type="unfinished"></translation>
+        <translation>長休符を編集</translation>
     </message>
     <message>
         <location filename="../source/app/powertabeditor.cpp" line="1461"/>
@@ -2280,7 +2281,7 @@
     <message>
         <location filename="../source/app/powertabeditor.cpp" line="1726"/>
         <source>Edit Tremolo Bar</source>
-        <translation type="unfinished"></translation>
+        <translation>トレモロバーを編集</translation>
     </message>
     <message>
         <location filename="../source/app/powertabeditor.cpp" line="1826"/>
@@ -2485,12 +2486,12 @@
     <message>
         <location filename="../source/app/powertabeditor.cpp" line="2392"/>
         <source>Next Bar</source>
-        <translation type="unfinished"></translation>
+        <translation>次の小節</translation>
     </message>
     <message>
         <location filename="../source/app/powertabeditor.cpp" line="2398"/>
         <source>Previous Bar</source>
-        <translation type="unfinished"></translation>
+        <translation>前の小節</translation>
     </message>
     <message>
         <location filename="../source/app/powertabeditor.cpp" line="2414"/>
@@ -2500,7 +2501,7 @@
     <message>
         <location filename="../source/app/powertabeditor.cpp" line="2425"/>
         <source>Go To Barline...</source>
-        <translation type="unfinished"></translation>
+        <translation>指定した小節へ移動...</translation>
     </message>
     <message>
         <location filename="../source/app/powertabeditor.cpp" line="2431"/>
@@ -2738,7 +2739,7 @@
     <message>
         <location filename="../source/app/powertabeditor.cpp" line="2684"/>
         <source>Multi-Bar Rest...</source>
-        <translation type="unfinished"></translation>
+        <translation>長休符...</translation>
     </message>
     <message>
         <location filename="../source/app/powertabeditor.cpp" line="2692"/>
@@ -2768,12 +2769,12 @@
     <message>
         <location filename="../source/app/powertabeditor.cpp" line="2726"/>
         <source>Insert Standard Barline</source>
-        <translation type="unfinished"></translation>
+        <translation>標準の小節線を挿入</translation>
     </message>
     <message>
         <location filename="../source/app/powertabeditor.cpp" line="2733"/>
         <source>Barline...</source>
-        <translation type="unfinished"></translation>
+        <translation>小節線...</translation>
     </message>
     <message>
         <location filename="../source/app/powertabeditor.cpp" line="2739"/>
@@ -2845,7 +2846,7 @@
     <message>
         <location filename="../source/app/powertabeditor.cpp" line="2840"/>
         <source>Tremolo Bar...</source>
-        <translation type="unfinished"></translation>
+        <translation>トレモロバー...</translation>
     </message>
     <message>
         <location filename="../source/app/powertabeditor.cpp" line="2846"/>
@@ -3955,72 +3956,72 @@
         <location filename="../source/dialogs/tremolobardialog.ui" line="17"/>
         <location filename="../build/source/dialogs/ui_tremolobardialog.h" line="117"/>
         <source>Tremolo Bar</source>
-        <translation type="unfinished"></translation>
+        <translation>トレモロバー</translation>
     </message>
     <message>
         <location filename="../source/dialogs/tremolobardialog.ui" line="31"/>
         <location filename="../build/source/dialogs/ui_tremolobardialog.h" line="118"/>
         <source>Type:</source>
-        <translation type="unfinished"></translation>
+        <translation>種類:</translation>
     </message>
     <message>
         <location filename="../source/dialogs/tremolobardialog.ui" line="41"/>
         <location filename="../build/source/dialogs/ui_tremolobardialog.h" line="119"/>
         <source>Resultant Pitch:</source>
-        <translation type="unfinished"></translation>
+        <translation>最終的なピッチ:</translation>
     </message>
     <message>
         <location filename="../source/dialogs/tremolobardialog.ui" line="51"/>
         <location filename="../build/source/dialogs/ui_tremolobardialog.h" line="120"/>
         <source>Bend Duration:</source>
-        <translation type="unfinished"></translation>
+        <translation>ベンドの長さ:</translation>
     </message>
     <message>
         <location filename="../source/dialogs/tremolobardialog.ui" line="63"/>
         <location filename="../build/source/dialogs/ui_tremolobardialog.h" line="121"/>
         <source>Current note duration + next</source>
-        <translation type="unfinished"></translation>
+        <translation>現在の音符の長さ + 次の</translation>
     </message>
     <message>
         <location filename="../source/dialogs/tremolobardialog.ui" line="73"/>
         <location filename="../build/source/dialogs/ui_tremolobardialog.h" line="122"/>
         <source>notes</source>
-        <translation type="unfinished"></translation>
+        <translation>つの音符</translation>
     </message>
     <message>
         <location filename="../source/dialogs/tremolobardialog.cpp" line="32"/>
         <source>Dip</source>
-        <translation type="unfinished"></translation>
+        <translation>ディップ</translation>
     </message>
     <message>
         <location filename="../source/dialogs/tremolobardialog.cpp" line="32"/>
         <source>Dive and Release</source>
-        <translation type="unfinished"></translation>
+        <translation>ダイブ&amp;リリース</translation>
     </message>
     <message>
         <location filename="../source/dialogs/tremolobardialog.cpp" line="33"/>
         <source>Dive and Hold</source>
-        <translation type="unfinished"></translation>
+        <translation>ダイブ&amp;ホールド</translation>
     </message>
     <message>
         <location filename="../source/dialogs/tremolobardialog.cpp" line="33"/>
         <source>Release</source>
-        <translation type="unfinished"></translation>
+        <translation>リリース</translation>
     </message>
     <message>
         <location filename="../source/dialogs/tremolobardialog.cpp" line="34"/>
         <source>Return and Release</source>
-        <translation type="unfinished"></translation>
+        <translation>リターン&amp;リリース</translation>
     </message>
     <message>
         <location filename="../source/dialogs/tremolobardialog.cpp" line="35"/>
         <source>Return and Hold</source>
-        <translation type="unfinished"></translation>
+        <translation>リターン&amp;ホールド</translation>
     </message>
     <message>
         <location filename="../source/dialogs/tremolobardialog.cpp" line="35"/>
         <source>Inverted Dip</source>
-        <translation type="unfinished"></translation>
+        <translation>反転ディップ</translation>
     </message>
 </context>
 <context>
