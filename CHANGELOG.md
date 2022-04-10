@@ -13,6 +13,7 @@ Thanks to the following contributors who worked on this release:
 - Increased the upper limit for irregular grouping values (#376)
 
 ### Fixed
+- Fixed a potential crash when exporting to Guitar Pro (#379)
 
 ## [Alpha 18] - 2022-03-10
 

@@ -332,11 +332,16 @@ convertTracks(const Score &score, ChordNameIdMap &chord_name_ids)
     int player_idx = 0;
     for (const Player &player : score.getPlayers())
     {
+        // Skip unused players. GP requires a sound for each track.
+        const std::set<int> &instruments = player_instruments[&player];
+        if (instruments.empty())
+            continue;
+
         Gp7::Track track;
         track.myName = player.getDescription();
 
         // Include only instruments that this player uses.
-        for (int instrument_idx : player_instruments[&player])
+        for (int instrument_idx : instruments)
         {
             const Instrument &inst = score.getInstruments()[instrument_idx];
             Gp7::Sound sound;
