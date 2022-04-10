@@ -14,6 +14,8 @@
 #include "rect.h"
 #include "macros.h"
 
+#include <algorithm>
+
 namespace PowerTabDocument {
 
 using std::string;
