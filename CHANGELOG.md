@@ -14,6 +14,7 @@ Thanks to the following contributors who worked on this release:
 
 ### Fixed
 - Fixed a potential crash when exporting to Guitar Pro (#379)
+- Fixed issues where non-ASCII characters from `.ptb` files were not loaded correctly (#379)
 
 ## [Alpha 18] - 2022-03-10
 

@@ -54,12 +54,31 @@ void PowerTabInputStream::ReadMFCString(string& str)
     str.clear();
 
     const uint32_t length = ReadMFCStringLength();
-    str.resize(length);
+    if (length == 0)
+        return;
 
-	if (length != 0)
-	{
-		m_stream.read(&str[0], length);
-	}
+    str.resize(length);
+    m_stream.read(&str[0], length);
+
+    // Convert from ISO 8859-1 to UTF8
+    if (std::any_of(str.begin(), str.end(),
+                    [](unsigned char c) { return c >= 0x80; }))
+    {
+        std::string utf8;
+        utf8.reserve(2 * str.length() + 1);
+        for (unsigned char c : str)
+        {
+            if (c < 0x80)
+                utf8.push_back(c);
+            else
+            {
+                utf8.push_back(0xc2 | (c >> 6));
+                utf8.push_back(0x80 | (c & 0x3f));
+            }
+        }
+
+        str = std::move(utf8);
+    }
 }
 
 /// Reads a Win32 format COLORREF type from the stream
