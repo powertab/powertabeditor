@@ -1194,7 +1194,9 @@ convertSystem(const Gp7::Document &doc, Score &score, int bar_begin,
 static bool
 isValidLayout(const std::vector<int> &layout, int num_bars)
 {
-    return std::accumulate(layout.begin(), layout.end(), 0) == num_bars;
+    // The layout's number of bars may not be an exact match - the final system
+    // in the layout might include room for more bars.
+    return std::accumulate(layout.begin(), layout.end(), 0) >= num_bars;
 }
 
 void
