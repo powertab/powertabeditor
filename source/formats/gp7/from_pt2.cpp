@@ -569,8 +569,9 @@ convertFingering(LeftHandFingering::Finger f)
 static void
 convertBeat(Gp7::Document &doc, Gp7::MasterBar &master_bar, Gp7::Beat &beat,
             const ChordNameIdMap &chord_name_ids, const System &system,
-            const Voice &voice, const Tuning &tuning, const KeySignature &key,
-            const boost::rational<int> &bar_time, const Position &pos)
+            const Voice &voice, const Voice *next_voice, const Tuning &tuning,
+            const KeySignature &key, const boost::rational<int> &bar_time,
+            const Position &pos)
 {
     beat.myGraceNote = pos.hasProperty(Position::Acciaccatura);
     beat.myTremoloPicking = pos.hasProperty(Position::TremoloPicking);
@@ -632,9 +633,8 @@ convertBeat(Gp7::Document &doc, Gp7::MasterBar &master_bar, Gp7::Beat &beat,
 
         // Ties
         gp_note.myTieDest = note.hasProperty(Note::Tied);
-        // TODO - handle ties between systems by providing the next_voice argument.
-        if (auto next_note = VoiceUtils::getNextNote(voice, pos.getPosition(),
-                                                     note.getString(), nullptr))
+        if (auto next_note = VoiceUtils::getNextNote(
+                voice, pos.getPosition(), note.getString(), next_voice))
         {
             gp_note.myTieOrigin = next_note->hasProperty(Note::Tied);
         }
@@ -721,10 +721,12 @@ convertBeat(Gp7::Document &doc, Gp7::MasterBar &master_bar, Gp7::Beat &beat,
 static void
 convertBar(Gp7::Document &doc, const ChordNameIdMap &chord_name_ids,
            std::unordered_map<Gp7::Rhythm, int> &unique_rhythms,
-           Gp7::MasterBar &master_bar, Gp7::Bar &bar, const System &system,
-           const Staff &staff, const Tuning &tuning, const KeySignature &key,
-           int start_idx, int end_idx)
+           Gp7::MasterBar &master_bar, Gp7::Bar &bar,
+           ConstScoreLocation &location, const Tuning &tuning,
+           const KeySignature &key, int start_idx, int end_idx)
 {
+    const Staff &staff = location.getStaff();
+
     switch (staff.getClefType())
     {
         case Staff::TrebleClef:
@@ -735,8 +737,11 @@ convertBar(Gp7::Document &doc, const ChordNameIdMap &chord_name_ids,
             break;
     }
 
+    location.setVoiceIndex(0);
     for (const Voice &voice : staff.getVoices())
     {
+        const Voice *next_voice = VoiceUtils::getAdjacentVoice(location, 1);
+
         Gp7::Voice gp_voice;
 
         boost::rational<int> bar_time;
@@ -744,8 +749,9 @@ convertBar(Gp7::Document &doc, const ChordNameIdMap &chord_name_ids,
              ScoreUtils::findInRange(voice.getPositions(), start_idx, end_idx))
         {
             Gp7::Beat beat;
-            convertBeat(doc, master_bar, beat, chord_name_ids, system, voice,
-                        tuning, key, bar_time, pos);
+            convertBeat(doc, master_bar, beat, chord_name_ids,
+                        location.getSystem(), voice, next_voice, tuning, key,
+                        bar_time, pos);
             bar_time += VoiceUtils::getDurationTime(voice, pos);
 
             Gp7::Rhythm rhythm = convertRhythm(voice, pos);
@@ -773,6 +779,8 @@ convertBar(Gp7::Document &doc, const ChordNameIdMap &chord_name_ids,
         const int voice_id = doc.myVoices.size();
         doc.myVoices.emplace(voice_id, gp_voice);
         bar.myVoiceIds.push_back(voice_id);
+
+        location.setVoiceIndex(location.getVoiceIndex() + 1);
     }
 }
 
@@ -994,23 +1002,23 @@ convertScore(const Score &score, const ChordNameIdMap &chord_name_ids,
             convertMasterBar(doc, system, current_bar, next_bar);
         master_bar.myBarIds.assign(doc.myTracks.size(), -1);
 
-        int staff_idx = 0;
+        location.setStaffIndex(0);
         for (const Staff &staff : system.getStaves())
         {
             if (!active_players ||
-                active_players->getActivePlayers(staff_idx).empty())
+                active_players->getActivePlayers(location.getStaffIndex()).empty())
             {
                 continue;
             }
 
-            int player_idx = active_players->getActivePlayers(staff_idx)[0].getPlayerNumber();
+            int player_idx = active_players->getActivePlayers(location.getStaffIndex())[0].getPlayerNumber();
             const Tuning &tuning = score.getPlayers()[player_idx].getTuning();
             if (tuning.getStringCount() != staff.getStringCount())
                 continue; // Something is incorrect in the file...
 
             Gp7::Bar bar;
             convertBar(doc, chord_name_ids, unique_rhythms, master_bar, bar,
-                       system, staff, tuning, current_bar.getKeySignature(),
+                       location, tuning, current_bar.getKeySignature(),
                        current_bar.getPosition(), next_bar.getPosition());
 
             const int bar_id = doc.myBars.size();
@@ -1018,12 +1026,12 @@ convertScore(const Score &score, const ChordNameIdMap &chord_name_ids,
 
             // Assign the bar to each player (track) in this staff.
             for (const ActivePlayer &player :
-                 active_players->getActivePlayers(staff_idx))
+                 active_players->getActivePlayers(location.getStaffIndex()))
             {
                 master_bar.myBarIds[player.getPlayerNumber()] = bar_id;
             }
 
-            ++staff_idx;
+            location.setStaffIndex(location.getStaffIndex() + 1);
         }
 
         doc.myMasterBars.emplace_back(std::move(master_bar));

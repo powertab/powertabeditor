@@ -16,6 +16,7 @@ Thanks to the following contributors who worked on this release:
 - Fixed a potential crash when exporting to Guitar Pro (#379)
 - Fixed issues where non-ASCII characters from `.ptb` files were not loaded correctly (#379)
 - Fixed an issue where some bars could be skipped when importing a Guitar Pro file with a small number of bars.
+- Ties between notes in different systems are now supported by the Guitar Pro exporter.
 
 ## [Alpha 18] - 2022-03-10
 
