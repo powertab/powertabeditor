@@ -595,13 +595,13 @@
         <location filename="../source/dialogs/chorddiagramdialog.ui" line="9"/>
         <location filename="../build/source/dialogs/ui_chorddiagramdialog.h" line="110"/>
         <source>Chord Diagram</source>
-        <translation type="unfinished"></translation>
+        <translation>Diagrama del acorde</translation>
     </message>
     <message>
         <location filename="../source/dialogs/chorddiagramdialog.ui" line="23"/>
         <location filename="../build/source/dialogs/ui_chorddiagramdialog.h" line="111"/>
         <source>Chord Name:</source>
-        <translation type="unfinished"></translation>
+        <translation>Nombre del acorde:</translation>
     </message>
     <message>
         <location filename="../source/dialogs/chorddiagramdialog.ui" line="33"/>
@@ -613,18 +613,18 @@
         <location filename="../source/dialogs/chorddiagramdialog.ui" line="43"/>
         <location filename="../build/source/dialogs/ui_chorddiagramdialog.h" line="113"/>
         <source>Number of Strings:</source>
-        <translation type="unfinished"></translation>
+        <translation>Número de cuerdas:</translation>
     </message>
     <message>
         <location filename="../source/dialogs/chorddiagramdialog.ui" line="53"/>
         <location filename="../build/source/dialogs/ui_chorddiagramdialog.h" line="114"/>
         <source>Diagram:</source>
-        <translation type="unfinished"></translation>
+        <translation>Diagrama:</translation>
     </message>
     <message>
         <location filename="../source/dialogs/chorddiagramdialog.cpp" line="48"/>
         <source>Click to edit chord name.</source>
-        <translation type="unfinished"></translation>
+        <translation>Pulse para editar el nombre del acorde.</translation>
     </message>
 </context>
 <context>
@@ -1494,7 +1494,8 @@
         <location filename="../source/dialogs/infodialog.cpp" line="47"/>
         <source>You can grab development binaries here:
   https://github.com/powertab/powertabeditor/actions</source>
-        <translation type="unfinished"></translation>
+        <translation>Puede encontrar binarios de desarrollo aquí:
+  https://github.com/powertab/powertabeditor/actions</translation>
     </message>
 </context>
 <context>
@@ -1642,12 +1643,12 @@
     <message>
         <location filename="../source/dialogs/keyboardsettingsdialog.cpp" line="189"/>
         <source>The shortcut %1 is already in use.</source>
-        <translation type="unfinished"></translation>
+        <translation>Ya se utiliza el atajo %1.</translation>
     </message>
     <message>
         <location filename="../source/dialogs/keyboardsettingsdialog.cpp" line="191"/>
         <source>Do you want to use this shortcut and remove the shortcut of the &lt;b&gt;%1&lt;/b&gt; command?</source>
-        <translation type="unfinished"></translation>
+        <translation>¿Quiere utilizar este atajo y quitar la asociación con la orden &lt;b&gt;%1&lt;/b&gt;?</translation>
     </message>
 </context>
 <context>
@@ -1662,7 +1663,7 @@
         <location filename="../source/dialogs/lefthandfingeringdialog.ui" line="31"/>
         <location filename="../build/source/dialogs/ui_lefthandfingeringdialog.h" line="85"/>
         <source>Finger:</source>
-        <translation type="unfinished"></translation>
+        <translation>Dedo:</translation>
     </message>
     <message>
         <location filename="../source/dialogs/lefthandfingeringdialog.ui" line="41"/>
@@ -2016,7 +2017,7 @@
         <location filename="../source/widgets/playback/playbackwidget.ui" line="49"/>
         <location filename="../build/source/widgets/ui_playbackwidget.h" line="198"/>
         <source>Voice:</source>
-        <translation type="unfinished"></translation>
+        <translation>Voz:</translation>
     </message>
     <message>
         <location filename="../source/widgets/playback/playbackwidget.ui" line="61"/>
@@ -2287,7 +2288,7 @@
     <message>
         <location filename="../source/app/powertabeditor.cpp" line="1047"/>
         <source>Edit Chord Diagram</source>
-        <translation type="unfinished"></translation>
+        <translation>Editar diagrama de acorde</translation>
     </message>
     <message>
         <location filename="../source/app/powertabeditor.cpp" line="1145"/>
@@ -2382,7 +2383,7 @@
     <message>
         <location filename="../source/app/powertabeditor.cpp" line="2198"/>
         <source>Print Preview...</source>
-        <translation type="unfinished"></translation>
+        <translation>Previsualizar impresión…</translation>
     </message>
     <message>
         <location filename="../source/app/powertabeditor.cpp" line="2202"/>
@@ -2572,7 +2573,7 @@
     <message>
         <location filename="../source/app/powertabeditor.cpp" line="2452"/>
         <source>Add Chord Diagram...</source>
-        <translation type="unfinished"></translation>
+        <translation>Añadir diagrama de acorde…</translation>
     </message>
     <message>
         <location filename="../source/app/powertabeditor.cpp" line="2457"/>
@@ -3107,7 +3108,7 @@
     <message>
         <location filename="../source/app/powertabeditor.cpp" line="3313"/>
         <source>Octave</source>
-        <translation type="unfinished"></translation>
+        <translation>Octava</translation>
     </message>
     <message>
         <location filename="../source/app/powertabeditor.cpp" line="3323"/>
@@ -3117,7 +3118,7 @@
     <message>
         <location filename="../source/app/powertabeditor.cpp" line="3336"/>
         <source>&amp;Music Symbols</source>
-        <translation type="unfinished"></translation>
+        <translation>Símbolos &amp;musicales</translation>
     </message>
     <message>
         <location filename="../source/app/powertabeditor.cpp" line="3350"/>
@@ -3691,7 +3692,7 @@
     <message>
         <location filename="../source/painters/chorddiagrampainter.cpp" line="242"/>
         <source>Double-click to edit chord diagram.</source>
-        <translation type="unfinished"></translation>
+        <translation>Pulse dos veces para editar el diagrama del acorde.</translation>
     </message>
 </context>
 <context>
@@ -3825,7 +3826,7 @@
         <location filename="../source/dialogs/staffdialog.ui" line="31"/>
         <location filename="../build/source/dialogs/ui_staffdialog.h" line="86"/>
         <source>Number of Strings:</source>
-        <translation type="unfinished"></translation>
+        <translation>Número de cuerdas:</translation>
     </message>
     <message>
         <location filename="../source/dialogs/staffdialog.ui" line="41"/>
@@ -4136,7 +4137,7 @@
         <location filename="../source/dialogs/tuningdialog.ui" line="61"/>
         <location filename="../build/source/dialogs/ui_tuningdialog.h" line="201"/>
         <source>Number of Strings:</source>
-        <translation type="unfinished"></translation>
+        <translation>Número de cuerdas:</translation>
     </message>
     <message>
         <location filename="../source/dialogs/tuningdialog.ui" line="71"/>
@@ -4169,7 +4170,7 @@
         <location filename="../source/dialogs/tuningdictionarydialog.ui" line="25"/>
         <location filename="../build/source/dialogs/ui_tuningdictionarydialog.h" line="122"/>
         <source>Number of Strings:</source>
-        <translation type="unfinished"></translation>
+        <translation>Número de cuerdas:</translation>
     </message>
     <message>
         <location filename="../source/dialogs/tuningdictionarydialog.ui" line="52"/>
