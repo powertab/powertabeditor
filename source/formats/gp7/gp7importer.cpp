@@ -34,7 +34,7 @@
 FileFormat
 Gp7Importer::getFileFormat()
 {
-    return FileFormat("Guitar Pro 7", { "gp" });
+    return FileFormat("Guitar Pro 7, 8", { "gp" });
 }
 
 Gp7Importer::Gp7Importer()
