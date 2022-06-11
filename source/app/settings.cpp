@@ -39,6 +39,8 @@ const Setting<std::vector<std::string>> RecentFiles("app/recent_files", {});
 const Setting<bool> OpenFilesInNewWindow("app/open_files_in_new_window",
                                          false);
 
+const Setting<int> SystemSpacing("app/system_spacing", 50);
+
 const Setting<ScoreTheme> Theme("app/score_theme", ScoreTheme::SystemDefault);
 
 const Setting<std::string> DefaultInstrumentName("app/default_instrument_name",

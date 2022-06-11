@@ -80,12 +80,14 @@ private:
 
     /// Load the user's preferred color scheme for the score.
     void loadTheme(const SettingsManager &settings_manager, bool redraw = true);
+    void loadSystemSpacing(const SettingsManager &settings_manager, bool redraw = true);
 
     Scene myScene;
     const Document *myDocument;
     QGraphicsItem *myScoreInfoBlock;
     QGraphicsItem *myChordDiagramList;
     double myHeaderSize = 0;
+    double mySystemSpacing = 0;
     QList<QGraphicsItem *> myRenderedSystems;
     CaretPainter *myCaretPainter;
     /// The color palette from the parent widget.

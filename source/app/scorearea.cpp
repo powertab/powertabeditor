@@ -33,8 +33,6 @@
 #include <QScrollBar>
 #include <score/score.h>
 
-static const double SYSTEM_SPACING = 50;
-
 void ScoreArea::Scene::dragEnterEvent(QGraphicsSceneDragDropEvent *event)
 {
     event->ignore();
@@ -66,8 +64,13 @@ ScoreArea::ScoreArea(SettingsManager &settings_manager, QWidget *parent)
     // Load the user's preferred theme, and re-render when the theme setting
     // changes.
     loadTheme(settings_manager, /* redraw */ false);
+    loadSystemSpacing(settings_manager, false);
     mySettingsListener = settings_manager.subscribeToChanges(
-        [&]() { loadTheme(settings_manager); });
+        [&]()
+        {
+            loadTheme(settings_manager);
+            loadSystemSpacing(settings_manager);
+        });
 
     // Connect the click event handler to our public signals.
     myClickEvent.connect(
@@ -135,11 +138,11 @@ void ScoreArea::renderDocument(const Document &document)
     double height = 0;
     // Score info.
     myScene.addItem(myScoreInfoBlock);
-    height += myScoreInfoBlock->boundingRect().height() + 0.5 * SYSTEM_SPACING;
+    height += myScoreInfoBlock->boundingRect().height() + 0.5 * mySystemSpacing;
 
     myChordDiagramList->setPos(0, height);
     myScene.addItem(myChordDiagramList);
-    height += myChordDiagramList->boundingRect().height() + 0.5 * SYSTEM_SPACING;
+    height += myChordDiagramList->boundingRect().height() + 0.5 * mySystemSpacing;
     myHeaderSize = height;
 
     // Layout the systems.
@@ -147,7 +150,7 @@ void ScoreArea::renderDocument(const Document &document)
     {
         system->setPos(0, height);
         myScene.addItem(system);
-        height += system->boundingRect().height() + SYSTEM_SPACING;
+        height += system->boundingRect().height() + mySystemSpacing;
 
         myCaretPainter->addSystemRect(system->sceneBoundingRect());
     }
@@ -174,13 +177,13 @@ void ScoreArea::redrawSystem(int index)
     if (index > 0)
     {
         height = myRenderedSystems.at(index - 1)->sceneBoundingRect().bottom() +
-                SYSTEM_SPACING;
+                mySystemSpacing;
     }
     else
         height = myHeaderSize;
 
     newSystem->setPos(0, height);
-    height += newSystem->boundingRect().height() + SYSTEM_SPACING;
+    height += newSystem->boundingRect().height() + mySystemSpacing;
     myCaretPainter->setSystemRect(index, newSystem->sceneBoundingRect());
 
     myScene.addItem(newSystem);
@@ -191,7 +194,7 @@ void ScoreArea::redrawSystem(int index)
     {
         QGraphicsItem *system = myRenderedSystems[i];
         system->setPos(0, height);
-        height += system->boundingRect().height() + SYSTEM_SPACING;
+        height += system->boundingRect().height() + mySystemSpacing;
         myCaretPainter->setSystemRect(i, system->sceneBoundingRect());
     }
 
@@ -353,4 +356,13 @@ ScoreArea::loadTheme(const SettingsManager &settings_manager, bool redraw)
         setPalette(*myActivePalette);
         myDisableRedraw = false;
     }
+}
+
+void
+ScoreArea::loadSystemSpacing(const SettingsManager &settings_manager, bool redraw)
+{
+  auto settings = settings_manager.getReadHandle();
+  mySystemSpacing = settings->get(Settings::SystemSpacing);
+  if (redraw)
+    this->renderDocument(*myDocument);
 }

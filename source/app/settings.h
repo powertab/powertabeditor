@@ -42,6 +42,7 @@ namespace Settings
     extern const Setting<std::vector<std::string>> RecentFiles;
     extern const Setting<ScoreTheme> Theme;
     extern const Setting<bool> OpenFilesInNewWindow;
+    extern const Setting<int> SystemSpacing;
 
     extern const Setting<std::string> DefaultInstrumentName;
     extern const Setting<int> DefaultInstrumentPreset;
