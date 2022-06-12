@@ -50,6 +50,8 @@ TimeSignatureDialog::TimeSignatureDialog(
         pattern->setValidator(new QIntValidator(0, 64, pattern));
     }
 
+    myTimeSignature.setVisible(true);   // make the time signature visible by default
+
     ui->showTimeSignature->setChecked(myTimeSignature.isVisible());
     ui->commonTime->setChecked(myTimeSignature.getMeterType() ==
                                TimeSignature::CommonTime);
