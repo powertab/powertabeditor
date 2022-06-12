@@ -73,6 +73,8 @@ PreferencesDialog::PreferencesDialog(QWidget *parent,
 
     ui->countInVolumeSpinBox->setRange(0, 127);
 
+    ui->systemSpacingSpinBox->setRange(0, 100);
+
     loadCurrentSettings();
 }
 
@@ -131,6 +133,9 @@ void PreferencesDialog::loadCurrentSettings()
     ui->openInNewWindowCheckBox->setChecked(
         settings->get(Settings::OpenFilesInNewWindow));
 
+    ui->systemSpacingSpinBox->setValue(
+      settings->get(Settings::SystemSpacing));
+
     ui->defaultInstrumentNameLineEdit->setText(
         QString::fromStdString(settings->get(Settings::DefaultInstrumentName)));
     ui->defaultPresetComboBox->setCurrentIndex(
@@ -188,6 +193,9 @@ void PreferencesDialog::accept()
 
     settings->set(Settings::OpenFilesInNewWindow,
                   ui->openInNewWindowCheckBox->isChecked());
+
+    settings->set(Settings::SystemSpacing,
+                  ui->systemSpacingSpinBox->value());
 
     settings->set(Settings::DefaultInstrumentName,
                   ui->defaultInstrumentNameLineEdit->text().toStdString());
