@@ -5,12 +5,15 @@ All notable changes to this project will be documented in this file.
 
 Thanks to the following contributors who worked on this release:
 - @cameronwhite
+- @brunosilvano
 
 ### Added
+- The spacing between systems can now be configured in the preferences (#239, #382)
 - Added Japanese translation
 
 ### Changed
 - Increased the upper limit for irregular grouping values (#376)
+- The time signature dialog now enables the visibility checkbox by default (#356, #383)
 
 ### Fixed
 - Fixed a potential crash when exporting to Guitar Pro (#379)
