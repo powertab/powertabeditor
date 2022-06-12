@@ -361,8 +361,8 @@ ScoreArea::loadTheme(const SettingsManager &settings_manager, bool redraw)
 void
 ScoreArea::loadSystemSpacing(const SettingsManager &settings_manager, bool redraw)
 {
-  auto settings = settings_manager.getReadHandle();
-  mySystemSpacing = settings->get(Settings::SystemSpacing);
-  if (redraw)
-    this->renderDocument(*myDocument);
+    auto settings = settings_manager.getReadHandle();
+    mySystemSpacing = settings->get(Settings::SystemSpacing);
+    if (redraw)
+        this->renderDocument(*myDocument);
 }
