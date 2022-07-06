@@ -18,6 +18,7 @@
 #include "viewoptions.h"
 
 #include <algorithm>
+#include <functional> /* std::greater */
 
 ViewOptions::ViewOptions() : myZoom(100)
 {
