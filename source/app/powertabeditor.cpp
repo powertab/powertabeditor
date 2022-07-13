@@ -896,12 +896,19 @@ void PowerTabEditor::removeSelectedPositions()
                             location.getSystemIndex());
     }
 
-    std::vector<int> barPositions;
-    std::transform(bars.begin(), bars.end(), std::back_inserter(barPositions),
-                   [](const Barline *b) { return b->getPosition(); });
+    std::vector<int> bar_positions;
+    const Barline *last_bar = &location.getSystem().getBarlines().back();
+    for (const Barline *bar : bars)
+    {
+        // Can't delete the last barline.
+        if (bar == last_bar)
+            continue;
+
+        bar_positions.push_back(bar->getPosition());
+    }
 
     // Remove each of the selected barlines.
-    for (int position : barPositions)
+    for (int position : bar_positions)
     {
         location.setPositionIndex(position);
         myUndoManager->push(new RemoveBarline(location),

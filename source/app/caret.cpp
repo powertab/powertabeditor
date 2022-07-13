@@ -182,7 +182,9 @@ int Caret::getLastSystemIndex() const
 
 void Caret::moveToPosition(int position)
 {
-    myLocation.setPositionIndex(std::clamp(position, 0, getLastPosition()));
+    // Allow moving to the last barline's position (inclusive)
+    int last_pos = myLocation.getSystem().getBarlines().back().getPosition();
+    myLocation.setPositionIndex(std::clamp(position, 0, last_pos));
     myLocation.setSelectionStart(myLocation.getPositionIndex());
 
     onLocationChanged();

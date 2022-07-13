@@ -98,7 +98,7 @@ private:
     /// Move to the specified staff.
     void moveToStaff(int staff);
 
-    /// Returns the last valid position in the system.
+    /// Returns the last valid position in the system (not including the end bar).
     int getLastPosition() const;
     /// Returns the last valid system index in the score.
     int getLastSystemIndex() const;
