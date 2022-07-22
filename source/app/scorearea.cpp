@@ -362,7 +362,8 @@ void
 ScoreArea::loadSystemSpacing(const SettingsManager &settings_manager, bool redraw)
 {
     auto settings = settings_manager.getReadHandle();
+    const double prev_spacing = mySystemSpacing;
     mySystemSpacing = settings->get(Settings::SystemSpacing);
-    if (redraw)
+    if (redraw && mySystemSpacing != prev_spacing)
         this->renderDocument(*myDocument);
 }
