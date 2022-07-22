@@ -654,6 +654,7 @@ public:
         return ((fretNumber >= MIN_SINGLE_NOTE_FRET_NUMBER) &&
             (fretNumber <= MAX_SINGLE_NOTE_FRET_NUMBER));
     }
+    bool IsSingleNote() const { return IsDataFlagSet(singleNote); }
     bool SetSingleNoteData(uint8_t stringNumber, uint8_t fretNumber);
     void GetSingleNoteData(uint8_t& stringNumber, uint8_t& fretNumber) const;
     bool ClearSingleNoteData();

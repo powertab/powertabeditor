@@ -74,9 +74,10 @@ private:
     static void convert(const PowerTabDocument::Tuning &oldTuning,
                         Tuning &tuning);
 
-    static void convert(const PowerTabDocument::Score &oldScore,
-                        std::shared_ptr<const PowerTabDocument::System> oldSystem,
-                        System &system);
+    static void convert(
+        const PowerTabDocument::Score &oldScore,
+        std::shared_ptr<const PowerTabDocument::System> oldSystem, Score &score,
+        System &system);
 
     static void convert(const PowerTabDocument::Barline &oldBar, Barline &bar);
     static void convert(const PowerTabDocument::RehearsalSign &oldSign,
@@ -109,6 +110,8 @@ private:
 
     static void convertGuitarIns(const PowerTabDocument::Score &oldScore,
                                  Score &score);
+    static void convertRhythmSlashes(const PowerTabDocument::System &old_system,
+                                     const Score &score, Staff &staff);
     static void convertInitialVolumes(const PowerTabDocument::Score &oldScore,
                                       Score &score);
     static void convertFloatingText(const PowerTabDocument::Score &oldScore,
