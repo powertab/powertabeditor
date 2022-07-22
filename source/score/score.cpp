@@ -17,6 +17,7 @@
 
 #include "score.h"
 
+#include <boost/range/adaptor/reversed.hpp>
 #include <stdexcept>
 #include <unordered_set>
 #include <util/tostring.h>
@@ -184,31 +185,50 @@ void Score::setLineSpacing(int value)
     myLineSpacing = value;
 }
 
-const PlayerChange *ScoreUtils::getCurrentPlayers(const Score &score,
-                                                  int systemIndex,
-                                                  int positionIndex)
+template <typename T, typename SymbolRangeAccessor>
+static const T *
+findCurrentSymbol(const Score &score, int system_idx, int position_idx,
+                  SymbolRangeAccessor get_symbols)
 {
-    const PlayerChange *lastChange = nullptr;
-
-    int i = 0;
-    for (const System &system : score.getSystems())
+    // First check the current system.
     {
-        if (i > systemIndex)
-            break;
-
-        for (const PlayerChange &change : system.getPlayerChanges())
+        const System &system = score.getSystems()[system_idx];
+        for (const T &obj : boost::adaptors::reverse(get_symbols(system)))
         {
-            if (i < systemIndex ||
-               (i == systemIndex && change.getPosition() <= positionIndex))
-            {
-                lastChange = &change;
-            }
+            if (obj.getPosition() <= position_idx)
+                return &obj;
         }
-
-        ++i;
     }
 
-    return lastChange;
+    // Otherwise, search backwards to find the last symbol from a previous
+    // system.
+    for (int i = system_idx - 1; i >= 0; --i)
+    {
+        const System &system = score.getSystems()[i];
+        auto &&symbols = get_symbols(system);
+        if (!symbols.empty())
+            return &symbols.back();
+    }
+
+    return nullptr;
+}
+
+const PlayerChange *
+ScoreUtils::getCurrentPlayers(const Score &score, int system_idx,
+                              int position_idx)
+{
+    return findCurrentSymbol<PlayerChange>(
+        score, system_idx, position_idx,
+        [](const System &system) { return system.getPlayerChanges(); });
+}
+
+const ChordText *
+ScoreUtils::getCurrentChordText(const Score &score, int system_idx,
+                                int position_idx)
+{
+    return findCurrentSymbol<ChordText>(
+        score, system_idx, position_idx,
+        [](const System &system) { return system.getChords(); });
 }
 
 void ScoreUtils::adjustRehearsalSigns(Score &score)

@@ -42,6 +42,7 @@ TEST_CASE("Score/Utils/GetCurrentPlayers")
     change.insertActivePlayer(0, ActivePlayer(1, 2));
     system.insertPlayerChange(change);
     score.insertSystem(system);
+    score.insertSystem(System());
 
     REQUIRE(!ScoreUtils::getCurrentPlayers(score, 0, 6));
     REQUIRE(ScoreUtils::getCurrentPlayers(score, 0, 7));

@@ -148,8 +148,11 @@ void Score::serialize(Archive &ar, const FileVersion version)
 
 namespace ScoreUtils {
 /// Get the current player change for the given position.
-const PlayerChange *getCurrentPlayers(const Score &score, int systemIndex,
-                                      int positionIndex);
+const PlayerChange *getCurrentPlayers(const Score &score, int system_idx,
+                                      int position_idx);
+/// Get the current chord text for the given location.
+const ChordText *getCurrentChordText(const Score &score, int system_idx,
+                                     int position_idx);
 
 /// Readjust the letters for the rehearsal signs in the score
 /// (i.e. assigning rehearsal signs the letters "A", "B", and so on).
