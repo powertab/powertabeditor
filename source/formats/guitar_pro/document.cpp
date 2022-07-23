@@ -571,7 +571,7 @@ void Note::loadHarmonic(InputStream &stream, const Track &track)
             { 31, 3.2 }, { 34, 2.7 }, { 36, 2.4 }
         };
         auto it = theHarmonicFrets.find(pitch_offset);
-        myHarmonicFret = (it != theHarmonicFrets.end()) ? it->second : 0;
+        myHarmonicFret = (it != theHarmonicFrets.end()) ? it->second : 12;
         myIsArtificialHarmonic = true;
     }
 }

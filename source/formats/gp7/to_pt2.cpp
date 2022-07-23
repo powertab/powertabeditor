@@ -183,7 +183,7 @@ getHarmonicPitchOffset(double harmonic_fret)
     else
     {
         std::cerr << "Unexpected harmonic type" << std::endl;
-        return 0;
+        return 12;
     }
 }
 
