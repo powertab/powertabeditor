@@ -16,6 +16,7 @@ Thanks to the following contributors who worked on this release:
 - The time signature dialog now enables the visibility checkbox by default (#356, #383)
 
 ### Fixed
+- Fixed several potential errors when importing `.ptb` files.
 - Fixed a potential crash when exporting to Guitar Pro (#379)
 - Fixed issues where non-ASCII characters from `.ptb` files were not loaded correctly (#379)
 - Fixed an issue where some bars could be skipped when importing a Guitar Pro file with a small number of bars.

@@ -227,7 +227,8 @@ static void convertKey(PowerTabDocument::ChordName::Key oldKey,
     }
     else if (oldVariation == PowerTabDocument::ChordName::variationDown)
     {
-        key = static_cast<ChordName::Key>((key - 1) % ChordName::NumKeys);
+        key = static_cast<ChordName::Key>((key + ChordName::NumKeys - 1) %
+                                          ChordName::NumKeys);
 
         if (variation == ChordName::NoVariation)
         {
@@ -663,8 +664,11 @@ int PowerTabOldImporter::convert(
             else if (position.IsIrregularGroupingEnd())
             {
                 positionCount++;
-                v.insertIrregularGrouping(IrregularGrouping(
-                    startPos, positionCount, notesPlayed, notesPlayedOver));
+                if (notesPlayedOver > 0)
+                {
+                    v.insertIrregularGrouping(IrregularGrouping(
+                        startPos, positionCount, notesPlayed, notesPlayedOver));
+                }
 
                 startPos = 0;
                 positionCount = 0;
@@ -948,6 +952,22 @@ void PowerTabOldImporter::convertGuitarIns(
     }
 }
 
+/// The initial volume level doesn't seem to always match the volume level of a
+/// dynamic, so pick the closest one.
+static VolumeLevel
+findVolumeLevel(uint8_t volume)
+{
+    for (auto level :
+         { VolumeLevel::fff, VolumeLevel::ff, VolumeLevel::f, VolumeLevel::mf,
+           VolumeLevel::mp, VolumeLevel::p, VolumeLevel::pp })
+    {
+        if (volume >= static_cast<uint8_t>(level))
+            return level;
+    }
+
+    return VolumeLevel::ppp;
+}
+
 void PowerTabOldImporter::convertInitialVolumes(
     const PowerTabDocument::Score &oldScore, Score &score)
 {
@@ -987,7 +1007,7 @@ void PowerTabOldImporter::convertInitialVolumes(
                 {
                     Dynamic dynamic(
                         guitarIn->GetPosition(),
-                        static_cast<VolumeLevel>(
+                        findVolumeLevel(
                             oldScore.GetGuitar(j)->GetInitialVolume()));
 
                     system.getStaves()[guitarIn->GetStaff()].insertDynamic(dynamic);
