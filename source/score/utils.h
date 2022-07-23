@@ -109,7 +109,10 @@ namespace Detail
                                             Detail::OrderByPosition());
         if (it != objects.end() && it->getPosition() == obj.getPosition())
         {
-            assert(false); // Shouldn't insert duplicates!
+            // Shouldn't insert duplicates!
+            // However, it seems possible for some v1.7 files to have duplicate
+            // objects so this assert produces some false positives.
+            //assert(false);
             return;
         }
 
