@@ -29,7 +29,8 @@ TEST_CASE("Score/TempoMarker/BeatsPerMinute")
 
     REQUIRE_THROWS(tempo.setBeatsPerMinute(0));
     REQUIRE_THROWS(tempo.setBeatsPerMinute(-2));
-    REQUIRE_THROWS(tempo.setBeatsPerMinute(400));
+    REQUIRE_THROWS(
+        tempo.setBeatsPerMinute(TempoMarker::MAX_BEATS_PER_MINUTE + 1));
 }
 
 TEST_CASE("Score/TempoMarker/Serialization")
