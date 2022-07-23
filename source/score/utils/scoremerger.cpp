@@ -112,6 +112,14 @@ static void expandScore(Score &score, ExpandedBarList &expanded_bars)
             system.getPreviousBarline(score_loc.getPositionIndex() + 1);
         const Barline *next_bar =
             system.getNextBarline(score_loc.getPositionIndex());
+        if (!next_bar)
+        {
+            // We might have ended up at the end bar, so move to next system.
+            if (!caret.moveToNextBar())
+                break;
+
+            continue;
+        }
 
         // Ensure that the caret is actually at the start of the bar.
         caret.moveToPosition(prev_bar->getPosition());
@@ -838,7 +846,7 @@ static ExpandedBarList::iterator collapseRepeatedSection(
 
     // Skip the first repeated section.
     int first_repeat = bar->getRemainingRepeats();
-    while (bar->getRemainingRepeats() == first_repeat)
+    while (bar != bars.end() && bar->getRemainingRepeats() == first_repeat)
     {
         known_bars.insert(bar->getLocation());
         ++bar;
@@ -905,7 +913,8 @@ static void mergeRepeats(ExpandedBarList &guitar_bars,
             const int num_repeats = std::min(guitar_bar->getRemainingRepeats(),
                                              bass_bar->getRemainingRepeats());
 
-            while (!guitar_bar->isRepeatEnd() || !bass_bar->isRepeatEnd())
+            while (guitar_bar != guitar_end_bar && bass_bar != bass_end_bar &&
+                   !guitar_bar->isRepeatEnd() && !bass_bar->isRepeatEnd())
             {
                 ++guitar_bar;
                 ++bass_bar;
@@ -914,7 +923,8 @@ static void mergeRepeats(ExpandedBarList &guitar_bars,
             // The repeated sections are identical in length, and so can be
             // collapsed.
             // TODO - check that alternate endings match.
-            if (guitar_bar->isRepeatEnd() && bass_bar->isRepeatEnd())
+            if (guitar_bar != guitar_end_bar && bass_bar != bass_end_bar &&
+                guitar_bar->isRepeatEnd() && bass_bar->isRepeatEnd())
             {
                 guitar_bar = collapseRepeatedSection(
                     guitar_bars, guitar_section_start, num_repeats);
