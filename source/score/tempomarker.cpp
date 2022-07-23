@@ -21,7 +21,7 @@
 #include <util/enumtostring.h>
 
 const int TempoMarker::MIN_BEATS_PER_MINUTE = 1;
-const int TempoMarker::MAX_BEATS_PER_MINUTE = 300;
+const int TempoMarker::MAX_BEATS_PER_MINUTE = 1000;
 const int TempoMarker::DEFAULT_BEATS_PER_MINUTE = 120;
 
 TempoMarker::TempoMarker()
