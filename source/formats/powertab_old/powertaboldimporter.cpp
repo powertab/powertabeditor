@@ -402,6 +402,8 @@ PowerTabOldImporter::convertRhythmSlashes(
 {
     // TODO - are rhythm slashes from v1.7 files always 6 strings?
 
+    Voice &voice = staff.getVoices()[0];
+
     // Convert rhythm slashes to normal notes.
     const ChordText *prev_chord = nullptr;
     for (size_t i = 0; i < old_system.GetRhythmSlashCount(); ++i)
@@ -427,8 +429,7 @@ PowerTabOldImporter::convertRhythmSlashes(
                 // Until there is a chord change, play the same notes as the
                 // previous slash. In particular, this is important because
                 // single note slashes remain active until a chord change.
-                const Position &prev_pos =
-                    staff.getVoices()[0].getPositions().back();
+                const Position &prev_pos = voice.getPositions().back();
                 for (const Note &note : prev_pos.getNotes())
                 {
                     pos.insertNote(
@@ -498,7 +499,7 @@ PowerTabOldImporter::convertRhythmSlashes(
                 note.setProperty(Note::SlideOutOfUpwards);
         }
 
-        staff.getVoices()[0].insertPosition(pos);
+        voice.insertPosition(pos);
 
         if (slash->IsTripletStart() || slash->IsTripletMiddle() ||
             slash->IsTripletEnd())
@@ -506,7 +507,6 @@ PowerTabOldImporter::convertRhythmSlashes(
             // TODO - record irregular grouping
         }
     }
-
 }
 
 void
@@ -594,8 +594,9 @@ PowerTabOldImporter::convert(const PowerTabDocument::Score &oldScore,
         {
             if (dynamic->IsRhythmSlashVolumeSet())
             {
-                Dynamic new_dynamic;
-                convert(*dynamic, new_dynamic);
+                Dynamic new_dynamic(
+                    dynamic->GetPosition(),
+                    static_cast<VolumeLevel>(dynamic->GetRhythmSlashVolume()));
                 staff.insertDynamic(new_dynamic);
                 lastPosition =
                     std::max(lastPosition, new_dynamic.getPosition());
@@ -770,10 +771,11 @@ int PowerTabOldImporter::convert(
         // Ignore dynamics for rhythm slashes.
         if (dynamic->IsStaffVolumeSet())
         {
-            Dynamic newDynamic;
-            convert(*dynamic, newDynamic);
-            staff.insertDynamic(newDynamic);
-            lastPosition = std::max(lastPosition, newDynamic.getPosition());
+            Dynamic new_dynamic(
+                dynamic->GetPosition(),
+                static_cast<VolumeLevel>(dynamic->GetStaffVolume()));
+            staff.insertDynamic(new_dynamic);
+            lastPosition = std::max(lastPosition, new_dynamic.getPosition());
         }
     }
 
@@ -833,14 +835,6 @@ int PowerTabOldImporter::convert(
     }
 
     return lastPosition;
-}
-
-void PowerTabOldImporter::convert(const PowerTabDocument::Dynamic &oldDynamic,
-                                  Dynamic &dynamic)
-{
-    dynamic.setPosition(oldDynamic.GetPosition());
-    dynamic.setVolume(static_cast<VolumeLevel>(
-                          oldDynamic.GetStaffVolume()));
 }
 
 void PowerTabOldImporter::convert(const PowerTabDocument::Position &oldPosition,

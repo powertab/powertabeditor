@@ -100,8 +100,6 @@ private:
     static int convert(const PowerTabDocument::Staff &oldStaff,
                         const std::vector<DynamicPtr> &dynamics,
                         Staff &staff);
-    static void convert(const PowerTabDocument::Dynamic &oldDynamic,
-                        Dynamic &dynamic);
 
     static void convert(const PowerTabDocument::Position &oldPosition,
                         Position &position);
