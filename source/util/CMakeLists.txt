@@ -45,6 +45,7 @@ set( headers
     enumtostring_fwd.h
     settingstree.h
     tostring.h
+    toutf8.h
     scopeexit.h
     version.h
 )

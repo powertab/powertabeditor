@@ -22,6 +22,7 @@
 #include <cstdint>
 #include <istream>
 #include <vector>
+#include <util/toutf8.h>
 
 #include "document.h"
 
@@ -100,6 +101,8 @@ inline std::string InputStream::readCharacterString()
 
     if (length != 0)
         myStream.read(&str[0], length);
+
+    Util::convertISO88591ToUTF8(str);
 
     return str;
 }

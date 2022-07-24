@@ -64,8 +64,6 @@ std::string Gp::InputStream::readString()
     [[maybe_unused]] const uint32_t size = read<uint32_t>();
 
     std::string str = readCharacterString<uint8_t>();
-    assert(size - 1 == str.length());
-
     return str;
 }
 
