@@ -21,6 +21,7 @@ parts:
     cmake-parameters:
       - -DCMAKE_BUILD_TYPE=Release
       - -DBUILD_TESTING=OFF
+      - -DPTE_BUILD_SNAP=ON
       - -DCMAKE_FIND_ROOT_PATH="usr;/snap/kde-frameworks-5-qt-5-15-core20-sdk/current"
     build-snaps:
       - kde-frameworks-5-qt-5-15-core20-sdk # For Qt and minizip

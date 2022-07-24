@@ -102,7 +102,19 @@ MidiPlayer::updateDeviceSettings()
     if (!myDevice->initialize(api, port))
     {
         myDevice.reset();
-        emit error(tr("Error initializing MIDI output device."));
+        QString msg = tr("Error initializing MIDI output device.");
+
+        // The snap package doesn't have ALSA / JACK access by default, so
+        // suggest how to grant access.
+#ifdef PTE_BUILDING_FOR_SNAP
+        msg += "\n\n";
+        msg += tr("The MIDI device may not be accessible. The following "
+                  "commands can be run to allow access:");
+        msg += "\nsudo snap connect powertabeditor:alsa";
+        msg += "\nsudo snap connect powertabeditor:jack1";
+#endif
+
+        emit error(msg);
         return;
     }
 }

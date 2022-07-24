@@ -24,3 +24,5 @@ if ( PLATFORM_WIN )
     # Enable folders in Visual Studio projects.
     set_property ( GLOBAL PROPERTY USE_FOLDERS ON )
 endif ()
+
+option( PTE_BUILD_SNAP "Enable specific error messages for common runtime errors due to the snap package's sandboxing." OFF )

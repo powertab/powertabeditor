@@ -22,6 +22,7 @@ Thanks to the following contributors who worked on this release:
 - Fixed an issue where some bars could be skipped when importing a Guitar Pro file with a small number of bars.
 - Ties between notes in different systems are now supported by the Guitar Pro exporter.
 - Fixed a regression from alpha 15 where the final barline in a system could not be edited.
+- The snap package provides more helpful error messages when the MIDI device cannot be accessed (#386)
 
 ## [Alpha 18] - 2022-03-10
 

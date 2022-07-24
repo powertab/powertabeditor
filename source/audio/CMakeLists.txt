@@ -48,3 +48,10 @@ pte_library(
             rtmidi::rtmidi
             ${platform_deps}
 )
+
+# For the snap package, enable info about resolving MIDI device access issues.
+if ( PTE_BUILD_SNAP )
+    target_compile_definitions( pteaudio PRIVATE
+        PTE_BUILDING_FOR_SNAP
+    )
+endif ()
