@@ -18,6 +18,7 @@
 #ifndef UTIL_TOUTF8_H
 #define UTIL_TOUTF8_H
 
+#include <algorithm>
 #include <string>
 
 namespace Util
