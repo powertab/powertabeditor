@@ -510,10 +510,10 @@ namespace Midi
     std::string getKeyText(bool minor, bool usesSharps, uint8_t numAccidentals);
 
     /// Returns a list of all MIDI preset names.
-    std::vector<std::string> getPresetNames();
+    const std::vector<std::string> &getPresetNames();
 
     /// Returns a list of all MIDI percussion preset names.
-    std::vector<std::string> getPercussionPresetNames();
+    const std::vector<std::string> &getPercussionPresetNames();
 
     /// Utility to determine the channel index from a player index, skipping
     /// over the percussion channel.

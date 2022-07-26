@@ -209,193 +209,195 @@ namespace Midi {
         return volume <= MAX_MIDI_NOTE_VOLUME;
     }
 
-    std::vector<std::string> getPresetNames()
+    const std::vector<std::string> &getPresetNames()
     {
-        std::vector<std::string> names;
-
-        names.emplace_back("Acoustic Grand Piano");
-        names.emplace_back("Bright Acoustic Piano");
-        names.emplace_back("Electric Grand Piano");
-        names.emplace_back("Honky-tonk Piano");
-        names.emplace_back("Electric Piano 1");
-        names.emplace_back("Electric Piano 2");
-        names.emplace_back("Harpsichord");
-        names.emplace_back("Clavinet");
-        names.emplace_back("Celesta");
-        names.emplace_back("Glockenspiel");
-        names.emplace_back("Music Box");
-        names.emplace_back("Vibraphone");
-        names.emplace_back("Marimba");
-        names.emplace_back("Xylophone");
-        names.emplace_back("Tubular Bells");
-        names.emplace_back("Dulcimer");
-        names.emplace_back("Drawbar Organ");
-        names.emplace_back("Percussive Organ");
-        names.emplace_back("Rock Organ");
-        names.emplace_back("Church Organ");
-        names.emplace_back("Reed Organ");
-        names.emplace_back("Accordion");
-        names.emplace_back("Harmonica");
-        names.emplace_back("Tango Accordion");
-        names.emplace_back("Acoustic Guitar (nylon)");
-        names.emplace_back("Acoustic Guitar (steel)");
-        names.emplace_back("Electric Guitar (jazz)");
-        names.emplace_back("Electric Guitar (clean)");
-        names.emplace_back("Electric Guitar (muted)");
-        names.emplace_back("Overdriven Guitar");
-        names.emplace_back("Distortion Guitar");
-        names.emplace_back("Guitar harmonics");
-        names.emplace_back("Acoustic Bass");
-        names.emplace_back("Electric Bass (finger)");
-        names.emplace_back("Electric Bass (pick)");
-        names.emplace_back("Fretless Bass");
-        names.emplace_back("Slap Bass 1");
-        names.emplace_back("Slap Bass 2");
-        names.emplace_back("Synth Bass 1");
-        names.emplace_back("Synth Bass 2");
-        names.emplace_back("Violin");
-        names.emplace_back("Viola");
-        names.emplace_back("Cello");
-        names.emplace_back("Contrabass");
-        names.emplace_back("Tremolo Strings");
-        names.emplace_back("Pizzicato Strings");
-        names.emplace_back("Orchestral Harp");
-        names.emplace_back("Timpani");
-        names.emplace_back("String Ensemble 1");
-        names.emplace_back("String Ensemble 2");
-        names.emplace_back("Synth Strings 1");
-        names.emplace_back("Synth Strings 2");
-        names.emplace_back("Choir Aahs");
-        names.emplace_back("Voice Oohs");
-        names.emplace_back("Synth Voice");
-        names.emplace_back("Orchestra Hit");
-        names.emplace_back("Trumpet");
-        names.emplace_back("Trombone");
-        names.emplace_back("Tuba");
-        names.emplace_back("Muted Trumpet");
-        names.emplace_back("French Horn");
-        names.emplace_back("Brass Section");
-        names.emplace_back("Synth Brass 1");
-        names.emplace_back("Synth Brass 2");
-        names.emplace_back("Soprano Sax");
-        names.emplace_back("Alto Sax");
-        names.emplace_back("Tenor Sax");
-        names.emplace_back("Baritone Sax");
-        names.emplace_back("Oboe");
-        names.emplace_back("English Horn");
-        names.emplace_back("Bassoon");
-        names.emplace_back("Clarinet");
-        names.emplace_back("Piccolo");
-        names.emplace_back("Flute");
-        names.emplace_back("Recorder");
-        names.emplace_back("Pan Flute");
-        names.emplace_back("Blown Bottle");
-        names.emplace_back("Shakuhachi");
-        names.emplace_back("Whistle");
-        names.emplace_back("Ocarina");
-        names.emplace_back("Lead 1 (square)");
-        names.emplace_back("Lead 2 (sawtooth)");
-        names.emplace_back("Lead 3 (calliope)");
-        names.emplace_back("Lead 4 (chiff)");
-        names.emplace_back("Lead 5 (charang)");
-        names.emplace_back("Lead 6 (voice)");
-        names.emplace_back("Lead 7 (fifths)");
-        names.emplace_back("Lead 8 (bass + lead)");
-        names.emplace_back("Pad 1 (new age)");
-        names.emplace_back("Pad 2 (warm)");
-        names.emplace_back("Pad 3 (polysynth)");
-        names.emplace_back("Pad 4 (choir)");
-        names.emplace_back("Pad 5 (bowed)");
-        names.emplace_back("Pad 6 (metallic)");
-        names.emplace_back("Pad 7 (halo)");
-        names.emplace_back("Pad 8 (sweep)");
-        names.emplace_back("FX 1 (rain)");
-        names.emplace_back("FX 2 (soundtrack)");
-        names.emplace_back("FX 3 (crystal)");
-        names.emplace_back("FX 4 (atmosphere)");
-        names.emplace_back("FX 5 (brightness)");
-        names.emplace_back("FX 6 (goblins)");
-        names.emplace_back("FX 7 (echoes)");
-        names.emplace_back("FX 8 (sci-fi)");
-        names.emplace_back("Sitar");
-        names.emplace_back("Banjo");
-        names.emplace_back("Shamisen");
-        names.emplace_back("Koto");
-        names.emplace_back("Kalimba");
-        names.emplace_back("Bag pipe");
-        names.emplace_back("Fiddle");
-        names.emplace_back("Shanai");
-        names.emplace_back("Tinkle Bell");
-        names.emplace_back("Agogo");
-        names.emplace_back("Steel Drums");
-        names.emplace_back("Woodblock");
-        names.emplace_back("Taiko Drum");
-        names.emplace_back("Melodic Tom");
-        names.emplace_back("Synth Drum");
-        names.emplace_back("Reverse Cymbal");
-        names.emplace_back("Guitar Fret Noise");
-        names.emplace_back("Breath Noise");
-        names.emplace_back("Seashore");
-        names.emplace_back("Bird Tweet");
-        names.emplace_back("Telephone Ring");
-        names.emplace_back("Helicopter");
-        names.emplace_back("Applause");
-        names.emplace_back("Gunshot");
+        using namespace std::literals;
+        static const std::vector<std::string> names = {
+            "Acoustic Grand Piano"s,
+            "Bright Acoustic Piano"s,
+            "Electric Grand Piano"s,
+            "Honky-tonk Piano"s,
+            "Electric Piano 1"s,
+            "Electric Piano 2"s,
+            "Harpsichord"s,
+            "Clavinet"s,
+            "Celesta"s,
+            "Glockenspiel"s,
+            "Music Box"s,
+            "Vibraphone"s,
+            "Marimba"s,
+            "Xylophone"s,
+            "Tubular Bells"s,
+            "Dulcimer"s,
+            "Drawbar Organ"s,
+            "Percussive Organ"s,
+            "Rock Organ"s,
+            "Church Organ"s,
+            "Reed Organ"s,
+            "Accordion"s,
+            "Harmonica"s,
+            "Tango Accordion"s,
+            "Acoustic Guitar (nylon)"s,
+            "Acoustic Guitar (steel)"s,
+            "Electric Guitar (jazz)"s,
+            "Electric Guitar (clean)"s,
+            "Electric Guitar (muted)"s,
+            "Overdriven Guitar"s,
+            "Distortion Guitar"s,
+            "Guitar harmonics"s,
+            "Acoustic Bass"s,
+            "Electric Bass (finger)"s,
+            "Electric Bass (pick)"s,
+            "Fretless Bass"s,
+            "Slap Bass 1"s,
+            "Slap Bass 2"s,
+            "Synth Bass 1"s,
+            "Synth Bass 2"s,
+            "Violin"s,
+            "Viola"s,
+            "Cello"s,
+            "Contrabass"s,
+            "Tremolo Strings"s,
+            "Pizzicato Strings"s,
+            "Orchestral Harp"s,
+            "Timpani"s,
+            "String Ensemble 1"s,
+            "String Ensemble 2"s,
+            "Synth Strings 1"s,
+            "Synth Strings 2"s,
+            "Choir Aahs"s,
+            "Voice Oohs"s,
+            "Synth Voice"s,
+            "Orchestra Hit"s,
+            "Trumpet"s,
+            "Trombone"s,
+            "Tuba"s,
+            "Muted Trumpet"s,
+            "French Horn"s,
+            "Brass Section"s,
+            "Synth Brass 1"s,
+            "Synth Brass 2"s,
+            "Soprano Sax"s,
+            "Alto Sax"s,
+            "Tenor Sax"s,
+            "Baritone Sax"s,
+            "Oboe"s,
+            "English Horn"s,
+            "Bassoon"s,
+            "Clarinet"s,
+            "Piccolo"s,
+            "Flute"s,
+            "Recorder"s,
+            "Pan Flute"s,
+            "Blown Bottle"s,
+            "Shakuhachi"s,
+            "Whistle"s,
+            "Ocarina"s,
+            "Lead 1 (square)"s,
+            "Lead 2 (sawtooth)"s,
+            "Lead 3 (calliope)"s,
+            "Lead 4 (chiff)"s,
+            "Lead 5 (charang)"s,
+            "Lead 6 (voice)"s,
+            "Lead 7 (fifths)"s,
+            "Lead 8 (bass + lead)"s,
+            "Pad 1 (new age)"s,
+            "Pad 2 (warm)"s,
+            "Pad 3 (polysynth)"s,
+            "Pad 4 (choir)"s,
+            "Pad 5 (bowed)"s,
+            "Pad 6 (metallic)"s,
+            "Pad 7 (halo)"s,
+            "Pad 8 (sweep)"s,
+            "FX 1 (rain)"s,
+            "FX 2 (soundtrack)"s,
+            "FX 3 (crystal)"s,
+            "FX 4 (atmosphere)"s,
+            "FX 5 (brightness)"s,
+            "FX 6 (goblins)"s,
+            "FX 7 (echoes)"s,
+            "FX 8 (sci-fi)"s,
+            "Sitar"s,
+            "Banjo"s,
+            "Shamisen"s,
+            "Koto"s,
+            "Kalimba"s,
+            "Bag pipe"s,
+            "Fiddle"s,
+            "Shanai"s,
+            "Tinkle Bell"s,
+            "Agogo"s,
+            "Steel Drums"s,
+            "Woodblock"s,
+            "Taiko Drum"s,
+            "Melodic Tom"s,
+            "Synth Drum"s,
+            "Reverse Cymbal"s,
+            "Guitar Fret Noise"s,
+            "Breath Noise"s,
+            "Seashore"s,
+            "Bird Tweet"s,
+            "Telephone Ring"s,
+            "Helicopter"s,
+            "Applause"s,
+            "Gunshot"s,
+        };
 
         return names;
     }
 
-    std::vector<std::string> getPercussionPresetNames()
+    const std::vector<std::string> &getPercussionPresetNames()
     {
-        std::vector<std::string> names;
-
-        names.emplace_back("Acoustic Bass Drum");
-        names.emplace_back("Bass Drum 1");
-        names.emplace_back("Side Stick");
-        names.emplace_back("Acoustic Snare");
-        names.emplace_back("Hand Clap");
-        names.emplace_back("Electric Snare");
-        names.emplace_back("Low Floor Tom");
-        names.emplace_back("Closed Hi-Hat");
-        names.emplace_back("High Floor Tom");
-        names.emplace_back("Pedal Hi-Hat");
-        names.emplace_back("Low Tom");
-        names.emplace_back("Open Hi-Hat");
-        names.emplace_back("Low-Mid Tom");
-        names.emplace_back("Hi-Mid Tom");
-        names.emplace_back("Crash Cymbal 1");
-        names.emplace_back("High Tom");
-        names.emplace_back("Ride Cymbal 1");
-        names.emplace_back("Chinese Cymbal");
-        names.emplace_back("Ride Bell");
-        names.emplace_back("Tambourine");
-        names.emplace_back("Splash Cymbal");
-        names.emplace_back("Cowbell");
-        names.emplace_back("Crash Cymbal 2");
-        names.emplace_back("Vibraslap");
-        names.emplace_back("Ride Cymbal 2");
-        names.emplace_back("Hi Bongo");
-        names.emplace_back("Low Bongo");
-        names.emplace_back("Mute Hi Conga");
-        names.emplace_back("Open Hi Conga");
-        names.emplace_back("Low Conga");
-        names.emplace_back("High Timbale");
-        names.emplace_back("Low Timbale");
-        names.emplace_back("High Agogo");
-        names.emplace_back("Low Agogo");
-        names.emplace_back("Cabasa");
-        names.emplace_back("Maracas");
-        names.emplace_back("Short Whistle");
-        names.emplace_back("Long Whistle");
-        names.emplace_back("Short Guiro");
-        names.emplace_back("Long Guiro");
-        names.emplace_back("Claves");
-        names.emplace_back("Hi Wood Block");
-        names.emplace_back("Low Wood Block");
-        names.emplace_back("Mute Cuica");
-        names.emplace_back("Open Cuica");
-        names.emplace_back("Mute Triangle");
-        names.emplace_back("Open Triangle");
+        using namespace std::literals;
+        static const std::vector<std::string> names = {
+            "Acoustic Bass Drum"s,
+            "Bass Drum 1"s,
+            "Side Stick"s,
+            "Acoustic Snare"s,
+            "Hand Clap"s,
+            "Electric Snare"s,
+            "Low Floor Tom"s,
+            "Closed Hi-Hat"s,
+            "High Floor Tom"s,
+            "Pedal Hi-Hat"s,
+            "Low Tom"s,
+            "Open Hi-Hat"s,
+            "Low-Mid Tom"s,
+            "Hi-Mid Tom"s,
+            "Crash Cymbal 1"s,
+            "High Tom"s,
+            "Ride Cymbal 1"s,
+            "Chinese Cymbal"s,
+            "Ride Bell"s,
+            "Tambourine"s,
+            "Splash Cymbal"s,
+            "Cowbell"s,
+            "Crash Cymbal 2"s,
+            "Vibraslap"s,
+            "Ride Cymbal 2"s,
+            "Hi Bongo"s,
+            "Low Bongo"s,
+            "Mute Hi Conga"s,
+            "Open Hi Conga"s,
+            "Low Conga"s,
+            "High Timbale"s,
+            "Low Timbale"s,
+            "High Agogo"s,
+            "Low Agogo"s,
+            "Cabasa"s,
+            "Maracas"s,
+            "Short Whistle"s,
+            "Long Whistle"s,
+            "Short Guiro"s,
+            "Long Guiro"s,
+            "Claves"s,
+            "Hi Wood Block"s,
+            "Low Wood Block"s,
+            "Mute Cuica"s,
+            "Open Cuica"s,
+            "Mute Triangle"s,
+            "Open Triangle"s,
+        };
 
         return names;
     }

@@ -365,8 +365,7 @@ void PowerTabOldImporter::convert(const PowerTabDocument::Guitar &guitar,
     instrument.setMidiPreset(preset);
 
     // Use the MIDI preset name as the description.
-    const std::vector<std::string> presetNames = Midi::getPresetNames();
-    instrument.setDescription(presetNames.at(preset));
+    instrument.setDescription(Midi::getPresetNames().at(preset));
 
     score.insertInstrument(instrument);
 }
