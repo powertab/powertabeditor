@@ -322,13 +322,18 @@ void PowerTabOldImporter::convert(const PowerTabDocument::Score &oldScore,
     for (size_t i = 0; i < oldScore.GetGuitarCount(); ++i)
         convert(*oldScore.GetGuitar(i), score);
 
-    // Convert chord diagrams (required before importing rhythm slashes).
+    // Convert chord diagrams (required before importing rhythm slashes) and
+    // build a map to find diagrams by name when converting rhythm slashes.
     convertChordDiagrams(oldScore, score);
+
+    ChordDiagramMap chord_diagrams;
+    for (const ChordDiagram &diagram : score.getChordDiagrams())
+        chord_diagrams[diagram.getChordName()] = diagram;
 
     for (size_t i = 0; i < oldScore.GetSystemCount(); ++i)
     {
         score.insertSystem(System());
-        convert(oldScore, oldScore.GetSystem(i), score,
+        convert(oldScore, oldScore.GetSystem(i), chord_diagrams, score,
                 score.getSystems().back());
     }
 
@@ -382,23 +387,12 @@ void PowerTabOldImporter::convert(const PowerTabDocument::Tuning &oldTuning,
     // The capo is set from the Guitar object.
 }
 
-static const ChordDiagram *
-findChordDiagram(const Score &score, const ChordName &chord)
-{
-    // TODO - could accelerate this by caching a map from chord name to diagram.
-    for (const ChordDiagram &diagram : score.getChordDiagrams())
-    {
-        if (diagram.getChordName() == chord)
-            return &diagram;
-    }
+using ChordDiagramMap = std::unordered_map<ChordName, ChordDiagram>;
 
-    return nullptr;
-}
-
-void
-PowerTabOldImporter::convertRhythmSlashes(
-    const PowerTabDocument::System &old_system, const Score &score,
-    Staff &staff)
+static void
+convertRhythmSlashes(const PowerTabDocument::System &old_system,
+                     const Score &score, const ChordDiagramMap &chord_diagrams,
+                     Staff &staff)
 {
     // TODO - are rhythm slashes from v1.7 files always 6 strings?
 
@@ -436,18 +430,14 @@ PowerTabOldImporter::convertRhythmSlashes(
                         Note(note.getString(), note.getFretNumber()));
                 }
             }
-            else
+            else if (auto it = chord_diagrams.find(chord->getChordName());
+                     it != chord_diagrams.end())
             {
-                const ChordDiagram *diagram =
-                    chord ? findChordDiagram(score, chord->getChordName())
-                          : nullptr;
-                if (diagram)
+                const ChordDiagram &diagram = it->second;
+                for (int s = 0; s < diagram.getStringCount(); ++s)
                 {
-                    for (int s = 0; s < diagram->getStringCount(); ++s)
-                    {
-                        if (diagram->getFretNumber(s) >= 0)
-                            pos.insertNote(Note(s, diagram->getFretNumber(s)));
-                    }
+                    if (diagram.getFretNumber(s) >= 0)
+                        pos.insertNote(Note(s, diagram.getFretNumber(s)));
                 }
             }
 
@@ -512,6 +502,7 @@ PowerTabOldImporter::convertRhythmSlashes(
 void
 PowerTabOldImporter::convert(const PowerTabDocument::Score &oldScore,
                              PowerTabDocument::Score::SystemConstPtr oldSystem,
+                             const ChordDiagramMap &chord_diagrams, 
                              Score &score, System &system)
 {
     // Ensure that there are a reasonable number of positions in the staff
@@ -603,7 +594,7 @@ PowerTabOldImporter::convert(const PowerTabDocument::Score &oldScore,
             }
         }
 
-        convertRhythmSlashes(*oldSystem, score, staff);
+        convertRhythmSlashes(*oldSystem, score, chord_diagrams, staff);
         system.insertStaff(staff);
     }
 
