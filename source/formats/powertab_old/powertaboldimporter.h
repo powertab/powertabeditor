@@ -21,6 +21,8 @@
 #include <formats/fileformat.h>
 #include <memory>
 
+#include <unordered_map>
+
 namespace PowerTabDocument {
 class AlternateEnding;
 class Barline;
@@ -43,6 +45,8 @@ class Tuning;
 
 class AlternateEnding;
 class Barline;
+class ChordDiagram;
+class ChordName;
 class ChordText;
 class Direction;
 class Dynamic;
@@ -74,9 +78,12 @@ private:
     static void convert(const PowerTabDocument::Tuning &oldTuning,
                         Tuning &tuning);
 
-    static void convert(const PowerTabDocument::Score &oldScore,
-                        std::shared_ptr<const PowerTabDocument::System> oldSystem,
-                        System &system);
+    using ChordDiagramMap = std::unordered_map<ChordName, ChordDiagram>;
+    static void convert(
+        const PowerTabDocument::Score &oldScore,
+        std::shared_ptr<const PowerTabDocument::System> oldSystem,
+        const ChordDiagramMap &chord_diagrams,
+        Score &score, System &system);
 
     static void convert(const PowerTabDocument::Barline &oldBar, Barline &bar);
     static void convert(const PowerTabDocument::RehearsalSign &oldSign,
@@ -99,8 +106,6 @@ private:
     static int convert(const PowerTabDocument::Staff &oldStaff,
                         const std::vector<DynamicPtr> &dynamics,
                         Staff &staff);
-    static void convert(const PowerTabDocument::Dynamic &oldDynamic,
-                        Dynamic &dynamic);
 
     static void convert(const PowerTabDocument::Position &oldPosition,
                         Position &position);

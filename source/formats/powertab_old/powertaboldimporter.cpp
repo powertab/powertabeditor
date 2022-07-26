@@ -29,6 +29,7 @@
 #include <formats/powertab_old/powertabdocument/note.h>
 #include <formats/powertab_old/powertabdocument/position.h>
 #include <formats/powertab_old/powertabdocument/powertabdocument.h>
+#include <formats/powertab_old/powertabdocument/rhythmslash.h>
 #include <formats/powertab_old/powertabdocument/score.h>
 #include <formats/powertab_old/powertabdocument/staff.h>
 #include <formats/powertab_old/powertabdocument/system.h>
@@ -63,6 +64,7 @@ void PowerTabOldImporter::load(const std::filesystem::path &filename,
     assert(document.GetNumberOfScores() == 2);
 
     // Convert the guitar score.
+#if 1
     Score guitarScore;
     convert(*document.GetScore(0), guitarScore);
 
@@ -74,6 +76,10 @@ void PowerTabOldImporter::load(const std::filesystem::path &filename,
     // Reformat the score, since the guitar and bass score from v1.7 may have
     // had different spacing.
     ScoreUtils::polishScore(score);
+#else
+    // For debugging, optionally import just one score without merging / polishing.
+    convert(*document.GetScore(0), score);
+#endif
 }
 
 void PowerTabOldImporter::convert(
@@ -321,11 +327,21 @@ void PowerTabOldImporter::convert(const PowerTabDocument::Score &oldScore,
     for (size_t i = 0; i < oldScore.GetGuitarCount(); ++i)
         convert(*oldScore.GetGuitar(i), score);
 
+    // Convert chord diagrams (required before importing rhythm slashes) and
+    // build a map to find diagrams by name when converting rhythm slashes.
+    convertChordDiagrams(oldScore, score);
+
+    ChordDiagramMap chord_diagrams;
+    for (const ChordDiagram &diagram : score.getChordDiagrams())
+        chord_diagrams[diagram.getChordName()] = diagram;
+
     for (size_t i = 0; i < oldScore.GetSystemCount(); ++i)
     {
-        System system;
-        convert(oldScore, oldScore.GetSystem(i), system);
-        score.insertSystem(std::move(system));
+        // Note: it's important for the system to already be inserted, for
+        // queries like ScoreUtils::getCurrentChordText().
+        score.insertSystem(System());
+        convert(oldScore, oldScore.GetSystem(i), chord_diagrams, score,
+                score.getSystems().back());
     }
 
     // Convert Guitar In's to player changes.
@@ -336,9 +352,6 @@ void PowerTabOldImporter::convert(const PowerTabDocument::Score &oldScore,
 
     // Convert floating text to the new text items.
     convertFloatingText(oldScore, score);
-
-    // Convert chord diagrams.
-    convertChordDiagrams(oldScore, score);
 }
 
 void PowerTabOldImporter::convert(const PowerTabDocument::Guitar &guitar,
@@ -380,9 +393,148 @@ void PowerTabOldImporter::convert(const PowerTabDocument::Tuning &oldTuning,
     // The capo is set from the Guitar object.
 }
 
-void PowerTabOldImporter::convert(const PowerTabDocument::Score &oldScore,
-                                  PowerTabDocument::Score::SystemConstPtr oldSystem,
-                                  System &system)
+using ChordDiagramMap = std::unordered_map<ChordName, ChordDiagram>;
+
+static void
+convertRhythmSlashes(const PowerTabDocument::System &old_system,
+                     const Score &score, const ChordDiagramMap &chord_diagrams,
+                     Staff &staff)
+{
+    // TODO - are rhythm slashes from v1.7 files always 6 strings?
+
+    Voice &voice = staff.getVoices()[0];
+
+    // Convert rhythm slashes to normal notes.
+    const ChordText *prev_chord = nullptr;
+    std::optional<size_t> prev_slash_idx;
+    std::optional<size_t> triplet_start_idx;
+    for (size_t i = 0; i < old_system.GetRhythmSlashCount(); ++i)
+    {
+        const PowerTabDocument::System::RhythmSlashPtr slash =
+            old_system.GetRhythmSlash(i);
+        Position pos;
+
+        if (!slash->IsRest())
+        {
+            const ChordText *chord = ScoreUtils::getCurrentChordText(
+                score, score.getSystems().size() - 1, slash->GetPosition());
+
+            if (slash->IsSingleNote())
+            {
+                uint8_t string_num = 0, fret_num = 0;
+                slash->GetSingleNoteData(string_num, fret_num);
+
+                pos.insertNote(Note(string_num, fret_num));
+            }
+            else if (chord)
+            {
+                if (chord == prev_chord)
+                {
+                    assert(prev_slash_idx.has_value());
+
+                    // Until there is a chord change, play the same notes as the
+                    // previous slash. In particular, this is important because
+                    // single note slashes remain active until a chord change.
+                    const Position &prev_pos = voice.getPositions()[*prev_slash_idx];
+                    for (const Note &note : prev_pos.getNotes())
+                    {
+                        pos.insertNote(
+                            Note(note.getString(), note.getFretNumber()));
+                    }
+                }
+                else if (auto it = chord_diagrams.find(chord->getChordName());
+                         it != chord_diagrams.end())
+                {
+                    const ChordDiagram &diagram = it->second;
+                    for (int s = 0; s < diagram.getStringCount(); ++s)
+                    {
+                        if (diagram.getFretNumber(s) >= 0)
+                            pos.insertNote(Note(s, diagram.getFretNumber(s)));
+                    }
+                }
+            }
+
+            prev_chord = chord;
+            prev_slash_idx = voice.getPositions().size();
+        }
+
+        pos.setPosition(slash->GetPosition());
+        pos.setDurationType(
+            static_cast<Position::DurationType>(slash->GetDurationType()));
+
+        if (slash->IsDotted())
+            pos.setProperty(Position::Dotted);
+        if (slash->IsDoubleDotted())
+            pos.setProperty(Position::DoubleDotted);
+        if (slash->IsRest())
+            pos.setRest();
+        if (slash->IsStaccato())
+            pos.setProperty(Position::Staccato);
+        if (slash->HasPickStrokeUp())
+            pos.setProperty(Position::PickStrokeUp);
+        if (slash->HasPickStrokeDown())
+            pos.setProperty(Position::PickStrokeDown);
+        if (slash->HasArpeggioUp())
+            pos.setProperty(Position::ArpeggioUp);
+        if (slash->HasArpeggioDown())
+            pos.setProperty(Position::ArpeggioDown);
+        if (slash->IsTripletFeel1st())
+            pos.setProperty(Position::TripletFeelFirst);
+        if (slash->IsTripletFeel2nd())
+            pos.setProperty(Position::TripletFeelSecond);
+        if (slash->HasMarcato())
+            pos.setProperty(Position::Marcato);
+        if (slash->HasSforzando())
+            pos.setProperty(Position::Sforzando);
+
+        for (Note &note : pos.getNotes())
+        {
+            if (slash->IsTied())
+                note.setProperty(Note::Tied);
+            if (slash->IsMuted())
+                note.setProperty(Note::Muted);
+            if (slash->HasSlideIntoFromBelow())
+                note.setProperty(Note::SlideIntoFromBelow);
+            if (slash->HasSlideIntoFromAbove())
+                note.setProperty(Note::SlideIntoFromAbove);
+            if (slash->HasSlideOutOfDownwards())
+                note.setProperty(Note::SlideOutOfDownwards);
+            if (slash->HasSlideOutOfUpwards())
+                note.setProperty(Note::SlideOutOfUpwards);
+        }
+
+        voice.insertPosition(pos);
+
+        // Add irregular groups for triplets.
+        if (slash->IsTripletStart())
+        {
+            assert(!triplet_start_idx.has_value());
+            triplet_start_idx = i;
+        }
+        else if (slash->IsTripletMiddle())
+        {
+            assert(triplet_start_idx.has_value());
+        }
+        else if (slash->IsTripletEnd())
+        {
+            assert(triplet_start_idx.has_value());
+
+            const int group_start =
+                voice.getPositions()[*triplet_start_idx].getPosition();
+            const int num_positions = i - *triplet_start_idx + 1;
+            voice.insertIrregularGrouping(
+                IrregularGrouping(group_start, num_positions, 3, 2));
+
+            triplet_start_idx.reset();
+        }
+    }
+}
+
+void
+PowerTabOldImporter::convert(const PowerTabDocument::Score &oldScore,
+                             PowerTabDocument::Score::SystemConstPtr oldSystem,
+                             const ChordDiagramMap &chord_diagrams, 
+                             Score &score, System &system)
 {
     // Ensure that there are a reasonable number of positions in the staff
     // so that things aren't too stretched out.
@@ -455,6 +607,28 @@ void PowerTabOldImporter::convert(const PowerTabDocument::Score &oldScore,
     std::vector<PowerTabDocument::Score::DynamicPtr> dynamics;
     oldScore.GetDynamicsInSystem(dynamics, oldSystem);
 
+    // Import rhythm slashes as an additional staff before any other staves.
+    if (oldSystem->GetRhythmSlashCount() > 0)
+    {
+        Staff staff;
+
+        for (auto &dynamic : dynamics)
+        {
+            if (dynamic->IsRhythmSlashVolumeSet())
+            {
+                Dynamic new_dynamic(
+                    dynamic->GetPosition(),
+                    static_cast<VolumeLevel>(dynamic->GetRhythmSlashVolume()));
+                staff.insertDynamic(new_dynamic);
+                lastPosition =
+                    std::max(lastPosition, new_dynamic.getPosition());
+            }
+        }
+
+        convertRhythmSlashes(*oldSystem, score, chord_diagrams, staff);
+        system.insertStaff(staff);
+    }
+
     // Import staves.
     for (size_t i = 0; i < oldSystem->GetStaffCount(); ++i)
     {
@@ -462,7 +636,7 @@ void PowerTabOldImporter::convert(const PowerTabDocument::Score &oldScore,
         std::vector<PowerTabDocument::Score::DynamicPtr> dynamicsInStaff;
         for (auto &dynamic : dynamics)
         {
-            if (dynamic->GetStaff() == i)
+            if (dynamic->GetStaff() == i && dynamic->IsStaffVolumeSet())
                 dynamicsInStaff.push_back(dynamic);
         }
 
@@ -619,10 +793,11 @@ int PowerTabOldImporter::convert(
         // Ignore dynamics for rhythm slashes.
         if (dynamic->IsStaffVolumeSet())
         {
-            Dynamic newDynamic;
-            convert(*dynamic, newDynamic);
-            staff.insertDynamic(newDynamic);
-            lastPosition = std::max(lastPosition, newDynamic.getPosition());
+            Dynamic new_dynamic(
+                dynamic->GetPosition(),
+                static_cast<VolumeLevel>(dynamic->GetStaffVolume()));
+            staff.insertDynamic(new_dynamic);
+            lastPosition = std::max(lastPosition, new_dynamic.getPosition());
         }
     }
 
@@ -682,14 +857,6 @@ int PowerTabOldImporter::convert(
     }
 
     return lastPosition;
-}
-
-void PowerTabOldImporter::convert(const PowerTabDocument::Dynamic &oldDynamic,
-                                  Dynamic &dynamic)
-{
-    dynamic.setPosition(oldDynamic.GetPosition());
-    dynamic.setVolume(static_cast<VolumeLevel>(
-                          oldDynamic.GetStaffVolume()));
 }
 
 void PowerTabOldImporter::convert(const PowerTabDocument::Position &oldPosition,
@@ -868,18 +1035,19 @@ void PowerTabOldImporter::convert(const PowerTabDocument::Note &oldNote,
 
 namespace {
 
-typedef std::array<int, PowerTabDocument::Score::MAX_NUM_GUITARS> ActivePlayers;
+using PlayerStaffMap =
+    std::array<int, PowerTabDocument::Score::MAX_NUM_GUITARS>;
 
-PlayerChange getPlayerChange(const ActivePlayers &activePlayers,
-                             int currentPosition)
+PlayerChange
+getPlayerChange(const PlayerStaffMap &player_staves, int position)
 {
     PlayerChange change;
-    change.setPosition(currentPosition);
+    change.setPosition(position);
 
-    for (int player = 0; player < static_cast<int>(activePlayers.size());
+    for (int player = 0; player < static_cast<int>(player_staves.size());
          ++player)
     {
-        const int staff = activePlayers[player];
+        const int staff = player_staves[player];
         if (staff >= 0)
         {
             change.insertActivePlayer(staff,
@@ -896,58 +1064,88 @@ void PowerTabOldImporter::convertGuitarIns(
         const PowerTabDocument::Score &oldScore, Score &score)
 {
     // For each guitar, keep track of its current staff.
-    std::array<int, PowerTabDocument::Score::MAX_NUM_GUITARS> activePlayers;
-    activePlayers.fill(-1);
+    std::array<int, PowerTabDocument::Score::MAX_NUM_GUITARS> player_staves;
+    player_staves.fill(-1);
 
+    int prev_slash_offset = 0;
     for (size_t i = 0; i < oldScore.GetSystemCount(); ++i)
     {
+        PowerTabDocument::Score::SystemConstPtr system = oldScore.GetSystem(i);
         std::vector<PowerTabDocument::Score::GuitarInPtr> guitarIns;
-        oldScore.GetGuitarInsInSystem(guitarIns, oldScore.GetSystem(i));
-        if (guitarIns.empty())
-            continue;
+        oldScore.GetGuitarInsInSystem(guitarIns, system);
 
-        size_t currentPosition = guitarIns.front()->GetPosition();
+        // Rhythm slashes introduce an extra staff at the beginning of the
+        // system.
+        const int slash_offset = system->GetRhythmSlashCount() ? 1 : 0;
+        size_t current_pos = 0;
+
+        if (prev_slash_offset == slash_offset)
+        {
+            if (guitarIns.empty())
+                continue; // Nothing to do.
+
+            current_pos = guitarIns.front()->GetPosition();
+        }
+        else
+        {
+            // Rhythm slashes appeared or disappeared, so we need to shift any
+            // existing staff assignments.
+            // If rhythm slashes disappeared, this removes the assignment from
+            // staff 0.
+            const int offset = slash_offset - prev_slash_offset;
+            for (int &staff : player_staves)
+            {
+                if (staff >= 0)
+                    staff += offset;
+            }
+        }
+
+        prev_slash_offset = slash_offset;
 
         // In v1.7, each staff has separate guitar ins. In the new format,
         // player changes occur at the system level so we need to combine
         // the guitar ins from several staves.
         for (auto &guitarIn : guitarIns)
         {
-            // For now, ignore guitar ins that only affect rhythm slashes.
-            if (!guitarIn->HasStaffGuitarsSet())
-                continue;
-
             // After combining all guitar in's at a position, write out a player
             // change.
-            if (guitarIn->GetPosition() != currentPosition)
+            if (guitarIn->GetPosition() != current_pos)
             {
                 score.getSystems()[i].insertPlayerChange(getPlayerChange(
-                    activePlayers, static_cast<int>(currentPosition)));
+                    player_staves, static_cast<int>(current_pos)));
             }
 
-            // Clear out any players that are currently active for this staff.
-            const int staff = guitarIn->GetStaff();
-            for (auto &activePlayer : activePlayers)
+            const int staff_idx = guitarIn->GetStaff() + slash_offset;
+            std::bitset<8> staff_guitars(guitarIn->GetStaffGuitars());
+            std::bitset<8> slash_guitars(guitarIn->GetRhythmSlashGuitars());
+
+            for (size_t player_idx = 0; player_idx < player_staves.size();
+                 ++player_idx)
             {
-                if (activePlayer == staff)
-                    activePlayer = -1;
+                int &player_staff = player_staves[player_idx];
+
+                // Clear out any players that are currently active for this
+                // staff.
+                if (guitarIn->HasStaffGuitarsSet() && player_staff == staff_idx)
+                    player_staff = -1;
+
+                if (guitarIn->HasRhythmSlashGuitarsSet() && player_staff == 0)
+                    player_staff = -1;
+
+                // Set any active players for this staff.
+                if (staff_guitars[player_idx])
+                    player_staff = staff_idx;
+                else if (slash_guitars[player_idx])
+                    player_staff = 0;
             }
 
-            // Set the active players for this staff.
-            std::bitset<8> activeGuitars(guitarIn->GetStaffGuitars());
-            for (size_t k = 0; k < activePlayers.size(); ++k)
-            {
-                if (activeGuitars[k])
-                    activePlayers[k] = staff;
-            }
-
-            currentPosition = guitarIn->GetPosition();
+            current_pos = guitarIn->GetPosition();
         }
 
         // After processing all of the guitar ins in the system, write out a
         // final player change.
         score.getSystems()[i].insertPlayerChange(
-            getPlayerChange(activePlayers, static_cast<int>(currentPosition)));
+            getPlayerChange(player_staves, static_cast<int>(current_pos)));
     }
 }
 
