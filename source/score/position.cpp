@@ -266,14 +266,26 @@ boost::iterator_range<Position::NoteConstIterator> Position::getNotes() const
     return boost::make_iterator_range(myNotes);
 }
 
+/// Keep notes sorted by string. This is a very small list so re-sorting is
+/// easiest.
+static inline void
+sortNotes(std::vector<Note> &notes)
+{
+    std::sort(notes.begin(), notes.end(), [](const Note &note1, const Note &note2) {
+        return note1.getString() < note2.getString();
+    });
+}
+
 void Position::insertNote(const Note &note)
 {
     myNotes.push_back(note);
+    sortNotes(myNotes);
+}
 
-    // Sort notes by string.
-    std::sort(myNotes.begin(), myNotes.end(), [](const Note &note1, const Note &note2) {
-        return note1.getString() < note2.getString();
-    });
+void Position::insertNote(Note &&note)
+{
+    myNotes.push_back(std::move(note));
+    sortNotes(myNotes);
 }
 
 void Position::removeNote(const Note &note)

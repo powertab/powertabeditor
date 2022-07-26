@@ -325,7 +325,7 @@ void PowerTabOldImporter::convert(const PowerTabDocument::Score &oldScore,
     {
         System system;
         convert(oldScore, oldScore.GetSystem(i), system);
-        score.insertSystem(system);
+        score.insertSystem(std::move(system));
     }
 
     // Convert Guitar In's to player changes.
@@ -469,7 +469,7 @@ void PowerTabOldImporter::convert(const PowerTabDocument::Score &oldScore,
         Staff staff;
         int lastPosInStaff = convert(*oldSystem->GetStaff(i), dynamicsInStaff,
                                      staff);
-        system.insertStaff(staff);
+        system.insertStaff(std::move(staff));
         lastPosition = std::max(lastPosition, lastPosInStaff);
     }
 
@@ -634,7 +634,7 @@ int PowerTabOldImporter::convert(
         {
             Position position;
             convert(*oldStaff.GetPosition(voice, i), position);
-            staff.getVoices()[voice].insertPosition(position);
+            staff.getVoices()[voice].insertPosition(std::move(position));
             lastPosition = std::max(position.getPosition(), lastPosition);
         }
     }
@@ -772,7 +772,7 @@ void PowerTabOldImporter::convert(const PowerTabDocument::Position &oldPosition,
     {
         Note note;
         convert(*oldPosition.GetNote(i), note);
-        position.insertNote(note);
+        position.insertNote(std::move(note));
     }
 }
 

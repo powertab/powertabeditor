@@ -64,6 +64,7 @@ public:
 
     /// Adds a new staff to the system.
     void insertStaff(const Staff &staff);
+    void insertStaff(Staff &&staff);
     void insertStaff(const Staff &staff, int index);
     /// Removes the specified staff from the system.
     void removeStaff(int index);

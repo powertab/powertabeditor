@@ -44,6 +44,11 @@ void Voice::insertPosition(const Position &position)
     ScoreUtils::insertObject(myPositions, position);
 }
 
+void Voice::insertPosition(Position &&position)
+{
+    ScoreUtils::insertObject(myPositions, std::move(position));
+}
+
 void Voice::removePosition(const Position &position)
 {
     ScoreUtils::removeObject(myPositions, position);

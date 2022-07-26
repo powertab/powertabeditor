@@ -65,6 +65,7 @@ public:
 
     /// Adds a new system to the score, optionally at a specific index.
     void insertSystem(const System &system, int index = -1);
+    void insertSystem(System &&system);
     /// Removes the specified system from the score.
     void removeSystem(int index);
 

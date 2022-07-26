@@ -57,6 +57,11 @@ void System::insertStaff(const Staff &staff)
     myStaves.push_back(staff);
 }
 
+void System::insertStaff(Staff &&staff)
+{
+    myStaves.push_back(std::move(staff));
+}
+
 void System::insertStaff(const Staff &staff, int index)
 {
     myStaves.insert(myStaves.begin() + index, staff);

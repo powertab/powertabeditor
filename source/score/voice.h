@@ -45,8 +45,11 @@ public:
     /// Returns the set of positions in the voice.
     boost::iterator_range<PositionConstIterator> getPositions() const;
 
+    /// @{
     /// Adds a new position to the voice.
     void insertPosition(const Position &position);
+    void insertPosition(Position &&position);
+    /// @}
     /// Removes any positions that satisfy the given predicate.
     template <typename Predicate>
     void removePositions(Predicate p);

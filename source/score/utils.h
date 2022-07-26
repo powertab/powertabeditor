@@ -102,8 +102,8 @@ namespace Detail
     }
 
     /// Inserts the object, sorted by position.
-    template <typename T>
-    void insertObject(std::vector<T> &objects, const T &obj)
+    template <typename T, typename Y>
+    void insertObject(std::vector<T> &objects, Y &&obj)
     {
         auto it = boost::range::lower_bound(objects, obj.getPosition(),
                                             Detail::OrderByPosition());
@@ -116,7 +116,7 @@ namespace Detail
             return;
         }
 
-        objects.insert(it, obj);
+        objects.insert(it, std::forward<Y>(obj));
     }
 
     /// Removes the object from a sorted list.

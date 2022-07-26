@@ -67,6 +67,11 @@ void Score::insertSystem(const System &system, int index)
         mySystems.insert(mySystems.begin() + index, system);
 }
 
+void Score::insertSystem(System &&system)
+{
+    mySystems.push_back(std::move(system));
+}
+
 void Score::removeSystem(int index)
 {
     mySystems.erase(mySystems.begin() + index);

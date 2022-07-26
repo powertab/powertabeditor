@@ -1138,10 +1138,8 @@ convertSystem(const Gp7::Document &doc, Score &score, int bar_begin,
 #endif
                         }
                         else
-                            pos.insertNote(note);
+                            pos.insertNote(std::move(note));
                     }
-
-                    voice.insertPosition(pos);
 
                     // Take irregular groups into account when computing the
                     // duration time (the groups aren't constructed until all
@@ -1155,6 +1153,8 @@ convertSystem(const Gp7::Document &doc, Score &score, int bar_begin,
                     }
 
                     time += duration;
+
+                    voice.insertPosition(std::move(pos));
                 }
 
                 convertIrregularGroupings(voice, start_pos, voice_pos, doc,
@@ -1188,7 +1188,7 @@ convertSystem(const Gp7::Document &doc, Score &score, int bar_begin,
         start_pos = end_pos + 1;
     }
 
-    score.insertSystem(system);
+    score.insertSystem(std::move(system));
 }
 
 static bool

@@ -205,8 +205,11 @@ public:
     /// Returns the set of notes in the position.
     boost::iterator_range<NoteConstIterator> getNotes() const;
 
+    /// @{
     /// Adds a new note to the position.
     void insertNote(const Note &note);
+    void insertNote(Note &&note);
+    /// @}
     /// Removes any notes that satisfy the given predicate.
     template <class Predicate>
     void removeNotes(Predicate p);
