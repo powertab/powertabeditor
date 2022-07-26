@@ -405,6 +405,7 @@ convertRhythmSlashes(const PowerTabDocument::System &old_system,
 
     // Convert rhythm slashes to normal notes.
     const ChordText *prev_chord = nullptr;
+    std::optional<size_t> prev_slash_idx;
     std::optional<size_t> triplet_start_idx;
     for (size_t i = 0; i < old_system.GetRhythmSlashCount(); ++i)
     {
@@ -424,30 +425,36 @@ convertRhythmSlashes(const PowerTabDocument::System &old_system,
 
                 pos.insertNote(Note(string_num, fret_num));
             }
-            else if (chord && (chord == prev_chord))
+            else if (chord)
             {
-                // Until there is a chord change, play the same notes as the
-                // previous slash. In particular, this is important because
-                // single note slashes remain active until a chord change.
-                const Position &prev_pos = voice.getPositions().back();
-                for (const Note &note : prev_pos.getNotes())
+                if (chord == prev_chord)
                 {
-                    pos.insertNote(
-                        Note(note.getString(), note.getFretNumber()));
+                    assert(prev_slash_idx.has_value());
+
+                    // Until there is a chord change, play the same notes as the
+                    // previous slash. In particular, this is important because
+                    // single note slashes remain active until a chord change.
+                    const Position &prev_pos = voice.getPositions()[*prev_slash_idx];
+                    for (const Note &note : prev_pos.getNotes())
+                    {
+                        pos.insertNote(
+                            Note(note.getString(), note.getFretNumber()));
+                    }
                 }
-            }
-            else if (auto it = chord_diagrams.find(chord->getChordName());
-                     it != chord_diagrams.end())
-            {
-                const ChordDiagram &diagram = it->second;
-                for (int s = 0; s < diagram.getStringCount(); ++s)
+                else if (auto it = chord_diagrams.find(chord->getChordName());
+                         it != chord_diagrams.end())
                 {
-                    if (diagram.getFretNumber(s) >= 0)
-                        pos.insertNote(Note(s, diagram.getFretNumber(s)));
+                    const ChordDiagram &diagram = it->second;
+                    for (int s = 0; s < diagram.getStringCount(); ++s)
+                    {
+                        if (diagram.getFretNumber(s) >= 0)
+                            pos.insertNote(Note(s, diagram.getFretNumber(s)));
+                    }
                 }
             }
 
             prev_chord = chord;
+            prev_slash_idx = voice.getPositions().size();
         }
 
         pos.setPosition(slash->GetPosition());
