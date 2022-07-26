@@ -136,9 +136,9 @@ Score::getChordDiagrams() const
 }
 
 void
-Score::insertChordDiagram(const ChordDiagram &filter)
+Score::insertChordDiagram(const ChordDiagram &diagram)
 {
-    myChordDiagrams.push_back(filter);
+    myChordDiagrams.push_back(diagram);
 }
 
 void Score::insertChordDiagram(const ChordDiagram &diagram, int index)
