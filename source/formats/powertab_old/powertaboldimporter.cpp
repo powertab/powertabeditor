@@ -64,6 +64,7 @@ void PowerTabOldImporter::load(const std::filesystem::path &filename,
     assert(document.GetNumberOfScores() == 2);
 
     // Convert the guitar score.
+#if 1
     Score guitarScore;
     convert(*document.GetScore(0), guitarScore);
 
@@ -75,6 +76,10 @@ void PowerTabOldImporter::load(const std::filesystem::path &filename,
     // Reformat the score, since the guitar and bass score from v1.7 may have
     // had different spacing.
     ScoreUtils::polishScore(score);
+#else
+    // For debugging, optionally import just one score without merging / polishing.
+    convert(*document.GetScore(0), score);
+#endif
 }
 
 void PowerTabOldImporter::convert(
@@ -400,6 +405,7 @@ convertRhythmSlashes(const PowerTabDocument::System &old_system,
 
     // Convert rhythm slashes to normal notes.
     const ChordText *prev_chord = nullptr;
+    std::optional<size_t> triplet_start_idx;
     for (size_t i = 0; i < old_system.GetRhythmSlashCount(); ++i)
     {
         const PowerTabDocument::System::RhythmSlashPtr slash =
@@ -491,10 +497,27 @@ convertRhythmSlashes(const PowerTabDocument::System &old_system,
 
         voice.insertPosition(pos);
 
-        if (slash->IsTripletStart() || slash->IsTripletMiddle() ||
-            slash->IsTripletEnd())
+        // Add irregular groups for triplets.
+        if (slash->IsTripletStart())
         {
-            // TODO - record irregular grouping
+            assert(!triplet_start_idx.has_value());
+            triplet_start_idx = i;
+        }
+        else if (slash->IsTripletMiddle())
+        {
+            assert(triplet_start_idx.has_value());
+        }
+        else if (slash->IsTripletEnd())
+        {
+            assert(triplet_start_idx.has_value());
+
+            const int group_start =
+                voice.getPositions()[*triplet_start_idx].getPosition();
+            const int num_positions = i - *triplet_start_idx + 1;
+            voice.insertIrregularGrouping(
+                IrregularGrouping(group_start, num_positions, 3, 2));
+
+            triplet_start_idx.reset();
         }
     }
 }
