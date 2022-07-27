@@ -802,14 +802,16 @@ int PowerTabOldImporter::convert(
     }
 
     // Import positions.
-    for (size_t voice = 0; voice < PowerTabDocument::Staff::NUM_STAFF_VOICES;
-         ++voice)
+    for (size_t voice_idx = 0;
+         voice_idx < PowerTabDocument::Staff::NUM_STAFF_VOICES; ++voice_idx)
     {
-        for (size_t i = 0; i < oldStaff.GetPositionCount(voice); ++i)
+        Voice &voice = staff.getVoices()[voice_idx];
+        voice.setPositionsCapacity(oldStaff.GetPositionCount(voice_idx));
+        for (size_t i = 0; i < oldStaff.GetPositionCount(voice_idx); ++i)
         {
             Position position;
-            convert(*oldStaff.GetPosition(voice, i), position);
-            staff.getVoices()[voice].insertPosition(std::move(position));
+            convert(*oldStaff.GetPosition(voice_idx, i), position);
+            voice.insertPosition(std::move(position));
             lastPosition = std::max(position.getPosition(), lastPosition);
         }
     }
@@ -935,6 +937,7 @@ void PowerTabOldImporter::convert(const PowerTabDocument::Position &oldPosition,
     }
 
     // Import notes.
+    position.setNotesCapacity(oldPosition.GetNoteCount());
     for (size_t i = 0; i < oldPosition.GetNoteCount(); ++i)
     {
         Note note;

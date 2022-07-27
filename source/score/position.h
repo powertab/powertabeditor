@@ -216,6 +216,9 @@ public:
     /// Removes the specified note from the position.
     void removeNote(const Note &note);
 
+    /// Increase the capacity for the list of notes.
+    void setNotesCapacity(size_t capacity) { myNotes.reserve(capacity); }
+
 private:
     int myPosition;
     DurationType myDurationType;

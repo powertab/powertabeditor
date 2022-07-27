@@ -1076,6 +1076,7 @@ convertSystem(const Gp7::Document &doc, Score &score, int bar_begin,
 
                 const Gp7::Voice &gp_voice = doc.myVoices.at(gp_voice_idx);
                 Voice &voice = staff.getVoices()[voice_idx];
+                voice.setPositionsCapacity(gp_voice.myBeatIds.size());
 
                 int voice_pos = start_pos;
                 boost::rational<int> time;
@@ -1122,6 +1123,7 @@ convertSystem(const Gp7::Document &doc, Score &score, int bar_begin,
                         pos.setRest();
 
                     // Import notes.
+                    pos.setNotesCapacity(gp_beat.myNoteIds.size());
                     for (int gp_note_id : gp_beat.myNoteIds)
                     {
                         const Gp7::Note &gp_note = doc.myNotes.at(gp_note_id);

@@ -56,6 +56,9 @@ public:
     /// Removes the specified position from the voice.
     void removePosition(const Position &position);
 
+    /// Increase the capacity for the list of positions.
+    void setPositionsCapacity(size_t capacity) { myPositions.reserve(capacity); }
+
     /// Returns the set of irregular groupings in the voice.
     boost::iterator_range<IrregularGroupingIterator> getIrregularGroupings();
     /// Returns the set of irregular groupings in the voice.
