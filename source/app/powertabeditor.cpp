@@ -3604,8 +3604,7 @@ void PowerTabEditor::setupNewTab()
 
                 myIsHandlingClick = true;
 
-                getCaret().moveToSystem(location.getSystemIndex(), true);
-                getCaret().moveToPosition(location.getPositionIndex());
+                getCaret().moveToLocation(location);
                 getCaret().getLocation().setChordDiagramIndex(
                     location.getChordDiagramIndex());
                 getCaret().setSelectedItem(item);

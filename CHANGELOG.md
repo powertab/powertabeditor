@@ -24,6 +24,7 @@ Thanks to the following contributors who worked on this release:
 - Fixed a regression from alpha 15 where the final barline in a system could not be edited.
 - The snap package provides more helpful error messages when the MIDI device cannot be accessed (#386)
 - Fixed a crash when editing multi-bar rests (#391)
+- Fixed a potential crash when double-clicking to edit a bend (#390)
 
 ## [Alpha 18] - 2022-03-10
 
