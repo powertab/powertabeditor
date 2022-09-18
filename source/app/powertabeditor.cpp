@@ -1354,7 +1354,10 @@ void PowerTabEditor::editMultiBarRest(bool remove)
     }
 
     // Verify that the bar is empty if adding a new rest.
-    if (!position)
+    bool can_edit = false;
+    if (position && position->hasMultiBarRest())
+        can_edit = true;
+    else if (!position)
     {
         const System &system = location.getSystem();
         const Barline *prevBar =
@@ -1365,21 +1368,22 @@ void PowerTabEditor::editMultiBarRest(bool remove)
             system.getNextBarline(location.getPositionIndex());
 
         if (ScoreUtils::findInRange(location.getVoice().getPositions(),
-                                     prevBar->getPosition(),
-                                     nextBar->getPosition()).empty())
+                                    prevBar->getPosition(),
+                                    nextBar->getPosition()).empty())
         {
-            QMessageBox message(this);
-            message.setText(
-                tr("Cannot add a multi-bar rest to a non-empty measure."));
-            message.exec();
-
-            myMultibarRestCommand->setChecked(false);
-            return;
+            can_edit = true;
         }
     }
-    else
+
+    if (!can_edit)
     {
-        Q_ASSERT(position->hasMultiBarRest());
+        QMessageBox message(this);
+        message.setText(
+            tr("Cannot add a multi-bar rest to a non-empty measure."));
+        message.exec();
+
+        myMultibarRestCommand->setChecked(false);
+        return;
     }
 
     MultiBarRestDialog dialog(this,
