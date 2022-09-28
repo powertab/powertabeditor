@@ -25,6 +25,7 @@ Thanks to the following contributors who worked on this release:
 - The snap package provides more helpful error messages when the MIDI device cannot be accessed (#386)
 - Fixed a crash when editing multi-bar rests (#391)
 - Fixed a potential crash when double-clicking to edit a bend (#390)
+- Fixed a potential crash when using the Shift String Up / Down commands (#394)
 
 ## [Alpha 18] - 2022-03-10
 

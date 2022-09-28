@@ -3824,7 +3824,8 @@ void PowerTabEditor::updateCommands()
         ScoreUtils::findByPosition(system.getAlternateEndings(), position);
     const Dynamic *dynamic =
         ScoreUtils::findByPosition(staff.getDynamics(), position);
-    const bool positions_selected = !location.getSelectedPositions().empty();
+    const bool positions_selected =
+        location.hasSelection() && !location.getSelectedPositions().empty();
 
     myRemoveCurrentSystemCommand->setEnabled(score.getSystems().size() > 1);
     myRemoveCurrentStaffCommand->setEnabled(system.getStaves().size() > 1);
