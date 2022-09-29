@@ -14,6 +14,7 @@ Thanks to the following contributors who worked on this release:
 ### Changed
 - Increased the upper limit for irregular grouping values (#376)
 - The time signature dialog now enables the visibility checkbox by default (#356, #383)
+- Improved rendering of slide outs from a note (#393)
 
 ### Fixed
 - Fixed several potential errors when importing `.ptb` and Guitar Pro files.

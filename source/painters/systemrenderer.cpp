@@ -997,6 +997,7 @@ SystemRenderer::drawSlides(const Staff &staff, const LayoutInfo &layout,
                     // Figure out if we're sliding up or down.
                     bool slideUp = note->hasProperty(Note::SlideOutOfUpwards);
 
+                    int end_pos = pos.getPosition() + 1;
                     if (note->hasProperty(Note::ShiftSlide) ||
                         note->hasProperty(Note::LegatoSlide))
                     {
@@ -1004,14 +1005,12 @@ SystemRenderer::drawSlides(const Staff &staff, const LayoutInfo &layout,
                             voice, pos.getPosition(), string, next_voice);
                         slideUp = nextNote && nextNote->getFretNumber() >
                                 note->getFretNumber();
+
+                        if (auto next_pos = VoiceUtils::getNextPosition(voice, pos.getPosition()))
+                            end_pos = next_pos->getPosition();
                     }
 
-                    const Position *nextPos =
-                        VoiceUtils::getNextPosition(voice, pos.getPosition());
-
-                    drawSlide(layout, string, slideUp, pos.getPosition(),
-                              nextPos ? nextPos->getPosition() :
-                                        pos.getPosition() + 1);
+                    drawSlide(layout, string, slideUp, pos.getPosition(), end_pos);
                 }
 
                 // Draw any slides going into the note.
