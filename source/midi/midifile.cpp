@@ -38,12 +38,12 @@ static constexpr int DEFAULT_BEND = 64;
 static constexpr int SLIDE_OUT_STEPS = 5;
 
 /// Pitch bend amount to bend a note by a quarter tone.
-static constexpr boost::rational<int> BEND_QUARTER_TONE(
+static const boost::rational<int> BEND_QUARTER_TONE(
     (Midi::MAX_MIDI_CHANNEL_EFFECT_LEVEL - DEFAULT_BEND), 2 * PITCH_BEND_RANGE);
 
-static constexpr int SLIDE_BELOW_BEND = boost::rational_cast<int>(
+static const int SLIDE_BELOW_BEND = boost::rational_cast<int>(
     DEFAULT_BEND - SLIDE_OUT_STEPS * 2 * BEND_QUARTER_TONE);
-static constexpr int SLIDE_ABOVE_BEND = boost::rational_cast<int>(
+static const int SLIDE_ABOVE_BEND = boost::rational_cast<int>(
     DEFAULT_BEND + SLIDE_OUT_STEPS * 2 * BEND_QUARTER_TONE);
 
 enum Velocity : uint8_t
