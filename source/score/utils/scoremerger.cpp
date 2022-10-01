@@ -225,9 +225,11 @@ mergeChordDiagrams(Score &dest_score, const Score &guitar_score,
         dest_score.insertChordDiagram(diagram);
 }
 
-static void getPositionRange(const ScoreLocation &dest,
-                             const ScoreLocation &src, int &offset, int &left,
-                             int &right)
+/// Returns the position range (inclusive) and offset to copy objects into the
+/// destination location.
+static void
+getPositionRange(const ScoreLocation &dest, const ScoreLocation &src,
+                 bool copy_positions, int &offset, int &left, int &right)
 {
     const System &src_system = src.getSystem();
     const Barline *src_bar = src.getBarline();
@@ -236,12 +238,24 @@ static void getPositionRange(const ScoreLocation &dest,
         src_system.getNextBarline(src_bar->getPosition());
     assert(next_src_bar);
 
-    offset = dest.getPositionIndex() - src_bar->getPosition();
-    if (src_bar->getPosition() != 0)
-        --offset;
+    // Note this is expected to be the first position after the dest barline.
+    int dest_pos = dest.getPositionIndex();
 
-    left = src_bar->getPosition();
-    right = next_src_bar->getPosition();
+    if (copy_positions)
+    {
+        // Positions start after the barline unless at position 0.
+        left = (src_bar->getPosition() == 0) ? 0 : (src_bar->getPosition() + 1);
+    }
+    else
+    {
+        // Copy other symbols from the src barline to the dest barline.
+        left = src_bar->getPosition();
+        if (dest_pos > 0)
+            --dest_pos;
+    }
+
+    offset = dest_pos - left;
+    right = next_src_bar->getPosition() - 1;
 }
 
 static int insertMultiBarRest(ScoreLocation &dest, ScoreLocation &, int count)
@@ -262,7 +276,7 @@ static int insertMultiBarRest(ScoreLocation &dest, ScoreLocation &, int count)
 static int copyNotes(ScoreLocation &dest, const ScoreLocation &src)
 {
     int offset, left, right;
-    getPositionRange(dest, src, offset, left, right);
+    getPositionRange(dest, src, /* copy_positions */ true, offset, left, right);
 
     auto positions =
         ScoreUtils::findInRange(src.getVoice().getPositions(), left, right);
@@ -284,7 +298,7 @@ static int copyNotes(ScoreLocation &dest, const ScoreLocation &src)
             dest.getVoice().insertIrregularGrouping(new_group);
         }
 
-        int length = right - left;
+        int length = right + 1 - left;
         if (left == 0)
             ++length;
 
@@ -303,7 +317,7 @@ static int importNotes(
     const System &src_system = src_loc.getSystem();
 
     int offset, left, right;
-    getPositionRange(dest_loc, src_loc, offset, left, right);
+    getPositionRange(dest_loc, src_loc, false, offset, left, right);
 
     const int staff_offset = is_bass ? num_guitar_staves : 0;
     int length = 0;
@@ -336,7 +350,7 @@ static int importNotes(
         if (!is_expanded_bar)
         {
             for (const Dynamic &dynamic : ScoreUtils::findInRange(
-                     src_loc.getStaff().getDynamics(), left, right - 1))
+                     src_loc.getStaff().getDynamics(), left, right))
             {
                 Dynamic new_dynamic(dynamic);
                 new_dynamic.setPosition(dynamic.getPosition() + offset);
@@ -371,7 +385,7 @@ static void copySymbols(
         filled_positions.insert(dest_symbol.getPosition());
 
     for (const Symbol &src_symbol :
-         ScoreUtils::findInRange(src_symbols, left, right - 1))
+         ScoreUtils::findInRange(src_symbols, left, right))
     {
         Symbol symbol(src_symbol);
         symbol.setPosition(src_symbol.getPosition() + offset);
@@ -392,7 +406,7 @@ static void mergeSystemSymbols(ScoreLocation &dest_loc,
                                const ExpandedBar &src_bar)
 {
     int offset, left, right;
-    getPositionRange(dest_loc, src_loc, offset, left, right);
+    getPositionRange(dest_loc, src_loc, false, offset, left, right);
 
     System &dest_system = dest_loc.getSystem();
     const System &src_system = src_loc.getSystem();
@@ -453,10 +467,10 @@ static const PlayerChange *findPlayerChange(
         return nullptr;
 
     int offset, left, right;
-    getPositionRange(dest_loc, src_loc, offset, left, right);
+    getPositionRange(dest_loc, src_loc, false, offset, left, right);
 
     auto changes = ScoreUtils::findInRange(
-        src_loc.getSystem().getPlayerChanges(), left, right - 1);
+        src_loc.getSystem().getPlayerChanges(), left, right);
 
     return changes.empty() ? nullptr : &changes.front();
 }

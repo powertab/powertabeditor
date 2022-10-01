@@ -27,6 +27,7 @@ Thanks to the following contributors who worked on this release:
 - Fixed a crash when editing multi-bar rests (#391)
 - Fixed a potential crash when double-clicking to edit a bend (#390)
 - Fixed a potential crash when using the Shift String Up / Down commands (#394)
+- Fixed a potential crash when displaying imported `.ptb` files (#396)
 
 ## [Alpha 18] - 2022-03-10
 
