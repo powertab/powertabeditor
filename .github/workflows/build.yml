@@ -15,7 +15,7 @@ jobs:
     runs-on: ubuntu-20.04
 
     steps:
-    - uses: actions/checkout@v1
+    - uses: actions/checkout@v3
     - name: Install Apt Dependencies
       run: sudo apt update && sudo apt install ninja-build qtbase5-dev qttools5-dev libboost-dev libboost-date-time-dev libboost-iostreams-dev nlohmann-json3-dev libasound2-dev librtmidi-dev libminizip-dev doctest-dev
     - name: Install Other Dependencies
@@ -36,7 +36,7 @@ jobs:
     runs-on: macos-11
 
     steps:
-    - uses: actions/checkout@v1
+    - uses: actions/checkout@v3
 
     - name: Version number
       id: version
@@ -91,7 +91,7 @@ jobs:
             qt_arch: win32_msvc2019
 
     steps:
-    - uses: actions/checkout@v1
+    - uses: actions/checkout@v3
 
     - name: Version number
       id: version
