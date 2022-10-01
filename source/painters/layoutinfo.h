@@ -46,7 +46,8 @@ public:
         Tap,
         Hammeron,
         Pulloff,
-        Slide,
+        SlideBetween,
+        SlideInOut,
 
         // Above standard notation staff.
         Octave8va,

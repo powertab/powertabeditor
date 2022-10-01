@@ -1092,7 +1092,8 @@ void SystemRenderer::drawSymbolsBelowTabStaff(const LayoutInfo &layout)
             renderedSymbol =
                 createPlainTextSymbol(QStringLiteral("P"), QFont::StyleNormal);
             break;
-        case SymbolGroup::Slide:
+        case SymbolGroup::SlideBetween:
+        case SymbolGroup::SlideInOut:
             renderedSymbol = createPlainTextSymbol(QStringLiteral("sl."),
                                                    QFont::StyleItalic);
             break;
@@ -1114,7 +1115,7 @@ void SystemRenderer::drawSymbolsBelowTabStaff(const LayoutInfo &layout)
         // Center symbols that apply to this note and the next adjacent note.
         if (symbolGroup.getSymbolType() == SymbolGroup::Hammeron ||
             symbolGroup.getSymbolType() == SymbolGroup::Pulloff ||
-            symbolGroup.getSymbolType() == SymbolGroup::Slide)
+            symbolGroup.getSymbolType() == SymbolGroup::SlideBetween)
         {
             x += 0.5 * (layout.getPositionX(symbolGroup.getRightPosition()) - x);
         }
