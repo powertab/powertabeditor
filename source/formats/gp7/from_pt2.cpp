@@ -564,6 +564,8 @@ convertFingering(LeftHandFingering::Finger f)
         case Finger::Thumb:
             return GpFingerType::P;
     }
+
+    return GpFingerType::Open;
 }
 
 static void
