@@ -70,7 +70,7 @@
     <message>
         <location filename="../source/actions/addinstrument.cpp" line="23"/>
         <source>Add Instrument</source>
-        <translation type="unfinished"></translation>
+        <translation>Добавить инструмент</translation>
     </message>
 </context>
 <context>
@@ -123,7 +123,7 @@
     <message>
         <location filename="../source/actions/addplayer.cpp" line="23"/>
         <source>Add Player</source>
-        <translation type="unfinished"></translation>
+        <translation>Добавить исполнителя</translation>
     </message>
 </context>
 <context>
@@ -200,7 +200,7 @@
     <message>
         <location filename="../source/actions/edittextitem.cpp" line="24"/>
         <source>Add Text</source>
-        <translation type="unfinished"></translation>
+        <translation>Добавить текст</translation>
     </message>
 </context>
 <context>
@@ -302,7 +302,7 @@
         <location filename="../source/dialogs/artificialharmonicdialog.ui" line="35"/>
         <location filename="../build/source/dialogs/ui_artificialharmonicdialog.h" line="236"/>
         <source>Octave:</source>
-        <translation type="unfinished"></translation>
+        <translation>Октава:</translation>
     </message>
     <message>
         <location filename="../source/dialogs/artificialharmonicdialog.ui" line="44"/>
@@ -383,7 +383,7 @@
         <location filename="../source/dialogs/barlinedialog.ui" line="41"/>
         <location filename="../build/source/dialogs/ui_barlinedialog.h" line="87"/>
         <source>Play:</source>
-        <translation type="unfinished"></translation>
+        <translation>Воспроизвести:</translation>
     </message>
     <message>
         <location filename="../source/dialogs/barlinedialog.cpp" line="35"/>
@@ -453,7 +453,7 @@
         <location filename="../source/dialogs/benddialog.ui" line="73"/>
         <location filename="../build/source/dialogs/ui_benddialog.h" line="172"/>
         <source>Default</source>
-        <translation type="unfinished"></translation>
+        <translation>По умолчанию</translation>
     </message>
     <message>
         <location filename="../source/dialogs/benddialog.ui" line="85"/>
@@ -536,19 +536,19 @@
         <location filename="../source/dialogs/bulkconverterdialog.ui" line="14"/>
         <location filename="../build/source/dialogs/ui_bulkconverterdialog.h" line="116"/>
         <source>Bulk Converter</source>
-        <translation type="unfinished"></translation>
+        <translation>Массовое конвертирование</translation>
     </message>
     <message>
         <location filename="../source/dialogs/bulkconverterdialog.ui" line="29"/>
         <location filename="../build/source/dialogs/ui_bulkconverterdialog.h" line="117"/>
         <source>E&amp;xit</source>
-        <translation type="unfinished"></translation>
+        <translation>В&amp;ыйти</translation>
     </message>
     <message>
         <location filename="../source/dialogs/bulkconverterdialog.ui" line="43"/>
         <location filename="../build/source/dialogs/ui_bulkconverterdialog.h" line="118"/>
         <source>Destination Directory</source>
-        <translation type="unfinished"></translation>
+        <translation>Папка назначения</translation>
     </message>
     <message>
         <location filename="../source/dialogs/bulkconverterdialog.ui" line="50"/>
@@ -556,24 +556,24 @@
         <location filename="../build/source/dialogs/ui_bulkconverterdialog.h" line="119"/>
         <location filename="../build/source/dialogs/ui_bulkconverterdialog.h" line="121"/>
         <source>...</source>
-        <translation type="unfinished"></translation>
+        <translation>…</translation>
     </message>
     <message>
         <location filename="../source/dialogs/bulkconverterdialog.ui" line="60"/>
         <location filename="../build/source/dialogs/ui_bulkconverterdialog.h" line="120"/>
         <source>&amp;Convert</source>
-        <translation type="unfinished"></translation>
+        <translation>&amp;Конвертировать</translation>
     </message>
     <message>
         <location filename="../source/dialogs/bulkconverterdialog.ui" line="81"/>
         <location filename="../build/source/dialogs/ui_bulkconverterdialog.h" line="122"/>
         <source>Source Directory</source>
-        <translation type="unfinished"></translation>
+        <translation>Исходная папка</translation>
     </message>
     <message>
         <location filename="../source/dialogs/bulkconverterdialog.cpp" line="171"/>
         <source>Directory To Convert</source>
-        <translation type="unfinished"></translation>
+        <translation>Папка для конвертирования</translation>
     </message>
 </context>
 <context>
@@ -601,30 +601,30 @@
         <location filename="../source/dialogs/chorddiagramdialog.ui" line="23"/>
         <location filename="../build/source/dialogs/ui_chorddiagramdialog.h" line="111"/>
         <source>Chord Name:</source>
-        <translation type="unfinished"></translation>
+        <translation>Название аккорда:</translation>
     </message>
     <message>
         <location filename="../source/dialogs/chorddiagramdialog.ui" line="33"/>
         <location filename="../build/source/dialogs/ui_chorddiagramdialog.h" line="112"/>
         <source>Top Fret:</source>
-        <translation type="unfinished"></translation>
+        <translation>Верхний лад:</translation>
     </message>
     <message>
         <location filename="../source/dialogs/chorddiagramdialog.ui" line="43"/>
         <location filename="../build/source/dialogs/ui_chorddiagramdialog.h" line="113"/>
         <source>Number of Strings:</source>
-        <translation type="unfinished"></translation>
+        <translation>Количество струн:</translation>
     </message>
     <message>
         <location filename="../source/dialogs/chorddiagramdialog.ui" line="53"/>
         <location filename="../build/source/dialogs/ui_chorddiagramdialog.h" line="114"/>
         <source>Diagram:</source>
-        <translation type="unfinished"></translation>
+        <translation>Диаграмма:</translation>
     </message>
     <message>
         <location filename="../source/dialogs/chorddiagramdialog.cpp" line="48"/>
         <source>Click to edit chord name.</source>
-        <translation type="unfinished"></translation>
+        <translation>Нажмите, чтобы изменить название аккорда.</translation>
     </message>
 </context>
 <context>
@@ -633,13 +633,13 @@
         <location filename="../source/dialogs/chordnamedialog.ui" line="17"/>
         <location filename="../build/source/dialogs/ui_chordnamedialog.h" line="549"/>
         <source>Chord Name</source>
-        <translation type="unfinished"></translation>
+        <translation>Название аккорда</translation>
     </message>
     <message>
         <location filename="../source/dialogs/chordnamedialog.ui" line="36"/>
         <location filename="../build/source/dialogs/ui_chordnamedialog.h" line="550"/>
         <source>Preview:</source>
-        <translation type="unfinished"></translation>
+        <translation>Предпросмотр:</translation>
     </message>
     <message>
         <location filename="../source/dialogs/chordnamedialog.ui" line="53"/>
@@ -758,25 +758,25 @@
         <location filename="../source/dialogs/crashdialog.ui" line="23"/>
         <location filename="../build/source/dialogs/ui_crashdialog.h" line="99"/>
         <source>Error</source>
-        <translation type="unfinished"></translation>
+        <translation>Ошибка</translation>
     </message>
     <message>
         <location filename="../source/dialogs/crashdialog.ui" line="37"/>
         <location filename="../build/source/dialogs/ui_crashdialog.h" line="100"/>
         <source>Oops! Something went wrong.</source>
-        <translation type="unfinished"></translation>
+        <translation>Ой! Что-то пошло не так.</translation>
     </message>
     <message>
         <location filename="../source/dialogs/crashdialog.ui" line="74"/>
         <location filename="../build/source/dialogs/ui_crashdialog.h" line="101"/>
         <source>Report Bug...</source>
-        <translation type="unfinished"></translation>
+        <translation>Отчёт об ошибке...</translation>
     </message>
     <message>
         <location filename="../source/dialogs/crashdialog.ui" line="84"/>
         <location filename="../build/source/dialogs/ui_crashdialog.h" line="102"/>
         <source>Close</source>
-        <translation type="unfinished"></translation>
+        <translation>Закрыть</translation>
     </message>
 </context>
 <context>
@@ -815,7 +815,7 @@
         <location filename="../source/dialogs/directiondialog.ui" line="86"/>
         <location filename="../build/source/dialogs/ui_directiondialog.h" line="140"/>
         <source>Add</source>
-        <translation type="unfinished"></translation>
+        <translation>Добавить</translation>
     </message>
     <message>
         <location filename="../source/dialogs/directiondialog.ui" line="93"/>
@@ -842,7 +842,7 @@
         <location filename="../source/dialogs/dynamicdialog.ui" line="67"/>
         <location filename="../build/source/dialogs/ui_dynamicdialog.h" line="205"/>
         <source>Off</source>
-        <translation type="unfinished"></translation>
+        <translation>Выключить</translation>
     </message>
 </context>
 <context>
@@ -866,7 +866,7 @@
     <message>
         <location filename="../source/actions/editfileinformation.cpp" line="24"/>
         <source>Edit File Information</source>
-        <translation type="unfinished"></translation>
+        <translation>Редактировать информацию о файле</translation>
     </message>
 </context>
 <context>
@@ -952,7 +952,7 @@
         <location filename="../source/dialogs/fileinformationdialog.ui" line="17"/>
         <location filename="../build/source/dialogs/ui_fileinformationdialog.h" line="706"/>
         <source>File Information</source>
-        <translation type="unfinished"></translation>
+        <translation>Информация о файле</translation>
     </message>
     <message>
         <location filename="../source/dialogs/fileinformationdialog.ui" line="30"/>
@@ -976,7 +976,7 @@
         <location filename="../source/dialogs/fileinformationdialog.ui" line="73"/>
         <location filename="../build/source/dialogs/ui_fileinformationdialog.h" line="709"/>
         <source>Lesson</source>
-        <translation type="unfinished"></translation>
+        <translation>Урок</translation>
     </message>
     <message>
         <location filename="../source/dialogs/fileinformationdialog.ui" line="113"/>
@@ -1088,7 +1088,7 @@
         <location filename="../source/dialogs/fileinformationdialog.ui" line="274"/>
         <location filename="../build/source/dialogs/ui_fileinformationdialog.h" line="737"/>
         <source>Year:</source>
-        <translation type="unfinished"></translation>
+        <translation>Год:</translation>
     </message>
     <message>
         <location filename="../source/dialogs/fileinformationdialog.ui" line="281"/>
@@ -1310,7 +1310,7 @@
         <location filename="../source/dialogs/fileinformationdialog.ui" line="669"/>
         <location filename="../build/source/dialogs/ui_fileinformationdialog.h" line="778"/>
         <source>Author:</source>
-        <translation type="unfinished"></translation>
+        <translation>Автор:</translation>
     </message>
     <message>
         <location filename="../source/dialogs/fileinformationdialog.ui" line="694"/>
@@ -1340,43 +1340,43 @@
         <location filename="../source/dialogs/fileinformationdialog.ui" line="774"/>
         <location filename="../build/source/dialogs/ui_fileinformationdialog.h" line="797"/>
         <source>Properties</source>
-        <translation type="unfinished"></translation>
+        <translation>Свойства</translation>
     </message>
     <message>
         <location filename="../source/dialogs/fileinformationdialog.ui" line="798"/>
         <location filename="../build/source/dialogs/ui_fileinformationdialog.h" line="785"/>
         <source>Name:</source>
-        <translation type="unfinished"></translation>
+        <translation>Название:</translation>
     </message>
     <message>
         <location filename="../source/dialogs/fileinformationdialog.ui" line="812"/>
         <location filename="../build/source/dialogs/ui_fileinformationdialog.h" line="787"/>
         <source>Location:</source>
-        <translation type="unfinished"></translation>
+        <translation>Расположение:</translation>
     </message>
     <message>
         <location filename="../source/dialogs/fileinformationdialog.ui" line="826"/>
         <location filename="../build/source/dialogs/ui_fileinformationdialog.h" line="789"/>
         <source>Size:</source>
-        <translation type="unfinished"></translation>
+        <translation>Размер:</translation>
     </message>
     <message>
         <location filename="../source/dialogs/fileinformationdialog.ui" line="840"/>
         <location filename="../build/source/dialogs/ui_fileinformationdialog.h" line="791"/>
         <source>Created:</source>
-        <translation type="unfinished"></translation>
+        <translation>Дата создания:</translation>
     </message>
     <message>
         <location filename="../source/dialogs/fileinformationdialog.ui" line="854"/>
         <location filename="../build/source/dialogs/ui_fileinformationdialog.h" line="793"/>
         <source>Modified:</source>
-        <translation type="unfinished"></translation>
+        <translation>Дата изменения:</translation>
     </message>
     <message>
         <location filename="../source/dialogs/fileinformationdialog.ui" line="868"/>
         <location filename="../build/source/dialogs/ui_fileinformationdialog.h" line="795"/>
         <source>Accessed:</source>
-        <translation type="unfinished"></translation>
+        <translation>Дата доступа:</translation>
     </message>
     <message>
         <location filename="../source/dialogs/fileinformationdialog.cpp" line="165"/>
@@ -1407,7 +1407,7 @@
         <location filename="../source/dialogs/filterrulewidget.ui" line="47"/>
         <location filename="../build/source/dialogs/ui_filterrulewidget.h" line="134"/>
         <source>Number of Strings</source>
-        <translation type="unfinished"></translation>
+        <translation>Количество струн</translation>
     </message>
     <message>
         <location filename="../source/dialogs/filterrulewidget.ui" line="71"/>
@@ -1482,13 +1482,13 @@
         <location filename="../source/dialogs/infodialog.ui" line="14"/>
         <location filename="../build/source/dialogs/ui_infodialog.h" line="61"/>
         <source>Application Info</source>
-        <translation type="unfinished"></translation>
+        <translation>О программе</translation>
     </message>
     <message>
         <location filename="../source/dialogs/infodialog.ui" line="39"/>
         <location filename="../build/source/dialogs/ui_infodialog.h" line="62"/>
         <source>&amp;Copy to Clipboard</source>
-        <translation type="unfinished"></translation>
+        <translation>&amp;Копировать в буфер</translation>
     </message>
     <message>
         <location filename="../source/dialogs/infodialog.cpp" line="47"/>
@@ -1529,13 +1529,13 @@
         <location filename="../source/widgets/instruments/instrumentpanelitem.ui" line="60"/>
         <location filename="../build/source/widgets/ui_instrumentpanelitem.h" line="96"/>
         <source>Instrument</source>
-        <translation type="unfinished"></translation>
+        <translation>Инструмент</translation>
     </message>
     <message>
         <location filename="../source/widgets/instruments/instrumentpanelitem.ui" line="117"/>
         <location filename="../build/source/widgets/ui_instrumentpanelitem.h" line="98"/>
         <source>Remove Instrument</source>
-        <translation type="unfinished"></translation>
+        <translation>Убрать инструмент</translation>
     </message>
 </context>
 <context>
@@ -1627,22 +1627,22 @@
     <message>
         <location filename="../source/dialogs/keyboardsettingsdialog.cpp" line="66"/>
         <source>Command</source>
-        <translation type="unfinished"></translation>
+        <translation>Команда</translation>
     </message>
     <message>
         <location filename="../source/dialogs/keyboardsettingsdialog.cpp" line="66"/>
         <source>Label</source>
-        <translation type="unfinished"></translation>
+        <translation>Действие</translation>
     </message>
     <message>
         <location filename="../source/dialogs/keyboardsettingsdialog.cpp" line="66"/>
         <source>Shortcut</source>
-        <translation type="unfinished"></translation>
+        <translation>Комбинация клавиш</translation>
     </message>
     <message>
         <location filename="../source/dialogs/keyboardsettingsdialog.cpp" line="189"/>
         <source>The shortcut %1 is already in use.</source>
-        <translation type="unfinished"></translation>
+        <translation>Комбинация клавиш %1 уже используется.</translation>
     </message>
     <message>
         <location filename="../source/dialogs/keyboardsettingsdialog.cpp" line="191"/>
@@ -1831,77 +1831,77 @@
     <message>
         <location filename="../source/widgets/toolbox/notepage.cpp" line="47"/>
         <source>Whole Note</source>
-        <translation type="unfinished"></translation>
+        <translation>Целая нота</translation>
     </message>
     <message>
         <location filename="../source/widgets/toolbox/notepage.cpp" line="52"/>
         <source>Half Note</source>
-        <translation type="unfinished"></translation>
+        <translation>Половинная нота</translation>
     </message>
     <message>
         <location filename="../source/widgets/toolbox/notepage.cpp" line="57"/>
         <source>Quarter Note</source>
-        <translation type="unfinished"></translation>
+        <translation>Четвертная нота</translation>
     </message>
     <message>
         <location filename="../source/widgets/toolbox/notepage.cpp" line="62"/>
         <source>8th Note</source>
-        <translation type="unfinished"></translation>
+        <translation>Восьмая нота</translation>
     </message>
     <message>
         <location filename="../source/widgets/toolbox/notepage.cpp" line="67"/>
         <source>16th Note</source>
-        <translation type="unfinished"></translation>
+        <translation>Шестнадцатая нота</translation>
     </message>
     <message>
         <location filename="../source/widgets/toolbox/notepage.cpp" line="72"/>
         <source>32nd Note</source>
-        <translation type="unfinished"></translation>
+        <translation>Тридцать вторая нота</translation>
     </message>
     <message>
         <location filename="../source/widgets/toolbox/notepage.cpp" line="77"/>
         <source>64th Note</source>
-        <translation type="unfinished"></translation>
+        <translation>Шестьдесят четвёртая нота</translation>
     </message>
     <message>
         <location filename="../source/widgets/toolbox/notepage.cpp" line="100"/>
         <source>Rests</source>
-        <translation type="unfinished"></translation>
+        <translation>Паузы</translation>
     </message>
     <message>
         <location filename="../source/widgets/toolbox/notepage.cpp" line="113"/>
         <source>Whole Rest</source>
-        <translation type="unfinished"></translation>
+        <translation>Целая пауза</translation>
     </message>
     <message>
         <location filename="../source/widgets/toolbox/notepage.cpp" line="118"/>
         <source>Half Rest</source>
-        <translation type="unfinished"></translation>
+        <translation>Половинная пауза</translation>
     </message>
     <message>
         <location filename="../source/widgets/toolbox/notepage.cpp" line="123"/>
         <source>Quarter Rest</source>
-        <translation type="unfinished"></translation>
+        <translation>Четвертная пауза</translation>
     </message>
     <message>
         <location filename="../source/widgets/toolbox/notepage.cpp" line="128"/>
         <source>8th Rest</source>
-        <translation type="unfinished"></translation>
+        <translation>Восьмая пауза</translation>
     </message>
     <message>
         <location filename="../source/widgets/toolbox/notepage.cpp" line="133"/>
         <source>16th Rest</source>
-        <translation type="unfinished"></translation>
+        <translation>Шестнадцатая пауза</translation>
     </message>
     <message>
         <location filename="../source/widgets/toolbox/notepage.cpp" line="138"/>
         <source>32nd Rest</source>
-        <translation type="unfinished"></translation>
+        <translation>Тридцать вторая пауза</translation>
     </message>
     <message>
         <location filename="../source/widgets/toolbox/notepage.cpp" line="143"/>
         <source>64th Rest</source>
-        <translation type="unfinished"></translation>
+        <translation>Шестьдесят четвёртая пауза</translation>
     </message>
     <message>
         <location filename="../source/widgets/toolbox/notepage.cpp" line="166"/>
@@ -2034,7 +2034,7 @@
         <location filename="../source/widgets/playback/playbackwidget.ui" line="93"/>
         <location filename="../build/source/widgets/ui_playbackwidget.h" line="201"/>
         <source>Speed:</source>
-        <translation type="unfinished"></translation>
+        <translation>Скорость:</translation>
     </message>
     <message>
         <location filename="../source/widgets/playback/playbackwidget.ui" line="103"/>
@@ -2046,7 +2046,7 @@
         <location filename="../source/widgets/playback/playbackwidget.ui" line="165"/>
         <location filename="../build/source/widgets/ui_playbackwidget.h" line="209"/>
         <source>Zoom:</source>
-        <translation type="unfinished"></translation>
+        <translation>Масштаб:</translation>
     </message>
     <message>
         <location filename="../source/widgets/playback/playbackwidget.ui" line="210"/>
@@ -2091,7 +2091,7 @@
     <message>
         <location filename="../source/dialogs/playerchangedialog.cpp" line="41"/>
         <source>Instrument</source>
-        <translation type="unfinished"></translation>
+        <translation>Инструмент</translation>
     </message>
     <message>
         <location filename="../source/dialogs/playerchangedialog.cpp" line="43"/>
@@ -2135,55 +2135,55 @@
     <message>
         <location filename="../source/app/powertabeditor.cpp" line="247"/>
         <source>Open</source>
-        <translation type="unfinished"></translation>
+        <translation>Открыть</translation>
     </message>
     <message>
         <location filename="../source/app/powertabeditor.cpp" line="277"/>
         <location filename="../source/app/powertabeditor.cpp" line="302"/>
         <source>Error Opening File</source>
-        <translation type="unfinished"></translation>
+        <translation>Ошибка открытия файла</translation>
     </message>
     <message>
         <location filename="../source/app/powertabeditor.cpp" line="278"/>
         <location filename="../source/app/powertabeditor.cpp" line="399"/>
         <source>Unsupported file type.</source>
-        <translation type="unfinished"></translation>
+        <translation>Неподдерживаемый тип файла.</translation>
     </message>
     <message>
         <location filename="../source/app/powertabeditor.cpp" line="303"/>
         <source>Error opening file: %1</source>
-        <translation type="unfinished"></translation>
+        <translation>Ошибка открытия файла: %1</translation>
     </message>
     <message>
         <location filename="../source/app/powertabeditor.cpp" line="336"/>
         <source>Close Document</source>
-        <translation type="unfinished"></translation>
+        <translation>Закрыть документ</translation>
     </message>
     <message>
         <location filename="../source/app/powertabeditor.cpp" line="337"/>
         <source>The document has been modified.</source>
-        <translation type="unfinished"></translation>
+        <translation>Документ был изменён.</translation>
     </message>
     <message>
         <location filename="../source/app/powertabeditor.cpp" line="338"/>
         <source>Do you want to save your changes?</source>
-        <translation type="unfinished"></translation>
+        <translation>Вы хотите сохранить изменения?</translation>
     </message>
     <message>
         <location filename="../source/app/powertabeditor.cpp" line="398"/>
         <location filename="../source/app/powertabeditor.cpp" line="413"/>
         <source>Error Saving File</source>
-        <translation type="unfinished"></translation>
+        <translation>Ошибка сохранения файла</translation>
     </message>
     <message>
         <location filename="../source/app/powertabeditor.cpp" line="414"/>
         <source>Error saving file: %1</source>
-        <translation type="unfinished"></translation>
+        <translation>Ошибка сохранения файла: %1</translation>
     </message>
     <message>
         <location filename="../source/app/powertabeditor.cpp" line="445"/>
         <source>Save As</source>
-        <translation type="unfinished"></translation>
+        <translation>Сохранить как</translation>
     </message>
     <message>
         <location filename="../source/app/powertabeditor.cpp" line="537"/>
@@ -2208,13 +2208,13 @@
     <message>
         <location filename="../source/app/powertabeditor.cpp" line="625"/>
         <source>Pause</source>
-        <translation type="unfinished"></translation>
+        <translation>Пауза</translation>
     </message>
     <message>
         <location filename="../source/app/powertabeditor.cpp" line="658"/>
         <location filename="../source/app/powertabeditor.cpp" line="2263"/>
         <source>Play</source>
-        <translation type="unfinished"></translation>
+        <translation>Воспроизвести</translation>
     </message>
     <message>
         <location filename="../source/app/powertabeditor.cpp" line="881"/>
@@ -2300,82 +2300,82 @@
     <message>
         <location filename="../source/app/powertabeditor.cpp" line="2166"/>
         <source>&amp;New</source>
-        <translation type="unfinished"></translation>
+        <translation>&amp;Новый</translation>
     </message>
     <message>
         <location filename="../source/app/powertabeditor.cpp" line="2171"/>
         <source>&amp;Open...</source>
-        <translation type="unfinished"></translation>
+        <translation>&amp;Открыть...</translation>
     </message>
     <message>
         <location filename="../source/app/powertabeditor.cpp" line="2176"/>
         <source>&amp;Close Tab</source>
-        <translation type="unfinished"></translation>
+        <translation>&amp;Закрыть вкладку</translation>
     </message>
     <message>
         <location filename="../source/app/powertabeditor.cpp" line="2181"/>
         <source>Save</source>
-        <translation type="unfinished"></translation>
+        <translation>Сохранить</translation>
     </message>
     <message>
         <location filename="../source/app/powertabeditor.cpp" line="2187"/>
         <source>Save As...</source>
-        <translation type="unfinished"></translation>
+        <translation>Сохранить как...</translation>
     </message>
     <message>
         <location filename="../source/app/powertabeditor.cpp" line="2192"/>
         <source>Print...</source>
-        <translation type="unfinished"></translation>
+        <translation>Печать...</translation>
     </message>
     <message>
         <location filename="../source/app/powertabeditor.cpp" line="2198"/>
         <source>Print Preview...</source>
-        <translation type="unfinished"></translation>
+        <translation>Предпросмотр печати...</translation>
     </message>
     <message>
         <location filename="../source/app/powertabeditor.cpp" line="2202"/>
         <source>Bulk Converter...</source>
-        <translation type="unfinished"></translation>
+        <translation>Массовое конвертирование...</translation>
     </message>
     <message>
         <location filename="../source/app/powertabeditor.cpp" line="2208"/>
         <source>Customize Shortcuts...</source>
-        <translation type="unfinished"></translation>
+        <translation>Настроить комбинации клавиш...</translation>
     </message>
     <message>
         <location filename="../source/app/powertabeditor.cpp" line="2214"/>
         <source>&amp;Preferences...</source>
-        <translation type="unfinished"></translation>
+        <translation>Н&amp;астройки...</translation>
     </message>
     <message>
         <location filename="../source/app/powertabeditor.cpp" line="2220"/>
         <source>&amp;Quit</source>
-        <translation type="unfinished"></translation>
+        <translation>&amp;Выход</translation>
     </message>
     <message>
         <location filename="../source/app/powertabeditor.cpp" line="2225"/>
         <source>&amp;Undo</source>
-        <translation type="unfinished"></translation>
+        <translation>О&amp;тменить</translation>
     </message>
     <message>
         <location filename="../source/app/powertabeditor.cpp" line="2228"/>
         <source>&amp;Redo</source>
-        <translation type="unfinished"></translation>
+        <translation>&amp;Повторить</translation>
     </message>
     <message>
         <location filename="../source/app/powertabeditor.cpp" line="2232"/>
         <source>Cut</source>
-        <translation type="unfinished"></translation>
+        <translation>Вырезать</translation>
     </message>
     <message>
         <location filename="../source/app/powertabeditor.cpp" line="2236"/>
         <source>Copy</source>
-        <translation type="unfinished"></translation>
+        <translation>Копировать</translation>
     </message>
     <message>
         <location filename="../source/app/powertabeditor.cpp" line="2241"/>
         <source>Paste</source>
-        <translation type="unfinished"></translation>
+        <translation>Вставить</translation>
     </message>
     <message>
         <location filename="../source/app/powertabeditor.cpp" line="2245"/>
@@ -2390,7 +2390,7 @@
     <message>
         <location filename="../source/app/powertabeditor.cpp" line="2257"/>
         <source>File Information...</source>
-        <translation type="unfinished"></translation>
+        <translation>Информация о файле...</translation>
     </message>
     <message>
         <location filename="../source/app/powertabeditor.cpp" line="2275"/>
@@ -2400,17 +2400,17 @@
     <message>
         <location filename="../source/app/powertabeditor.cpp" line="2282"/>
         <source>Stop</source>
-        <translation type="unfinished"></translation>
+        <translation>Стоп</translation>
     </message>
     <message>
         <location filename="../source/app/powertabeditor.cpp" line="2286"/>
         <source>Rewind</source>
-        <translation type="unfinished"></translation>
+        <translation>Перемотка назад</translation>
     </message>
     <message>
         <location filename="../source/app/powertabeditor.cpp" line="2291"/>
         <source>Metronome</source>
-        <translation type="unfinished"></translation>
+        <translation>Метроном</translation>
     </message>
     <message>
         <location filename="../source/app/powertabeditor.cpp" line="2299"/>
@@ -2510,17 +2510,17 @@
     <message>
         <location filename="../source/app/powertabeditor.cpp" line="2438"/>
         <source>Chord Name...</source>
-        <translation type="unfinished"></translation>
+        <translation>Название аккорда...</translation>
     </message>
     <message>
         <location filename="../source/app/powertabeditor.cpp" line="2444"/>
         <source>Text...</source>
-        <translation type="unfinished"></translation>
+        <translation>Текст...</translation>
     </message>
     <message>
         <location filename="../source/app/powertabeditor.cpp" line="2452"/>
         <source>Add Chord Diagram...</source>
-        <translation type="unfinished"></translation>
+        <translation>Добавить диаграмму аккорда...</translation>
     </message>
     <message>
         <location filename="../source/app/powertabeditor.cpp" line="2457"/>
@@ -2571,43 +2571,43 @@
         <location filename="../source/app/powertabeditor.cpp" line="2518"/>
         <location filename="../source/app/powertabeditor.cpp" line="2661"/>
         <source>Whole</source>
-        <translation type="unfinished"></translation>
+        <translation>Целая</translation>
     </message>
     <message>
         <location filename="../source/app/powertabeditor.cpp" line="2521"/>
         <location filename="../source/app/powertabeditor.cpp" line="2663"/>
         <source>Half</source>
-        <translation type="unfinished"></translation>
+        <translation>Половинная</translation>
     </message>
     <message>
         <location filename="../source/app/powertabeditor.cpp" line="2524"/>
         <location filename="../source/app/powertabeditor.cpp" line="2665"/>
         <source>Quarter</source>
-        <translation type="unfinished"></translation>
+        <translation>Четвертная</translation>
     </message>
     <message>
         <location filename="../source/app/powertabeditor.cpp" line="2527"/>
         <location filename="../source/app/powertabeditor.cpp" line="2667"/>
         <source>8th</source>
-        <translation type="unfinished"></translation>
+        <translation>Восьмая</translation>
     </message>
     <message>
         <location filename="../source/app/powertabeditor.cpp" line="2530"/>
         <location filename="../source/app/powertabeditor.cpp" line="2669"/>
         <source>16th</source>
-        <translation type="unfinished"></translation>
+        <translation>Шестнадцатая</translation>
     </message>
     <message>
         <location filename="../source/app/powertabeditor.cpp" line="2533"/>
         <location filename="../source/app/powertabeditor.cpp" line="2671"/>
         <source>32nd</source>
-        <translation type="unfinished"></translation>
+        <translation>Тридцать вторая</translation>
     </message>
     <message>
         <location filename="../source/app/powertabeditor.cpp" line="2537"/>
         <location filename="../source/app/powertabeditor.cpp" line="2674"/>
         <source>64th</source>
-        <translation type="unfinished"></translation>
+        <translation>Шестьдесят четвёртая</translation>
     </message>
     <message>
         <location filename="../source/app/powertabeditor.cpp" line="2542"/>
@@ -2733,7 +2733,7 @@
     <message>
         <location filename="../source/app/powertabeditor.cpp" line="2678"/>
         <source>Add Rest</source>
-        <translation type="unfinished"></translation>
+        <translation>Добавить паузу</translation>
     </message>
     <message>
         <location filename="../source/app/powertabeditor.cpp" line="2684"/>
@@ -2930,12 +2930,12 @@
     <message>
         <location filename="../source/app/powertabeditor.cpp" line="2927"/>
         <source>Add Player</source>
-        <translation type="unfinished"></translation>
+        <translation>Добавить исполнителя</translation>
     </message>
     <message>
         <location filename="../source/app/powertabeditor.cpp" line="2932"/>
         <source>Add Instrument</source>
-        <translation type="unfinished"></translation>
+        <translation>Добавить инструмент</translation>
     </message>
     <message>
         <location filename="../source/app/powertabeditor.cpp" line="2936"/>
@@ -2955,37 +2955,37 @@
     <message>
         <location filename="../source/app/powertabeditor.cpp" line="2967"/>
         <source>Next Tab</source>
-        <translation type="unfinished"></translation>
+        <translation>Следующая вкладка</translation>
     </message>
     <message>
         <location filename="../source/app/powertabeditor.cpp" line="2973"/>
         <source>Previous Tab</source>
-        <translation type="unfinished"></translation>
+        <translation>Предыдущая вкладка</translation>
     </message>
     <message>
         <location filename="../source/app/powertabeditor.cpp" line="2987"/>
         <source>Zoom In</source>
-        <translation type="unfinished"></translation>
+        <translation>Увеличить</translation>
     </message>
     <message>
         <location filename="../source/app/powertabeditor.cpp" line="2992"/>
         <source>Zoom Out</source>
-        <translation type="unfinished"></translation>
+        <translation>Уменьшить</translation>
     </message>
     <message>
         <location filename="../source/app/powertabeditor.cpp" line="2998"/>
         <source>Report Bug...</source>
-        <translation type="unfinished"></translation>
+        <translation>Отчёт об ошибке...</translation>
     </message>
     <message>
         <location filename="../source/app/powertabeditor.cpp" line="3004"/>
         <source>Translate This Application...</source>
-        <translation type="unfinished"></translation>
+        <translation>Перевести это приложение...</translation>
     </message>
     <message>
         <location filename="../source/app/powertabeditor.cpp" line="3010"/>
         <source>Application Info...</source>
-        <translation type="unfinished"></translation>
+        <translation>О программе...</translation>
     </message>
     <message>
         <location filename="../source/app/powertabeditor.cpp" line="3054"/>
@@ -2995,27 +2995,27 @@
     <message>
         <location filename="../source/app/powertabeditor.cpp" line="3079"/>
         <source>Instruments</source>
-        <translation type="unfinished"></translation>
+        <translation>Инструменты</translation>
     </message>
     <message>
         <location filename="../source/app/powertabeditor.cpp" line="3182"/>
         <source>&amp;File</source>
-        <translation type="unfinished"></translation>
+        <translation>&amp;Файл</translation>
     </message>
     <message>
         <location filename="../source/app/powertabeditor.cpp" line="3193"/>
         <source>Recent Files</source>
-        <translation type="unfinished"></translation>
+        <translation>Последние файлы</translation>
     </message>
     <message>
         <location filename="../source/app/powertabeditor.cpp" line="3203"/>
         <source>&amp;Edit</source>
-        <translation type="unfinished"></translation>
+        <translation>&amp;Правка</translation>
     </message>
     <message>
         <location filename="../source/app/powertabeditor.cpp" line="3219"/>
         <source>Play&amp;back</source>
-        <translation type="unfinished"></translation>
+        <translation>&amp;Воспроизведение</translation>
     </message>
     <message>
         <location filename="../source/app/powertabeditor.cpp" line="3227"/>
@@ -3036,7 +3036,7 @@
     <message>
         <location filename="../source/app/powertabeditor.cpp" line="3257"/>
         <source>&amp;Text</source>
-        <translation type="unfinished"></translation>
+        <translation>&amp;Текст</translation>
     </message>
     <message>
         <location filename="../source/app/powertabeditor.cpp" line="3274"/>
@@ -3046,17 +3046,17 @@
     <message>
         <location filename="../source/app/powertabeditor.cpp" line="3279"/>
         <source>&amp;Notes</source>
-        <translation type="unfinished"></translation>
+        <translation>&amp;Ноты</translation>
     </message>
     <message>
         <location filename="../source/app/powertabeditor.cpp" line="3313"/>
         <source>Octave</source>
-        <translation type="unfinished"></translation>
+        <translation>Октава</translation>
     </message>
     <message>
         <location filename="../source/app/powertabeditor.cpp" line="3323"/>
         <source>Rests</source>
-        <translation type="unfinished"></translation>
+        <translation>Паузы</translation>
     </message>
     <message>
         <location filename="../source/app/powertabeditor.cpp" line="3336"/>
@@ -3086,17 +3086,17 @@
     <message>
         <location filename="../source/app/powertabeditor.cpp" line="3392"/>
         <source>&amp;Player</source>
-        <translation type="unfinished"></translation>
+        <translation>&amp;Исполнитель</translation>
     </message>
     <message>
         <location filename="../source/app/powertabeditor.cpp" line="3401"/>
         <source>&amp;Window</source>
-        <translation type="unfinished"></translation>
+        <translation>&amp;Окно</translation>
     </message>
     <message>
         <location filename="../source/app/powertabeditor.cpp" line="3412"/>
         <source>&amp;Help</source>
-        <translation type="unfinished"></translation>
+        <translation>&amp;Справка</translation>
     </message>
     <message>
         <location filename="../source/app/powertabeditor.cpp" line="3891"/>
@@ -3135,7 +3135,7 @@
         <location filename="../source/dialogs/preferencesdialog.ui" line="17"/>
         <location filename="../build/source/dialogs/ui_preferencesdialog.h" line="359"/>
         <source>Preferences</source>
-        <translation type="unfinished"></translation>
+        <translation>Настройки</translation>
     </message>
     <message>
         <location filename="../source/dialogs/preferencesdialog.ui" line="33"/>
@@ -3177,7 +3177,7 @@
         <location filename="../source/dialogs/preferencesdialog.ui" line="101"/>
         <location filename="../build/source/dialogs/ui_preferencesdialog.h" line="365"/>
         <source>Metronome</source>
-        <translation type="unfinished"></translation>
+        <translation>Метроном</translation>
     </message>
     <message>
         <location filename="../source/dialogs/preferencesdialog.ui" line="112"/>
@@ -3185,7 +3185,7 @@
         <location filename="../build/source/dialogs/ui_preferencesdialog.h" line="366"/>
         <location filename="../build/source/dialogs/ui_preferencesdialog.h" line="371"/>
         <source>Enabled:</source>
-        <translation type="unfinished"></translation>
+        <translation>Включить:</translation>
     </message>
     <message>
         <location filename="../source/dialogs/preferencesdialog.ui" line="122"/>
@@ -3225,49 +3225,49 @@
         <location filename="../source/dialogs/preferencesdialog.ui" line="216"/>
         <location filename="../build/source/dialogs/ui_preferencesdialog.h" line="382"/>
         <source>General</source>
-        <translation type="unfinished"></translation>
+        <translation>Общие</translation>
     </message>
     <message>
         <location filename="../source/dialogs/preferencesdialog.ui" line="222"/>
         <location filename="../build/source/dialogs/ui_preferencesdialog.h" line="375"/>
         <source>Interface</source>
-        <translation type="unfinished"></translation>
+        <translation>Внешний вид</translation>
     </message>
     <message>
         <location filename="../source/dialogs/preferencesdialog.ui" line="236"/>
         <location filename="../build/source/dialogs/ui_preferencesdialog.h" line="376"/>
         <source>Open Files in New Window:</source>
-        <translation type="unfinished"></translation>
+        <translation>Открывать файлы в новом окне:</translation>
     </message>
     <message>
         <location filename="../source/dialogs/preferencesdialog.ui" line="246"/>
         <location filename="../build/source/dialogs/ui_preferencesdialog.h" line="377"/>
         <source>Score Theme:</source>
-        <translation type="unfinished"></translation>
+        <translation>Тема партитуры:</translation>
     </message>
     <message>
         <location filename="../source/dialogs/preferencesdialog.ui" line="260"/>
         <location filename="../build/source/dialogs/ui_preferencesdialog.h" line="378"/>
         <source>System Default</source>
-        <translation type="unfinished"></translation>
+        <translation>Системная по умолчанию</translation>
     </message>
     <message>
         <location filename="../source/dialogs/preferencesdialog.ui" line="265"/>
         <location filename="../build/source/dialogs/ui_preferencesdialog.h" line="379"/>
         <source>Light</source>
-        <translation type="unfinished"></translation>
+        <translation>Светлая</translation>
     </message>
     <message>
         <location filename="../source/dialogs/preferencesdialog.ui" line="270"/>
         <location filename="../build/source/dialogs/ui_preferencesdialog.h" line="380"/>
         <source>Dark</source>
-        <translation type="unfinished"></translation>
+        <translation>Тёмная</translation>
     </message>
     <message>
         <location filename="../source/dialogs/preferencesdialog.ui" line="284"/>
         <location filename="../build/source/dialogs/ui_preferencesdialog.h" line="387"/>
         <source>Default Instrument</source>
-        <translation type="unfinished"></translation>
+        <translation>Инструмент по умолчанию</translation>
     </message>
     <message>
         <location filename="../source/dialogs/preferencesdialog.ui" line="299"/>
@@ -3298,7 +3298,7 @@
     <message>
         <location filename="../source/app/recentfiles.cpp" line="96"/>
         <source>Clear Recent Files</source>
-        <translation type="unfinished"></translation>
+        <translation>Очистить последние файлы</translation>
     </message>
 </context>
 <context>
@@ -3769,7 +3769,7 @@
         <location filename="../source/dialogs/staffdialog.ui" line="31"/>
         <location filename="../build/source/dialogs/ui_staffdialog.h" line="86"/>
         <source>Number of Strings:</source>
-        <translation type="unfinished"></translation>
+        <translation>Количество струн:</translation>
     </message>
     <message>
         <location filename="../source/dialogs/staffdialog.ui" line="41"/>
@@ -4080,7 +4080,7 @@
         <location filename="../source/dialogs/tuningdialog.ui" line="61"/>
         <location filename="../build/source/dialogs/ui_tuningdialog.h" line="201"/>
         <source>Number of Strings:</source>
-        <translation type="unfinished"></translation>
+        <translation>Количество струн:</translation>
     </message>
     <message>
         <location filename="../source/dialogs/tuningdialog.ui" line="71"/>
@@ -4113,7 +4113,7 @@
         <location filename="../source/dialogs/tuningdictionarydialog.ui" line="25"/>
         <location filename="../build/source/dialogs/ui_tuningdictionarydialog.h" line="122"/>
         <source>Number of Strings:</source>
-        <translation type="unfinished"></translation>
+        <translation>Количество струн:</translation>
     </message>
     <message>
         <location filename="../source/dialogs/tuningdictionarydialog.ui" line="52"/>
