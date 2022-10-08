@@ -6,10 +6,11 @@ All notable changes to this project will be documented in this file.
 Thanks to the following contributors who worked on this release:
 - @cameronwhite
 - @brunosilvano
+- @aaly11
 
 ### Added
 - The spacing between systems can now be configured in the preferences (#239, #382)
-- Added Japanese translation
+- Added Japanese and Russian translations
 
 ### Changed
 - Increased the upper limit for irregular grouping values (#376)
