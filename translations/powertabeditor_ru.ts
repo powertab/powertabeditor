@@ -964,7 +964,7 @@
         <location filename="../source/dialogs/fileinformationdialog.ui" line="51"/>
         <location filename="../build/source/dialogs/ui_fileinformationdialog.h" line="707"/>
         <source>Classification:</source>
-        <translation type="unfinished"></translation>
+        <translation>Классификация:</translation>
     </message>
     <message>
         <location filename="../source/dialogs/fileinformationdialog.ui" line="63"/>
@@ -984,7 +984,7 @@
         <location filename="../build/source/dialogs/ui_fileinformationdialog.h" line="710"/>
         <location filename="../build/source/dialogs/ui_fileinformationdialog.h" line="750"/>
         <source>Title:</source>
-        <translation type="unfinished"></translation>
+        <translation>Заголовок:</translation>
     </message>
     <message>
         <location filename="../source/dialogs/fileinformationdialog.ui" line="123"/>
@@ -992,67 +992,67 @@
         <location filename="../build/source/dialogs/ui_fileinformationdialog.h" line="711"/>
         <location filename="../build/source/dialogs/ui_fileinformationdialog.h" line="751"/>
         <source>Subtitle:</source>
-        <translation type="unfinished"></translation>
+        <translation>Подзаголовок:</translation>
     </message>
     <message>
         <location filename="../source/dialogs/fileinformationdialog.ui" line="133"/>
         <location filename="../build/source/dialogs/ui_fileinformationdialog.h" line="712"/>
         <source>Artist:</source>
-        <translation type="unfinished"></translation>
+        <translation>Артист:</translation>
     </message>
     <message>
         <location filename="../source/dialogs/fileinformationdialog.ui" line="152"/>
         <location filename="../build/source/dialogs/ui_fileinformationdialog.h" line="713"/>
         <source>Release Information</source>
-        <translation type="unfinished"></translation>
+        <translation>Информация о релизе</translation>
     </message>
     <message>
         <location filename="../source/dialogs/fileinformationdialog.ui" line="164"/>
         <location filename="../build/source/dialogs/ui_fileinformationdialog.h" line="714"/>
         <source>Release Type:</source>
-        <translation type="unfinished"></translation>
+        <translation>Тип релиза:</translation>
     </message>
     <message>
         <location filename="../source/dialogs/fileinformationdialog.ui" line="178"/>
         <location filename="../build/source/dialogs/ui_fileinformationdialog.h" line="719"/>
         <source>Public Release (Audio)</source>
-        <translation type="unfinished"></translation>
+        <translation>Публичный релиз (аудио)</translation>
     </message>
     <message>
         <location filename="../source/dialogs/fileinformationdialog.ui" line="183"/>
         <location filename="../build/source/dialogs/ui_fileinformationdialog.h" line="721"/>
         <source>Public Release (Video)</source>
-        <translation type="unfinished"></translation>
+        <translation>Публичный релиз (видео)</translation>
     </message>
     <message>
         <location filename="../source/dialogs/fileinformationdialog.ui" line="188"/>
         <location filename="../build/source/dialogs/ui_fileinformationdialog.h" line="723"/>
         <source>Bootleg</source>
-        <translation type="unfinished"></translation>
+        <translation>Нелегальный</translation>
     </message>
     <message>
         <location filename="../source/dialogs/fileinformationdialog.ui" line="193"/>
         <location filename="../build/source/dialogs/ui_fileinformationdialog.h" line="725"/>
         <source>Not Released</source>
-        <translation type="unfinished"></translation>
+        <translation>Не изданный</translation>
     </message>
     <message>
         <location filename="../source/dialogs/fileinformationdialog.ui" line="223"/>
         <location filename="../build/source/dialogs/ui_fileinformationdialog.h" line="728"/>
         <source>Album Title:</source>
-        <translation type="unfinished"></translation>
+        <translation>Название альбома:</translation>
     </message>
     <message>
         <location filename="../source/dialogs/fileinformationdialog.ui" line="233"/>
         <location filename="../build/source/dialogs/ui_fileinformationdialog.h" line="729"/>
         <source>Album Type:</source>
-        <translation type="unfinished"></translation>
+        <translation>Тип альбома:</translation>
     </message>
     <message>
         <location filename="../source/dialogs/fileinformationdialog.ui" line="241"/>
         <location filename="../build/source/dialogs/ui_fileinformationdialog.h" line="730"/>
         <source>Single</source>
-        <translation type="unfinished"></translation>
+        <translation>Сингл</translation>
     </message>
     <message>
         <location filename="../source/dialogs/fileinformationdialog.ui" line="246"/>
@@ -1064,25 +1064,25 @@
         <location filename="../source/dialogs/fileinformationdialog.ui" line="251"/>
         <location filename="../build/source/dialogs/ui_fileinformationdialog.h" line="732"/>
         <source>Album</source>
-        <translation type="unfinished"></translation>
+        <translation>Альбом</translation>
     </message>
     <message>
         <location filename="../source/dialogs/fileinformationdialog.ui" line="256"/>
         <location filename="../build/source/dialogs/ui_fileinformationdialog.h" line="733"/>
         <source>Double Album</source>
-        <translation type="unfinished"></translation>
+        <translation>Двойной альбом</translation>
     </message>
     <message>
         <location filename="../source/dialogs/fileinformationdialog.ui" line="261"/>
         <location filename="../build/source/dialogs/ui_fileinformationdialog.h" line="734"/>
         <source>Triple Album</source>
-        <translation type="unfinished"></translation>
+        <translation>Тройной альбом</translation>
     </message>
     <message>
         <location filename="../source/dialogs/fileinformationdialog.ui" line="266"/>
         <location filename="../build/source/dialogs/ui_fileinformationdialog.h" line="735"/>
         <source>Boxset</source>
-        <translation type="unfinished"></translation>
+        <translation>Бокссет</translation>
     </message>
     <message>
         <location filename="../source/dialogs/fileinformationdialog.ui" line="274"/>
@@ -1096,25 +1096,25 @@
         <location filename="../build/source/dialogs/ui_fileinformationdialog.h" line="738"/>
         <location filename="../build/source/dialogs/ui_fileinformationdialog.h" line="740"/>
         <source>Live Recording:</source>
-        <translation type="unfinished"></translation>
+        <translation>Живая запись:</translation>
     </message>
     <message>
         <location filename="../source/dialogs/fileinformationdialog.ui" line="312"/>
         <location filename="../build/source/dialogs/ui_fileinformationdialog.h" line="739"/>
         <source>Video Title:</source>
-        <translation type="unfinished"></translation>
+        <translation>Название видео:</translation>
     </message>
     <message>
         <location filename="../source/dialogs/fileinformationdialog.ui" line="349"/>
         <location filename="../build/source/dialogs/ui_fileinformationdialog.h" line="741"/>
         <source>Bootleg Title:</source>
-        <translation type="unfinished"></translation>
+        <translation>Название:</translation>
     </message>
     <message>
         <location filename="../source/dialogs/fileinformationdialog.ui" line="359"/>
         <location filename="../build/source/dialogs/ui_fileinformationdialog.h" line="742"/>
         <source>Bootleg Date:</source>
-        <translation type="unfinished"></translation>
+        <translation>Дата:</translation>
     </message>
     <message>
         <location filename="../source/dialogs/fileinformationdialog.ui" line="382"/>
@@ -1122,37 +1122,37 @@
         <location filename="../build/source/dialogs/ui_fileinformationdialog.h" line="743"/>
         <location filename="../build/source/dialogs/ui_fileinformationdialog.h" line="777"/>
         <source>Author Information</source>
-        <translation type="unfinished"></translation>
+        <translation>Информация об авторе</translation>
     </message>
     <message>
         <location filename="../source/dialogs/fileinformationdialog.ui" line="400"/>
         <location filename="../build/source/dialogs/ui_fileinformationdialog.h" line="744"/>
         <source>Traditional (Author Unknown):</source>
-        <translation type="unfinished"></translation>
+        <translation>Народный (Автор неизвестен):</translation>
     </message>
     <message>
         <location filename="../source/dialogs/fileinformationdialog.ui" line="410"/>
         <location filename="../build/source/dialogs/ui_fileinformationdialog.h" line="745"/>
         <source>Music By:</source>
-        <translation type="unfinished"></translation>
+        <translation>Музыка:</translation>
     </message>
     <message>
         <location filename="../source/dialogs/fileinformationdialog.ui" line="420"/>
         <location filename="../build/source/dialogs/ui_fileinformationdialog.h" line="746"/>
         <source>Words By:</source>
-        <translation type="unfinished"></translation>
+        <translation>Слова:</translation>
     </message>
     <message>
         <location filename="../source/dialogs/fileinformationdialog.ui" line="430"/>
         <location filename="../build/source/dialogs/ui_fileinformationdialog.h" line="747"/>
         <source>Arranged By:</source>
-        <translation type="unfinished"></translation>
+        <translation>Аранжировка:</translation>
     </message>
     <message>
         <location filename="../source/dialogs/fileinformationdialog.ui" line="440"/>
         <location filename="../build/source/dialogs/ui_fileinformationdialog.h" line="748"/>
         <source>Transcribed By:</source>
-        <translation type="unfinished"></translation>
+        <translation>Записана:</translation>
     </message>
     <message>
         <location filename="../source/dialogs/fileinformationdialog.ui" line="450"/>
@@ -1160,7 +1160,7 @@
         <location filename="../build/source/dialogs/ui_fileinformationdialog.h" line="749"/>
         <location filename="../build/source/dialogs/ui_fileinformationdialog.h" line="779"/>
         <source>Copyright:</source>
-        <translation type="unfinished"></translation>
+        <translation>Авторские права:</translation>
     </message>
     <message>
         <location filename="../source/dialogs/fileinformationdialog.ui" line="498"/>
@@ -1316,25 +1316,25 @@
         <location filename="../source/dialogs/fileinformationdialog.ui" line="694"/>
         <location filename="../build/source/dialogs/ui_fileinformationdialog.h" line="782"/>
         <source>Performance Notes</source>
-        <translation type="unfinished"></translation>
+        <translation>Примечания к исполнению</translation>
     </message>
     <message>
         <location filename="../source/dialogs/fileinformationdialog.ui" line="718"/>
         <location filename="../build/source/dialogs/ui_fileinformationdialog.h" line="781"/>
         <source>Notes:</source>
-        <translation type="unfinished"></translation>
+        <translation>Примечания:</translation>
     </message>
     <message>
         <location filename="../source/dialogs/fileinformationdialog.ui" line="734"/>
         <location filename="../build/source/dialogs/ui_fileinformationdialog.h" line="784"/>
         <source>Lyrics</source>
-        <translation type="unfinished"></translation>
+        <translation>Текст песни</translation>
     </message>
     <message>
         <location filename="../source/dialogs/fileinformationdialog.ui" line="758"/>
         <location filename="../build/source/dialogs/ui_fileinformationdialog.h" line="783"/>
         <source>Lyrics:</source>
-        <translation type="unfinished"></translation>
+        <translation>Стихи:</translation>
     </message>
     <message>
         <location filename="../source/dialogs/fileinformationdialog.ui" line="774"/>
@@ -1604,25 +1604,25 @@
         <location filename="../source/dialogs/keyboardsettingsdialog.ui" line="23"/>
         <location filename="../build/source/dialogs/ui_keyboardsettingsdialog.h" line="101"/>
         <source>Edit Keyboard Shortcuts</source>
-        <translation type="unfinished"></translation>
+        <translation>Редактор клавиатурных сокращений</translation>
     </message>
     <message>
         <location filename="../source/dialogs/keyboardsettingsdialog.ui" line="46"/>
         <location filename="../build/source/dialogs/ui_keyboardsettingsdialog.h" line="102"/>
         <source>Shortcut:</source>
-        <translation type="unfinished"></translation>
+        <translation>Сокращение:</translation>
     </message>
     <message>
         <location filename="../source/dialogs/keyboardsettingsdialog.ui" line="56"/>
         <location filename="../build/source/dialogs/ui_keyboardsettingsdialog.h" line="103"/>
         <source>Reset</source>
-        <translation type="unfinished"></translation>
+        <translation>Сброс</translation>
     </message>
     <message>
         <location filename="../source/dialogs/keyboardsettingsdialog.ui" line="63"/>
         <location filename="../build/source/dialogs/ui_keyboardsettingsdialog.h" line="104"/>
         <source>Default</source>
-        <translation type="unfinished"></translation>
+        <translation>По умолчанию</translation>
     </message>
     <message>
         <location filename="../source/dialogs/keyboardsettingsdialog.cpp" line="66"/>
@@ -1851,17 +1851,17 @@
     <message>
         <location filename="../source/widgets/toolbox/notepage.cpp" line="67"/>
         <source>16th Note</source>
-        <translation>Шестнадцатая нота</translation>
+        <translation>16-я нота</translation>
     </message>
     <message>
         <location filename="../source/widgets/toolbox/notepage.cpp" line="72"/>
         <source>32nd Note</source>
-        <translation>Тридцать вторая нота</translation>
+        <translation>32-я нота</translation>
     </message>
     <message>
         <location filename="../source/widgets/toolbox/notepage.cpp" line="77"/>
         <source>64th Note</source>
-        <translation>Шестьдесят четвёртая нота</translation>
+        <translation>64-я нота</translation>
     </message>
     <message>
         <location filename="../source/widgets/toolbox/notepage.cpp" line="100"/>
@@ -1891,17 +1891,17 @@
     <message>
         <location filename="../source/widgets/toolbox/notepage.cpp" line="133"/>
         <source>16th Rest</source>
-        <translation>Шестнадцатая пауза</translation>
+        <translation>16-я пауза</translation>
     </message>
     <message>
         <location filename="../source/widgets/toolbox/notepage.cpp" line="138"/>
         <source>32nd Rest</source>
-        <translation>Тридцать вторая пауза</translation>
+        <translation>32-я пауза</translation>
     </message>
     <message>
         <location filename="../source/widgets/toolbox/notepage.cpp" line="143"/>
         <source>64th Rest</source>
-        <translation>Шестьдесят четвёртая пауза</translation>
+        <translation>64-я пауза</translation>
     </message>
     <message>
         <location filename="../source/widgets/toolbox/notepage.cpp" line="166"/>
@@ -2395,7 +2395,7 @@
     <message>
         <location filename="../source/app/powertabeditor.cpp" line="2275"/>
         <source>Play From Start Of Measure</source>
-        <translation type="unfinished"></translation>
+        <translation>Воспр. с начала отрывка</translation>
     </message>
     <message>
         <location filename="../source/app/powertabeditor.cpp" line="2282"/>
@@ -2595,19 +2595,19 @@
         <location filename="../source/app/powertabeditor.cpp" line="2530"/>
         <location filename="../source/app/powertabeditor.cpp" line="2669"/>
         <source>16th</source>
-        <translation>Шестнадцатая</translation>
+        <translation>16-я</translation>
     </message>
     <message>
         <location filename="../source/app/powertabeditor.cpp" line="2533"/>
         <location filename="../source/app/powertabeditor.cpp" line="2671"/>
         <source>32nd</source>
-        <translation>Тридцать вторая</translation>
+        <translation>32-я</translation>
     </message>
     <message>
         <location filename="../source/app/powertabeditor.cpp" line="2537"/>
         <location filename="../source/app/powertabeditor.cpp" line="2674"/>
         <source>64th</source>
-        <translation>Шестьдесят четвёртая</translation>
+        <translation>64-я</translation>
     </message>
     <message>
         <location filename="../source/app/powertabeditor.cpp" line="2542"/>
@@ -2975,7 +2975,7 @@
     <message>
         <location filename="../source/app/powertabeditor.cpp" line="2998"/>
         <source>Report Bug...</source>
-        <translation>Отчёт об ошибке...</translation>
+        <translation>Сообщить об ошибке...</translation>
     </message>
     <message>
         <location filename="../source/app/powertabeditor.cpp" line="3004"/>
@@ -2995,7 +2995,7 @@
     <message>
         <location filename="../source/app/powertabeditor.cpp" line="3079"/>
         <source>Instruments</source>
-        <translation>Инструменты</translation>
+        <translation>Музыкальные инструменты</translation>
     </message>
     <message>
         <location filename="../source/app/powertabeditor.cpp" line="3182"/>
@@ -3020,7 +3020,7 @@
     <message>
         <location filename="../source/app/powertabeditor.cpp" line="3227"/>
         <source>&amp;Position</source>
-        <translation type="unfinished"></translation>
+        <translation>По&amp;зиция</translation>
     </message>
     <message>
         <location filename="../source/app/powertabeditor.cpp" line="3228"/>
@@ -3056,7 +3056,7 @@
     <message>
         <location filename="../source/app/powertabeditor.cpp" line="3323"/>
         <source>Rests</source>
-        <translation>Паузы</translation>
+        <translation>Па&amp;узы</translation>
     </message>
     <message>
         <location filename="../source/app/powertabeditor.cpp" line="3336"/>
@@ -3147,13 +3147,13 @@
         <location filename="../source/dialogs/preferencesdialog.ui" line="39"/>
         <location filename="../build/source/dialogs/ui_preferencesdialog.h" line="360"/>
         <source>Playback</source>
-        <translation type="unfinished"></translation>
+        <translation>Проигрывание</translation>
     </message>
     <message>
         <location filename="../source/dialogs/preferencesdialog.ui" line="50"/>
         <location filename="../build/source/dialogs/ui_preferencesdialog.h" line="361"/>
         <source>MIDI Output Device:</source>
-        <translation type="unfinished"></translation>
+        <translation>Устройство вывода MIDI:</translation>
     </message>
     <message>
         <location filename="../source/dialogs/preferencesdialog.ui" line="60"/>
@@ -3171,7 +3171,7 @@
         <location filename="../source/dialogs/preferencesdialog.ui" line="86"/>
         <location filename="../build/source/dialogs/ui_preferencesdialog.h" line="364"/>
         <source>Play Notes While Editing</source>
-        <translation type="unfinished"></translation>
+        <translation>Проигрывать ноты при редактировании</translation>
     </message>
     <message>
         <location filename="../source/dialogs/preferencesdialog.ui" line="101"/>
@@ -3195,31 +3195,31 @@
         <location filename="../build/source/dialogs/ui_preferencesdialog.h" line="372"/>
         <location filename="../build/source/dialogs/ui_preferencesdialog.h" line="384"/>
         <source>Preset:</source>
-        <translation type="unfinished"></translation>
+        <translation>Выбрать:</translation>
     </message>
     <message>
         <location filename="../source/dialogs/preferencesdialog.ui" line="138"/>
         <location filename="../build/source/dialogs/ui_preferencesdialog.h" line="368"/>
         <source>Strong Accent Volume:</source>
-        <translation type="unfinished"></translation>
+        <translation>Громкость сильного акцента:</translation>
     </message>
     <message>
         <location filename="../source/dialogs/preferencesdialog.ui" line="148"/>
         <location filename="../build/source/dialogs/ui_preferencesdialog.h" line="369"/>
         <source>Weak Accent Volume:</source>
-        <translation type="unfinished"></translation>
+        <translation>Громкость слабого акцента:</translation>
     </message>
     <message>
         <location filename="../source/dialogs/preferencesdialog.ui" line="163"/>
         <location filename="../build/source/dialogs/ui_preferencesdialog.h" line="370"/>
         <source>Count-In Before Playback</source>
-        <translation type="unfinished"></translation>
+        <translation>Обратный отсчёт перед проигрыванием</translation>
     </message>
     <message>
         <location filename="../source/dialogs/preferencesdialog.ui" line="200"/>
         <location filename="../build/source/dialogs/ui_preferencesdialog.h" line="373"/>
         <source>Volume:</source>
-        <translation type="unfinished"></translation>
+        <translation>Громкость:</translation>
     </message>
     <message>
         <location filename="../source/dialogs/preferencesdialog.ui" line="216"/>
@@ -3249,7 +3249,7 @@
         <location filename="../source/dialogs/preferencesdialog.ui" line="260"/>
         <location filename="../build/source/dialogs/ui_preferencesdialog.h" line="378"/>
         <source>System Default</source>
-        <translation>Системная по умолчанию</translation>
+        <translation>Системная</translation>
     </message>
     <message>
         <location filename="../source/dialogs/preferencesdialog.ui" line="265"/>
