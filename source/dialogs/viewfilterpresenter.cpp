@@ -46,7 +46,7 @@ void ViewFilterPresenter::addFilter()
     filter.addRule(FilterRule());
 
     myFilters.push_back(filter);
-    mySelection = myFilters.size() - 1;
+    mySelection = static_cast<int>(myFilters.size()) - 1;
 
     updateView();
 }

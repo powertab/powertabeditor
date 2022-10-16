@@ -89,7 +89,9 @@ namespace Detail
     findIndexByPosition(const boost::iterator_range<T> &range, int position)
     {
         auto it = Detail::binarySearch(range, position);
-        return it != range.end() ? std::distance(range.begin(), it) : -1;
+        return it != range.end()
+                   ? static_cast<int>(std::distance(range.begin(), it))
+                   : -1;
     }
 
     /// Returns the objects within the specified position range (inclusive).

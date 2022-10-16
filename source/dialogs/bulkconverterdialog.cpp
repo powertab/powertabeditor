@@ -51,7 +51,7 @@ convertFile(const std::filesystem::path &src, const std::filesystem::path &dst,
     {
         ffm->importFile(score, src, *format);
     }
-    catch (const std::exception &e)
+    catch (const std::exception &)
     {
         return "could not import file: " + src.string();
     }
@@ -60,7 +60,7 @@ convertFile(const std::filesystem::path &src, const std::filesystem::path &dst,
     {
         ffm->exportFile(score, dst, export_format);
     }
-    catch (const std::exception &e)
+    catch (const std::exception &)
     {
         return "could not export file: " + dst.string();
     }
