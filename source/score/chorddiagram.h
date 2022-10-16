@@ -39,7 +39,7 @@ public:
     void setTopFret(int fret) { myTopFret = fret; }
 
     /// Returns the number of strings in the diagram.
-    int getStringCount() const { return myFretNumbers.size(); }
+    int getStringCount() const { return static_cast<int>(myFretNumbers.size()); }
     /// Edits the number of strings. When increasing, new strings are muted by
     /// default.
     void setStringCount(int count);
