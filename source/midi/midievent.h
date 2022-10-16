@@ -59,6 +59,8 @@ public:
 
     bool isMetaMessage() const;
     bool isTempoChange() const;
+    bool isPitchWheel() const;
+    uint8_t getPitchWheelValue() const;
     bool isVolumeChange() const;
     bool isTrackEnd() const;
     Midi::Tempo getTempo() const;

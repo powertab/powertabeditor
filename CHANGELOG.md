@@ -29,6 +29,7 @@ Thanks to the following contributors who worked on this release:
 - Fixed a potential crash when double-clicking to edit a bend (#390)
 - Fixed a potential crash when using the Shift String Up / Down commands (#394)
 - Fixed a potential crash when displaying imported `.ptb` files (#396)
+- Fixed a MIDI playback issue where the pitch wheel could be incorrectly shifted when starting playback in the middle of the score (#395)
 
 ## [Alpha 18] - 2022-03-10
 

@@ -34,7 +34,7 @@ static constexpr int METRONOME_CHANNEL = Midi::PERCUSSION_CHANNEL;
 static constexpr int DEFAULT_PPQ = 480;
 
 static constexpr int PITCH_BEND_RANGE = 24;
-static constexpr int DEFAULT_BEND = 64;
+static constexpr int DEFAULT_BEND = Midi::DEFAULT_BEND;
 static constexpr int SLIDE_OUT_STEPS = 5;
 
 /// Pitch bend amount to bend a note by a quarter tone.

@@ -184,6 +184,9 @@ MidiPlayer::playEvents(MidiFile &file, const Score &score,
     SystemLocation current_location = start_location;
     DurationType clock_drift(0);
 
+    std::array<uint8_t, Midi::NUM_MIDI_CHANNELS_PER_PORT> initial_pitch_wheel;
+    initial_pitch_wheel.fill(Midi::DEFAULT_BEND);
+
     for (const MidiEvent &event : events)
     {
         if (!myIsPlaying)
@@ -207,6 +210,14 @@ MidiPlayer::playEvents(MidiFile &file, const Score &score,
                     // below).
                     myDevice->setVolume(event.getChannel(), event.getVolume());
                 }
+                else if (event.isPitchWheel())
+                {
+                    // On Windows (GS wavetable synth) pitch wheel events seem
+                    // to get lost if they're sent too rapidly (bug 395). Just
+                    // record the latest pitch bend value and set the final
+                    // value before starting playback.
+                    initial_pitch_wheel[event.getChannel()] = event.getPitchWheelValue();
+                }
                 else if (!event.isNoteOnOff() && !event.isTempoChange())
                     myDevice->sendMessage(event.getData());
 
@@ -214,6 +225,9 @@ MidiPlayer::playEvents(MidiFile &file, const Score &score,
             }
             else
             {
+                for (int i = 0, n = int(initial_pitch_wheel.size()); i < n; ++i)
+                    myDevice->setPitchBend(i, initial_pitch_wheel[i]);
+
                 if (allow_count_in)
                     performCountIn(score, event.getLocation(), beat_duration);
 

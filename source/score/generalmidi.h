@@ -49,6 +49,9 @@ namespace Midi
     /// Special channel for percussion.
     inline constexpr int PERCUSSION_CHANNEL = 9;
 
+    /// Default pitch wheel value.
+    inline constexpr uint8_t DEFAULT_BEND = 64;
+
     /// Minimum volume level for a MIDI channel.
     const uint8_t MIN_MIDI_CHANNEL_VOLUME = 0;
     /// Maximum volume level for a MIDI channel.

@@ -64,6 +64,17 @@ bool MidiEvent::isVolumeChange() const
     return myData[1] == Controller::ChannelVolume;
 }
 
+bool MidiEvent::isPitchWheel() const
+{
+    return (getStatusByte() & theStatusByteMask) == StatusByte::PitchWheel;
+}
+
+uint8_t MidiEvent::getPitchWheelValue() const
+{
+    assert(isPitchWheel());
+    return myData[2];
+}
+
 bool MidiEvent::isTrackEnd() const
 {
     return getStatusByte() == StatusByte::MetaMessage &&
