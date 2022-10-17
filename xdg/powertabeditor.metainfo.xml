@@ -41,6 +41,38 @@
   </provides>
 
   <releases>
+    <release version="2.0.0-alpha19" date="2022-10-17">
+      <url>https://github.com/powertab/powertabeditor/releases/tag/2.0.0-alpha19</url>
+      <description>
+        <p>New Features / Improvements</p>
+        <ul>
+          <li>The spacing between systems can now be configured in the preferences (#239, #382)</li>
+          <li>Added Japanese and Russian translations</li>
+        </ul>
+        <p>Changes</p>
+        <ul>
+          <li>Rhythm slashes from `.ptb` files are now imported (as a regular staff for now, until full support for rhythm slashes is added) (#16, #389)</li>
+          <li>Increased the upper limit for irregular grouping values (#376)</li>
+          <li>The time signature dialog now enables the visibility checkbox by default (#356, #383)</li>
+          <li>Improved rendering of slide outs from a note (#393)</li>
+        </ul>
+        <p>Bug Fixes</p>
+        <ul>
+          <li>Fixed several potential errors when importing `.ptb` and Guitar Pro files.</li>
+          <li>Fixed a potential crash when exporting to Guitar Pro (#379)</li>
+          <li>Fixed issues where non-ASCII characters from `.ptb` files were not loaded correctly (#379)</li>
+          <li>Fixed an issue where some bars could be skipped when importing a Guitar Pro file with a small number of bars.</li>
+          <li>Ties between notes in different systems are now supported by the Guitar Pro exporter.</li>
+          <li>Fixed a regression from alpha 15 where the final barline in a system could not be edited.</li>
+          <li>The snap package provides more helpful error messages when the MIDI device cannot be accessed (#386)</li>
+          <li>Fixed a crash when editing multi-bar rests (#391)</li>
+          <li>Fixed a potential crash when double-clicking to edit a bend (#390)</li>
+          <li>Fixed a potential crash when using the Shift String Up / Down commands (#394)</li>
+          <li>Fixed a potential crash when displaying imported `.ptb` files (#396)</li>
+          <li>Fixed a MIDI playback issue where the pitch wheel could be incorrectly shifted when starting playback in the middle of the score (#395)</li>
+        </ul>
+      </description>
+    </release>
     <release version="2.0.0-alpha18" date="2022-03-10">
       <url>https://github.com/powertab/powertabeditor/releases/tag/2.0.0-alpha18</url>
       <description>

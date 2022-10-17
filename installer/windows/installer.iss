@@ -1,7 +1,7 @@
 #define ProductName "Power Tab Editor"
 #define ExeName "powertabeditor"
 #define GroupName "Power Tab"
-#define ProductVersion "2.0.0-alpha18"
+#define ProductVersion "2.0.0-alpha19"
 
 #define public Dependency_NoExampleSetup
 #include "CodeDependencies.iss"
