@@ -2315,7 +2315,7 @@ void PowerTabEditor::createCommands()
     // Section navigation actions.
     myFirstSectionCommand =
         new Command(tr("First Section"), "Position.Section.FirstSection",
-                    QKeySequence::MoveToStartOfDocument, this);
+                    Qt::CTRL + Qt::Key_Home, this);
     connect(myFirstSectionCommand, &QAction::triggered, this,
             &PowerTabEditor::moveCaretToFirstSection);
 
@@ -2333,7 +2333,7 @@ void PowerTabEditor::createCommands()
 
     myLastSectionCommand =
         new Command(tr("Last Section"), "Position.Section.LastSection",
-                    QKeySequence::MoveToEndOfDocument, this);
+                    Qt::CTRL + Qt::Key_End, this);
     connect(myLastSectionCommand, &QAction::triggered, this,
             &PowerTabEditor::moveCaretToLastSection);
 
