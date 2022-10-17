@@ -13,6 +13,7 @@ Thanks to the following contributors who worked on this release:
 - Added Japanese and Russian translations
 
 ### Changed
+- Rhythm slashes from `.ptb` files are now imported (as a regular staff for now, until full support for rhythm slashes is added) (#16, #389)
 - Increased the upper limit for irregular grouping values (#376)
 - The time signature dialog now enables the visibility checkbox by default (#356, #383)
 - Improved rendering of slide outs from a note (#393)
