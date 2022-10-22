@@ -38,7 +38,7 @@
     <message>
         <location filename="../source/actions/chorddiagram.cpp" line="24"/>
         <source>Add Chord Diagram</source>
-        <translation type="unfinished"></translation>
+        <translation>Ajouter un diagramme d’accord</translation>
     </message>
 </context>
 <context>
@@ -91,7 +91,7 @@
     <message>
         <location filename="../source/actions/addspecialnoteproperty.h" line="120"/>
         <source>Add Left Hand Fingering</source>
-        <translation>Ajouter le doigté de la main gauche</translation>
+        <translation>Ajouter un doigté main gauche</translation>
     </message>
 </context>
 <context>
@@ -155,7 +155,7 @@
     <message>
         <location filename="../source/actions/addrest.cpp" line="23"/>
         <source>Add Rest</source>
-        <translation>Ajouter une pause</translation>
+        <translation>Ajouter un silence</translation>
     </message>
 </context>
 <context>
@@ -179,7 +179,7 @@
     <message>
         <location filename="../source/actions/addspecialnoteproperty.h" line="65"/>
         <source>Add Tapped Harmonic</source>
-        <translation type="unfinished"></translation>
+        <translation>Ajouter un harmonique tapé</translation>
     </message>
 </context>
 <context>
@@ -187,7 +187,7 @@
     <message>
         <location filename="../source/actions/edittempomarker.cpp" line="26"/>
         <source>Add Alteration of Pace</source>
-        <translation type="unfinished"></translation>
+        <translation>Ajouter une variation de tempo</translation>
     </message>
     <message>
         <location filename="../source/actions/edittempomarker.cpp" line="27"/>
@@ -224,7 +224,7 @@
     <message>
         <location filename="../source/actions/volumeswell.cpp" line="22"/>
         <source>Add Volume Swell</source>
-        <translation type="unfinished"></translation>
+        <translation>Ajouter une variation de volume</translation>
     </message>
 </context>
 <context>
@@ -246,7 +246,7 @@
         <location filename="../source/dialogs/alterationofpacedialog.ui" line="17"/>
         <location filename="../build/source/dialogs/ui_alterationofpacedialog.h" line="73"/>
         <source>Alteration of Pace</source>
-        <translation type="unfinished"></translation>
+        <translation>Variation de tempo</translation>
     </message>
     <message>
         <location filename="../source/dialogs/alterationofpacedialog.ui" line="34"/>
@@ -266,17 +266,17 @@
     <message>
         <location filename="../source/dialogs/alternateendingdialog.cpp" line="58"/>
         <source>D.C.</source>
-        <translation type="unfinished"></translation>
+        <translation>D.C.</translation>
     </message>
     <message>
         <location filename="../source/dialogs/alternateendingdialog.cpp" line="61"/>
         <source>D.S.</source>
-        <translation type="unfinished"></translation>
+        <translation>D.S.</translation>
     </message>
     <message>
         <location filename="../source/dialogs/alternateendingdialog.cpp" line="64"/>
         <source>D.S.S.</source>
-        <translation type="unfinished"></translation>
+        <translation>D.S.S.</translation>
     </message>
     <message>
         <location filename="../source/dialogs/alternateendingdialog.cpp" line="119"/>
@@ -413,7 +413,7 @@
     <message>
         <location filename="../source/dialogs/barlinedialog.cpp" line="46"/>
         <source>Double Bar Fine</source>
-        <translation type="unfinished"></translation>
+        <translation>Double barre de fin</translation>
     </message>
 </context>
 <context>
@@ -482,27 +482,27 @@
     <message>
         <location filename="../source/dialogs/benddialog.cpp" line="34"/>
         <source>Bend and Release</source>
-        <translation type="unfinished"></translation>
+        <translation>Bend et relâchement</translation>
     </message>
     <message>
         <location filename="../source/dialogs/benddialog.cpp" line="34"/>
         <source>Bend and Hold</source>
-        <translation type="unfinished"></translation>
+        <translation>Bend et maintien</translation>
     </message>
     <message>
         <location filename="../source/dialogs/benddialog.cpp" line="35"/>
         <source>Pre-Bend</source>
-        <translation type="unfinished"></translation>
+        <translation>Pré-bend</translation>
     </message>
     <message>
         <location filename="../source/dialogs/benddialog.cpp" line="35"/>
         <source>Pre-Bend and Release</source>
-        <translation type="unfinished"></translation>
+        <translation>Pré-bend et relâchement</translation>
     </message>
     <message>
         <location filename="../source/dialogs/benddialog.cpp" line="35"/>
         <source>Pre-Bend and Hold</source>
-        <translation type="unfinished"></translation>
+        <translation>Pré-bend et maintien</translation>
     </message>
     <message>
         <location filename="../source/dialogs/benddialog.cpp" line="36"/>
@@ -536,7 +536,7 @@
         <location filename="../source/dialogs/bulkconverterdialog.ui" line="14"/>
         <location filename="../build/source/dialogs/ui_bulkconverterdialog.h" line="116"/>
         <source>Bulk Converter</source>
-        <translation type="unfinished"></translation>
+        <translation>Convertisseur en masse</translation>
     </message>
     <message>
         <location filename="../source/dialogs/bulkconverterdialog.ui" line="29"/>
@@ -595,36 +595,36 @@
         <location filename="../source/dialogs/chorddiagramdialog.ui" line="9"/>
         <location filename="../build/source/dialogs/ui_chorddiagramdialog.h" line="110"/>
         <source>Chord Diagram</source>
-        <translation type="unfinished"></translation>
+        <translation>Diagramme d&apos;accord</translation>
     </message>
     <message>
         <location filename="../source/dialogs/chorddiagramdialog.ui" line="23"/>
         <location filename="../build/source/dialogs/ui_chorddiagramdialog.h" line="111"/>
         <source>Chord Name:</source>
-        <translation type="unfinished"></translation>
+        <translation>Nom de l&apos;accord :</translation>
     </message>
     <message>
         <location filename="../source/dialogs/chorddiagramdialog.ui" line="33"/>
         <location filename="../build/source/dialogs/ui_chorddiagramdialog.h" line="112"/>
         <source>Top Fret:</source>
-        <translation type="unfinished"></translation>
+        <translation>Frette de départ :</translation>
     </message>
     <message>
         <location filename="../source/dialogs/chorddiagramdialog.ui" line="43"/>
         <location filename="../build/source/dialogs/ui_chorddiagramdialog.h" line="113"/>
         <source>Number of Strings:</source>
-        <translation type="unfinished">Nombre de cordes :</translation>
+        <translation>Nombre de cordes :</translation>
     </message>
     <message>
         <location filename="../source/dialogs/chorddiagramdialog.ui" line="53"/>
         <location filename="../build/source/dialogs/ui_chorddiagramdialog.h" line="114"/>
         <source>Diagram:</source>
-        <translation type="unfinished"></translation>
+        <translation>Diagramme :</translation>
     </message>
     <message>
         <location filename="../source/dialogs/chorddiagramdialog.cpp" line="48"/>
         <source>Click to edit chord name.</source>
-        <translation type="unfinished"></translation>
+        <translation>Cliquez pour éditer le nom de l&apos;accord.</translation>
     </message>
 </context>
 <context>
@@ -749,7 +749,7 @@
         <location filename="../source/dialogs/chordnamedialog.ui" line="898"/>
         <location filename="../build/source/dialogs/ui_chordnamedialog.h" line="578"/>
         <source>Chords in Score:</source>
-        <translation type="unfinished"></translation>
+        <translation>Accords de la partition :</translation>
     </message>
 </context>
 <context>
@@ -882,7 +882,7 @@
     <message>
         <location filename="../source/actions/editkeysignature.cpp" line="25"/>
         <source>Edit Key Signature</source>
-        <translation>Modifier la signature de la clé</translation>
+        <translation>Modifier l&apos;armure</translation>
     </message>
 </context>
 <context>
@@ -890,7 +890,7 @@
     <message>
         <location filename="../source/actions/editnoteduration.cpp" line="23"/>
         <source>Edit Rest Duration</source>
-        <translation>Modifier la durée de la pause</translation>
+        <translation>Modifier la durée du silence</translation>
     </message>
     <message>
         <location filename="../source/actions/editnoteduration.cpp" line="24"/>
@@ -935,7 +935,7 @@
     <message>
         <location filename="../source/actions/edittimesignature.cpp" line="25"/>
         <source>Edit Time Signature</source>
-        <translation type="unfinished"></translation>
+        <translation>Éditer la signature rythmique</translation>
     </message>
 </context>
 <context>
@@ -943,7 +943,7 @@
     <message>
         <location filename="../source/actions/editviewfilters.cpp" line="24"/>
         <source>Edit View Filters</source>
-        <translation type="unfinished"></translation>
+        <translation>Éditer les filtres</translation>
     </message>
 </context>
 <context>
@@ -1028,7 +1028,7 @@
         <location filename="../source/dialogs/fileinformationdialog.ui" line="188"/>
         <location filename="../build/source/dialogs/ui_fileinformationdialog.h" line="723"/>
         <source>Bootleg</source>
-        <translation type="unfinished"></translation>
+        <translation>Bootleg</translation>
     </message>
     <message>
         <location filename="../source/dialogs/fileinformationdialog.ui" line="193"/>
@@ -1108,13 +1108,13 @@
         <location filename="../source/dialogs/fileinformationdialog.ui" line="349"/>
         <location filename="../build/source/dialogs/ui_fileinformationdialog.h" line="741"/>
         <source>Bootleg Title:</source>
-        <translation type="unfinished"></translation>
+        <translation>Titre du Bootleg :</translation>
     </message>
     <message>
         <location filename="../source/dialogs/fileinformationdialog.ui" line="359"/>
         <location filename="../build/source/dialogs/ui_fileinformationdialog.h" line="742"/>
         <source>Bootleg Date:</source>
-        <translation type="unfinished"></translation>
+        <translation>Date du Bootleg :</translation>
     </message>
     <message>
         <location filename="../source/dialogs/fileinformationdialog.ui" line="382"/>
@@ -1566,7 +1566,7 @@
         <location filename="../source/dialogs/keysignaturedialog.ui" line="17"/>
         <location filename="../build/source/dialogs/ui_keysignaturedialog.h" line="111"/>
         <source>Key Signature</source>
-        <translation>Signature de clé</translation>
+        <translation>Armure</translation>
     </message>
     <message>
         <location filename="../source/dialogs/keysignaturedialog.ui" line="31"/>
@@ -1657,13 +1657,13 @@
         <location filename="../source/dialogs/lefthandfingeringdialog.ui" line="17"/>
         <location filename="../build/source/dialogs/ui_lefthandfingeringdialog.h" line="84"/>
         <source>Left Hand Fingering</source>
-        <translation>Doigté de la main gauche</translation>
+        <translation>Doigté main gauche</translation>
     </message>
     <message>
         <location filename="../source/dialogs/lefthandfingeringdialog.ui" line="31"/>
         <location filename="../build/source/dialogs/ui_lefthandfingeringdialog.h" line="85"/>
         <source>Finger:</source>
-        <translation>Doigté :</translation>
+        <translation>Doigt :</translation>
     </message>
     <message>
         <location filename="../source/dialogs/lefthandfingeringdialog.ui" line="41"/>
@@ -1937,37 +1937,37 @@
     <message>
         <location filename="../source/widgets/toolbox/notepage.cpp" line="211"/>
         <source>Slide &amp;&amp; Legato</source>
-        <translation type="unfinished"></translation>
+        <translation>Glissé &amp;&amp; liaison</translation>
     </message>
     <message>
         <location filename="../source/widgets/toolbox/notepage.cpp" line="215"/>
         <source>Slide In From Below</source>
-        <translation type="unfinished"></translation>
+        <translation>Glissé d&apos;entrée par le bas</translation>
     </message>
     <message>
         <location filename="../source/widgets/toolbox/notepage.cpp" line="220"/>
         <source>Slide In From Above</source>
-        <translation type="unfinished"></translation>
+        <translation>Glissé d&apos;entrée par le haut</translation>
     </message>
     <message>
         <location filename="../source/widgets/toolbox/notepage.cpp" line="225"/>
         <source>Slide Out Downwards</source>
-        <translation type="unfinished"></translation>
+        <translation>Glissé de sortie vers le bas</translation>
     </message>
     <message>
         <location filename="../source/widgets/toolbox/notepage.cpp" line="230"/>
         <source>Slide Out Upwards</source>
-        <translation type="unfinished"></translation>
+        <translation>Glissé de sortie vers le haut</translation>
     </message>
     <message>
         <location filename="../source/widgets/toolbox/notepage.cpp" line="235"/>
         <source>Shift Slide</source>
-        <translation type="unfinished"></translation>
+        <translation>Glissé</translation>
     </message>
     <message>
         <location filename="../source/widgets/toolbox/notepage.cpp" line="240"/>
         <source>Legato Slide</source>
-        <translation type="unfinished"></translation>
+        <translation>Glissé avec liaison</translation>
     </message>
     <message>
         <location filename="../source/widgets/toolbox/notepage.cpp" line="245"/>
@@ -2162,7 +2162,7 @@
     <message>
         <location filename="../source/actions/polishscore.cpp" line="24"/>
         <source>Polish Score</source>
-        <translation type="unfinished"></translation>
+        <translation>Embellir la partition</translation>
     </message>
 </context>
 <context>
@@ -2170,7 +2170,7 @@
     <message>
         <location filename="../source/actions/polishsystem.cpp" line="23"/>
         <source>Polish System</source>
-        <translation type="unfinished"></translation>
+        <translation>Système d&apos;embellissement</translation>
     </message>
 </context>
 <context>
@@ -2288,7 +2288,7 @@
     <message>
         <location filename="../source/app/powertabeditor.cpp" line="1047"/>
         <source>Edit Chord Diagram</source>
-        <translation type="unfinished"></translation>
+        <translation>Éditer le diagramme d&apos;accord</translation>
     </message>
     <message>
         <location filename="../source/app/powertabeditor.cpp" line="1145"/>
@@ -2313,7 +2313,7 @@
     <message>
         <location filename="../source/app/powertabeditor.cpp" line="1500"/>
         <source>Edit Alteration of Pace</source>
-        <translation type="unfinished"></translation>
+        <translation>Éditer la variation du tempo</translation>
     </message>
     <message>
         <location filename="../source/app/powertabeditor.cpp" line="1547"/>
@@ -2328,7 +2328,7 @@
     <message>
         <location filename="../source/app/powertabeditor.cpp" line="1689"/>
         <source>Edit Volume Swell</source>
-        <translation type="unfinished"></translation>
+        <translation>Éditer la variation de volume</translation>
     </message>
     <message>
         <location filename="../source/app/powertabeditor.cpp" line="1726"/>
@@ -2388,7 +2388,7 @@
     <message>
         <location filename="../source/app/powertabeditor.cpp" line="2202"/>
         <source>Bulk Converter...</source>
-        <translation type="unfinished"></translation>
+        <translation>Convertisseur en masse...</translation>
     </message>
     <message>
         <location filename="../source/app/powertabeditor.cpp" line="2208"/>
@@ -2433,12 +2433,12 @@
     <message>
         <location filename="../source/app/powertabeditor.cpp" line="2245"/>
         <source>Polish Score</source>
-        <translation type="unfinished"></translation>
+        <translation>Embellir la partition</translation>
     </message>
     <message>
         <location filename="../source/app/powertabeditor.cpp" line="2250"/>
         <source>Polish System</source>
-        <translation type="unfinished"></translation>
+        <translation>Système d&apos;embellissement</translation>
     </message>
     <message>
         <location filename="../source/app/powertabeditor.cpp" line="2257"/>
@@ -2573,7 +2573,7 @@
     <message>
         <location filename="../source/app/powertabeditor.cpp" line="2452"/>
         <source>Add Chord Diagram...</source>
-        <translation type="unfinished"></translation>
+        <translation>Ajouter un diagramme d&apos;accord...</translation>
     </message>
     <message>
         <location filename="../source/app/powertabeditor.cpp" line="2457"/>
@@ -2695,17 +2695,17 @@
     <message>
         <location filename="../source/app/powertabeditor.cpp" line="2573"/>
         <source>Left Hand Fingering...</source>
-        <translation>Doigté de la main gauche…</translation>
+        <translation>Doigté main gauche…</translation>
     </message>
     <message>
         <location filename="../source/app/powertabeditor.cpp" line="2582"/>
         <source>Shift String Up</source>
-        <translation type="unfinished"></translation>
+        <translation>Décaler sur la corde supérieure</translation>
     </message>
     <message>
         <location filename="../source/app/powertabeditor.cpp" line="2588"/>
         <source>Shift String Down</source>
-        <translation type="unfinished"></translation>
+        <translation>Décaler sur la corde inférieure</translation>
     </message>
     <message>
         <location filename="../source/app/powertabeditor.cpp" line="2593"/>
@@ -2731,7 +2731,7 @@
     <message>
         <location filename="../source/app/powertabeditor.cpp" line="2609"/>
         <source>Let Ring</source>
-        <translation type="unfinished"></translation>
+        <translation>Laisser sonner</translation>
     </message>
     <message>
         <location filename="../source/app/powertabeditor.cpp" line="2613"/>
@@ -2806,17 +2806,17 @@
     <message>
         <location filename="../source/app/powertabeditor.cpp" line="2706"/>
         <source>Alteration of Pace...</source>
-        <translation type="unfinished"></translation>
+        <translation>Variation de nuance...</translation>
     </message>
     <message>
         <location filename="../source/app/powertabeditor.cpp" line="2712"/>
         <source>Edit Key Signature...</source>
-        <translation>Modifier la signature de la clé…</translation>
+        <translation>Modifier l&apos;armure...</translation>
     </message>
     <message>
         <location filename="../source/app/powertabeditor.cpp" line="2719"/>
         <source>Edit Time Signature...</source>
-        <translation type="unfinished"></translation>
+        <translation>Modifier la signature rythmique...</translation>
     </message>
     <message>
         <location filename="../source/app/powertabeditor.cpp" line="2726"/>
@@ -2858,7 +2858,7 @@
     <message>
         <location filename="../source/app/powertabeditor.cpp" line="2788"/>
         <source>Volume Swell...</source>
-        <translation type="unfinished"></translation>
+        <translation>Variation de volume...</translation>
     </message>
     <message>
         <location filename="../source/app/powertabeditor.cpp" line="2795"/>
@@ -2868,12 +2868,12 @@
     <message>
         <location filename="../source/app/powertabeditor.cpp" line="2803"/>
         <source>Hammer On From Nowhere</source>
-        <translation type="unfinished"></translation>
+        <translation>Hammer-on de nulle part</translation>
     </message>
     <message>
         <location filename="../source/app/powertabeditor.cpp" line="2808"/>
         <source>Pull Off To Nowhere</source>
-        <translation type="unfinished"></translation>
+        <translation>Pull-off de nulle part</translation>
     </message>
     <message>
         <location filename="../source/app/powertabeditor.cpp" line="2812"/>
@@ -2888,7 +2888,7 @@
     <message>
         <location filename="../source/app/powertabeditor.cpp" line="2824"/>
         <source>Tapped Harmonic...</source>
-        <translation type="unfinished"></translation>
+        <translation>Harmonique tapé...</translation>
     </message>
     <message>
         <location filename="../source/app/powertabeditor.cpp" line="2833"/>
@@ -2933,7 +2933,7 @@
     <message>
         <location filename="../source/app/powertabeditor.cpp" line="2874"/>
         <source>Tap</source>
-        <translation type="unfinished"></translation>
+        <translation>Taper</translation>
     </message>
     <message>
         <location filename="../source/app/powertabeditor.cpp" line="2878"/>
@@ -2943,42 +2943,42 @@
     <message>
         <location filename="../source/app/powertabeditor.cpp" line="2884"/>
         <source>Pickstroke Up</source>
-        <translation type="unfinished"></translation>
+        <translation>Jouer vers le haut</translation>
     </message>
     <message>
         <location filename="../source/app/powertabeditor.cpp" line="2889"/>
         <source>Pickstroke Down</source>
-        <translation type="unfinished"></translation>
+        <translation>Jouer vers le bas</translation>
     </message>
     <message>
         <location filename="../source/app/powertabeditor.cpp" line="2895"/>
         <source>Slide Into From Above</source>
-        <translation type="unfinished"></translation>
+        <translation>Glissé d&apos;entrée par le haut</translation>
     </message>
     <message>
         <location filename="../source/app/powertabeditor.cpp" line="2900"/>
         <source>Slide Into From Below</source>
-        <translation type="unfinished"></translation>
+        <translation>Glissé d&apos;entrée par le bas</translation>
     </message>
     <message>
         <location filename="../source/app/powertabeditor.cpp" line="2905"/>
         <source>Shift Slide</source>
-        <translation type="unfinished"></translation>
+        <translation>Glissé</translation>
     </message>
     <message>
         <location filename="../source/app/powertabeditor.cpp" line="2909"/>
         <source>Legato Slide</source>
-        <translation type="unfinished"></translation>
+        <translation>Glissé avec liaison</translation>
     </message>
     <message>
         <location filename="../source/app/powertabeditor.cpp" line="2915"/>
         <source>Slide Out Of Downwards</source>
-        <translation type="unfinished"></translation>
+        <translation>Glissé de sortie vers le bas</translation>
     </message>
     <message>
         <location filename="../source/app/powertabeditor.cpp" line="2920"/>
         <source>Slide Out Of Upwards</source>
-        <translation type="unfinished"></translation>
+        <translation>Glissé de sortie vers le haut</translation>
     </message>
     <message>
         <location filename="../source/app/powertabeditor.cpp" line="2927"/>
@@ -3003,7 +3003,7 @@
     <message>
         <location filename="../source/app/powertabeditor.cpp" line="2950"/>
         <source>Edit View Filters...</source>
-        <translation type="unfinished"></translation>
+        <translation>Éditer les filtres...</translation>
     </message>
     <message>
         <location filename="../source/app/powertabeditor.cpp" line="2967"/>
@@ -3018,12 +3018,12 @@
     <message>
         <location filename="../source/app/powertabeditor.cpp" line="2987"/>
         <source>Zoom In</source>
-        <translation type="unfinished"></translation>
+        <translation>Zoomer</translation>
     </message>
     <message>
         <location filename="../source/app/powertabeditor.cpp" line="2992"/>
         <source>Zoom Out</source>
-        <translation type="unfinished"></translation>
+        <translation>Dézoomer</translation>
     </message>
     <message>
         <location filename="../source/app/powertabeditor.cpp" line="2998"/>
@@ -3033,12 +3033,12 @@
     <message>
         <location filename="../source/app/powertabeditor.cpp" line="3004"/>
         <source>Translate This Application...</source>
-        <translation type="unfinished"></translation>
+        <translation>Traduire cette application...</translation>
     </message>
     <message>
         <location filename="../source/app/powertabeditor.cpp" line="3010"/>
         <source>Application Info...</source>
-        <translation type="unfinished"></translation>
+        <translation>Informations sur l&apos;application...</translation>
     </message>
     <message>
         <source>App Info</source>
@@ -3133,12 +3133,12 @@
     <message>
         <location filename="../source/app/powertabeditor.cpp" line="3365"/>
         <source>Slide Into</source>
-        <translation type="unfinished"></translation>
+        <translation>Glissé d&apos;entrée</translation>
     </message>
     <message>
         <location filename="../source/app/powertabeditor.cpp" line="3372"/>
         <source>Slide Out Of</source>
-        <translation type="unfinished"></translation>
+        <translation>Glissé de sortie</translation>
     </message>
     <message>
         <location filename="../source/app/powertabeditor.cpp" line="3392"/>
@@ -3270,7 +3270,7 @@
         <location filename="../source/dialogs/preferencesdialog.ui" line="163"/>
         <location filename="../build/source/dialogs/ui_preferencesdialog.h" line="370"/>
         <source>Count-In Before Playback</source>
-        <translation type="unfinished"></translation>
+        <translation>Départ avant la lecture</translation>
     </message>
     <message>
         <location filename="../source/dialogs/preferencesdialog.ui" line="200"/>
@@ -3416,7 +3416,7 @@
     <message>
         <location filename="../source/actions/chorddiagram.cpp" line="44"/>
         <source>Remove Chord Diagram</source>
-        <translation type="unfinished"></translation>
+        <translation>Supprimer le diagramme d&apos;accord</translation>
     </message>
 </context>
 <context>
@@ -3464,7 +3464,7 @@
     <message>
         <location filename="../source/actions/removespecialnoteproperty.h" line="120"/>
         <source>Remove Left Hand Fingering</source>
-        <translation>Supprimer le doigté de la main gauche</translation>
+        <translation>Supprimer le doigté main gauche</translation>
     </message>
 </context>
 <context>
@@ -3549,7 +3549,7 @@
     <message>
         <location filename="../source/actions/removespecialnoteproperty.h" line="69"/>
         <source>Remove Tapped Harmonic</source>
-        <translation type="unfinished"></translation>
+        <translation>Supprimer l&apos;harmonique tapé</translation>
     </message>
 </context>
 <context>
@@ -3557,7 +3557,7 @@
     <message>
         <location filename="../source/actions/edittempomarker.cpp" line="51"/>
         <source>Remove Alteration of Pace</source>
-        <translation type="unfinished"></translation>
+        <translation>Supprimer la nuance de tempo</translation>
     </message>
     <message>
         <location filename="../source/actions/edittempomarker.cpp" line="52"/>
@@ -3594,7 +3594,7 @@
     <message>
         <location filename="../source/actions/volumeswell.cpp" line="41"/>
         <source>Remove Volume Swell</source>
-        <translation type="unfinished"></translation>
+        <translation>Supprimer la variation de volume</translation>
     </message>
 </context>
 <context>
@@ -3662,7 +3662,7 @@
     <message>
         <location filename="../source/painters/systemrenderer.cpp" line="1390"/>
         <source>Double-click to edit volume swell.</source>
-        <translation type="unfinished"></translation>
+        <translation>Double-cliquez pour éditer la variation de volume.</translation>
     </message>
     <message>
         <location filename="../source/painters/systemrenderer.cpp" line="1410"/>
@@ -3687,12 +3687,12 @@
     <message>
         <location filename="../source/painters/timesignaturepainter.cpp" line="30"/>
         <source>Click to edit time signature.</source>
-        <translation type="unfinished"></translation>
+        <translation>Cliquez pour éditer la signature rythmique.</translation>
     </message>
     <message>
         <location filename="../source/painters/chorddiagrampainter.cpp" line="242"/>
         <source>Double-click to edit chord diagram.</source>
-        <translation type="unfinished"></translation>
+        <translation>Double-cliquez pour éditer le diagramme d&apos;accord.</translation>
     </message>
 </context>
 <context>
@@ -3793,12 +3793,12 @@
     <message>
         <location filename="../source/actions/shiftpositions.cpp" line="24"/>
         <source>Shift Forward</source>
-        <translation type="unfinished"></translation>
+        <translation>Décalage vers l&apos;avant</translation>
     </message>
     <message>
         <location filename="../source/actions/shiftpositions.cpp" line="25"/>
         <source>Shift Backward</source>
-        <translation type="unfinished"></translation>
+        <translation>Décalage vers l&apos;arrière</translation>
     </message>
 </context>
 <context>
@@ -3806,12 +3806,12 @@
     <message>
         <location filename="../source/actions/shiftstring.cpp" line="25"/>
         <source>Shift String Up</source>
-        <translation type="unfinished"></translation>
+        <translation>Décaler sur la corde supérieure</translation>
     </message>
     <message>
         <location filename="../source/actions/shiftstring.cpp" line="26"/>
         <source>Shift String Down</source>
-        <translation type="unfinished"></translation>
+        <translation>Décaler sur la corde inférieure</translation>
     </message>
 </context>
 <context>
@@ -3841,7 +3841,7 @@
         <location filename="../source/dialogs/tappedharmonicdialog.ui" line="17"/>
         <location filename="../build/source/dialogs/ui_tappedharmonicdialog.h" line="86"/>
         <source>Tapped Harmonic</source>
-        <translation type="unfinished"></translation>
+        <translation>Harmonique tapé</translation>
     </message>
     <message>
         <location filename="../source/dialogs/tappedharmonicdialog.ui" line="31"/>
@@ -3853,7 +3853,7 @@
         <location filename="../source/dialogs/tappedharmonicdialog.ui" line="45"/>
         <location filename="../build/source/dialogs/ui_tappedharmonicdialog.h" line="88"/>
         <source>Tapped Fret:</source>
-        <translation type="unfinished"></translation>
+        <translation>Frette tapée :</translation>
     </message>
 </context>
 <context>
@@ -3941,13 +3941,13 @@
         <location filename="../build/source/dialogs/ui_timesignaturedialog.h" line="175"/>
         <location filename="../source/dialogs/timesignaturedialog.cpp" line="130"/>
         <source>Time Signature</source>
-        <translation type="unfinished"></translation>
+        <translation>Signature rythmique</translation>
     </message>
     <message>
         <location filename="../source/dialogs/timesignaturedialog.ui" line="31"/>
         <location filename="../build/source/dialogs/ui_timesignaturedialog.h" line="176"/>
         <source>Show Time Signature:</source>
-        <translation type="unfinished"></translation>
+        <translation>Afficher la signature rythmique :</translation>
     </message>
     <message>
         <location filename="../source/dialogs/timesignaturedialog.ui" line="41"/>
@@ -3959,7 +3959,7 @@
         <location filename="../source/dialogs/timesignaturedialog.ui" line="51"/>
         <location filename="../build/source/dialogs/ui_timesignaturedialog.h" line="178"/>
         <source>Cut Time:</source>
-        <translation type="unfinished"></translation>
+        <translation>C barré :</translation>
     </message>
     <message>
         <location filename="../source/dialogs/timesignaturedialog.ui" line="61"/>
@@ -4047,37 +4047,37 @@
     <message>
         <location filename="../source/dialogs/tremolobardialog.cpp" line="32"/>
         <source>Dip</source>
-        <translation type="unfinished"></translation>
+        <translation>Appuyer puis relâcher rapidement</translation>
     </message>
     <message>
         <location filename="../source/dialogs/tremolobardialog.cpp" line="32"/>
         <source>Dive and Release</source>
-        <translation type="unfinished"></translation>
+        <translation>Appuyer puis relâcher</translation>
     </message>
     <message>
         <location filename="../source/dialogs/tremolobardialog.cpp" line="33"/>
         <source>Dive and Hold</source>
-        <translation type="unfinished"></translation>
+        <translation>Appuyer puis maintenir</translation>
     </message>
     <message>
         <location filename="../source/dialogs/tremolobardialog.cpp" line="33"/>
         <source>Release</source>
-        <translation type="unfinished"></translation>
+        <translation>Relâcher</translation>
     </message>
     <message>
         <location filename="../source/dialogs/tremolobardialog.cpp" line="34"/>
         <source>Return and Release</source>
-        <translation type="unfinished"></translation>
+        <translation>Remonter puis lâcher</translation>
     </message>
     <message>
         <location filename="../source/dialogs/tremolobardialog.cpp" line="35"/>
         <source>Return and Hold</source>
-        <translation type="unfinished"></translation>
+        <translation>Remonter puis maintenir</translation>
     </message>
     <message>
         <location filename="../source/dialogs/tremolobardialog.cpp" line="35"/>
         <source>Inverted Dip</source>
-        <translation type="unfinished"></translation>
+        <translation>Monter puis relâcher rapidement</translation>
     </message>
 </context>
 <context>
@@ -4266,7 +4266,7 @@
         <location filename="../source/dialogs/volumeswelldialog.ui" line="17"/>
         <location filename="../build/source/dialogs/ui_volumeswelldialog.h" line="352"/>
         <source>Volume Swell</source>
-        <translation type="unfinished"></translation>
+        <translation>Variation de volume</translation>
     </message>
     <message>
         <location filename="../source/dialogs/volumeswelldialog.ui" line="34"/>
@@ -4292,7 +4292,7 @@
         <location filename="../source/dialogs/volumeswelldialog.ui" line="600"/>
         <location filename="../build/source/dialogs/ui_volumeswelldialog.h" line="373"/>
         <source>Swell Duration:</source>
-        <translation type="unfinished"></translation>
+        <translation>Durée de la variation :</translation>
     </message>
     <message>
         <location filename="../source/dialogs/volumeswelldialog.ui" line="609"/>
