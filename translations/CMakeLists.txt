@@ -5,6 +5,7 @@ set( languages
     it
     ja
     ru
+    tr
 )
 
 # Generate the list of translation files.

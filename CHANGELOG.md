@@ -5,8 +5,13 @@ All notable changes to this project will be documented in this file.
 
 Thanks to the following contributors who worked on this release:
 - @cameronwhite
+- @cbibejs
+- @conker312
 
 ### Added
+- Translations
+  - Added Turkish translation (#406)
+  - Updated French translation (#406)
 
 ### Changed
 
