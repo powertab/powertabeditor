@@ -1,12 +1,12 @@
 <?xml version="1.0" encoding="utf-8"?>
 <!DOCTYPE TS>
-<TS version="2.1" language="fr">
+<TS version="2.1" language="tr">
 <context>
     <name>AddAlternateEnding</name>
     <message>
         <location filename="../source/actions/addalternateending.cpp" line="24"/>
         <source>Add Repeat Ending</source>
-        <translation>Ajouter une boucle de fin</translation>
+        <translation type="unfinished">Tekrarlama Bitişi Ekle</translation>
     </message>
 </context>
 <context>
@@ -14,7 +14,7 @@
     <message>
         <location filename="../source/actions/addspecialnoteproperty.h" line="93"/>
         <source>Add Artificial Harmonic</source>
-        <translation>Ajouter un harmonique artificiel</translation>
+        <translation>Yapay Harmonik Ekle</translation>
     </message>
 </context>
 <context>
@@ -22,7 +22,7 @@
     <message>
         <location filename="../source/actions/addbarline.cpp" line="23"/>
         <source>Insert Barline</source>
-        <translation>Insérer une barre de mesure</translation>
+        <translation>Ölçü Çizgisi Ekle</translation>
     </message>
 </context>
 <context>
@@ -30,7 +30,7 @@
     <message>
         <location filename="../source/actions/addspecialnoteproperty.h" line="106"/>
         <source>Add Bend</source>
-        <translation>Ajouter un bend</translation>
+        <translation>Bükme Ekle</translation>
     </message>
 </context>
 <context>
@@ -38,7 +38,7 @@
     <message>
         <location filename="../source/actions/chorddiagram.cpp" line="24"/>
         <source>Add Chord Diagram</source>
-        <translation>Ajouter un diagramme d’accord</translation>
+        <translation>Akor Diyagramı Ekle</translation>
     </message>
 </context>
 <context>
@@ -46,7 +46,7 @@
     <message>
         <location filename="../source/actions/addchordtext.cpp" line="24"/>
         <source>Add Chord Text</source>
-        <translation>Ajouter un texte d&apos;accord</translation>
+        <translation>Akor Yazısı Ekle</translation>
     </message>
 </context>
 <context>
@@ -54,7 +54,7 @@
     <message>
         <location filename="../source/actions/adddirection.cpp" line="24"/>
         <source>Add Musical Direction</source>
-        <translation>Ajouter une direction musicale</translation>
+        <translation type="unfinished">Müzikal Yön Ekle</translation>
     </message>
 </context>
 <context>
@@ -62,7 +62,7 @@
     <message>
         <location filename="../source/actions/adddynamic.cpp" line="23"/>
         <source>Add Dynamic</source>
-        <translation>Ajouter une nuance</translation>
+        <translation>Dinamik Ekle</translation>
     </message>
 </context>
 <context>
@@ -70,7 +70,7 @@
     <message>
         <location filename="../source/actions/addinstrument.cpp" line="23"/>
         <source>Add Instrument</source>
-        <translation>Ajouter un instrument</translation>
+        <translation>Enstruman Ekle</translation>
     </message>
 </context>
 <context>
@@ -78,12 +78,12 @@
     <message>
         <location filename="../source/actions/addirregulargrouping.cpp" line="27"/>
         <source>Add Triplet</source>
-        <translation>Ajouter un triolet</translation>
+        <translation>Üçleme Ekle</translation>
     </message>
     <message>
         <location filename="../source/actions/addirregulargrouping.cpp" line="29"/>
         <source>Add Irregular Grouping</source>
-        <translation>Ajouter un groupe irrégulier</translation>
+        <translation>Düzensiz Gruplandırma Ekle</translation>
     </message>
 </context>
 <context>
@@ -91,7 +91,7 @@
     <message>
         <location filename="../source/actions/addspecialnoteproperty.h" line="120"/>
         <source>Add Left Hand Fingering</source>
-        <translation>Ajouter un doigté main gauche</translation>
+        <translation type="unfinished">Sol Elle Çalma Ekle</translation>
     </message>
 </context>
 <context>
@@ -99,7 +99,7 @@
     <message>
         <location filename="../source/actions/addmultibarrest.cpp" line="23"/>
         <source>Add Multi-Bar Rest</source>
-        <translation>Ajouter un silence multi-mesures</translation>
+        <translation>Çoklu-Ölçü Susu Ekle</translation>
     </message>
 </context>
 <context>
@@ -107,7 +107,7 @@
     <message>
         <location filename="../source/actions/addnote.cpp" line="24"/>
         <source>Add Note</source>
-        <translation>Ajouter une note</translation>
+        <translation>Nota Ekle</translation>
     </message>
 </context>
 <context>
@@ -115,7 +115,7 @@
     <message>
         <location filename="../source/actions/addnoteproperty.cpp" line="23"/>
         <source>Set %1</source>
-        <translation>Définir %1</translation>
+        <translation>Ayarla %1</translation>
     </message>
 </context>
 <context>
@@ -123,7 +123,7 @@
     <message>
         <location filename="../source/actions/addplayer.cpp" line="23"/>
         <source>Add Player</source>
-        <translation>Ajouter un musicien</translation>
+        <translation>Çalıcı Ekle</translation>
     </message>
 </context>
 <context>
@@ -131,7 +131,7 @@
     <message>
         <location filename="../source/actions/editplayerchange.cpp" line="25"/>
         <source>Add Player Change</source>
-        <translation>Ajouter un changement de musicien</translation>
+        <translation>Çalıcı Değişimi Ekle</translation>
     </message>
 </context>
 <context>
@@ -139,7 +139,7 @@
     <message>
         <location filename="../source/actions/addpositionproperty.cpp" line="23"/>
         <source>Set %1</source>
-        <translation>Définir %1</translation>
+        <translation>Ayarla %1</translation>
     </message>
 </context>
 <context>
@@ -147,7 +147,7 @@
     <message>
         <location filename="../source/actions/editrehearsalsign.cpp" line="25"/>
         <source>Add Rehearsal Sign</source>
-        <translation>Ajouter un signe de répétition</translation>
+        <translation>Prova İşareti Ekle</translation>
     </message>
 </context>
 <context>
@@ -155,7 +155,7 @@
     <message>
         <location filename="../source/actions/addrest.cpp" line="23"/>
         <source>Add Rest</source>
-        <translation>Ajouter un silence</translation>
+        <translation>Sus Ekle</translation>
     </message>
 </context>
 <context>
@@ -163,7 +163,7 @@
     <message>
         <location filename="../source/actions/addstaff.cpp" line="23"/>
         <source>Add Staff</source>
-        <translation>Ajouter une portée</translation>
+        <translation>Porte Ekle</translation>
     </message>
 </context>
 <context>
@@ -171,7 +171,7 @@
     <message>
         <location filename="../source/actions/addsystem.cpp" line="23"/>
         <source>Add System</source>
-        <translation>Ajouter un système</translation>
+        <translation>Sistem Ekle</translation>
     </message>
 </context>
 <context>
@@ -179,7 +179,7 @@
     <message>
         <location filename="../source/actions/addspecialnoteproperty.h" line="65"/>
         <source>Add Tapped Harmonic</source>
-        <translation>Ajouter un harmonique tapé</translation>
+        <translation type="unfinished">Tap Harmonik Ekle</translation>
     </message>
 </context>
 <context>
@@ -187,12 +187,12 @@
     <message>
         <location filename="../source/actions/edittempomarker.cpp" line="26"/>
         <source>Add Alteration of Pace</source>
-        <translation>Ajouter une variation de tempo</translation>
+        <translation>Tempo Değişikliği Ekle</translation>
     </message>
     <message>
         <location filename="../source/actions/edittempomarker.cpp" line="27"/>
         <source>Add Tempo Marker</source>
-        <translation>Ajouter un marqueur de tempo</translation>
+        <translation>Tempo İşareti Ekle</translation>
     </message>
 </context>
 <context>
@@ -200,7 +200,7 @@
     <message>
         <location filename="../source/actions/edittextitem.cpp" line="24"/>
         <source>Add Text</source>
-        <translation>Ajouter un texte</translation>
+        <translation>Yazı Ekle</translation>
     </message>
 </context>
 <context>
@@ -208,7 +208,7 @@
     <message>
         <location filename="../source/actions/tremolobar.cpp" line="22"/>
         <source>Add Tremolo Bar</source>
-        <translation>Ajouter une mesure de trémolo</translation>
+        <translation>Tremolo Kolu Ekle</translation>
     </message>
 </context>
 <context>
@@ -216,7 +216,7 @@
     <message>
         <location filename="../source/actions/addspecialnoteproperty.h" line="78"/>
         <source>Add Trill</source>
-        <translation>Ajouter un trille</translation>
+        <translation>Titreme Ekle</translation>
     </message>
 </context>
 <context>
@@ -224,7 +224,7 @@
     <message>
         <location filename="../source/actions/volumeswell.cpp" line="22"/>
         <source>Add Volume Swell</source>
-        <translation>Ajouter une variation de volume</translation>
+        <translation type="unfinished">Ses Yükseltme Ekle</translation>
     </message>
 </context>
 <context>
@@ -232,12 +232,12 @@
     <message>
         <location filename="../source/actions/adjustlinespacing.cpp" line="23"/>
         <source>Increase Line Spacing</source>
-        <translation>Augmenter l&apos;interligne</translation>
+        <translation>Satır Aralığını Arttır</translation>
     </message>
     <message>
         <location filename="../source/actions/adjustlinespacing.cpp" line="24"/>
         <source>Decrease Line Spacing</source>
-        <translation>Diminuer l&apos;interligne</translation>
+        <translation>Satır Aralığını Azalt</translation>
     </message>
 </context>
 <context>
@@ -246,13 +246,13 @@
         <location filename="../source/dialogs/alterationofpacedialog.ui" line="17"/>
         <location filename="../build/source/dialogs/ui_alterationofpacedialog.h" line="73"/>
         <source>Alteration of Pace</source>
-        <translation>Variation de tempo</translation>
+        <translation>Tempo Değişimi</translation>
     </message>
     <message>
         <location filename="../source/dialogs/alterationofpacedialog.ui" line="34"/>
         <location filename="../build/source/dialogs/ui_alterationofpacedialog.h" line="74"/>
         <source>Type:</source>
-        <translation>Type :</translation>
+        <translation>Tip:</translation>
     </message>
 </context>
 <context>
@@ -261,27 +261,27 @@
         <location filename="../source/dialogs/alternateendingdialog.cpp" line="33"/>
         <location filename="../source/dialogs/alternateendingdialog.cpp" line="118"/>
         <source>Repeat Ending</source>
-        <translation>Boucle de fin</translation>
+        <translation>Bitişi Tekrar Et</translation>
     </message>
     <message>
         <location filename="../source/dialogs/alternateendingdialog.cpp" line="58"/>
         <source>D.C.</source>
-        <translation>D.C.</translation>
+        <translation type="unfinished"></translation>
     </message>
     <message>
         <location filename="../source/dialogs/alternateendingdialog.cpp" line="61"/>
         <source>D.S.</source>
-        <translation>D.S.</translation>
+        <translation type="unfinished"></translation>
     </message>
     <message>
         <location filename="../source/dialogs/alternateendingdialog.cpp" line="64"/>
         <source>D.S.S.</source>
-        <translation>D.S.S.</translation>
+        <translation type="unfinished"></translation>
     </message>
     <message>
         <location filename="../source/dialogs/alternateendingdialog.cpp" line="119"/>
         <source>You must select at least one repeat number.</source>
-        <translation>Vous devez sélectionner au moins un nombre de répétition.</translation>
+        <translation>En az bir tekrar numarası seçmelisiniz.</translation>
     </message>
 </context>
 <context>
@@ -290,37 +290,37 @@
         <location filename="../source/dialogs/artificialharmonicdialog.ui" line="17"/>
         <location filename="../build/source/dialogs/ui_artificialharmonicdialog.h" line="234"/>
         <source>Artificial Harmonic</source>
-        <translation>Harmonique artificiel</translation>
+        <translation>Yapay Harmonik</translation>
     </message>
     <message>
         <location filename="../source/dialogs/artificialharmonicdialog.ui" line="28"/>
         <location filename="../build/source/dialogs/ui_artificialharmonicdialog.h" line="235"/>
         <source>Pitch:</source>
-        <translation>Hauteur :</translation>
+        <translation type="unfinished"></translation>
     </message>
     <message>
         <location filename="../source/dialogs/artificialharmonicdialog.ui" line="35"/>
         <location filename="../build/source/dialogs/ui_artificialharmonicdialog.h" line="236"/>
         <source>Octave:</source>
-        <translation>Octave :</translation>
+        <translation>Oktav:</translation>
     </message>
     <message>
         <location filename="../source/dialogs/artificialharmonicdialog.ui" line="44"/>
         <location filename="../build/source/dialogs/ui_artificialharmonicdialog.h" line="237"/>
         <source>Loco</source>
-        <translation>Loco</translation>
+        <translation type="unfinished"></translation>
     </message>
     <message>
         <location filename="../source/dialogs/artificialharmonicdialog.ui" line="51"/>
         <location filename="../build/source/dialogs/ui_artificialharmonicdialog.h" line="238"/>
         <source>8va</source>
-        <translation>8va</translation>
+        <translation type="unfinished"></translation>
     </message>
     <message>
         <location filename="../source/dialogs/artificialharmonicdialog.ui" line="58"/>
         <location filename="../build/source/dialogs/ui_artificialharmonicdialog.h" line="239"/>
         <source>15ma</source>
-        <translation>15ma</translation>
+        <translation type="unfinished"></translation>
     </message>
     <message>
         <location filename="../source/dialogs/artificialharmonicdialog.ui" line="98"/>
@@ -332,7 +332,7 @@
         <location filename="../source/dialogs/artificialharmonicdialog.ui" line="124"/>
         <location filename="../build/source/dialogs/ui_artificialharmonicdialog.h" line="241"/>
         <source>D</source>
-        <translation>Ré</translation>
+        <translation>Re</translation>
     </message>
     <message>
         <location filename="../source/dialogs/artificialharmonicdialog.ui" line="150"/>
@@ -371,49 +371,49 @@
         <location filename="../source/dialogs/barlinedialog.ui" line="17"/>
         <location filename="../build/source/dialogs/ui_barlinedialog.h" line="85"/>
         <source>Music Bar</source>
-        <translation>Mesure</translation>
+        <translation type="unfinished">Müzik Ölçüsü</translation>
     </message>
     <message>
         <location filename="../source/dialogs/barlinedialog.ui" line="31"/>
         <location filename="../build/source/dialogs/ui_barlinedialog.h" line="86"/>
         <source>Type:</source>
-        <translation>Type :</translation>
+        <translation>Tip:</translation>
     </message>
     <message>
         <location filename="../source/dialogs/barlinedialog.ui" line="41"/>
         <location filename="../build/source/dialogs/ui_barlinedialog.h" line="87"/>
         <source>Play:</source>
-        <translation>Lecture :</translation>
+        <translation>Çal:</translation>
     </message>
     <message>
         <location filename="../source/dialogs/barlinedialog.cpp" line="35"/>
         <source>Single</source>
-        <translation>Simple</translation>
+        <translation>Tek</translation>
     </message>
     <message>
         <location filename="../source/dialogs/barlinedialog.cpp" line="36"/>
         <source>Double</source>
-        <translation>Double</translation>
+        <translation>Çift</translation>
     </message>
     <message>
         <location filename="../source/dialogs/barlinedialog.cpp" line="37"/>
         <source>Free Time</source>
-        <translation>Temps libre</translation>
+        <translation>Serbest Zaman</translation>
     </message>
     <message>
         <location filename="../source/dialogs/barlinedialog.cpp" line="40"/>
         <source>Repeat Start</source>
-        <translation>Début de répétition</translation>
+        <translation>Tekrar Başlangıcı</translation>
     </message>
     <message>
         <location filename="../source/dialogs/barlinedialog.cpp" line="45"/>
         <source>Repeat End</source>
-        <translation>Fin de répétition</translation>
+        <translation>Tekrar Bitişi</translation>
     </message>
     <message>
         <location filename="../source/dialogs/barlinedialog.cpp" line="46"/>
         <source>Double Bar Fine</source>
-        <translation>Double barre de fin</translation>
+        <translation type="unfinished"></translation>
     </message>
 </context>
 <context>
@@ -423,111 +423,111 @@
         <location filename="../build/source/dialogs/ui_benddialog.h" line="167"/>
         <location filename="../source/dialogs/benddialog.cpp" line="34"/>
         <source>Bend</source>
-        <translation>Bend</translation>
+        <translation>Bükme</translation>
     </message>
     <message>
         <location filename="../source/dialogs/benddialog.ui" line="31"/>
         <location filename="../build/source/dialogs/ui_benddialog.h" line="168"/>
         <source>Bend Type:</source>
-        <translation>Type de bend :</translation>
+        <translation>Bükme Tipi:</translation>
     </message>
     <message>
         <location filename="../source/dialogs/benddialog.ui" line="41"/>
         <location filename="../build/source/dialogs/ui_benddialog.h" line="169"/>
         <source>Bent Pitch:</source>
-        <translation>Hauteur du bend :</translation>
+        <translation type="unfinished"></translation>
     </message>
     <message>
         <location filename="../source/dialogs/benddialog.ui" line="51"/>
         <location filename="../build/source/dialogs/ui_benddialog.h" line="170"/>
         <source>Release Pitch:</source>
-        <translation>Hauteur du relâchement :</translation>
+        <translation type="unfinished"></translation>
     </message>
     <message>
         <location filename="../source/dialogs/benddialog.ui" line="61"/>
         <location filename="../build/source/dialogs/ui_benddialog.h" line="171"/>
         <source>Bend Duration:</source>
-        <translation>Durée du bend :</translation>
+        <translation>Bükme Süresi:</translation>
     </message>
     <message>
         <location filename="../source/dialogs/benddialog.ui" line="73"/>
         <location filename="../build/source/dialogs/ui_benddialog.h" line="172"/>
         <source>Default</source>
-        <translation>Par défaut</translation>
+        <translation>Varsayılan</translation>
     </message>
     <message>
         <location filename="../source/dialogs/benddialog.ui" line="85"/>
         <location filename="../build/source/dialogs/ui_benddialog.h" line="173"/>
         <source>Current note duration + next</source>
-        <translation>Durée de la note courante + suivante</translation>
+        <translation>Şimdiki nota süresi + sonraki</translation>
     </message>
     <message>
         <location filename="../source/dialogs/benddialog.ui" line="95"/>
         <location filename="../build/source/dialogs/ui_benddialog.h" line="174"/>
         <source>notes</source>
-        <translation>Notes</translation>
+        <translation>notalar</translation>
     </message>
     <message>
         <location filename="../source/dialogs/benddialog.ui" line="106"/>
         <location filename="../build/source/dialogs/ui_benddialog.h" line="175"/>
         <source>Vertical Starting Point:</source>
-        <translation>Point de départ vertical :</translation>
+        <translation>Dikey Başlangıç Noktası:</translation>
     </message>
     <message>
         <location filename="../source/dialogs/benddialog.ui" line="116"/>
         <location filename="../build/source/dialogs/ui_benddialog.h" line="176"/>
         <source>Vertical Ending Point:</source>
-        <translation>Point de fin vertical :</translation>
+        <translation>Dikey Bitiş Noktası:</translation>
     </message>
     <message>
         <location filename="../source/dialogs/benddialog.cpp" line="34"/>
         <source>Bend and Release</source>
-        <translation>Bend et relâchement</translation>
+        <translation>Bük ve Bırak</translation>
     </message>
     <message>
         <location filename="../source/dialogs/benddialog.cpp" line="34"/>
         <source>Bend and Hold</source>
-        <translation>Bend et maintien</translation>
+        <translation>Bük ve Tut</translation>
     </message>
     <message>
         <location filename="../source/dialogs/benddialog.cpp" line="35"/>
         <source>Pre-Bend</source>
-        <translation>Pré-bend</translation>
+        <translation>Ön-Bükme</translation>
     </message>
     <message>
         <location filename="../source/dialogs/benddialog.cpp" line="35"/>
         <source>Pre-Bend and Release</source>
-        <translation>Pré-bend et relâchement</translation>
+        <translation>Ön-Bükme ve Bırakma</translation>
     </message>
     <message>
         <location filename="../source/dialogs/benddialog.cpp" line="35"/>
         <source>Pre-Bend and Hold</source>
-        <translation>Pré-bend et maintien</translation>
+        <translation>Ön-Bükme ve Tutma</translation>
     </message>
     <message>
         <location filename="../source/dialogs/benddialog.cpp" line="36"/>
         <source>Gradual Release</source>
-        <translation>Relâchement progressif</translation>
+        <translation>Yavaşça Bırak</translation>
     </message>
     <message>
         <location filename="../source/dialogs/benddialog.cpp" line="36"/>
         <source>Immediate Release</source>
-        <translation>Relâchement immédiat</translation>
+        <translation>Aniden Bırak</translation>
     </message>
     <message>
         <location filename="../source/dialogs/benddialog.cpp" line="110"/>
         <source>Low (Tablature Staff Line)</source>
-        <translation>Basse (ligne de portée de la tablature)</translation>
+        <translation type="unfinished"></translation>
     </message>
     <message>
         <location filename="../source/dialogs/benddialog.cpp" line="111"/>
         <source>Middle</source>
-        <translation>Milieu</translation>
+        <translation>Orta</translation>
     </message>
     <message>
         <location filename="../source/dialogs/benddialog.cpp" line="112"/>
         <source>High</source>
-        <translation>Haute</translation>
+        <translation>Yüksek</translation>
     </message>
 </context>
 <context>
@@ -536,19 +536,19 @@
         <location filename="../source/dialogs/bulkconverterdialog.ui" line="14"/>
         <location filename="../build/source/dialogs/ui_bulkconverterdialog.h" line="116"/>
         <source>Bulk Converter</source>
-        <translation>Convertisseur en masse</translation>
+        <translation>Toplu Dönüştürücü</translation>
     </message>
     <message>
         <location filename="../source/dialogs/bulkconverterdialog.ui" line="29"/>
         <location filename="../build/source/dialogs/ui_bulkconverterdialog.h" line="117"/>
         <source>E&amp;xit</source>
-        <translation>Quitter</translation>
+        <translation type="unfinished">Ç&amp;ıkış</translation>
     </message>
     <message>
         <location filename="../source/dialogs/bulkconverterdialog.ui" line="43"/>
         <location filename="../build/source/dialogs/ui_bulkconverterdialog.h" line="118"/>
         <source>Destination Directory</source>
-        <translation>Dossier de destination</translation>
+        <translation>Hedef Dizini</translation>
     </message>
     <message>
         <location filename="../source/dialogs/bulkconverterdialog.ui" line="50"/>
@@ -556,24 +556,24 @@
         <location filename="../build/source/dialogs/ui_bulkconverterdialog.h" line="119"/>
         <location filename="../build/source/dialogs/ui_bulkconverterdialog.h" line="121"/>
         <source>...</source>
-        <translation>…</translation>
+        <translation>...</translation>
     </message>
     <message>
         <location filename="../source/dialogs/bulkconverterdialog.ui" line="60"/>
         <location filename="../build/source/dialogs/ui_bulkconverterdialog.h" line="120"/>
         <source>&amp;Convert</source>
-        <translation>Convertir</translation>
+        <translation>&amp;Dönüştür</translation>
     </message>
     <message>
         <location filename="../source/dialogs/bulkconverterdialog.ui" line="81"/>
         <location filename="../build/source/dialogs/ui_bulkconverterdialog.h" line="122"/>
         <source>Source Directory</source>
-        <translation>Dossier source</translation>
+        <translation>Kaynak Dizini</translation>
     </message>
     <message>
         <location filename="../source/dialogs/bulkconverterdialog.cpp" line="171"/>
         <source>Directory To Convert</source>
-        <translation>Dossier à convertir</translation>
+        <translation>Dönüştürülecek Dizin</translation>
     </message>
 </context>
 <context>
@@ -581,12 +581,12 @@
     <message>
         <location filename="../source/actions/changepositionspacing.cpp" line="32"/>
         <source>Decrease Position Spacing</source>
-        <translation>Réduire l&apos;espacement des positions</translation>
+        <translation>Pozisyon Aralığını Azalt</translation>
     </message>
     <message>
         <location filename="../source/actions/changepositionspacing.cpp" line="36"/>
         <source>Increase Position Spacing</source>
-        <translation>Augmenter l&apos;espacement des positions</translation>
+        <translation>Pozisyon Aralığını Arttır</translation>
     </message>
 </context>
 <context>
@@ -595,36 +595,36 @@
         <location filename="../source/dialogs/chorddiagramdialog.ui" line="9"/>
         <location filename="../build/source/dialogs/ui_chorddiagramdialog.h" line="110"/>
         <source>Chord Diagram</source>
-        <translation>Diagramme d&apos;accord</translation>
+        <translation>Akor Diyagramı</translation>
     </message>
     <message>
         <location filename="../source/dialogs/chorddiagramdialog.ui" line="23"/>
         <location filename="../build/source/dialogs/ui_chorddiagramdialog.h" line="111"/>
         <source>Chord Name:</source>
-        <translation>Nom de l&apos;accord :</translation>
+        <translation>Akor İsmi:</translation>
     </message>
     <message>
         <location filename="../source/dialogs/chorddiagramdialog.ui" line="33"/>
         <location filename="../build/source/dialogs/ui_chorddiagramdialog.h" line="112"/>
         <source>Top Fret:</source>
-        <translation>Frette de départ :</translation>
+        <translation>Üst Perde:</translation>
     </message>
     <message>
         <location filename="../source/dialogs/chorddiagramdialog.ui" line="43"/>
         <location filename="../build/source/dialogs/ui_chorddiagramdialog.h" line="113"/>
         <source>Number of Strings:</source>
-        <translation>Nombre de cordes :</translation>
+        <translation>Tel Numarası:</translation>
     </message>
     <message>
         <location filename="../source/dialogs/chorddiagramdialog.ui" line="53"/>
         <location filename="../build/source/dialogs/ui_chorddiagramdialog.h" line="114"/>
         <source>Diagram:</source>
-        <translation>Diagramme :</translation>
+        <translation>Diyagram:</translation>
     </message>
     <message>
         <location filename="../source/dialogs/chorddiagramdialog.cpp" line="48"/>
         <source>Click to edit chord name.</source>
-        <translation>Cliquez pour éditer le nom de l&apos;accord.</translation>
+        <translation>Akor adını değiştirmek için tıkla.</translation>
     </message>
 </context>
 <context>
@@ -633,25 +633,25 @@
         <location filename="../source/dialogs/chordnamedialog.ui" line="17"/>
         <location filename="../build/source/dialogs/ui_chordnamedialog.h" line="549"/>
         <source>Chord Name</source>
-        <translation>Nom de l&apos;accord</translation>
+        <translation>Akor Adı</translation>
     </message>
     <message>
         <location filename="../source/dialogs/chordnamedialog.ui" line="36"/>
         <location filename="../build/source/dialogs/ui_chordnamedialog.h" line="550"/>
         <source>Preview:</source>
-        <translation>Aperçu :</translation>
+        <translation>Önizleme:</translation>
     </message>
     <message>
         <location filename="../source/dialogs/chordnamedialog.ui" line="53"/>
         <location filename="../build/source/dialogs/ui_chordnamedialog.h" line="551"/>
         <source>Key:</source>
-        <translation>Clé :</translation>
+        <translation>Anahtar:</translation>
     </message>
     <message>
         <location filename="../source/dialogs/chordnamedialog.ui" line="65"/>
         <location filename="../build/source/dialogs/ui_chordnamedialog.h" line="552"/>
         <source>No Chord</source>
-        <translation>Aucun accord</translation>
+        <translation>Akor Yok</translation>
     </message>
     <message>
         <location filename="../source/dialogs/chordnamedialog.ui" line="95"/>
@@ -667,7 +667,7 @@
         <location filename="../build/source/dialogs/ui_chordnamedialog.h" line="554"/>
         <location filename="../build/source/dialogs/ui_chordnamedialog.h" line="570"/>
         <source>D</source>
-        <translation>Ré</translation>
+        <translation>Re</translation>
     </message>
     <message>
         <location filename="../source/dialogs/chordnamedialog.ui" line="135"/>
@@ -713,43 +713,43 @@
         <location filename="../source/dialogs/chordnamedialog.ui" line="300"/>
         <location filename="../build/source/dialogs/ui_chordnamedialog.h" line="562"/>
         <source>Brackets</source>
-        <translation>Accolades</translation>
+        <translation type="unfinished"></translation>
     </message>
     <message>
         <location filename="../source/dialogs/chordnamedialog.ui" line="309"/>
         <location filename="../build/source/dialogs/ui_chordnamedialog.h" line="563"/>
         <source>Formula:</source>
-        <translation>Formule :</translation>
+        <translation type="unfinished"></translation>
     </message>
     <message>
         <location filename="../source/dialogs/chordnamedialog.ui" line="316"/>
         <location filename="../build/source/dialogs/ui_chordnamedialog.h" line="564"/>
         <source>Additions:</source>
-        <translation>Ajouts :</translation>
+        <translation>Eklemeler:</translation>
     </message>
     <message>
         <location filename="../source/dialogs/chordnamedialog.ui" line="323"/>
         <location filename="../build/source/dialogs/ui_chordnamedialog.h" line="565"/>
         <source>Extensions:</source>
-        <translation>Extensions :</translation>
+        <translation type="unfinished">Uzatmalar:</translation>
     </message>
     <message>
         <location filename="../source/dialogs/chordnamedialog.ui" line="330"/>
         <location filename="../build/source/dialogs/ui_chordnamedialog.h" line="566"/>
         <source>Alterations:</source>
-        <translation>Altérations :</translation>
+        <translation type="unfinished">Değiştirmeler:</translation>
     </message>
     <message>
         <location filename="../source/dialogs/chordnamedialog.ui" line="337"/>
         <location filename="../build/source/dialogs/ui_chordnamedialog.h" line="567"/>
         <source>Bass Note:</source>
-        <translation>Note basse :</translation>
+        <translation>Bas Nota:</translation>
     </message>
     <message>
         <location filename="../source/dialogs/chordnamedialog.ui" line="898"/>
         <location filename="../build/source/dialogs/ui_chordnamedialog.h" line="578"/>
         <source>Chords in Score:</source>
-        <translation>Accords de la partition :</translation>
+        <translation type="unfinished">Notadaki Akorlar:</translation>
     </message>
 </context>
 <context>
@@ -758,25 +758,25 @@
         <location filename="../source/dialogs/crashdialog.ui" line="23"/>
         <location filename="../build/source/dialogs/ui_crashdialog.h" line="99"/>
         <source>Error</source>
-        <translation>Erreur</translation>
+        <translation>Hata</translation>
     </message>
     <message>
         <location filename="../source/dialogs/crashdialog.ui" line="37"/>
         <location filename="../build/source/dialogs/ui_crashdialog.h" line="100"/>
         <source>Oops! Something went wrong.</source>
-        <translation>Oups ! Une erreur s&apos;est produite.</translation>
+        <translation type="unfinished">Oops! Bir şeyler ters gitti.</translation>
     </message>
     <message>
         <location filename="../source/dialogs/crashdialog.ui" line="74"/>
         <location filename="../build/source/dialogs/ui_crashdialog.h" line="101"/>
         <source>Report Bug...</source>
-        <translation>Signaler un problème…</translation>
+        <translation>Hata Bildir...</translation>
     </message>
     <message>
         <location filename="../source/dialogs/crashdialog.ui" line="84"/>
         <location filename="../build/source/dialogs/ui_crashdialog.h" line="102"/>
         <source>Close</source>
-        <translation>Fermer</translation>
+        <translation>Kapat</translation>
     </message>
 </context>
 <context>
@@ -785,43 +785,43 @@
         <location filename="../source/dialogs/directiondialog.ui" line="17"/>
         <location filename="../build/source/dialogs/ui_directiondialog.h" line="135"/>
         <source>Musical Direction</source>
-        <translation>Direction musicale</translation>
+        <translation type="unfinished">Müzikal Yön</translation>
     </message>
     <message>
         <location filename="../source/dialogs/directiondialog.ui" line="28"/>
         <location filename="../build/source/dialogs/ui_directiondialog.h" line="136"/>
         <source>Symbol:</source>
-        <translation>Symbole :</translation>
+        <translation>Sembol:</translation>
     </message>
     <message>
         <location filename="../source/dialogs/directiondialog.ui" line="38"/>
         <location filename="../build/source/dialogs/ui_directiondialog.h" line="137"/>
         <source>Active Symbol:</source>
-        <translation>Symbole actif :</translation>
+        <translation>Aktif Sembol:</translation>
     </message>
     <message>
         <location filename="../source/dialogs/directiondialog.ui" line="48"/>
         <location filename="../build/source/dialogs/ui_directiondialog.h" line="138"/>
         <source>Repeat Number:</source>
-        <translation>Nombre de répétitions :</translation>
+        <translation>Tekrar Sayısı:</translation>
     </message>
     <message>
         <location filename="../source/dialogs/directiondialog.ui" line="58"/>
         <location filename="../build/source/dialogs/ui_directiondialog.h" line="139"/>
         <source>Direction:</source>
-        <translation>Direction :</translation>
+        <translation type="unfinished">Yön:</translation>
     </message>
     <message>
         <location filename="../source/dialogs/directiondialog.ui" line="86"/>
         <location filename="../build/source/dialogs/ui_directiondialog.h" line="140"/>
         <source>Add</source>
-        <translation>Ajouter</translation>
+        <translation>Ekle</translation>
     </message>
     <message>
         <location filename="../source/dialogs/directiondialog.ui" line="93"/>
         <location filename="../build/source/dialogs/ui_directiondialog.h" line="141"/>
         <source>Remove</source>
-        <translation>Supprimer</translation>
+        <translation>Kaldır</translation>
     </message>
 </context>
 <context>
@@ -830,19 +830,19 @@
         <location filename="../source/dialogs/dynamicdialog.ui" line="17"/>
         <location filename="../build/source/dialogs/ui_dynamicdialog.h" line="203"/>
         <source>Dynamic</source>
-        <translation>Nuance</translation>
+        <translation>Dinamik</translation>
     </message>
     <message>
         <location filename="../source/dialogs/dynamicdialog.ui" line="40"/>
         <location filename="../build/source/dialogs/ui_dynamicdialog.h" line="204"/>
         <source>Volume Level:</source>
-        <translation>Niveau de volume :</translation>
+        <translation>Ses Seviyesi:</translation>
     </message>
     <message>
         <location filename="../source/dialogs/dynamicdialog.ui" line="67"/>
         <location filename="../build/source/dialogs/ui_dynamicdialog.h" line="205"/>
         <source>Off</source>
-        <translation>Désactivé</translation>
+        <translation>Kapalı</translation>
     </message>
 </context>
 <context>
@@ -850,7 +850,7 @@
     <message>
         <location filename="../source/actions/editbarline.cpp" line="22"/>
         <source>Edit Barline Type</source>
-        <translation>Modifier le type de barre de mesure</translation>
+        <translation>Ölçü Çizgisi Tipini Düzenle</translation>
     </message>
 </context>
 <context>
@@ -858,7 +858,7 @@
     <message>
         <location filename="../source/actions/editdynamic.cpp" line="25"/>
         <source>Edit Dynamic</source>
-        <translation>Modifier la nuance</translation>
+        <translation>Dinamiği Düzenle</translation>
     </message>
 </context>
 <context>
@@ -866,7 +866,7 @@
     <message>
         <location filename="../source/actions/editfileinformation.cpp" line="24"/>
         <source>Edit File Information</source>
-        <translation>Modifier les informations du fichier</translation>
+        <translation>Dosya Bilgisini Düzenle</translation>
     </message>
 </context>
 <context>
@@ -874,7 +874,7 @@
     <message>
         <location filename="../source/actions/editinstrument.cpp" line="24"/>
         <source>Edit Instrument</source>
-        <translation>Modifier l&apos;instrument</translation>
+        <translation>Enstrümanı Düzenle</translation>
     </message>
 </context>
 <context>
@@ -882,7 +882,7 @@
     <message>
         <location filename="../source/actions/editkeysignature.cpp" line="25"/>
         <source>Edit Key Signature</source>
-        <translation>Modifier l&apos;armure</translation>
+        <translation>Anahtarı Düzenle</translation>
     </message>
 </context>
 <context>
@@ -890,12 +890,12 @@
     <message>
         <location filename="../source/actions/editnoteduration.cpp" line="23"/>
         <source>Edit Rest Duration</source>
-        <translation>Modifier la durée du silence</translation>
+        <translation>Sus Süresini Düzenle</translation>
     </message>
     <message>
         <location filename="../source/actions/editnoteduration.cpp" line="24"/>
         <source>Edit Note Duration</source>
-        <translation>Modifier la durée de la note</translation>
+        <translation>Nota Süresini Düzenle</translation>
     </message>
 </context>
 <context>
@@ -903,7 +903,7 @@
     <message>
         <location filename="../source/actions/editplayer.cpp" line="23"/>
         <source>Edit Player</source>
-        <translation>Modifier le musicien</translation>
+        <translation>Çalıcıyı Düzenle</translation>
     </message>
 </context>
 <context>
@@ -911,7 +911,7 @@
     <message>
         <location filename="../source/actions/editrehearsalsign.cpp" line="48"/>
         <source>Edit Rehearsal Sign</source>
-        <translation>Modifier le signe de répétition</translation>
+        <translation>Prova İşaretini Düzenle</translation>
     </message>
 </context>
 <context>
@@ -919,7 +919,7 @@
     <message>
         <location filename="../source/actions/editstaff.cpp" line="24"/>
         <source>Edit Staff</source>
-        <translation>Modifier la portée</translation>
+        <translation>Porteyi Düzenle</translation>
     </message>
 </context>
 <context>
@@ -927,7 +927,7 @@
     <message>
         <location filename="../source/actions/edittabnumber.cpp" line="21"/>
         <source>Edit Tab Number</source>
-        <translation>Modifier le numéro de tablature</translation>
+        <translation>Tab Sayısını Düzenle</translation>
     </message>
 </context>
 <context>
@@ -935,7 +935,7 @@
     <message>
         <location filename="../source/actions/edittimesignature.cpp" line="25"/>
         <source>Edit Time Signature</source>
-        <translation>Éditer la signature rythmique</translation>
+        <translation>Zaman İşaretini Düzenle</translation>
     </message>
 </context>
 <context>
@@ -943,7 +943,7 @@
     <message>
         <location filename="../source/actions/editviewfilters.cpp" line="24"/>
         <source>Edit View Filters</source>
-        <translation>Éditer les filtres</translation>
+        <translation>Görünüm Filtrelerini Düzenle</translation>
     </message>
 </context>
 <context>
@@ -952,31 +952,31 @@
         <location filename="../source/dialogs/fileinformationdialog.ui" line="17"/>
         <location filename="../build/source/dialogs/ui_fileinformationdialog.h" line="706"/>
         <source>File Information</source>
-        <translation>Informations sur le fichier</translation>
+        <translation>Dosya Bilgisi</translation>
     </message>
     <message>
         <location filename="../source/dialogs/fileinformationdialog.ui" line="30"/>
         <location filename="../build/source/dialogs/ui_fileinformationdialog.h" line="780"/>
         <source>Song Information</source>
-        <translation>Informations sur le morceau</translation>
+        <translation>Şarkı Bilgisi</translation>
     </message>
     <message>
         <location filename="../source/dialogs/fileinformationdialog.ui" line="51"/>
         <location filename="../build/source/dialogs/ui_fileinformationdialog.h" line="707"/>
         <source>Classification:</source>
-        <translation>Classification :</translation>
+        <translation>Sınıflandırma:</translation>
     </message>
     <message>
         <location filename="../source/dialogs/fileinformationdialog.ui" line="63"/>
         <location filename="../build/source/dialogs/ui_fileinformationdialog.h" line="708"/>
         <source>Song</source>
-        <translation>Morceau</translation>
+        <translation>Şarkı</translation>
     </message>
     <message>
         <location filename="../source/dialogs/fileinformationdialog.ui" line="73"/>
         <location filename="../build/source/dialogs/ui_fileinformationdialog.h" line="709"/>
         <source>Lesson</source>
-        <translation>Leçon</translation>
+        <translation>Ders</translation>
     </message>
     <message>
         <location filename="../source/dialogs/fileinformationdialog.ui" line="113"/>
@@ -984,7 +984,7 @@
         <location filename="../build/source/dialogs/ui_fileinformationdialog.h" line="710"/>
         <location filename="../build/source/dialogs/ui_fileinformationdialog.h" line="750"/>
         <source>Title:</source>
-        <translation>Titre :</translation>
+        <translation>Başlık:</translation>
     </message>
     <message>
         <location filename="../source/dialogs/fileinformationdialog.ui" line="123"/>
@@ -992,103 +992,103 @@
         <location filename="../build/source/dialogs/ui_fileinformationdialog.h" line="711"/>
         <location filename="../build/source/dialogs/ui_fileinformationdialog.h" line="751"/>
         <source>Subtitle:</source>
-        <translation>Sous-titre :</translation>
+        <translation>Altyazı:</translation>
     </message>
     <message>
         <location filename="../source/dialogs/fileinformationdialog.ui" line="133"/>
         <location filename="../build/source/dialogs/ui_fileinformationdialog.h" line="712"/>
         <source>Artist:</source>
-        <translation>Artiste :</translation>
+        <translation>Sanatçı:</translation>
     </message>
     <message>
         <location filename="../source/dialogs/fileinformationdialog.ui" line="152"/>
         <location filename="../build/source/dialogs/ui_fileinformationdialog.h" line="713"/>
         <source>Release Information</source>
-        <translation>Informations de sortie</translation>
+        <translation>Yayınlama Bilgisi</translation>
     </message>
     <message>
         <location filename="../source/dialogs/fileinformationdialog.ui" line="164"/>
         <location filename="../build/source/dialogs/ui_fileinformationdialog.h" line="714"/>
         <source>Release Type:</source>
-        <translation>Type de sortie :</translation>
+        <translation>Yayınlama Tipi:</translation>
     </message>
     <message>
         <location filename="../source/dialogs/fileinformationdialog.ui" line="178"/>
         <location filename="../build/source/dialogs/ui_fileinformationdialog.h" line="719"/>
         <source>Public Release (Audio)</source>
-        <translation>Sortie publique (Audio)</translation>
+        <translation>Ortak Yayınlama (Ses)</translation>
     </message>
     <message>
         <location filename="../source/dialogs/fileinformationdialog.ui" line="183"/>
         <location filename="../build/source/dialogs/ui_fileinformationdialog.h" line="721"/>
         <source>Public Release (Video)</source>
-        <translation>Sortie publique (Vidéo)</translation>
+        <translation>Ortak Yayınlama (Video)</translation>
     </message>
     <message>
         <location filename="../source/dialogs/fileinformationdialog.ui" line="188"/>
         <location filename="../build/source/dialogs/ui_fileinformationdialog.h" line="723"/>
         <source>Bootleg</source>
-        <translation>Bootleg</translation>
+        <translation type="unfinished">Kaçak</translation>
     </message>
     <message>
         <location filename="../source/dialogs/fileinformationdialog.ui" line="193"/>
         <location filename="../build/source/dialogs/ui_fileinformationdialog.h" line="725"/>
         <source>Not Released</source>
-        <translation>Non publié</translation>
+        <translation>Yayınlanmadı</translation>
     </message>
     <message>
         <location filename="../source/dialogs/fileinformationdialog.ui" line="223"/>
         <location filename="../build/source/dialogs/ui_fileinformationdialog.h" line="728"/>
         <source>Album Title:</source>
-        <translation>Titre de l&apos;album :</translation>
+        <translation>Albüm Başlığı:</translation>
     </message>
     <message>
         <location filename="../source/dialogs/fileinformationdialog.ui" line="233"/>
         <location filename="../build/source/dialogs/ui_fileinformationdialog.h" line="729"/>
         <source>Album Type:</source>
-        <translation>Type d&apos;album :</translation>
+        <translation>Albüm Tipi:</translation>
     </message>
     <message>
         <location filename="../source/dialogs/fileinformationdialog.ui" line="241"/>
         <location filename="../build/source/dialogs/ui_fileinformationdialog.h" line="730"/>
         <source>Single</source>
-        <translation>Single</translation>
+        <translation>Kırkbeşlik</translation>
     </message>
     <message>
         <location filename="../source/dialogs/fileinformationdialog.ui" line="246"/>
         <location filename="../build/source/dialogs/ui_fileinformationdialog.h" line="731"/>
         <source>EP</source>
-        <translation>EP</translation>
+        <translation>Uzun Çalar</translation>
     </message>
     <message>
         <location filename="../source/dialogs/fileinformationdialog.ui" line="251"/>
         <location filename="../build/source/dialogs/ui_fileinformationdialog.h" line="732"/>
         <source>Album</source>
-        <translation>Album</translation>
+        <translation>Albüm</translation>
     </message>
     <message>
         <location filename="../source/dialogs/fileinformationdialog.ui" line="256"/>
         <location filename="../build/source/dialogs/ui_fileinformationdialog.h" line="733"/>
         <source>Double Album</source>
-        <translation>Double Album</translation>
+        <translation>Çift Albüm</translation>
     </message>
     <message>
         <location filename="../source/dialogs/fileinformationdialog.ui" line="261"/>
         <location filename="../build/source/dialogs/ui_fileinformationdialog.h" line="734"/>
         <source>Triple Album</source>
-        <translation>Triple Album</translation>
+        <translation>Üçlü Albüm</translation>
     </message>
     <message>
         <location filename="../source/dialogs/fileinformationdialog.ui" line="266"/>
         <location filename="../build/source/dialogs/ui_fileinformationdialog.h" line="735"/>
         <source>Boxset</source>
-        <translation>Coffret</translation>
+        <translation>Kutu</translation>
     </message>
     <message>
         <location filename="../source/dialogs/fileinformationdialog.ui" line="274"/>
         <location filename="../build/source/dialogs/ui_fileinformationdialog.h" line="737"/>
         <source>Year:</source>
-        <translation>Année :</translation>
+        <translation>Yıl:</translation>
     </message>
     <message>
         <location filename="../source/dialogs/fileinformationdialog.ui" line="281"/>
@@ -1096,25 +1096,25 @@
         <location filename="../build/source/dialogs/ui_fileinformationdialog.h" line="738"/>
         <location filename="../build/source/dialogs/ui_fileinformationdialog.h" line="740"/>
         <source>Live Recording:</source>
-        <translation>Enregistrement live :</translation>
+        <translation>Canlı Kayıt:</translation>
     </message>
     <message>
         <location filename="../source/dialogs/fileinformationdialog.ui" line="312"/>
         <location filename="../build/source/dialogs/ui_fileinformationdialog.h" line="739"/>
         <source>Video Title:</source>
-        <translation>Titre de la vidéo :</translation>
+        <translation>Video Başlığı:</translation>
     </message>
     <message>
         <location filename="../source/dialogs/fileinformationdialog.ui" line="349"/>
         <location filename="../build/source/dialogs/ui_fileinformationdialog.h" line="741"/>
         <source>Bootleg Title:</source>
-        <translation>Titre du Bootleg :</translation>
+        <translation type="unfinished">Bootleg Başlığı:</translation>
     </message>
     <message>
         <location filename="../source/dialogs/fileinformationdialog.ui" line="359"/>
         <location filename="../build/source/dialogs/ui_fileinformationdialog.h" line="742"/>
         <source>Bootleg Date:</source>
-        <translation>Date du Bootleg :</translation>
+        <translation type="unfinished">Bootleg Tarihi:</translation>
     </message>
     <message>
         <location filename="../source/dialogs/fileinformationdialog.ui" line="382"/>
@@ -1122,37 +1122,37 @@
         <location filename="../build/source/dialogs/ui_fileinformationdialog.h" line="743"/>
         <location filename="../build/source/dialogs/ui_fileinformationdialog.h" line="777"/>
         <source>Author Information</source>
-        <translation>Informations sur l&apos;auteur</translation>
+        <translation>Yazar Bilgisi</translation>
     </message>
     <message>
         <location filename="../source/dialogs/fileinformationdialog.ui" line="400"/>
         <location filename="../build/source/dialogs/ui_fileinformationdialog.h" line="744"/>
         <source>Traditional (Author Unknown):</source>
-        <translation>Traditionnel (Auteur inconnu) :</translation>
+        <translation>Geleneksel (Yazar Bilinmiyor):</translation>
     </message>
     <message>
         <location filename="../source/dialogs/fileinformationdialog.ui" line="410"/>
         <location filename="../build/source/dialogs/ui_fileinformationdialog.h" line="745"/>
         <source>Music By:</source>
-        <translation>Musique par :</translation>
+        <translation>Müzik:</translation>
     </message>
     <message>
         <location filename="../source/dialogs/fileinformationdialog.ui" line="420"/>
         <location filename="../build/source/dialogs/ui_fileinformationdialog.h" line="746"/>
         <source>Words By:</source>
-        <translation>Paroles par :</translation>
+        <translation>Sözler:</translation>
     </message>
     <message>
         <location filename="../source/dialogs/fileinformationdialog.ui" line="430"/>
         <location filename="../build/source/dialogs/ui_fileinformationdialog.h" line="747"/>
         <source>Arranged By:</source>
-        <translation>Arrangé par :</translation>
+        <translation>Düzenleme:</translation>
     </message>
     <message>
         <location filename="../source/dialogs/fileinformationdialog.ui" line="440"/>
         <location filename="../build/source/dialogs/ui_fileinformationdialog.h" line="748"/>
         <source>Transcribed By:</source>
-        <translation>Transcrit par :</translation>
+        <translation>Notaya Döken:</translation>
     </message>
     <message>
         <location filename="../source/dialogs/fileinformationdialog.ui" line="450"/>
@@ -1160,13 +1160,13 @@
         <location filename="../build/source/dialogs/ui_fileinformationdialog.h" line="749"/>
         <location filename="../build/source/dialogs/ui_fileinformationdialog.h" line="779"/>
         <source>Copyright:</source>
-        <translation>Droits d&apos;auteur :</translation>
+        <translation>Telif Hakkı:</translation>
     </message>
     <message>
         <location filename="../source/dialogs/fileinformationdialog.ui" line="498"/>
         <location filename="../build/source/dialogs/ui_fileinformationdialog.h" line="752"/>
         <source>Style:</source>
-        <translation>Genre :</translation>
+        <translation>Sitil:</translation>
     </message>
     <message>
         <location filename="../source/dialogs/fileinformationdialog.ui" line="506"/>
@@ -1178,37 +1178,37 @@
         <location filename="../source/dialogs/fileinformationdialog.ui" line="511"/>
         <location filename="../build/source/dialogs/ui_fileinformationdialog.h" line="754"/>
         <source>Bluegrass</source>
-        <translation>Bluegrass</translation>
+        <translation type="unfinished"></translation>
     </message>
     <message>
         <location filename="../source/dialogs/fileinformationdialog.ui" line="516"/>
         <location filename="../build/source/dialogs/ui_fileinformationdialog.h" line="755"/>
         <source>Blues</source>
-        <translation>Blues</translation>
+        <translation type="unfinished">Blues</translation>
     </message>
     <message>
         <location filename="../source/dialogs/fileinformationdialog.ui" line="521"/>
         <location filename="../build/source/dialogs/ui_fileinformationdialog.h" line="756"/>
         <source>Country</source>
-        <translation>Country</translation>
+        <translation type="unfinished">Halk Müziği</translation>
     </message>
     <message>
         <location filename="../source/dialogs/fileinformationdialog.ui" line="526"/>
         <location filename="../build/source/dialogs/ui_fileinformationdialog.h" line="757"/>
         <source>Fingerpick</source>
-        <translation>Picking</translation>
+        <translation>Parmakla Çalma</translation>
     </message>
     <message>
         <location filename="../source/dialogs/fileinformationdialog.ui" line="531"/>
         <location filename="../build/source/dialogs/ui_fileinformationdialog.h" line="758"/>
         <source>Flamenco</source>
-        <translation>Flamenco</translation>
+        <translation>Flemenko</translation>
     </message>
     <message>
         <location filename="../source/dialogs/fileinformationdialog.ui" line="536"/>
         <location filename="../build/source/dialogs/ui_fileinformationdialog.h" line="759"/>
         <source>Folk</source>
-        <translation>Folk</translation>
+        <translation>Halk</translation>
     </message>
     <message>
         <location filename="../source/dialogs/fileinformationdialog.ui" line="541"/>
@@ -1220,31 +1220,31 @@
         <location filename="../source/dialogs/fileinformationdialog.ui" line="546"/>
         <location filename="../build/source/dialogs/ui_fileinformationdialog.h" line="761"/>
         <source>Fusion</source>
-        <translation>Fusion</translation>
+        <translation>Füzyon</translation>
     </message>
     <message>
         <location filename="../source/dialogs/fileinformationdialog.ui" line="551"/>
         <location filename="../build/source/dialogs/ui_fileinformationdialog.h" line="762"/>
         <source>General</source>
-        <translation>Général</translation>
+        <translation>Genel</translation>
     </message>
     <message>
         <location filename="../source/dialogs/fileinformationdialog.ui" line="556"/>
         <location filename="../build/source/dialogs/ui_fileinformationdialog.h" line="763"/>
         <source>Jazz</source>
-        <translation>Jazz</translation>
+        <translation>Caz</translation>
     </message>
     <message>
         <location filename="../source/dialogs/fileinformationdialog.ui" line="561"/>
         <location filename="../build/source/dialogs/ui_fileinformationdialog.h" line="764"/>
         <source>Metal/Shred</source>
-        <translation>Métal/Shred</translation>
+        <translation type="unfinished">Metal/Virtiöz</translation>
     </message>
     <message>
         <location filename="../source/dialogs/fileinformationdialog.ui" line="566"/>
         <location filename="../build/source/dialogs/ui_fileinformationdialog.h" line="765"/>
         <source>Other</source>
-        <translation>Autre</translation>
+        <translation>Diğer</translation>
     </message>
     <message>
         <location filename="../source/dialogs/fileinformationdialog.ui" line="571"/>
@@ -1256,7 +1256,7 @@
         <location filename="../source/dialogs/fileinformationdialog.ui" line="576"/>
         <location filename="../build/source/dialogs/ui_fileinformationdialog.h" line="767"/>
         <source>Progressive Rock</source>
-        <translation>Rock progressif</translation>
+        <translation>Progresif Rock</translation>
     </message>
     <message>
         <location filename="../source/dialogs/fileinformationdialog.ui" line="581"/>
@@ -1268,125 +1268,125 @@
         <location filename="../source/dialogs/fileinformationdialog.ui" line="586"/>
         <location filename="../build/source/dialogs/ui_fileinformationdialog.h" line="769"/>
         <source>Reggae</source>
-        <translation>Reggae</translation>
+        <translation type="unfinished"></translation>
     </message>
     <message>
         <location filename="../source/dialogs/fileinformationdialog.ui" line="591"/>
         <location filename="../build/source/dialogs/ui_fileinformationdialog.h" line="770"/>
         <source>Rock</source>
-        <translation>Rock</translation>
+        <translation type="unfinished"></translation>
     </message>
     <message>
         <location filename="../source/dialogs/fileinformationdialog.ui" line="596"/>
         <location filename="../build/source/dialogs/ui_fileinformationdialog.h" line="771"/>
         <source>Swing</source>
-        <translation>Swing</translation>
+        <translation type="unfinished"></translation>
     </message>
     <message>
         <location filename="../source/dialogs/fileinformationdialog.ui" line="604"/>
         <location filename="../build/source/dialogs/ui_fileinformationdialog.h" line="773"/>
         <source>Level</source>
-        <translation>Niveau</translation>
+        <translation>Seviye</translation>
     </message>
     <message>
         <location filename="../source/dialogs/fileinformationdialog.ui" line="613"/>
         <location filename="../build/source/dialogs/ui_fileinformationdialog.h" line="774"/>
         <source>Beginner</source>
-        <translation>Débutant</translation>
+        <translation>Başlangıç</translation>
     </message>
     <message>
         <location filename="../source/dialogs/fileinformationdialog.ui" line="623"/>
         <location filename="../build/source/dialogs/ui_fileinformationdialog.h" line="775"/>
         <source>Intermediate</source>
-        <translation>Intermédiaire</translation>
+        <translation>Orta</translation>
     </message>
     <message>
         <location filename="../source/dialogs/fileinformationdialog.ui" line="633"/>
         <location filename="../build/source/dialogs/ui_fileinformationdialog.h" line="776"/>
         <source>Advanced</source>
-        <translation>Avancé</translation>
+        <translation>Gelişmiş</translation>
     </message>
     <message>
         <location filename="../source/dialogs/fileinformationdialog.ui" line="669"/>
         <location filename="../build/source/dialogs/ui_fileinformationdialog.h" line="778"/>
         <source>Author:</source>
-        <translation>Auteur :</translation>
+        <translation>Yazar:</translation>
     </message>
     <message>
         <location filename="../source/dialogs/fileinformationdialog.ui" line="694"/>
         <location filename="../build/source/dialogs/ui_fileinformationdialog.h" line="782"/>
         <source>Performance Notes</source>
-        <translation>Notes de performance</translation>
+        <translation>Performans Notları</translation>
     </message>
     <message>
         <location filename="../source/dialogs/fileinformationdialog.ui" line="718"/>
         <location filename="../build/source/dialogs/ui_fileinformationdialog.h" line="781"/>
         <source>Notes:</source>
-        <translation>Notes :</translation>
+        <translation>Notlar:</translation>
     </message>
     <message>
         <location filename="../source/dialogs/fileinformationdialog.ui" line="734"/>
         <location filename="../build/source/dialogs/ui_fileinformationdialog.h" line="784"/>
         <source>Lyrics</source>
-        <translation>Paroles</translation>
+        <translation>Sözler</translation>
     </message>
     <message>
         <location filename="../source/dialogs/fileinformationdialog.ui" line="758"/>
         <location filename="../build/source/dialogs/ui_fileinformationdialog.h" line="783"/>
         <source>Lyrics:</source>
-        <translation>Paroles :</translation>
+        <translation>Sözler:</translation>
     </message>
     <message>
         <location filename="../source/dialogs/fileinformationdialog.ui" line="774"/>
         <location filename="../build/source/dialogs/ui_fileinformationdialog.h" line="797"/>
         <source>Properties</source>
-        <translation>Propriétés</translation>
+        <translation>Özellikler</translation>
     </message>
     <message>
         <location filename="../source/dialogs/fileinformationdialog.ui" line="798"/>
         <location filename="../build/source/dialogs/ui_fileinformationdialog.h" line="785"/>
         <source>Name:</source>
-        <translation>Nom :</translation>
+        <translation>İsim:</translation>
     </message>
     <message>
         <location filename="../source/dialogs/fileinformationdialog.ui" line="812"/>
         <location filename="../build/source/dialogs/ui_fileinformationdialog.h" line="787"/>
         <source>Location:</source>
-        <translation>Emplacement :</translation>
+        <translation>Konum:</translation>
     </message>
     <message>
         <location filename="../source/dialogs/fileinformationdialog.ui" line="826"/>
         <location filename="../build/source/dialogs/ui_fileinformationdialog.h" line="789"/>
         <source>Size:</source>
-        <translation>Taille :</translation>
+        <translation>Boyut:</translation>
     </message>
     <message>
         <location filename="../source/dialogs/fileinformationdialog.ui" line="840"/>
         <location filename="../build/source/dialogs/ui_fileinformationdialog.h" line="791"/>
         <source>Created:</source>
-        <translation>Date de création :</translation>
+        <translation>Yaratıldı:</translation>
     </message>
     <message>
         <location filename="../source/dialogs/fileinformationdialog.ui" line="854"/>
         <location filename="../build/source/dialogs/ui_fileinformationdialog.h" line="793"/>
         <source>Modified:</source>
-        <translation>Date de modification :</translation>
+        <translation>Değiştirildi:</translation>
     </message>
     <message>
         <location filename="../source/dialogs/fileinformationdialog.ui" line="868"/>
         <location filename="../build/source/dialogs/ui_fileinformationdialog.h" line="795"/>
         <source>Accessed:</source>
-        <translation>Date de lecture :</translation>
+        <translation>Erişildi:</translation>
     </message>
     <message>
         <location filename="../source/dialogs/fileinformationdialog.cpp" line="165"/>
         <source>Untitled</source>
-        <translation>Sans titre</translation>
+        <translation>Başlıksız</translation>
     </message>
     <message>
         <location filename="../source/dialogs/fileinformationdialog.cpp" line="177"/>
         <source>%1 bytes</source>
-        <translation>%1 octets</translation>
+        <translation>%1 bayt</translation>
     </message>
 </context>
 <context>
@@ -1395,55 +1395,55 @@
         <location filename="../source/dialogs/filterrulewidget.ui" line="14"/>
         <location filename="../build/source/dialogs/ui_filterrulewidget.h" line="132"/>
         <source>Form</source>
-        <translation>Forme</translation>
+        <translation type="unfinished"></translation>
     </message>
     <message>
         <location filename="../source/dialogs/filterrulewidget.ui" line="42"/>
         <location filename="../build/source/dialogs/ui_filterrulewidget.h" line="133"/>
         <source>Player Name</source>
-        <translation>Nom du musicien</translation>
+        <translation type="unfinished">Çalıcı İsmi</translation>
     </message>
     <message>
         <location filename="../source/dialogs/filterrulewidget.ui" line="47"/>
         <location filename="../build/source/dialogs/ui_filterrulewidget.h" line="134"/>
         <source>Number of Strings</source>
-        <translation>Nombre de cordes</translation>
+        <translation>Tel Sayısı</translation>
     </message>
     <message>
         <location filename="../source/dialogs/filterrulewidget.ui" line="71"/>
         <location filename="../build/source/dialogs/ui_filterrulewidget.h" line="136"/>
         <source>matches</source>
-        <translation>Correspondances</translation>
+        <translation>eşleşmeler</translation>
     </message>
     <message>
         <location filename="../source/dialogs/filterrulewidget.ui" line="98"/>
         <location filename="../build/source/dialogs/ui_filterrulewidget.h" line="137"/>
         <source>&lt;</source>
-        <translation>&lt;</translation>
+        <translation type="unfinished"></translation>
     </message>
     <message>
         <location filename="../source/dialogs/filterrulewidget.ui" line="103"/>
         <location filename="../build/source/dialogs/ui_filterrulewidget.h" line="138"/>
         <source>&lt;=</source>
-        <translation>&lt;=</translation>
+        <translation type="unfinished"></translation>
     </message>
     <message>
         <location filename="../source/dialogs/filterrulewidget.ui" line="108"/>
         <location filename="../build/source/dialogs/ui_filterrulewidget.h" line="139"/>
         <source>=</source>
-        <translation>=</translation>
+        <translation type="unfinished"></translation>
     </message>
     <message>
         <location filename="../source/dialogs/filterrulewidget.ui" line="113"/>
         <location filename="../build/source/dialogs/ui_filterrulewidget.h" line="140"/>
         <source>&gt;=</source>
-        <translation>&gt;=</translation>
+        <translation type="unfinished"></translation>
     </message>
     <message>
         <location filename="../source/dialogs/filterrulewidget.ui" line="118"/>
         <location filename="../build/source/dialogs/ui_filterrulewidget.h" line="141"/>
         <source>&gt;</source>
-        <translation>&gt;</translation>
+        <translation type="unfinished"></translation>
     </message>
 </context>
 <context>
@@ -1452,13 +1452,13 @@
         <location filename="../source/dialogs/gotobarlinedialog.ui" line="17"/>
         <location filename="../build/source/dialogs/ui_gotobarlinedialog.h" line="71"/>
         <source>Go To Barline</source>
-        <translation>Aller à la barre de mesure</translation>
+        <translation>Ölçü Çizgisine Git</translation>
     </message>
     <message>
         <location filename="../source/dialogs/gotobarlinedialog.ui" line="28"/>
         <location filename="../build/source/dialogs/ui_gotobarlinedialog.h" line="72"/>
         <source>Barline:</source>
-        <translation>Barre de mesure :</translation>
+        <translation>Ölçü Çizgisi:</translation>
     </message>
 </context>
 <context>
@@ -1467,13 +1467,13 @@
         <location filename="../source/dialogs/gotorehearsalsigndialog.ui" line="17"/>
         <location filename="../build/source/dialogs/ui_gotorehearsalsigndialog.h" line="73"/>
         <source>Go To Rehearsal Sign</source>
-        <translation>Aller au signe de répétition</translation>
+        <translation>Prova İşaretine Git</translation>
     </message>
     <message>
         <location filename="../source/dialogs/gotorehearsalsigndialog.ui" line="28"/>
         <location filename="../build/source/dialogs/ui_gotorehearsalsigndialog.h" line="74"/>
         <source>Rehearsal Sign:</source>
-        <translation>Signe de répétition :</translation>
+        <translation>Prova İşareti:</translation>
     </message>
 </context>
 <context>
@@ -1482,19 +1482,19 @@
         <location filename="../source/dialogs/infodialog.ui" line="14"/>
         <location filename="../build/source/dialogs/ui_infodialog.h" line="61"/>
         <source>Application Info</source>
-        <translation>Informations sur l&apos;application</translation>
+        <translation>Uygulama Bilgisi</translation>
     </message>
     <message>
         <location filename="../source/dialogs/infodialog.ui" line="39"/>
         <location filename="../build/source/dialogs/ui_infodialog.h" line="62"/>
         <source>&amp;Copy to Clipboard</source>
-        <translation>Copier dans le presse-papiers</translation>
+        <translation>&amp;Panoya Kopyala</translation>
     </message>
     <message>
         <location filename="../source/dialogs/infodialog.cpp" line="47"/>
         <source>You can grab development binaries here:
   https://github.com/powertab/powertabeditor/actions</source>
-        <translation>Vous pouvez obtenir les versions de développement ici :
+        <translation type="unfinished">Geliştirme binarilerini buradan indirebilirsiniz:
   https://github.com/powertab/powertabeditor/actions</translation>
     </message>
 </context>
@@ -1503,7 +1503,7 @@
     <message>
         <location filename="../source/actions/insertnotes.cpp" line="27"/>
         <source>Insert Notes</source>
-        <translation>Insérer des notes</translation>
+        <translation>Not Ekle</translation>
     </message>
 </context>
 <context>
@@ -1512,31 +1512,31 @@
         <location filename="../source/widgets/instruments/instrumentpanelitem.ui" line="26"/>
         <location filename="../build/source/widgets/ui_instrumentpanelitem.h" line="91"/>
         <source>Form</source>
-        <translation>Forme</translation>
+        <translation type="unfinished"></translation>
     </message>
     <message>
         <location filename="../source/widgets/instruments/instrumentpanelitem.ui" line="50"/>
         <location filename="../build/source/widgets/ui_instrumentpanelitem.h" line="92"/>
         <source>1.</source>
-        <translation>1.</translation>
+        <translation type="unfinished"></translation>
     </message>
     <message>
         <location filename="../source/widgets/instruments/instrumentpanelitem.ui" line="57"/>
         <location filename="../build/source/widgets/ui_instrumentpanelitem.h" line="94"/>
         <source>Click to change instrument name.</source>
-        <translation>Cliquez pour modifier le nom de l&apos;instrument.</translation>
+        <translation>Enstrüman ismini değiştirmek için tıkla.</translation>
     </message>
     <message>
         <location filename="../source/widgets/instruments/instrumentpanelitem.ui" line="60"/>
         <location filename="../build/source/widgets/ui_instrumentpanelitem.h" line="96"/>
         <source>Instrument</source>
-        <translation>Instrument</translation>
+        <translation>Enstrüman</translation>
     </message>
     <message>
         <location filename="../source/widgets/instruments/instrumentpanelitem.ui" line="117"/>
         <location filename="../build/source/widgets/ui_instrumentpanelitem.h" line="98"/>
         <source>Remove Instrument</source>
-        <translation>Supprimer l&apos;instrument</translation>
+        <translation>Enstrümanı Kaldır</translation>
     </message>
 </context>
 <context>
@@ -1545,19 +1545,19 @@
         <location filename="../source/dialogs/irregulargroupingdialog.ui" line="17"/>
         <location filename="../build/source/dialogs/ui_irregulargroupingdialog.h" line="83"/>
         <source>Irregular Grouping</source>
-        <translation>Groupement régulier</translation>
+        <translation>Düzensiz Guruplama</translation>
     </message>
     <message>
         <location filename="../source/dialogs/irregulargroupingdialog.ui" line="28"/>
         <location filename="../build/source/dialogs/ui_irregulargroupingdialog.h" line="84"/>
         <source>Notes Played:</source>
-        <translation>Notes jouées :</translation>
+        <translation>Çalınan Notalar:</translation>
     </message>
     <message>
         <location filename="../source/dialogs/irregulargroupingdialog.ui" line="38"/>
         <location filename="../build/source/dialogs/ui_irregulargroupingdialog.h" line="85"/>
         <source>Notes Played Over:</source>
-        <translation>Notes jouées :</translation>
+        <translation type="unfinished">Tekrar Çalınan Notalar:</translation>
     </message>
 </context>
 <context>
@@ -1566,37 +1566,37 @@
         <location filename="../source/dialogs/keysignaturedialog.ui" line="17"/>
         <location filename="../build/source/dialogs/ui_keysignaturedialog.h" line="111"/>
         <source>Key Signature</source>
-        <translation>Armure</translation>
+        <translation>Anahtar</translation>
     </message>
     <message>
         <location filename="../source/dialogs/keysignaturedialog.ui" line="31"/>
         <location filename="../build/source/dialogs/ui_keysignaturedialog.h" line="112"/>
         <source>Visible:</source>
-        <translation>Visible :</translation>
+        <translation>Görünür:</translation>
     </message>
     <message>
         <location filename="../source/dialogs/keysignaturedialog.ui" line="41"/>
         <location filename="../build/source/dialogs/ui_keysignaturedialog.h" line="113"/>
         <source>Key Type:</source>
-        <translation>Type de clé :</translation>
+        <translation>Anahtar Tipi:</translation>
     </message>
     <message>
         <location filename="../source/dialogs/keysignaturedialog.ui" line="50"/>
         <location filename="../build/source/dialogs/ui_keysignaturedialog.h" line="114"/>
         <source>Major</source>
-        <translation>Majeure</translation>
+        <translation>Majör</translation>
     </message>
     <message>
         <location filename="../source/dialogs/keysignaturedialog.ui" line="57"/>
         <location filename="../build/source/dialogs/ui_keysignaturedialog.h" line="115"/>
         <source>Minor</source>
-        <translation>Mineure</translation>
+        <translation>Minör</translation>
     </message>
     <message>
         <location filename="../source/dialogs/keysignaturedialog.ui" line="66"/>
         <location filename="../build/source/dialogs/ui_keysignaturedialog.h" line="116"/>
         <source>Key:</source>
-        <translation>Clé :</translation>
+        <translation>Anahtar:</translation>
     </message>
 </context>
 <context>
@@ -1605,50 +1605,50 @@
         <location filename="../source/dialogs/keyboardsettingsdialog.ui" line="23"/>
         <location filename="../build/source/dialogs/ui_keyboardsettingsdialog.h" line="101"/>
         <source>Edit Keyboard Shortcuts</source>
-        <translation>Modifier les raccourcis clavier</translation>
+        <translation>Klavye Kısayollarını Düzenle</translation>
     </message>
     <message>
         <location filename="../source/dialogs/keyboardsettingsdialog.ui" line="46"/>
         <location filename="../build/source/dialogs/ui_keyboardsettingsdialog.h" line="102"/>
         <source>Shortcut:</source>
-        <translation>Raccourci :</translation>
+        <translation>Kısayol:</translation>
     </message>
     <message>
         <location filename="../source/dialogs/keyboardsettingsdialog.ui" line="56"/>
         <location filename="../build/source/dialogs/ui_keyboardsettingsdialog.h" line="103"/>
         <source>Reset</source>
-        <translation>Réinitialiser</translation>
+        <translation>Sıfırla</translation>
     </message>
     <message>
         <location filename="../source/dialogs/keyboardsettingsdialog.ui" line="63"/>
         <location filename="../build/source/dialogs/ui_keyboardsettingsdialog.h" line="104"/>
         <source>Default</source>
-        <translation>Par défaut</translation>
+        <translation>Varsayılan</translation>
     </message>
     <message>
         <location filename="../source/dialogs/keyboardsettingsdialog.cpp" line="66"/>
         <source>Command</source>
-        <translation>Commande</translation>
+        <translation>Komut</translation>
     </message>
     <message>
         <location filename="../source/dialogs/keyboardsettingsdialog.cpp" line="66"/>
         <source>Label</source>
-        <translation>Nom</translation>
+        <translation>Etiket</translation>
     </message>
     <message>
         <location filename="../source/dialogs/keyboardsettingsdialog.cpp" line="66"/>
         <source>Shortcut</source>
-        <translation>Raccourci</translation>
+        <translation>Kısayol</translation>
     </message>
     <message>
         <location filename="../source/dialogs/keyboardsettingsdialog.cpp" line="189"/>
         <source>The shortcut %1 is already in use.</source>
-        <translation>Le raccourci %1 est déjà utilisé.</translation>
+        <translation>Kısayol %1 zaten kullanılıyor.</translation>
     </message>
     <message>
         <location filename="../source/dialogs/keyboardsettingsdialog.cpp" line="191"/>
         <source>Do you want to use this shortcut and remove the shortcut of the &lt;b&gt;%1&lt;/b&gt; command?</source>
-        <translation>Souhaitez-vous utiliser ce raccourci et le supprimer de la commande &lt;b&gt;%1&lt;/b&gt; ?</translation>
+        <translation>Bu kısayolu kullanmak ve &lt;b&gt;%1&lt;/b&gt; komutunun kısayolunu kaldırmak istiyor musunuz?</translation>
     </message>
 </context>
 <context>
@@ -1657,89 +1657,89 @@
         <location filename="../source/dialogs/lefthandfingeringdialog.ui" line="17"/>
         <location filename="../build/source/dialogs/ui_lefthandfingeringdialog.h" line="84"/>
         <source>Left Hand Fingering</source>
-        <translation>Doigté main gauche</translation>
+        <translation type="unfinished">Sol Elle Çalma</translation>
     </message>
     <message>
         <location filename="../source/dialogs/lefthandfingeringdialog.ui" line="31"/>
         <location filename="../build/source/dialogs/ui_lefthandfingeringdialog.h" line="85"/>
         <source>Finger:</source>
-        <translation>Doigt :</translation>
+        <translation>Parmak:</translation>
     </message>
     <message>
         <location filename="../source/dialogs/lefthandfingeringdialog.ui" line="41"/>
         <location filename="../build/source/dialogs/ui_lefthandfingeringdialog.h" line="86"/>
         <source>Position relative to note head:</source>
-        <translation>Position relative à la tête de la note :</translation>
+        <translation type="unfinished"></translation>
     </message>
     <message>
         <location filename="../source/dialogs/lefthandfingeringdialog.cpp" line="31"/>
         <source>None (string empty)</source>
-        <translation>Aucun (chaîne vide)</translation>
+        <translation>Yok (tel boş)</translation>
     </message>
     <message>
         <location filename="../source/dialogs/lefthandfingeringdialog.cpp" line="31"/>
         <source>Index finger</source>
-        <translation>Index</translation>
+        <translation>İşaret parmağı</translation>
     </message>
     <message>
         <location filename="../source/dialogs/lefthandfingeringdialog.cpp" line="31"/>
         <source>Middle finger</source>
-        <translation>Majeur</translation>
+        <translation>Orta parmak</translation>
     </message>
     <message>
         <location filename="../source/dialogs/lefthandfingeringdialog.cpp" line="32"/>
         <source>Ring finger</source>
-        <translation>Annulaire</translation>
+        <translation>Yüzük parmağı</translation>
     </message>
     <message>
         <location filename="../source/dialogs/lefthandfingeringdialog.cpp" line="32"/>
         <source>Little finger</source>
-        <translation>Auriculaire</translation>
+        <translation>Küçük parmak</translation>
     </message>
     <message>
         <location filename="../source/dialogs/lefthandfingeringdialog.cpp" line="32"/>
         <source>Thumb</source>
-        <translation>Pouce</translation>
+        <translation>Baş parmak</translation>
     </message>
     <message>
         <location filename="../source/dialogs/lefthandfingeringdialog.cpp" line="36"/>
         <source>Left</source>
-        <translation>À gauche</translation>
+        <translation>Sol</translation>
     </message>
     <message>
         <location filename="../source/dialogs/lefthandfingeringdialog.cpp" line="36"/>
         <source>Above and left</source>
-        <translation>En haut à gauche</translation>
+        <translation>Yukarda ve solda</translation>
     </message>
     <message>
         <location filename="../source/dialogs/lefthandfingeringdialog.cpp" line="36"/>
         <source>Above, centered</source>
-        <translation>En haut au milieu</translation>
+        <translation>Yukarda, ortada</translation>
     </message>
     <message>
         <location filename="../source/dialogs/lefthandfingeringdialog.cpp" line="37"/>
         <source>Above and right</source>
-        <translation>En haut à droite</translation>
+        <translation>Yukarda ve sağda</translation>
     </message>
     <message>
         <location filename="../source/dialogs/lefthandfingeringdialog.cpp" line="37"/>
         <source>Right</source>
-        <translation>À droite</translation>
+        <translation>Sağ</translation>
     </message>
     <message>
         <location filename="../source/dialogs/lefthandfingeringdialog.cpp" line="37"/>
         <source>Below and right</source>
-        <translation>En bas à droite</translation>
+        <translation>Altta ve sağda</translation>
     </message>
     <message>
         <location filename="../source/dialogs/lefthandfingeringdialog.cpp" line="38"/>
         <source>Below, centered</source>
-        <translation>En bas au milieu</translation>
+        <translation>Altta, ortada</translation>
     </message>
     <message>
         <location filename="../source/dialogs/lefthandfingeringdialog.cpp" line="38"/>
         <source>Below and left</source>
-        <translation>En bas à gauche</translation>
+        <translation>Altta ve solda</translation>
     </message>
 </context>
 <context>
@@ -1747,7 +1747,7 @@
     <message>
         <location filename="../source/audio/midiplayer.cpp" line="105"/>
         <source>Error initializing MIDI output device.</source>
-        <translation>Erreur lors de l&apos;initialisation du périphérique de sortie MIDI.</translation>
+        <translation>Midi çıkış aygıtını başlatırken hata oluştu.</translation>
     </message>
 </context>
 <context>
@@ -1756,55 +1756,55 @@
         <location filename="../source/widgets/mixer/mixeritem.ui" line="26"/>
         <location filename="../build/source/widgets/ui_mixeritem.h" line="113"/>
         <source>Form</source>
-        <translation>Forme</translation>
+        <translation type="unfinished"></translation>
     </message>
     <message>
         <location filename="../source/widgets/mixer/mixeritem.ui" line="29"/>
         <location filename="../build/source/widgets/ui_mixeritem.h" line="115"/>
         <source>Click to change player name.</source>
-        <translation>Cliquez pour changer le nom du musicien.</translation>
+        <translation type="unfinished">Çalıcı ismini değiştirmek için tıkla.</translation>
     </message>
     <message>
         <location filename="../source/widgets/mixer/mixeritem.ui" line="53"/>
         <location filename="../build/source/widgets/ui_mixeritem.h" line="117"/>
         <source>1.</source>
-        <translation>1.</translation>
+        <translation type="unfinished"></translation>
     </message>
     <message>
         <location filename="../source/widgets/mixer/mixeritem.ui" line="72"/>
         <location filename="../build/source/widgets/ui_mixeritem.h" line="118"/>
         <source>Player Name</source>
-        <translation>Nom du musicien</translation>
+        <translation type="unfinished">Çalıcı İsmi</translation>
     </message>
     <message>
         <location filename="../source/widgets/mixer/mixeritem.ui" line="107"/>
         <location filename="../build/source/widgets/ui_mixeritem.h" line="120"/>
         <source>Drag to adjust volume.</source>
-        <translation>Faites glisser pour ajuster le volume.</translation>
+        <translation>Sesi ayarlamak için sürükle.</translation>
     </message>
     <message>
         <location filename="../source/widgets/mixer/mixeritem.ui" line="129"/>
         <location filename="../build/source/widgets/ui_mixeritem.h" line="123"/>
         <source>Drag to adjust panning.</source>
-        <translation>Faites glisser pour ajuster le panoramique.</translation>
+        <translation type="unfinished">Kaydırmayı ayarlamak için sürükleyin.</translation>
     </message>
     <message>
         <location filename="../source/widgets/mixer/mixeritem.ui" line="148"/>
         <location filename="../build/source/widgets/ui_mixeritem.h" line="126"/>
         <source>Click to adjust tuning.</source>
-        <translation>Faites glisser pour ajuster la tonalité.</translation>
+        <translation>Akortu ayarlamak için tıklayın.</translation>
     </message>
     <message>
         <location filename="../source/widgets/mixer/mixeritem.ui" line="151"/>
         <location filename="../build/source/widgets/ui_mixeritem.h" line="128"/>
         <source>Tuning</source>
-        <translation>Tonalité</translation>
+        <translation>Akort</translation>
     </message>
     <message>
         <location filename="../source/widgets/mixer/mixeritem.ui" line="176"/>
         <location filename="../build/source/widgets/ui_mixeritem.h" line="130"/>
         <source>Remove Player</source>
-        <translation>Supprimer le musicien</translation>
+        <translation type="unfinished">Çalıcıyı Kaldır</translation>
     </message>
 </context>
 <context>
@@ -1813,13 +1813,13 @@
         <location filename="../source/dialogs/multibarrestdialog.ui" line="17"/>
         <location filename="../build/source/dialogs/ui_multibarrestdialog.h" line="72"/>
         <source>Multi-Bar Rest</source>
-        <translation>Silence multi-mesures</translation>
+        <translation type="unfinished">Çoklu-Ölçü Sus</translation>
     </message>
     <message>
         <location filename="../source/dialogs/multibarrestdialog.ui" line="31"/>
         <location filename="../build/source/dialogs/ui_multibarrestdialog.h" line="73"/>
         <source>Number of Bars:</source>
-        <translation>Nombre de mesures :</translation>
+        <translation type="unfinished">Ölçü Sayısı:</translation>
     </message>
 </context>
 <context>
@@ -1827,182 +1827,182 @@
     <message>
         <location filename="../source/widgets/toolbox/notepage.cpp" line="34"/>
         <source>Notes</source>
-        <translation>Notes</translation>
+        <translation>Notalar</translation>
     </message>
     <message>
         <location filename="../source/widgets/toolbox/notepage.cpp" line="47"/>
         <source>Whole Note</source>
-        <translation>Ronde</translation>
+        <translation>Tam Nota</translation>
     </message>
     <message>
         <location filename="../source/widgets/toolbox/notepage.cpp" line="52"/>
         <source>Half Note</source>
-        <translation>Blanche</translation>
+        <translation>Yarım Nota</translation>
     </message>
     <message>
         <location filename="../source/widgets/toolbox/notepage.cpp" line="57"/>
         <source>Quarter Note</source>
-        <translation>Noire</translation>
+        <translation>Çeyrek Nota</translation>
     </message>
     <message>
         <location filename="../source/widgets/toolbox/notepage.cpp" line="62"/>
         <source>8th Note</source>
-        <translation>Croche</translation>
+        <translation>8 lik Nota</translation>
     </message>
     <message>
         <location filename="../source/widgets/toolbox/notepage.cpp" line="67"/>
         <source>16th Note</source>
-        <translation>Double croche</translation>
+        <translation>16 lık Nota</translation>
     </message>
     <message>
         <location filename="../source/widgets/toolbox/notepage.cpp" line="72"/>
         <source>32nd Note</source>
-        <translation>Triple croche</translation>
+        <translation>32 lik Nota</translation>
     </message>
     <message>
         <location filename="../source/widgets/toolbox/notepage.cpp" line="77"/>
         <source>64th Note</source>
-        <translation>Quadruple croche</translation>
+        <translation>64 lük Nota</translation>
     </message>
     <message>
         <location filename="../source/widgets/toolbox/notepage.cpp" line="100"/>
         <source>Rests</source>
-        <translation>Silences</translation>
+        <translation>Suslar</translation>
     </message>
     <message>
         <location filename="../source/widgets/toolbox/notepage.cpp" line="113"/>
         <source>Whole Rest</source>
-        <translation>Pause</translation>
+        <translation>Tam Sus</translation>
     </message>
     <message>
         <location filename="../source/widgets/toolbox/notepage.cpp" line="118"/>
         <source>Half Rest</source>
-        <translation>Demi-pause</translation>
+        <translation>Yarım Sus</translation>
     </message>
     <message>
         <location filename="../source/widgets/toolbox/notepage.cpp" line="123"/>
         <source>Quarter Rest</source>
-        <translation>Soupir</translation>
+        <translation>Çeyrek Sus</translation>
     </message>
     <message>
         <location filename="../source/widgets/toolbox/notepage.cpp" line="128"/>
         <source>8th Rest</source>
-        <translation>Demi-soupir</translation>
+        <translation>8 lik Sus</translation>
     </message>
     <message>
         <location filename="../source/widgets/toolbox/notepage.cpp" line="133"/>
         <source>16th Rest</source>
-        <translation>Quart de soupir</translation>
+        <translation>16 lık Sus</translation>
     </message>
     <message>
         <location filename="../source/widgets/toolbox/notepage.cpp" line="138"/>
         <source>32nd Rest</source>
-        <translation>Huitième de soupir</translation>
+        <translation>32 lik Sus</translation>
     </message>
     <message>
         <location filename="../source/widgets/toolbox/notepage.cpp" line="143"/>
         <source>64th Rest</source>
-        <translation>Seizième de soupir</translation>
+        <translation>64 lük Sus</translation>
     </message>
     <message>
         <location filename="../source/widgets/toolbox/notepage.cpp" line="166"/>
         <source>Rhythmic Devices</source>
-        <translation>Dispositifs rythmiques</translation>
+        <translation>Ritmik Aygıtlar</translation>
     </message>
     <message>
         <location filename="../source/widgets/toolbox/notepage.cpp" line="170"/>
         <source>Dotted Note</source>
-        <translation>Note pointée</translation>
+        <translation>Noktalı Nota</translation>
     </message>
     <message>
         <location filename="../source/widgets/toolbox/notepage.cpp" line="176"/>
         <source>Double Dotted Note</source>
-        <translation>Note pointée double</translation>
+        <translation>Çift Noktalı Nota</translation>
     </message>
     <message>
         <location filename="../source/widgets/toolbox/notepage.cpp" line="181"/>
         <source>Tie Note</source>
-        <translation>Note liée</translation>
+        <translation>Bağlı Nota</translation>
     </message>
     <message>
         <location filename="../source/widgets/toolbox/notepage.cpp" line="186"/>
         <source>Group Note</source>
-        <translation>Ensemble de notes</translation>
+        <translation>Gurup Nota</translation>
     </message>
     <message>
         <location filename="../source/widgets/toolbox/notepage.cpp" line="191"/>
         <source>Fermata</source>
-        <translation>Point d&apos;orgue</translation>
+        <translation type="unfinished"></translation>
     </message>
     <message>
         <location filename="../source/widgets/toolbox/notepage.cpp" line="211"/>
         <source>Slide &amp;&amp; Legato</source>
-        <translation>Glissé &amp;&amp; liaison</translation>
+        <translation>Kaydırma &amp;&amp; Legato</translation>
     </message>
     <message>
         <location filename="../source/widgets/toolbox/notepage.cpp" line="215"/>
         <source>Slide In From Below</source>
-        <translation>Glissé d&apos;entrée par le bas</translation>
+        <translation>Aşşağıdan Yaklaşarak Kaydır</translation>
     </message>
     <message>
         <location filename="../source/widgets/toolbox/notepage.cpp" line="220"/>
         <source>Slide In From Above</source>
-        <translation>Glissé d&apos;entrée par le haut</translation>
+        <translation>Yukarıdan Yaklaşarak Kaydır</translation>
     </message>
     <message>
         <location filename="../source/widgets/toolbox/notepage.cpp" line="225"/>
         <source>Slide Out Downwards</source>
-        <translation>Glissé de sortie vers le bas</translation>
+        <translation type="unfinished">Aşşağıya Doğru Kaydır</translation>
     </message>
     <message>
         <location filename="../source/widgets/toolbox/notepage.cpp" line="230"/>
         <source>Slide Out Upwards</source>
-        <translation>Glissé de sortie vers le haut</translation>
+        <translation type="unfinished">Yukarıya Doğru Kaydır</translation>
     </message>
     <message>
         <location filename="../source/widgets/toolbox/notepage.cpp" line="235"/>
         <source>Shift Slide</source>
-        <translation>Glissé</translation>
+        <translation type="unfinished"></translation>
     </message>
     <message>
         <location filename="../source/widgets/toolbox/notepage.cpp" line="240"/>
         <source>Legato Slide</source>
-        <translation>Glissé avec liaison</translation>
+        <translation type="unfinished">Legato Kaydırma</translation>
     </message>
     <message>
         <location filename="../source/widgets/toolbox/notepage.cpp" line="245"/>
         <source>Hammer On/Pull Off</source>
-        <translation>Hammer On/Pull Off</translation>
+        <translation type="unfinished"></translation>
     </message>
     <message>
         <location filename="../source/widgets/toolbox/notepage.cpp" line="265"/>
         <source>Vibrato &amp;&amp; Tremolo</source>
-        <translation>Vibrato &amp;&amp; trémolo</translation>
+        <translation>Titretme &amp;&amp; Tremolo</translation>
     </message>
     <message>
         <location filename="../source/widgets/toolbox/notepage.cpp" line="269"/>
         <source>Vibrato</source>
-        <translation>Vibrato</translation>
+        <translation type="unfinished">Titreştirme</translation>
     </message>
     <message>
         <location filename="../source/widgets/toolbox/notepage.cpp" line="274"/>
         <source>Wide Vibrato</source>
-        <translation>Vibrato large</translation>
+        <translation type="unfinished">Geniş Titreştirme</translation>
     </message>
     <message>
         <location filename="../source/widgets/toolbox/notepage.cpp" line="279"/>
         <source>Bend</source>
-        <translation>Bend</translation>
+        <translation>Bükme</translation>
     </message>
     <message>
         <location filename="../source/widgets/toolbox/notepage.cpp" line="283"/>
         <source>Trill</source>
-        <translation>Trille</translation>
+        <translation>Titretme</translation>
     </message>
     <message>
         <location filename="../source/widgets/toolbox/notepage.cpp" line="288"/>
         <source>Tremolo</source>
-        <translation>Trémolo</translation>
+        <translation type="unfinished"></translation>
     </message>
 </context>
 <context>
@@ -2011,121 +2011,69 @@
         <location filename="../source/widgets/playback/playbackwidget.ui" line="14"/>
         <location filename="../build/source/widgets/ui_playbackwidget.h" line="197"/>
         <source>Form</source>
-        <translation>Forme</translation>
+        <translation type="unfinished"></translation>
     </message>
     <message>
         <location filename="../source/widgets/playback/playbackwidget.ui" line="49"/>
         <location filename="../build/source/widgets/ui_playbackwidget.h" line="198"/>
         <source>Voice:</source>
-        <translation>Voix :</translation>
+        <translation>Ses:</translation>
     </message>
     <message>
         <location filename="../source/widgets/playback/playbackwidget.ui" line="61"/>
         <location filename="../build/source/widgets/ui_playbackwidget.h" line="199"/>
         <source>1</source>
-        <translation>1</translation>
+        <translation type="unfinished"></translation>
     </message>
     <message>
         <location filename="../source/widgets/playback/playbackwidget.ui" line="71"/>
         <location filename="../build/source/widgets/ui_playbackwidget.h" line="200"/>
         <source>2</source>
-        <translation>2</translation>
+        <translation type="unfinished"></translation>
     </message>
     <message>
         <location filename="../source/widgets/playback/playbackwidget.ui" line="93"/>
         <location filename="../build/source/widgets/ui_playbackwidget.h" line="201"/>
         <source>Speed:</source>
-        <translation>Vitesse :</translation>
+        <translation>Hız:</translation>
     </message>
     <message>
         <location filename="../source/widgets/playback/playbackwidget.ui" line="103"/>
         <location filename="../build/source/widgets/ui_playbackwidget.h" line="203"/>
         <source>Adjusts the current playback speed.</source>
-        <translation>Ajuste la vitesse de lecture courante.</translation>
+        <translation>Çalma hızını ayarla.</translation>
     </message>
     <message>
         <location filename="../source/widgets/playback/playbackwidget.ui" line="165"/>
         <location filename="../build/source/widgets/ui_playbackwidget.h" line="209"/>
         <source>Zoom:</source>
-        <translation>Zoom :</translation>
-    </message>
-    <message>
-        <source>25%</source>
-        <translation type="vanished">25%</translation>
-    </message>
-    <message>
-        <source>50%</source>
-        <translation type="vanished">50%</translation>
-    </message>
-    <message>
-        <source>60%</source>
-        <translation type="vanished">60%</translation>
-    </message>
-    <message>
-        <source>70%</source>
-        <translation type="vanished">70%</translation>
-    </message>
-    <message>
-        <source>80%</source>
-        <translation type="vanished">80%</translation>
-    </message>
-    <message>
-        <source>90%</source>
-        <translation type="vanished">90%</translation>
-    </message>
-    <message>
-        <source>100%</source>
-        <translation type="vanished">100%</translation>
-    </message>
-    <message>
-        <source>110%</source>
-        <translation type="vanished">110%</translation>
-    </message>
-    <message>
-        <source>125%</source>
-        <translation type="vanished">125%</translation>
-    </message>
-    <message>
-        <source>150%</source>
-        <translation type="vanished">150%</translation>
-    </message>
-    <message>
-        <source>200%</source>
-        <translation type="vanished">200%</translation>
-    </message>
-    <message>
-        <source>250%</source>
-        <translation type="vanished">250%</translation>
-    </message>
-    <message>
-        <source>300%</source>
-        <translation type="vanished">300%</translation>
+        <translation>Yakınlaştırma:</translation>
     </message>
     <message>
         <location filename="../source/widgets/playback/playbackwidget.ui" line="210"/>
         <location filename="../build/source/widgets/ui_playbackwidget.h" line="210"/>
         <source>System: 1, Staff: 1, Position: 1, String: 1</source>
-        <translation>Système : 1, Portée : 1, Position : 1, Corde : 1</translation>
+        <translation type="unfinished"></translation>
     </message>
     <message>
         <location filename="../source/widgets/playback/playbackwidget.cpp" line="110"/>
         <source>Click to move playback to the beginning of the score%1.</source>
-        <translation>Cliquez pour reprendre la lecture au début de la partition %1.</translation>
+        <translation type="unfinished"></translation>
     </message>
     <message>
         <location filename="../source/widgets/playback/playbackwidget.cpp" line="117"/>
         <source>Click to start or pause playback%1.</source>
-        <translation>Cliquez pour reprendre ou mettre en pause la lecture %1.</translation>
+        <translation>Çalmayı başlatmak ya da duraklatmak için tıklayın%1.</translation>
     </message>
     <message>
         <location filename="../source/widgets/playback/playbackwidget.cpp" line="124"/>
         <source>Click to stop playback and return to the initial location%1.</source>
-        <translation>Cliquez pour arrêter la lecture et retourner à la position initiale %1.</translation>
+        <translation type="unfinished">Çalmayı durdurmak ve başlangış noktasına dönmek için tıklayın%1.</translation>
     </message>
     <message>
         <location filename="../source/widgets/playback/playbackwidget.cpp" line="133"/>
         <source>Click to toggle whether the metronome is turned on%1.</source>
-        <translation>Cliquez pour activer ou désactiver le métronome %1.</translation>
+        <translation type="unfinished"></translation>
     </message>
 </context>
 <context>
@@ -2134,27 +2082,27 @@
         <location filename="../source/dialogs/playerchangedialog.ui" line="17"/>
         <location filename="../build/source/dialogs/ui_playerchangedialog.h" line="58"/>
         <source>Player Change</source>
-        <translation>Changement de musicien</translation>
+        <translation>Çalıcıyı Değiştir</translation>
     </message>
     <message>
         <location filename="../source/dialogs/playerchangedialog.cpp" line="40"/>
         <source>Staff</source>
-        <translation>Portée</translation>
+        <translation type="unfinished"></translation>
     </message>
     <message>
         <location filename="../source/dialogs/playerchangedialog.cpp" line="41"/>
         <source>Instrument</source>
-        <translation>Instrument</translation>
+        <translation>Enstrüman</translation>
     </message>
     <message>
         <location filename="../source/dialogs/playerchangedialog.cpp" line="43"/>
         <source>Player</source>
-        <translation>Musicien</translation>
+        <translation type="unfinished">Çalıcı</translation>
     </message>
     <message>
         <location filename="../source/dialogs/playerchangedialog.cpp" line="114"/>
         <source>None</source>
-        <translation>Aucun</translation>
+        <translation>Yok</translation>
     </message>
 </context>
 <context>
@@ -2162,7 +2110,7 @@
     <message>
         <location filename="../source/actions/polishscore.cpp" line="24"/>
         <source>Polish Score</source>
-        <translation>Embellir la partition</translation>
+        <translation type="unfinished"></translation>
     </message>
 </context>
 <context>
@@ -2170,7 +2118,7 @@
     <message>
         <location filename="../source/actions/polishsystem.cpp" line="23"/>
         <source>Polish System</source>
-        <translation>Système d&apos;embellissement</translation>
+        <translation type="unfinished"></translation>
     </message>
 </context>
 <context>
@@ -2178,670 +2126,670 @@
     <message>
         <location filename="../source/app/clipboard.cpp" line="129"/>
         <source>Cannot paste notes from a different tuning.</source>
-        <translation>Impossible de coller des notes depuis une autre tonalité.</translation>
+        <translation>Farklı akortlardan notaları yapıştıramazsınız.</translation>
     </message>
     <message>
         <location filename="../source/app/powertabeditor.cpp" line="174"/>
         <source>Toolbox</source>
-        <translation>Boîte à outils</translation>
+        <translation>Alet Kutusu</translation>
     </message>
     <message>
         <location filename="../source/app/powertabeditor.cpp" line="247"/>
         <source>Open</source>
-        <translation>Ouvrir</translation>
+        <translation>Aç</translation>
     </message>
     <message>
         <location filename="../source/app/powertabeditor.cpp" line="277"/>
         <location filename="../source/app/powertabeditor.cpp" line="302"/>
         <source>Error Opening File</source>
-        <translation>Erreur lors de l&apos;ouverture du fichier</translation>
+        <translation>Dosyayı Açarken Hata</translation>
     </message>
     <message>
         <location filename="../source/app/powertabeditor.cpp" line="278"/>
         <location filename="../source/app/powertabeditor.cpp" line="399"/>
         <source>Unsupported file type.</source>
-        <translation>Type de fichier non pris en charge.</translation>
+        <translation>Desteklenmeyen dosya tipi.</translation>
     </message>
     <message>
         <location filename="../source/app/powertabeditor.cpp" line="303"/>
         <source>Error opening file: %1</source>
-        <translation>Erreur lors de l&apos;ouverture du fichier : %1</translation>
+        <translation>Dosyayı açarken hata:%1</translation>
     </message>
     <message>
         <location filename="../source/app/powertabeditor.cpp" line="336"/>
         <source>Close Document</source>
-        <translation>Fermer le document</translation>
+        <translation>Belgeyi Kapat</translation>
     </message>
     <message>
         <location filename="../source/app/powertabeditor.cpp" line="337"/>
         <source>The document has been modified.</source>
-        <translation>Le document a été modifié.</translation>
+        <translation>Belge değiştirildi.</translation>
     </message>
     <message>
         <location filename="../source/app/powertabeditor.cpp" line="338"/>
         <source>Do you want to save your changes?</source>
-        <translation>Souhaitez-vous enregistrer les modifications ?</translation>
+        <translation>Değişiklikleri kaydetmek istiyor musunuz?</translation>
     </message>
     <message>
         <location filename="../source/app/powertabeditor.cpp" line="398"/>
         <location filename="../source/app/powertabeditor.cpp" line="413"/>
         <source>Error Saving File</source>
-        <translation>Erreur lors de l&apos;enregistrement du fichier</translation>
+        <translation>Dosyayı Kaydederken Hata Oluştu</translation>
     </message>
     <message>
         <location filename="../source/app/powertabeditor.cpp" line="414"/>
         <source>Error saving file: %1</source>
-        <translation>Erreur lors de l&apos;enregistrement du fichier : %1</translation>
+        <translation>Dosya kaydedilirken hata oluştu: %1</translation>
     </message>
     <message>
         <location filename="../source/app/powertabeditor.cpp" line="445"/>
         <source>Save As</source>
-        <translation>Enregistrer sous</translation>
+        <translation>Farklı Kaydet</translation>
     </message>
     <message>
         <location filename="../source/app/powertabeditor.cpp" line="537"/>
         <source>Cut Notes</source>
-        <translation>Couper les notes</translation>
+        <translation>Notaları Kes</translation>
     </message>
     <message>
         <location filename="../source/app/powertabeditor.cpp" line="553"/>
         <source>The clipboard does not contain any notes.</source>
-        <translation>Le presse-papiers ne contient aucune note.</translation>
+        <translation>Pano herhangi bir nota içermiyor.</translation>
     </message>
     <message>
         <location filename="../source/app/powertabeditor.cpp" line="558"/>
         <source>Paste Notes</source>
-        <translation>Coller les notes</translation>
+        <translation>Nota Yapıştır</translation>
     </message>
     <message>
         <location filename="../source/app/powertabeditor.cpp" line="603"/>
         <source>Midi Error</source>
-        <translation>Erreur MIDI</translation>
+        <translation>Midi Hatası</translation>
     </message>
     <message>
         <location filename="../source/app/powertabeditor.cpp" line="625"/>
         <source>Pause</source>
-        <translation>Pause</translation>
+        <translation>Duraklat</translation>
     </message>
     <message>
         <location filename="../source/app/powertabeditor.cpp" line="658"/>
         <location filename="../source/app/powertabeditor.cpp" line="2263"/>
         <source>Play</source>
-        <translation>Lecture</translation>
+        <translation>Oynat</translation>
     </message>
     <message>
         <location filename="../source/app/powertabeditor.cpp" line="881"/>
         <location filename="../source/app/powertabeditor.cpp" line="2420"/>
         <source>Remove Position</source>
-        <translation>Supprimer la position</translation>
+        <translation>Pozisyonu Kaldır</translation>
     </message>
     <message>
         <location filename="../source/app/powertabeditor.cpp" line="962"/>
         <source>Edit Chord Text</source>
-        <translation>Modifier le texte de l&apos;accord</translation>
+        <translation>Akor Yazısını Düzenle</translation>
     </message>
     <message>
         <location filename="../source/app/powertabeditor.cpp" line="999"/>
         <source>Edit Text Item</source>
-        <translation>Modifier l&apos;élément de texte</translation>
+        <translation type="unfinished"></translation>
     </message>
     <message>
         <location filename="../source/app/powertabeditor.cpp" line="1047"/>
         <source>Edit Chord Diagram</source>
-        <translation>Éditer le diagramme d&apos;accord</translation>
+        <translation>Akor Diyagramını Düzenle</translation>
     </message>
     <message>
         <location filename="../source/app/powertabeditor.cpp" line="1145"/>
         <source>Edit Note Duration</source>
-        <translation>Modifier la durée de la note</translation>
+        <translation>Nota Süresini Düzenle</translation>
     </message>
     <message>
         <location filename="../source/app/powertabeditor.cpp" line="1366"/>
         <source>Cannot add a multi-bar rest to a non-empty measure.</source>
-        <translation>Impossible d&apos;ajouter un silence multi-mesures à une mesure non vide.</translation>
+        <translation type="unfinished"></translation>
     </message>
     <message>
         <location filename="../source/app/powertabeditor.cpp" line="1384"/>
         <source>Edit Multi-Bar Rest</source>
-        <translation>Modifier le silence multi-mesures</translation>
+        <translation type="unfinished"></translation>
     </message>
     <message>
         <location filename="../source/app/powertabeditor.cpp" line="1461"/>
         <source>Edit Tempo Marker</source>
-        <translation>Modifier le marqueur de tempo</translation>
+        <translation>Tempo İşaretini Düzenle</translation>
     </message>
     <message>
         <location filename="../source/app/powertabeditor.cpp" line="1500"/>
         <source>Edit Alteration of Pace</source>
-        <translation>Éditer la variation du tempo</translation>
+        <translation type="unfinished"></translation>
     </message>
     <message>
         <location filename="../source/app/powertabeditor.cpp" line="1547"/>
         <source>Edit Musical Direction</source>
-        <translation>Modifier la direction musicale</translation>
+        <translation type="unfinished"></translation>
     </message>
     <message>
         <location filename="../source/app/powertabeditor.cpp" line="1585"/>
         <source>Edit Repeat Ending</source>
-        <translation>Modifier la boucle de fin</translation>
+        <translation type="unfinished"></translation>
     </message>
     <message>
         <location filename="../source/app/powertabeditor.cpp" line="1689"/>
         <source>Edit Volume Swell</source>
-        <translation>Éditer la variation de volume</translation>
+        <translation type="unfinished"></translation>
     </message>
     <message>
         <location filename="../source/app/powertabeditor.cpp" line="1726"/>
         <source>Edit Tremolo Bar</source>
-        <translation>Modifier la mesure de trémolo</translation>
+        <translation type="unfinished"></translation>
     </message>
     <message>
         <location filename="../source/app/powertabeditor.cpp" line="1826"/>
         <source>Edit Bend</source>
-        <translation>Modifier le bend</translation>
+        <translation>Bükmeyi Düzenle</translation>
     </message>
     <message>
         <location filename="../source/app/powertabeditor.cpp" line="1950"/>
         <source>Edit Player Change</source>
-        <translation>Modifier le changement de musicien</translation>
+        <translation type="unfinished"></translation>
     </message>
     <message>
         <location filename="../source/app/powertabeditor.cpp" line="2153"/>
         <source>Untitled</source>
-        <translation>Sans titre</translation>
+        <translation>Başlıksız</translation>
     </message>
     <message>
         <location filename="../source/app/powertabeditor.cpp" line="2166"/>
         <source>&amp;New</source>
-        <translation>Nouveau</translation>
+        <translation>&amp;Yeni</translation>
     </message>
     <message>
         <location filename="../source/app/powertabeditor.cpp" line="2171"/>
         <source>&amp;Open...</source>
-        <translation>Ouvrir…</translation>
+        <translation>&amp;Aç...</translation>
     </message>
     <message>
         <location filename="../source/app/powertabeditor.cpp" line="2176"/>
         <source>&amp;Close Tab</source>
-        <translation>Fermer l&apos;onglet</translation>
+        <translation>&amp;Sekmeyi Kapa</translation>
     </message>
     <message>
         <location filename="../source/app/powertabeditor.cpp" line="2181"/>
         <source>Save</source>
-        <translation>Enregistrer</translation>
+        <translation>Kaydet</translation>
     </message>
     <message>
         <location filename="../source/app/powertabeditor.cpp" line="2187"/>
         <source>Save As...</source>
-        <translation>Enregistrer sous…</translation>
+        <translation>Farklı Kaydet...</translation>
     </message>
     <message>
         <location filename="../source/app/powertabeditor.cpp" line="2192"/>
         <source>Print...</source>
-        <translation>Imprimer…</translation>
+        <translation>Yazdır...</translation>
     </message>
     <message>
         <location filename="../source/app/powertabeditor.cpp" line="2198"/>
         <source>Print Preview...</source>
-        <translation>Aperçu avant impression…</translation>
+        <translation>Yazdırma Örneği...</translation>
     </message>
     <message>
         <location filename="../source/app/powertabeditor.cpp" line="2202"/>
         <source>Bulk Converter...</source>
-        <translation>Convertisseur en masse...</translation>
+        <translation>Toplu Çevirici...</translation>
     </message>
     <message>
         <location filename="../source/app/powertabeditor.cpp" line="2208"/>
         <source>Customize Shortcuts...</source>
-        <translation>Personnaliser les raccourcis…</translation>
+        <translation>Kısayolları Kişiselleştir...</translation>
     </message>
     <message>
         <location filename="../source/app/powertabeditor.cpp" line="2214"/>
         <source>&amp;Preferences...</source>
-        <translation>Préférences…</translation>
+        <translation>&amp;Seçenekler...</translation>
     </message>
     <message>
         <location filename="../source/app/powertabeditor.cpp" line="2220"/>
         <source>&amp;Quit</source>
-        <translation>Quitter</translation>
+        <translation>&amp;Çıkış</translation>
     </message>
     <message>
         <location filename="../source/app/powertabeditor.cpp" line="2225"/>
         <source>&amp;Undo</source>
-        <translation>Annuler</translation>
+        <translation>&amp;Geri Al</translation>
     </message>
     <message>
         <location filename="../source/app/powertabeditor.cpp" line="2228"/>
         <source>&amp;Redo</source>
-        <translation>Rétablir</translation>
+        <translation>&amp;Tekrarla</translation>
     </message>
     <message>
         <location filename="../source/app/powertabeditor.cpp" line="2232"/>
         <source>Cut</source>
-        <translation>Couper</translation>
+        <translation>Kes</translation>
     </message>
     <message>
         <location filename="../source/app/powertabeditor.cpp" line="2236"/>
         <source>Copy</source>
-        <translation>Copier</translation>
+        <translation>Kopyala</translation>
     </message>
     <message>
         <location filename="../source/app/powertabeditor.cpp" line="2241"/>
         <source>Paste</source>
-        <translation>Coller</translation>
+        <translation>Yapıştır</translation>
     </message>
     <message>
         <location filename="../source/app/powertabeditor.cpp" line="2245"/>
         <source>Polish Score</source>
-        <translation>Embellir la partition</translation>
+        <translation type="unfinished"></translation>
     </message>
     <message>
         <location filename="../source/app/powertabeditor.cpp" line="2250"/>
         <source>Polish System</source>
-        <translation>Système d&apos;embellissement</translation>
+        <translation type="unfinished"></translation>
     </message>
     <message>
         <location filename="../source/app/powertabeditor.cpp" line="2257"/>
         <source>File Information...</source>
-        <translation>Informations sur le fichier…</translation>
+        <translation>Dosya Bilgisi...</translation>
     </message>
     <message>
         <location filename="../source/app/powertabeditor.cpp" line="2275"/>
         <source>Play From Start Of Measure</source>
-        <translation>Jouer depuis le début de la mesure</translation>
+        <translation>Ölçünün Başından Çal</translation>
     </message>
     <message>
         <location filename="../source/app/powertabeditor.cpp" line="2282"/>
         <source>Stop</source>
-        <translation>Arrêter</translation>
+        <translation>Dur</translation>
     </message>
     <message>
         <location filename="../source/app/powertabeditor.cpp" line="2286"/>
         <source>Rewind</source>
-        <translation>Rembobiner</translation>
+        <translation>Geriye Sar</translation>
     </message>
     <message>
         <location filename="../source/app/powertabeditor.cpp" line="2291"/>
         <source>Metronome</source>
-        <translation>Métronome</translation>
+        <translation>Metronom</translation>
     </message>
     <message>
         <location filename="../source/app/powertabeditor.cpp" line="2299"/>
         <source>First Section</source>
-        <translation>Première section</translation>
+        <translation type="unfinished"></translation>
     </message>
     <message>
         <location filename="../source/app/powertabeditor.cpp" line="2305"/>
         <source>Next Section</source>
-        <translation>Section suivante</translation>
+        <translation type="unfinished"></translation>
     </message>
     <message>
         <location filename="../source/app/powertabeditor.cpp" line="2311"/>
         <source>Previous Section</source>
-        <translation>Section précédente</translation>
+        <translation type="unfinished"></translation>
     </message>
     <message>
         <location filename="../source/app/powertabeditor.cpp" line="2317"/>
         <source>Last Section</source>
-        <translation>Dernière section</translation>
+        <translation type="unfinished"></translation>
     </message>
     <message>
         <location filename="../source/app/powertabeditor.cpp" line="2323"/>
         <source>Insert Space</source>
-        <translation>Insérer un espace</translation>
+        <translation>Boşluk Ekle</translation>
     </message>
     <message>
         <location filename="../source/app/powertabeditor.cpp" line="2329"/>
         <source>Remove Space</source>
-        <translation>Supprimer l&apos;espace</translation>
+        <translation>Boşluğu Kaldır</translation>
     </message>
     <message>
         <location filename="../source/app/powertabeditor.cpp" line="2345"/>
         <source>Move to &amp;Start</source>
-        <translation>Aller au début</translation>
+        <translation>%Başlangıça Taşı</translation>
     </message>
     <message>
         <location filename="../source/app/powertabeditor.cpp" line="2351"/>
         <source>&amp;Next Position</source>
-        <translation>Position suivante</translation>
+        <translation>&amp;Sonraki Pozisyon</translation>
     </message>
     <message>
         <location filename="../source/app/powertabeditor.cpp" line="2357"/>
         <source>&amp;Previous Position</source>
-        <translation>Position précédente</translation>
+        <translation>&amp;Önceki Pozisyon</translation>
     </message>
     <message>
         <location filename="../source/app/powertabeditor.cpp" line="2363"/>
         <source>Next String</source>
-        <translation>Corde suivante</translation>
+        <translation>Sonraki Tel</translation>
     </message>
     <message>
         <location filename="../source/app/powertabeditor.cpp" line="2369"/>
         <source>Previous String</source>
-        <translation>Corde précédente</translation>
+        <translation>Önceki Tel</translation>
     </message>
     <message>
         <location filename="../source/app/powertabeditor.cpp" line="2375"/>
         <source>Move to &amp;End</source>
-        <translation>Aller à la fin</translation>
+        <translation>&amp;Sona Taşı</translation>
     </message>
     <message>
         <location filename="../source/app/powertabeditor.cpp" line="2381"/>
         <source>Next Staff</source>
-        <translation>Portée suivante</translation>
+        <translation type="unfinished"></translation>
     </message>
     <message>
         <location filename="../source/app/powertabeditor.cpp" line="2387"/>
         <source>Previous Staff</source>
-        <translation>Portée précédente</translation>
+        <translation type="unfinished"></translation>
     </message>
     <message>
         <location filename="../source/app/powertabeditor.cpp" line="2392"/>
         <source>Next Bar</source>
-        <translation>Barre suivante</translation>
+        <translation type="unfinished"></translation>
     </message>
     <message>
         <location filename="../source/app/powertabeditor.cpp" line="2398"/>
         <source>Previous Bar</source>
-        <translation>Barre précédente</translation>
+        <translation type="unfinished"></translation>
     </message>
     <message>
         <location filename="../source/app/powertabeditor.cpp" line="2414"/>
         <source>Remove Selected Item</source>
-        <translation>Supprimer l&apos;élément sélectionné</translation>
+        <translation type="unfinished"></translation>
     </message>
     <message>
         <location filename="../source/app/powertabeditor.cpp" line="2425"/>
         <source>Go To Barline...</source>
-        <translation>Aller à la barre de mesure…</translation>
+        <translation type="unfinished"></translation>
     </message>
     <message>
         <location filename="../source/app/powertabeditor.cpp" line="2431"/>
         <source>Go To Rehearsal Sign...</source>
-        <translation>Aller au signe de répétition…</translation>
+        <translation type="unfinished"></translation>
     </message>
     <message>
         <location filename="../source/app/powertabeditor.cpp" line="2438"/>
         <source>Chord Name...</source>
-        <translation>Nom de l&apos;accord…</translation>
+        <translation>Akor İsmi...</translation>
     </message>
     <message>
         <location filename="../source/app/powertabeditor.cpp" line="2444"/>
         <source>Text...</source>
-        <translation>Texte…</translation>
+        <translation>Yazı...</translation>
     </message>
     <message>
         <location filename="../source/app/powertabeditor.cpp" line="2452"/>
         <source>Add Chord Diagram...</source>
-        <translation>Ajouter un diagramme d&apos;accord...</translation>
+        <translation>Akor Diagramı Ekle...</translation>
     </message>
     <message>
         <location filename="../source/app/powertabeditor.cpp" line="2457"/>
         <source>Insert System At End</source>
-        <translation>Insérer un système à la fin</translation>
+        <translation>Sona Sistem Ekle</translation>
     </message>
     <message>
         <location filename="../source/app/powertabeditor.cpp" line="2463"/>
         <source>Insert System Before</source>
-        <translation>Insérer un système avant</translation>
+        <translation>Önceye Sistem Ekle</translation>
     </message>
     <message>
         <location filename="../source/app/powertabeditor.cpp" line="2470"/>
         <source>Insert System After</source>
-        <translation>Insérer un système après</translation>
+        <translation>Sonraya Sistem Ekle</translation>
     </message>
     <message>
         <location filename="../source/app/powertabeditor.cpp" line="2477"/>
         <source>Remove Current System</source>
-        <translation>Supprimer le système courant</translation>
+        <translation>Şimdiki Sistemi Kaldır</translation>
     </message>
     <message>
         <location filename="../source/app/powertabeditor.cpp" line="2485"/>
         <source>Insert Staff Before</source>
-        <translation>Insérer une portée avant</translation>
+        <translation type="unfinished"></translation>
     </message>
     <message>
         <location filename="../source/app/powertabeditor.cpp" line="2491"/>
         <source>Insert Staff After</source>
-        <translation>Insérer une portée après</translation>
+        <translation type="unfinished"></translation>
     </message>
     <message>
         <location filename="../source/app/powertabeditor.cpp" line="2497"/>
         <source>Remove Current Staff</source>
-        <translation>Supprimer la portée courante</translation>
+        <translation type="unfinished"></translation>
     </message>
     <message>
         <location filename="../source/app/powertabeditor.cpp" line="2502"/>
         <source>Increase</source>
-        <translation>Augmenter</translation>
+        <translation>Arttır</translation>
     </message>
     <message>
         <location filename="../source/app/powertabeditor.cpp" line="2509"/>
         <source>Decrease</source>
-        <translation>Diminuer</translation>
+        <translation>Azalt</translation>
     </message>
     <message>
         <location filename="../source/app/powertabeditor.cpp" line="2518"/>
         <location filename="../source/app/powertabeditor.cpp" line="2661"/>
         <source>Whole</source>
-        <translation>Ronde</translation>
+        <translation>Tam</translation>
     </message>
     <message>
         <location filename="../source/app/powertabeditor.cpp" line="2521"/>
         <location filename="../source/app/powertabeditor.cpp" line="2663"/>
         <source>Half</source>
-        <translation>Blanche</translation>
+        <translation>Yarım</translation>
     </message>
     <message>
         <location filename="../source/app/powertabeditor.cpp" line="2524"/>
         <location filename="../source/app/powertabeditor.cpp" line="2665"/>
         <source>Quarter</source>
-        <translation>Noire</translation>
+        <translation>Çeyrek</translation>
     </message>
     <message>
         <location filename="../source/app/powertabeditor.cpp" line="2527"/>
         <location filename="../source/app/powertabeditor.cpp" line="2667"/>
         <source>8th</source>
-        <translation>Croche</translation>
+        <translation>8 lik</translation>
     </message>
     <message>
         <location filename="../source/app/powertabeditor.cpp" line="2530"/>
         <location filename="../source/app/powertabeditor.cpp" line="2669"/>
         <source>16th</source>
-        <translation>Double croche</translation>
+        <translation>16 lık</translation>
     </message>
     <message>
         <location filename="../source/app/powertabeditor.cpp" line="2533"/>
         <location filename="../source/app/powertabeditor.cpp" line="2671"/>
         <source>32nd</source>
-        <translation>Triple croche</translation>
+        <translation>32 lik</translation>
     </message>
     <message>
         <location filename="../source/app/powertabeditor.cpp" line="2537"/>
         <location filename="../source/app/powertabeditor.cpp" line="2674"/>
         <source>64th</source>
-        <translation>Quadruple croche</translation>
+        <translation>64 lük</translation>
     </message>
     <message>
         <location filename="../source/app/powertabeditor.cpp" line="2542"/>
         <source>Increase Duration</source>
-        <translation>Augmenter la durée</translation>
+        <translation>Süreyi Arttır</translation>
     </message>
     <message>
         <location filename="../source/app/powertabeditor.cpp" line="2549"/>
         <source>Decrease Duration</source>
-        <translation>Diminuer la durée</translation>
+        <translation>Süreyi Azalt</translation>
     </message>
     <message>
         <location filename="../source/app/powertabeditor.cpp" line="2556"/>
         <source>Dotted</source>
-        <translation>Pointée</translation>
+        <translation>Noktalı</translation>
     </message>
     <message>
         <location filename="../source/app/powertabeditor.cpp" line="2560"/>
         <source>Double Dotted</source>
-        <translation>Pointée double</translation>
+        <translation>Çift Noktalı</translation>
     </message>
     <message>
         <location filename="../source/app/powertabeditor.cpp" line="2565"/>
         <source>Add Dot</source>
-        <translation>Ajouter un point</translation>
+        <translation>Nokta Ekle</translation>
     </message>
     <message>
         <location filename="../source/app/powertabeditor.cpp" line="2569"/>
         <source>Remove Dot</source>
-        <translation>Supprimer un point</translation>
+        <translation>Noktayı Kaldır</translation>
     </message>
     <message>
         <location filename="../source/app/powertabeditor.cpp" line="2573"/>
         <source>Left Hand Fingering...</source>
-        <translation>Doigté main gauche…</translation>
+        <translation type="unfinished"></translation>
     </message>
     <message>
         <location filename="../source/app/powertabeditor.cpp" line="2582"/>
         <source>Shift String Up</source>
-        <translation>Décaler sur la corde supérieure</translation>
+        <translation>Teli Yukarı Kaydır</translation>
     </message>
     <message>
         <location filename="../source/app/powertabeditor.cpp" line="2588"/>
         <source>Shift String Down</source>
-        <translation>Décaler sur la corde inférieure</translation>
+        <translation>Teli Aşşağı Kaydır</translation>
     </message>
     <message>
         <location filename="../source/app/powertabeditor.cpp" line="2593"/>
         <location filename="../source/app/powertabeditor.cpp" line="3885"/>
         <source>Tied</source>
-        <translation>Liée</translation>
+        <translation>Bağlı</translation>
     </message>
     <message>
         <location filename="../source/app/powertabeditor.cpp" line="2598"/>
         <source>Muted</source>
-        <translation>Muette</translation>
+        <translation>Susturulmuş</translation>
     </message>
     <message>
         <location filename="../source/app/powertabeditor.cpp" line="2601"/>
         <source>Ghost Note</source>
-        <translation>Note fantôme</translation>
+        <translation>Hayalet Nota</translation>
     </message>
     <message>
         <location filename="../source/app/powertabeditor.cpp" line="2605"/>
         <source>Fermata</source>
-        <translation>Point d&apos;orgue</translation>
+        <translation type="unfinished"></translation>
     </message>
     <message>
         <location filename="../source/app/powertabeditor.cpp" line="2609"/>
         <source>Let Ring</source>
-        <translation>Laisser sonner</translation>
+        <translation type="unfinished"></translation>
     </message>
     <message>
         <location filename="../source/app/powertabeditor.cpp" line="2613"/>
         <source>Grace Note</source>
-        <translation>Appoggiature</translation>
+        <translation type="unfinished"></translation>
     </message>
     <message>
         <location filename="../source/app/powertabeditor.cpp" line="2618"/>
         <source>Staccato</source>
-        <translation>Staccato</translation>
+        <translation type="unfinished"></translation>
     </message>
     <message>
         <location filename="../source/app/powertabeditor.cpp" line="2622"/>
         <source>Accent</source>
-        <translation>Accent</translation>
+        <translation type="unfinished"></translation>
     </message>
     <message>
         <location filename="../source/app/powertabeditor.cpp" line="2626"/>
         <source>Heavy Accent</source>
-        <translation>Accent fort</translation>
+        <translation type="unfinished"></translation>
     </message>
     <message>
         <location filename="../source/app/powertabeditor.cpp" line="2632"/>
         <source>8va</source>
-        <translation>8va</translation>
+        <translation type="unfinished"></translation>
     </message>
     <message>
         <location filename="../source/app/powertabeditor.cpp" line="2635"/>
         <source>15ma</source>
-        <translation>15ma</translation>
+        <translation type="unfinished"></translation>
     </message>
     <message>
         <location filename="../source/app/powertabeditor.cpp" line="2638"/>
         <source>8vb</source>
-        <translation>8vb</translation>
+        <translation type="unfinished"></translation>
     </message>
     <message>
         <location filename="../source/app/powertabeditor.cpp" line="2641"/>
         <source>15mb</source>
-        <translation>15mb</translation>
+        <translation type="unfinished"></translation>
     </message>
     <message>
         <location filename="../source/app/powertabeditor.cpp" line="2645"/>
         <source>Triplet</source>
-        <translation>Triolet</translation>
+        <translation>Üçleme</translation>
     </message>
     <message>
         <location filename="../source/app/powertabeditor.cpp" line="2652"/>
         <source>Irregular Grouping</source>
-        <translation>Groupe irrégulier</translation>
+        <translation>Düzensiz Guruplama</translation>
     </message>
     <message>
         <location filename="../source/app/powertabeditor.cpp" line="2678"/>
         <source>Add Rest</source>
-        <translation>Ajouter un silence</translation>
+        <translation>Sus Ekle</translation>
     </message>
     <message>
         <location filename="../source/app/powertabeditor.cpp" line="2684"/>
         <source>Multi-Bar Rest...</source>
-        <translation>Silence multi-mesures…</translation>
+        <translation type="unfinished"></translation>
     </message>
     <message>
         <location filename="../source/app/powertabeditor.cpp" line="2692"/>
         <source>Rehearsal Sign...</source>
-        <translation>Signe de répétition…</translation>
+        <translation>Prova İşareti...</translation>
     </message>
     <message>
         <location filename="../source/app/powertabeditor.cpp" line="2699"/>
         <source>Tempo Marker...</source>
-        <translation>Marqueur de tempo…</translation>
+        <translation>Tempo İşareti...</translation>
     </message>
     <message>
         <location filename="../source/app/powertabeditor.cpp" line="2706"/>
         <source>Alteration of Pace...</source>
-        <translation>Variation de nuance...</translation>
+        <translation>Tempo Değişimi...</translation>
     </message>
     <message>
         <location filename="../source/app/powertabeditor.cpp" line="2712"/>
         <source>Edit Key Signature...</source>
-        <translation>Modifier l&apos;armure...</translation>
+        <translation>Anahtar İşaretini Düzenle...</translation>
     </message>
     <message>
         <location filename="../source/app/powertabeditor.cpp" line="2719"/>
         <source>Edit Time Signature...</source>
-        <translation>Modifier la signature rythmique...</translation>
+        <translation>Zaman İşaretini Düzenle...</translation>
     </message>
     <message>
         <location filename="../source/app/powertabeditor.cpp" line="2726"/>
         <source>Insert Standard Barline</source>
-        <translation>Insérer une barre de mesure standard</translation>
+        <translation type="unfinished"></translation>
     </message>
     <message>
         <location filename="../source/app/powertabeditor.cpp" line="2733"/>
         <source>Barline...</source>
-        <translation>Barre de mesure…</translation>
+        <translation type="unfinished"></translation>
     </message>
     <message>
         <location filename="../source/app/powertabeditor.cpp" line="2739"/>
         <source>Musical Direction...</source>
-        <translation>Direction musicale…</translation>
+        <translation type="unfinished"></translation>
     </message>
     <message>
         <location filename="../source/app/powertabeditor.cpp" line="2747"/>
         <source>Repeat Ending...</source>
-        <translation>Boucle de fin…</translation>
+        <translation type="unfinished"></translation>
     </message>
     <message>
         <location filename="../source/app/powertabeditor.cpp" line="2755"/>
         <source>Dynamic...</source>
-        <translation>Nuance…</translation>
+        <translation>Dinamik...</translation>
     </message>
     <message>
         <location filename="../source/app/powertabeditor.cpp" line="2762"/>
@@ -2853,337 +2801,333 @@
         <location filename="../source/app/powertabeditor.cpp" line="2780"/>
         <location filename="../source/app/powertabeditor.cpp" line="2783"/>
         <source>Dynamics</source>
-        <translation>Nuances</translation>
+        <translation>Dinamikler</translation>
     </message>
     <message>
         <location filename="../source/app/powertabeditor.cpp" line="2788"/>
         <source>Volume Swell...</source>
-        <translation>Variation de volume...</translation>
+        <translation type="unfinished"></translation>
     </message>
     <message>
         <location filename="../source/app/powertabeditor.cpp" line="2795"/>
         <source>Hammer On/Pull Off</source>
-        <translation>Hammer On/Pull Off</translation>
+        <translation type="unfinished"></translation>
     </message>
     <message>
         <location filename="../source/app/powertabeditor.cpp" line="2803"/>
         <source>Hammer On From Nowhere</source>
-        <translation>Hammer-on de nulle part</translation>
+        <translation type="unfinished"></translation>
     </message>
     <message>
         <location filename="../source/app/powertabeditor.cpp" line="2808"/>
         <source>Pull Off To Nowhere</source>
-        <translation>Pull-off de nulle part</translation>
+        <translation type="unfinished"></translation>
     </message>
     <message>
         <location filename="../source/app/powertabeditor.cpp" line="2812"/>
         <source>Natural Harmonic</source>
-        <translation>Harmonique naturel</translation>
+        <translation type="unfinished">Doğal Harmonik</translation>
     </message>
     <message>
         <location filename="../source/app/powertabeditor.cpp" line="2817"/>
         <source>Artificial Harmonic...</source>
-        <translation>Harmonique artificiel…</translation>
+        <translation type="unfinished">Yapay Harmonik...</translation>
     </message>
     <message>
         <location filename="../source/app/powertabeditor.cpp" line="2824"/>
         <source>Tapped Harmonic...</source>
-        <translation>Harmonique tapé...</translation>
+        <translation type="unfinished"></translation>
     </message>
     <message>
         <location filename="../source/app/powertabeditor.cpp" line="2833"/>
         <source>Bend...</source>
-        <translation>Bend…</translation>
+        <translation>Bükme...</translation>
     </message>
     <message>
         <location filename="../source/app/powertabeditor.cpp" line="2840"/>
         <source>Tremolo Bar...</source>
-        <translation>Mesure de trémolo…</translation>
+        <translation type="unfinished"></translation>
     </message>
     <message>
         <location filename="../source/app/powertabeditor.cpp" line="2846"/>
         <source>Vibrato</source>
-        <translation>Vibrato</translation>
+        <translation type="unfinished"></translation>
     </message>
     <message>
         <location filename="../source/app/powertabeditor.cpp" line="2851"/>
         <source>Wide Vibrato</source>
-        <translation>Vibrato large</translation>
+        <translation type="unfinished"></translation>
     </message>
     <message>
         <location filename="../source/app/powertabeditor.cpp" line="2856"/>
         <source>Palm Mute</source>
-        <translation>Palm mute</translation>
+        <translation>Avuçla Susturma</translation>
     </message>
     <message>
         <location filename="../source/app/powertabeditor.cpp" line="2860"/>
         <source>Tremolo Picking</source>
-        <translation>Picking trémolo</translation>
+        <translation type="unfinished"></translation>
     </message>
     <message>
         <location filename="../source/app/powertabeditor.cpp" line="2864"/>
         <source>Arpeggio Up</source>
-        <translation>Arpège ascendant</translation>
+        <translation>Yukarı Arpej</translation>
     </message>
     <message>
         <location filename="../source/app/powertabeditor.cpp" line="2869"/>
         <source>Arpeggio Down</source>
-        <translation>Arpège descendant</translation>
+        <translation>Aşşağı Arpej</translation>
     </message>
     <message>
         <location filename="../source/app/powertabeditor.cpp" line="2874"/>
         <source>Tap</source>
-        <translation>Taper</translation>
+        <translation type="unfinished"></translation>
     </message>
     <message>
         <location filename="../source/app/powertabeditor.cpp" line="2878"/>
         <source>Trill...</source>
-        <translation>Trille…</translation>
+        <translation type="unfinished"></translation>
     </message>
     <message>
         <location filename="../source/app/powertabeditor.cpp" line="2884"/>
         <source>Pickstroke Up</source>
-        <translation>Jouer vers le haut</translation>
+        <translation>Yukarı Pena Vuruşu</translation>
     </message>
     <message>
         <location filename="../source/app/powertabeditor.cpp" line="2889"/>
         <source>Pickstroke Down</source>
-        <translation>Jouer vers le bas</translation>
+        <translation>Aşşağı Pena Vuruşu</translation>
     </message>
     <message>
         <location filename="../source/app/powertabeditor.cpp" line="2895"/>
         <source>Slide Into From Above</source>
-        <translation>Glissé d&apos;entrée par le haut</translation>
+        <translation type="unfinished"></translation>
     </message>
     <message>
         <location filename="../source/app/powertabeditor.cpp" line="2900"/>
         <source>Slide Into From Below</source>
-        <translation>Glissé d&apos;entrée par le bas</translation>
+        <translation type="unfinished"></translation>
     </message>
     <message>
         <location filename="../source/app/powertabeditor.cpp" line="2905"/>
         <source>Shift Slide</source>
-        <translation>Glissé</translation>
+        <translation type="unfinished"></translation>
     </message>
     <message>
         <location filename="../source/app/powertabeditor.cpp" line="2909"/>
         <source>Legato Slide</source>
-        <translation>Glissé avec liaison</translation>
+        <translation type="unfinished"></translation>
     </message>
     <message>
         <location filename="../source/app/powertabeditor.cpp" line="2915"/>
         <source>Slide Out Of Downwards</source>
-        <translation>Glissé de sortie vers le bas</translation>
+        <translation type="unfinished"></translation>
     </message>
     <message>
         <location filename="../source/app/powertabeditor.cpp" line="2920"/>
         <source>Slide Out Of Upwards</source>
-        <translation>Glissé de sortie vers le haut</translation>
+        <translation type="unfinished"></translation>
     </message>
     <message>
         <location filename="../source/app/powertabeditor.cpp" line="2927"/>
         <source>Add Player</source>
-        <translation>Ajouter un musicien</translation>
+        <translation type="unfinished">Çalıcı Ekle</translation>
     </message>
     <message>
         <location filename="../source/app/powertabeditor.cpp" line="2932"/>
         <source>Add Instrument</source>
-        <translation>Ajouter un instrument</translation>
+        <translation>Enstrüman Ekle</translation>
     </message>
     <message>
         <location filename="../source/app/powertabeditor.cpp" line="2936"/>
         <source>Player Change...</source>
-        <translation>Changement de musicien…</translation>
+        <translation type="unfinished">Çalıcıyı Değiştir...</translation>
     </message>
     <message>
         <location filename="../source/app/powertabeditor.cpp" line="2943"/>
         <source>Tuning Dictionary...</source>
-        <translation>Dictionnaire de tonalités…</translation>
+        <translation>Akort Sözlüğü...</translation>
     </message>
     <message>
         <location filename="../source/app/powertabeditor.cpp" line="2950"/>
         <source>Edit View Filters...</source>
-        <translation>Éditer les filtres...</translation>
+        <translation>Görsel Filtreleri Düzenle...</translation>
     </message>
     <message>
         <location filename="../source/app/powertabeditor.cpp" line="2967"/>
         <source>Next Tab</source>
-        <translation>Tablature suivante</translation>
+        <translation>Sonraki Sekme</translation>
     </message>
     <message>
         <location filename="../source/app/powertabeditor.cpp" line="2973"/>
         <source>Previous Tab</source>
-        <translation>Tablature précédente</translation>
+        <translation>Önceki Sekme</translation>
     </message>
     <message>
         <location filename="../source/app/powertabeditor.cpp" line="2987"/>
         <source>Zoom In</source>
-        <translation>Zoomer</translation>
+        <translation>Yakınlaştır</translation>
     </message>
     <message>
         <location filename="../source/app/powertabeditor.cpp" line="2992"/>
         <source>Zoom Out</source>
-        <translation>Dézoomer</translation>
+        <translation>Uzaklaştır</translation>
     </message>
     <message>
         <location filename="../source/app/powertabeditor.cpp" line="2998"/>
         <source>Report Bug...</source>
-        <translation>Signaler un problème…</translation>
+        <translation>Hata Bildir...</translation>
     </message>
     <message>
         <location filename="../source/app/powertabeditor.cpp" line="3004"/>
         <source>Translate This Application...</source>
-        <translation>Traduire cette application...</translation>
+        <translation>Bu Uygulamayı Tercüme Et...</translation>
     </message>
     <message>
         <location filename="../source/app/powertabeditor.cpp" line="3010"/>
         <source>Application Info...</source>
-        <translation>Informations sur l&apos;application...</translation>
-    </message>
-    <message>
-        <source>App Info</source>
-        <translation type="vanished">Informations sur l&apos;application</translation>
+        <translation>Uygulama Bilgisi...</translation>
     </message>
     <message>
         <location filename="../source/app/powertabeditor.cpp" line="3054"/>
         <source>Mixer</source>
-        <translation>Mélangeur</translation>
+        <translation>Karıştırıcı</translation>
     </message>
     <message>
         <location filename="../source/app/powertabeditor.cpp" line="3079"/>
         <source>Instruments</source>
-        <translation>Instruments</translation>
+        <translation>Enstrümanlar</translation>
     </message>
     <message>
         <location filename="../source/app/powertabeditor.cpp" line="3182"/>
         <source>&amp;File</source>
-        <translation>Fichier</translation>
+        <translation>&amp;Dosya</translation>
     </message>
     <message>
         <location filename="../source/app/powertabeditor.cpp" line="3193"/>
         <source>Recent Files</source>
-        <translation>Fichiers récents</translation>
+        <translation>Son Dosyalar</translation>
     </message>
     <message>
         <location filename="../source/app/powertabeditor.cpp" line="3203"/>
         <source>&amp;Edit</source>
-        <translation>Édition</translation>
+        <translation>&amp;Düzenle</translation>
     </message>
     <message>
         <location filename="../source/app/powertabeditor.cpp" line="3219"/>
         <source>Play&amp;back</source>
-        <translation>Lecture</translation>
+        <translation>Oy&amp;nat</translation>
     </message>
     <message>
         <location filename="../source/app/powertabeditor.cpp" line="3227"/>
         <source>&amp;Position</source>
-        <translation>Position</translation>
+        <translation>&amp;Pozisyon</translation>
     </message>
     <message>
         <location filename="../source/app/powertabeditor.cpp" line="3228"/>
         <location filename="../source/app/powertabeditor.cpp" line="3264"/>
         <source>&amp;Section</source>
-        <translation>Section</translation>
+        <translation>&amp;Bölüm</translation>
     </message>
     <message>
         <location filename="../source/app/powertabeditor.cpp" line="3234"/>
         <source>&amp;Staff</source>
-        <translation>Portée</translation>
+        <translation type="unfinished"></translation>
     </message>
     <message>
         <location filename="../source/app/powertabeditor.cpp" line="3257"/>
         <source>&amp;Text</source>
-        <translation>Texte</translation>
+        <translation>&amp;Yazı</translation>
     </message>
     <message>
         <location filename="../source/app/powertabeditor.cpp" line="3274"/>
         <source>&amp;Line Spacing</source>
-        <translation>Interligne</translation>
+        <translation>&amp;Çizgi Boşluğu</translation>
     </message>
     <message>
         <location filename="../source/app/powertabeditor.cpp" line="3279"/>
         <source>&amp;Notes</source>
-        <translation>Notes</translation>
+        <translation>&amp;Notalar</translation>
     </message>
     <message>
         <location filename="../source/app/powertabeditor.cpp" line="3313"/>
         <source>Octave</source>
-        <translation>Octave</translation>
+        <translation>Oktav</translation>
     </message>
     <message>
         <location filename="../source/app/powertabeditor.cpp" line="3323"/>
         <source>Rests</source>
-        <translation>Silences</translation>
+        <translation>Suslar</translation>
     </message>
     <message>
         <location filename="../source/app/powertabeditor.cpp" line="3336"/>
         <source>&amp;Music Symbols</source>
-        <translation>Symboles musicaux</translation>
+        <translation>&amp;Müzik Sembolleri</translation>
     </message>
     <message>
         <location filename="../source/app/powertabeditor.cpp" line="3350"/>
         <source>&amp;Tab Symbols</source>
-        <translation>Symboles de tablature</translation>
+        <translation>&amp;Tab Sembolleri</translation>
     </message>
     <message>
         <location filename="../source/app/powertabeditor.cpp" line="3351"/>
         <source>&amp;Hammer Ons/Pull Offs</source>
-        <translation>Hammer Ons/Pull Offs</translation>
+        <translation type="unfinished"></translation>
     </message>
     <message>
         <location filename="../source/app/powertabeditor.cpp" line="3365"/>
         <source>Slide Into</source>
-        <translation>Glissé d&apos;entrée</translation>
+        <translation type="unfinished"></translation>
     </message>
     <message>
         <location filename="../source/app/powertabeditor.cpp" line="3372"/>
         <source>Slide Out Of</source>
-        <translation>Glissé de sortie</translation>
+        <translation type="unfinished"></translation>
     </message>
     <message>
         <location filename="../source/app/powertabeditor.cpp" line="3392"/>
         <source>&amp;Player</source>
-        <translation>Musicien</translation>
+        <translation type="unfinished">&amp;Çalıcı</translation>
     </message>
     <message>
         <location filename="../source/app/powertabeditor.cpp" line="3401"/>
         <source>&amp;Window</source>
-        <translation>Fenêtre</translation>
+        <translation>&amp;Pencere</translation>
     </message>
     <message>
         <location filename="../source/app/powertabeditor.cpp" line="3412"/>
         <source>&amp;Help</source>
-        <translation>Aide</translation>
+        <translation>&amp;Yardım</translation>
     </message>
     <message>
         <location filename="../source/app/powertabeditor.cpp" line="3891"/>
         <source>Insert Tied Note</source>
-        <translation>Insérer une note liée</translation>
+        <translation>Bağlı Nota Ekle</translation>
     </message>
     <message>
         <location filename="../source/app/powertabeditor.cpp" line="3986"/>
         <source>Edit Barline</source>
-        <translation>Modifier la barre de mesure</translation>
+        <translation type="unfinished"></translation>
     </message>
     <message>
         <location filename="../source/app/powertabeditor.cpp" line="3991"/>
         <source>Insert Barline</source>
-        <translation>Insérer une barre de mesure</translation>
+        <translation type="unfinished"></translation>
     </message>
     <message>
         <location filename="../source/app/powertabeditor.cpp" line="3997"/>
         <source>Barline</source>
-        <translation>Barre de mesure</translation>
+        <translation type="unfinished"></translation>
     </message>
     <message>
         <location filename="../source/build/main.cpp" line="201"/>
         <source>A guitar tablature editor.</source>
-        <translation>Un éditeur de tablatures de guitare.</translation>
+        <translation type="unfinished">Bir gitar tablature düzenleyici.</translation>
     </message>
     <message>
         <location filename="../source/build/main.cpp" line="207"/>
         <source>The files to be opened</source>
-        <translation>Les fichiers à ouvrir</translation>
+        <translation>Açılacak dosyalar</translation>
     </message>
 </context>
 <context>
@@ -3192,49 +3136,49 @@
         <location filename="../source/dialogs/preferencesdialog.ui" line="17"/>
         <location filename="../build/source/dialogs/ui_preferencesdialog.h" line="359"/>
         <source>Preferences</source>
-        <translation>Préférences</translation>
+        <translation>Tercihler</translation>
     </message>
     <message>
         <location filename="../source/dialogs/preferencesdialog.ui" line="33"/>
         <location filename="../build/source/dialogs/ui_preferencesdialog.h" line="374"/>
         <source>MIDI</source>
-        <translation>MIDI</translation>
+        <translation>Midi</translation>
     </message>
     <message>
         <location filename="../source/dialogs/preferencesdialog.ui" line="39"/>
         <location filename="../build/source/dialogs/ui_preferencesdialog.h" line="360"/>
         <source>Playback</source>
-        <translation>Lecture</translation>
+        <translation>Oynatma</translation>
     </message>
     <message>
         <location filename="../source/dialogs/preferencesdialog.ui" line="50"/>
         <location filename="../build/source/dialogs/ui_preferencesdialog.h" line="361"/>
         <source>MIDI Output Device:</source>
-        <translation>Périphérique de sortie MIDI :</translation>
+        <translation>Midi Çıkış Aygıtı:</translation>
     </message>
     <message>
         <location filename="../source/dialogs/preferencesdialog.ui" line="60"/>
         <location filename="../build/source/dialogs/ui_preferencesdialog.h" line="362"/>
         <source>Vibrato Strength:</source>
-        <translation>Force du vibrato :</translation>
+        <translation>Titreşim Şiddeti:</translation>
     </message>
     <message>
         <location filename="../source/dialogs/preferencesdialog.ui" line="76"/>
         <location filename="../build/source/dialogs/ui_preferencesdialog.h" line="363"/>
         <source>Wide Vibrato Strength:</source>
-        <translation>Force du vibrato large :</translation>
+        <translation>Geniş Titreşim Şiddeti:</translation>
     </message>
     <message>
         <location filename="../source/dialogs/preferencesdialog.ui" line="86"/>
         <location filename="../build/source/dialogs/ui_preferencesdialog.h" line="364"/>
         <source>Play Notes While Editing</source>
-        <translation>Jouer les notes pendant l&apos;édition</translation>
+        <translation>Düzenlerken Notaları Çalmaya Devam Et</translation>
     </message>
     <message>
         <location filename="../source/dialogs/preferencesdialog.ui" line="101"/>
         <location filename="../build/source/dialogs/ui_preferencesdialog.h" line="365"/>
         <source>Metronome</source>
-        <translation>Métronome</translation>
+        <translation>Metronom</translation>
     </message>
     <message>
         <location filename="../source/dialogs/preferencesdialog.ui" line="112"/>
@@ -3242,7 +3186,7 @@
         <location filename="../build/source/dialogs/ui_preferencesdialog.h" line="366"/>
         <location filename="../build/source/dialogs/ui_preferencesdialog.h" line="371"/>
         <source>Enabled:</source>
-        <translation>Activé :</translation>
+        <translation>Etkin:</translation>
     </message>
     <message>
         <location filename="../source/dialogs/preferencesdialog.ui" line="122"/>
@@ -3252,102 +3196,102 @@
         <location filename="../build/source/dialogs/ui_preferencesdialog.h" line="372"/>
         <location filename="../build/source/dialogs/ui_preferencesdialog.h" line="384"/>
         <source>Preset:</source>
-        <translation>Préréglage :</translation>
+        <translation type="unfinished"></translation>
     </message>
     <message>
         <location filename="../source/dialogs/preferencesdialog.ui" line="138"/>
         <location filename="../build/source/dialogs/ui_preferencesdialog.h" line="368"/>
         <source>Strong Accent Volume:</source>
-        <translation>Volume de l&apos;accent fort :</translation>
+        <translation type="unfinished"></translation>
     </message>
     <message>
         <location filename="../source/dialogs/preferencesdialog.ui" line="148"/>
         <location filename="../build/source/dialogs/ui_preferencesdialog.h" line="369"/>
         <source>Weak Accent Volume:</source>
-        <translation>Volume de l&apos;accent faible :</translation>
+        <translation type="unfinished"></translation>
     </message>
     <message>
         <location filename="../source/dialogs/preferencesdialog.ui" line="163"/>
         <location filename="../build/source/dialogs/ui_preferencesdialog.h" line="370"/>
         <source>Count-In Before Playback</source>
-        <translation>Départ avant la lecture</translation>
+        <translation type="unfinished"></translation>
     </message>
     <message>
         <location filename="../source/dialogs/preferencesdialog.ui" line="200"/>
         <location filename="../build/source/dialogs/ui_preferencesdialog.h" line="373"/>
         <source>Volume:</source>
-        <translation>Volume :</translation>
+        <translation>Ses Seviyesi:</translation>
     </message>
     <message>
         <location filename="../source/dialogs/preferencesdialog.ui" line="216"/>
         <location filename="../build/source/dialogs/ui_preferencesdialog.h" line="382"/>
         <source>General</source>
-        <translation>Général</translation>
+        <translation>Genel</translation>
     </message>
     <message>
         <location filename="../source/dialogs/preferencesdialog.ui" line="222"/>
         <location filename="../build/source/dialogs/ui_preferencesdialog.h" line="375"/>
         <source>Interface</source>
-        <translation>Interface</translation>
+        <translation>Arayüz</translation>
     </message>
     <message>
         <location filename="../source/dialogs/preferencesdialog.ui" line="236"/>
         <location filename="../build/source/dialogs/ui_preferencesdialog.h" line="376"/>
         <source>Open Files in New Window:</source>
-        <translation>Ouvrir les fichiers dans une nouvelle fenêtre :</translation>
+        <translation>Dosyaları Yeni Pencerede Aç:</translation>
     </message>
     <message>
         <location filename="../source/dialogs/preferencesdialog.ui" line="246"/>
         <location filename="../build/source/dialogs/ui_preferencesdialog.h" line="377"/>
         <source>Score Theme:</source>
-        <translation>Thème de la partition :</translation>
+        <translation type="unfinished"></translation>
     </message>
     <message>
         <location filename="../source/dialogs/preferencesdialog.ui" line="260"/>
         <location filename="../build/source/dialogs/ui_preferencesdialog.h" line="378"/>
         <source>System Default</source>
-        <translation>Système</translation>
+        <translation>Sistem Varsayılanları</translation>
     </message>
     <message>
         <location filename="../source/dialogs/preferencesdialog.ui" line="265"/>
         <location filename="../build/source/dialogs/ui_preferencesdialog.h" line="379"/>
         <source>Light</source>
-        <translation>Clair</translation>
+        <translation>Açık</translation>
     </message>
     <message>
         <location filename="../source/dialogs/preferencesdialog.ui" line="270"/>
         <location filename="../build/source/dialogs/ui_preferencesdialog.h" line="380"/>
         <source>Dark</source>
-        <translation>Sombre</translation>
+        <translation>Koyu</translation>
     </message>
     <message>
         <location filename="../source/dialogs/preferencesdialog.ui" line="284"/>
         <location filename="../build/source/dialogs/ui_preferencesdialog.h" line="387"/>
         <source>Default Instrument</source>
-        <translation>Instrument par défaut</translation>
+        <translation>Varsayılan Enstüman</translation>
     </message>
     <message>
         <location filename="../source/dialogs/preferencesdialog.ui" line="299"/>
         <location filename="../build/source/dialogs/ui_preferencesdialog.h" line="383"/>
         <source>Name:</source>
-        <translation>Nom :</translation>
+        <translation>İsim:</translation>
     </message>
     <message>
         <location filename="../source/dialogs/preferencesdialog.ui" line="319"/>
         <location filename="../build/source/dialogs/ui_preferencesdialog.h" line="385"/>
         <source>Tuning:</source>
-        <translation>Tonalité :</translation>
+        <translation>Akort:</translation>
     </message>
     <message>
         <location filename="../source/dialogs/preferencesdialog.ui" line="326"/>
         <location filename="../build/source/dialogs/ui_preferencesdialog.h" line="386"/>
         <source>Tuning</source>
-        <translation>Tonalité</translation>
+        <translation>Akort</translation>
     </message>
     <message>
         <location filename="../source/dialogs/preferencesdialog.cpp" line="139"/>
         <source>Click to adjust tuning.</source>
-        <translation>Cliquez pour ajuster la tonalité.</translation>
+        <translation>Akortlamak için tılayın.</translation>
     </message>
 </context>
 <context>
@@ -3355,7 +3299,7 @@
     <message>
         <location filename="../source/app/recentfiles.cpp" line="96"/>
         <source>Clear Recent Files</source>
-        <translation>Effacer les fichiers récents</translation>
+        <translation>Son Kullanılan Dosyaları Temizle</translation>
     </message>
 </context>
 <context>
@@ -3365,18 +3309,18 @@
         <location filename="../build/source/dialogs/ui_rehearsalsigndialog.h" line="73"/>
         <location filename="../source/dialogs/rehearsalsigndialog.cpp" line="67"/>
         <source>Rehearsal Sign</source>
-        <translation>Signe de répétition</translation>
+        <translation>Prova İşareti</translation>
     </message>
     <message>
         <location filename="../source/dialogs/rehearsalsigndialog.ui" line="31"/>
         <location filename="../build/source/dialogs/ui_rehearsalsigndialog.h" line="74"/>
         <source>Description:</source>
-        <translation>Description :</translation>
+        <translation>Tanım:</translation>
     </message>
     <message>
         <location filename="../source/dialogs/rehearsalsigndialog.cpp" line="68"/>
         <source>The Rehearsal Sign description cannot be empty.</source>
-        <translation>La description des signes de répétition ne peut pas être vide.</translation>
+        <translation>Prova İşareti tanımı boş bırakılamaz.</translation>
     </message>
 </context>
 <context>
@@ -3384,7 +3328,7 @@
     <message>
         <location filename="../source/actions/removealternateending.cpp" line="24"/>
         <source>Remove Repeat Ending</source>
-        <translation>Supprimer la boucle de fin</translation>
+        <translation type="unfinished"></translation>
     </message>
 </context>
 <context>
@@ -3392,7 +3336,7 @@
     <message>
         <location filename="../source/actions/removespecialnoteproperty.h" line="95"/>
         <source>Remove Artificial Harmonic</source>
-        <translation>Supprimer l&apos;harmonique artificiel</translation>
+        <translation>Yapay Harmoniği Kaldır</translation>
     </message>
 </context>
 <context>
@@ -3400,7 +3344,7 @@
     <message>
         <location filename="../source/actions/removebarline.cpp" line="24"/>
         <source>Remove Barline</source>
-        <translation>Supprimer la barre de mesure</translation>
+        <translation type="unfinished"></translation>
     </message>
 </context>
 <context>
@@ -3408,7 +3352,7 @@
     <message>
         <location filename="../source/actions/removespecialnoteproperty.h" line="107"/>
         <source>Remove Bend</source>
-        <translation>Supprimer le bend</translation>
+        <translation>Bükmeyi Kaldır</translation>
     </message>
 </context>
 <context>
@@ -3416,7 +3360,7 @@
     <message>
         <location filename="../source/actions/chorddiagram.cpp" line="44"/>
         <source>Remove Chord Diagram</source>
-        <translation>Supprimer le diagramme d&apos;accord</translation>
+        <translation>Akor Diyagramını Kaldır</translation>
     </message>
 </context>
 <context>
@@ -3424,7 +3368,7 @@
     <message>
         <location filename="../source/actions/removechordtext.cpp" line="24"/>
         <source>Remove Chord Text</source>
-        <translation>Supprimer le texte d&apos;accord</translation>
+        <translation>Akor Yazısını Kaldır</translation>
     </message>
 </context>
 <context>
@@ -3432,7 +3376,7 @@
     <message>
         <location filename="../source/actions/removedirection.cpp" line="24"/>
         <source>Remove Musical Direction</source>
-        <translation>Supprimer la direction musicale</translation>
+        <translation type="unfinished"></translation>
     </message>
 </context>
 <context>
@@ -3440,7 +3384,7 @@
     <message>
         <location filename="../source/actions/removedynamic.cpp" line="24"/>
         <source>Remove Dynamic</source>
-        <translation>Supprimer la nuance</translation>
+        <translation type="unfinished">Dinamiği Kaldır</translation>
     </message>
 </context>
 <context>
@@ -3448,7 +3392,7 @@
     <message>
         <location filename="../source/actions/removeinstrument.cpp" line="23"/>
         <source>Remove Instrument</source>
-        <translation>Supprimer l&apos;instrument</translation>
+        <translation>Enstrümanı Kaldır</translation>
     </message>
 </context>
 <context>
@@ -3456,7 +3400,7 @@
     <message>
         <location filename="../source/actions/removeirregulargrouping.cpp" line="24"/>
         <source>Remove Irregular Grouping</source>
-        <translation>Supprimer le groupe irrégulier</translation>
+        <translation>Düzensiz Guruplandırmayı Kaldır</translation>
     </message>
 </context>
 <context>
@@ -3464,7 +3408,7 @@
     <message>
         <location filename="../source/actions/removespecialnoteproperty.h" line="120"/>
         <source>Remove Left Hand Fingering</source>
-        <translation>Supprimer le doigté main gauche</translation>
+        <translation type="unfinished">Sol Elle Çalmayı Kaldır</translation>
     </message>
 </context>
 <context>
@@ -3472,7 +3416,7 @@
     <message>
         <location filename="../source/actions/removenote.cpp" line="23"/>
         <source>Clear Note</source>
-        <translation>Effacer la note</translation>
+        <translation>Notayı Sil</translation>
     </message>
 </context>
 <context>
@@ -3480,7 +3424,7 @@
     <message>
         <location filename="../source/actions/removenoteproperty.cpp" line="23"/>
         <source>Remove %1</source>
-        <translation>Supprimer %1</translation>
+        <translation>Kaldır %1</translation>
     </message>
 </context>
 <context>
@@ -3488,7 +3432,7 @@
     <message>
         <location filename="../source/actions/removeplayer.cpp" line="23"/>
         <source>Remove Player</source>
-        <translation>Supprimer le musicien</translation>
+        <translation type="unfinished">Çalıcıyı Kaldır</translation>
     </message>
 </context>
 <context>
@@ -3496,7 +3440,7 @@
     <message>
         <location filename="../source/actions/editplayerchange.cpp" line="45"/>
         <source>Remove Player Change</source>
-        <translation>Supprimer le changement de musicien</translation>
+        <translation type="unfinished">Çalıcı Değişimini Kaldır</translation>
     </message>
 </context>
 <context>
@@ -3504,12 +3448,12 @@
     <message>
         <location filename="../source/actions/removeposition.h" line="33"/>
         <source>Remove Position</source>
-        <translation>Supprimer la position</translation>
+        <translation>Pozisyonu Kaldır</translation>
     </message>
     <message>
         <location filename="../source/app/powertabeditor.cpp" line="1344"/>
         <source>Remove Multi-Bar Rest</source>
-        <translation>Supprimer le silence multi-mesures</translation>
+        <translation type="unfinished"></translation>
     </message>
 </context>
 <context>
@@ -3517,7 +3461,7 @@
     <message>
         <location filename="../source/actions/removepositionproperty.cpp" line="23"/>
         <source>Remove %1</source>
-        <translation>Supprimer %1</translation>
+        <translation>Kaldır %1</translation>
     </message>
 </context>
 <context>
@@ -3525,7 +3469,7 @@
     <message>
         <location filename="../source/actions/editrehearsalsign.cpp" line="70"/>
         <source>Remove Rehearsal Sign</source>
-        <translation>Supprimer le signe de répétition</translation>
+        <translation>Prova İşaretini Kaldır</translation>
     </message>
 </context>
 <context>
@@ -3533,7 +3477,7 @@
     <message>
         <location filename="../source/actions/removestaff.cpp" line="23"/>
         <source>Remove Staff</source>
-        <translation>Supprimer la portée</translation>
+        <translation type="unfinished"></translation>
     </message>
 </context>
 <context>
@@ -3541,7 +3485,7 @@
     <message>
         <location filename="../source/actions/removesystem.cpp" line="23"/>
         <source>Remove System</source>
-        <translation>Supprimer le système</translation>
+        <translation>Sistemi Kaldır</translation>
     </message>
 </context>
 <context>
@@ -3549,7 +3493,7 @@
     <message>
         <location filename="../source/actions/removespecialnoteproperty.h" line="69"/>
         <source>Remove Tapped Harmonic</source>
-        <translation>Supprimer l&apos;harmonique tapé</translation>
+        <translation>Taplı Harmoniği Kaldır</translation>
     </message>
 </context>
 <context>
@@ -3557,12 +3501,12 @@
     <message>
         <location filename="../source/actions/edittempomarker.cpp" line="51"/>
         <source>Remove Alteration of Pace</source>
-        <translation>Supprimer la nuance de tempo</translation>
+        <translation>Tempo Değişimini Kaldır</translation>
     </message>
     <message>
         <location filename="../source/actions/edittempomarker.cpp" line="52"/>
         <source>Remove Tempo Marker</source>
-        <translation>Supprimer le marqueur de tempo</translation>
+        <translation>Tempo İşaretini Kaldır</translation>
     </message>
 </context>
 <context>
@@ -3570,7 +3514,7 @@
     <message>
         <location filename="../source/actions/edittextitem.cpp" line="41"/>
         <source>Remove Text</source>
-        <translation>Supprimer le texte</translation>
+        <translation>Yazıyı Kaldır</translation>
     </message>
 </context>
 <context>
@@ -3578,7 +3522,7 @@
     <message>
         <location filename="../source/actions/tremolobar.cpp" line="41"/>
         <source>Remove Tremolo Bar</source>
-        <translation>Supprimer la mesure de trémolo</translation>
+        <translation>Tremolo Kolunu Kaldır</translation>
     </message>
 </context>
 <context>
@@ -3586,7 +3530,7 @@
     <message>
         <location filename="../source/actions/removespecialnoteproperty.h" line="81"/>
         <source>Remove Trill</source>
-        <translation>Supprimer le trille</translation>
+        <translation type="unfinished"></translation>
     </message>
 </context>
 <context>
@@ -3594,7 +3538,7 @@
     <message>
         <location filename="../source/actions/volumeswell.cpp" line="41"/>
         <source>Remove Volume Swell</source>
-        <translation>Supprimer la variation de volume</translation>
+        <translation type="unfinished"></translation>
     </message>
 </context>
 <context>
@@ -3602,97 +3546,97 @@
     <message>
         <location filename="../source/painters/barlinepainter.cpp" line="36"/>
         <source>Click to edit barline.</source>
-        <translation>Cliquez pour modifier la barre de mesure.</translation>
+        <translation type="unfinished"></translation>
     </message>
     <message>
         <location filename="../source/painters/directions.cpp" line="54"/>
         <source>Double-click to edit musical direction.</source>
-        <translation>Double-cliquez pour modifier la direction musicale.</translation>
+        <translation type="unfinished"></translation>
     </message>
     <message>
         <location filename="../source/painters/keysignaturepainter.cpp" line="33"/>
         <source>Double-click to edit key signature.</source>
-        <translation>Double-cliquez pour modifier la signature de clé.</translation>
+        <translation>Anahtar işaretini düzenlemek için çift tıklayın.</translation>
     </message>
     <message>
         <location filename="../source/painters/scoreinforenderer.cpp" line="269"/>
         <source>Double-click to edit score information.</source>
-        <translation>Double-cliquez pour modifier les informations de la partition.</translation>
+        <translation type="unfinished">Skor bilgisini düzenlemek için çift tıklayın.</translation>
     </message>
     <message>
         <location filename="../source/painters/systemrenderer.cpp" line="155"/>
         <source>Double-click to change clef type.</source>
-        <translation>Double-cliquez pour modifier le type de clé.</translation>
+        <translation type="unfinished">Nota anahtarı tipini değiştirmek için çift tıklayın.</translation>
     </message>
     <message>
         <location filename="../source/painters/systemrenderer.cpp" line="197"/>
         <source>Double-click to edit the number of strings.</source>
-        <translation>Double-cliquez pour modifier le nombre de cordes.</translation>
+        <translation>Tel sayısını düzenlemek için çift tıklayın.</translation>
     </message>
     <message>
         <location filename="../source/painters/systemrenderer.cpp" line="304"/>
         <source>Double-click to edit rehearsal sign.</source>
-        <translation>Double-cliquez pour modifier le signe de répétition.</translation>
+        <translation>Prova işaretini düzenlemek için çift tıklayın.</translation>
     </message>
     <message>
         <location filename="../source/painters/systemrenderer.cpp" line="503"/>
         <source>Double-click to edit repeat endings.</source>
-        <translation>Double-cliquez pour modifier les boucles de fin.</translation>
+        <translation type="unfinished"></translation>
     </message>
     <message>
         <location filename="../source/painters/systemrenderer.cpp" line="634"/>
         <source>Double-click to edit tempo marker.</source>
-        <translation>Double-cliquez pour modifier le marqueur de tempo.</translation>
+        <translation>Tempo işaretini düzenlemek için çift tıklayın.</translation>
     </message>
     <message>
         <location filename="../source/painters/systemrenderer.cpp" line="741"/>
         <source>Double-click to edit chord text.</source>
-        <translation>Double-cliquez pour modifier le texte de l&apos;accord.</translation>
+        <translation>Akor yazısını düzenlemek için çift tıklayın.</translation>
     </message>
     <message>
         <location filename="../source/painters/systemrenderer.cpp" line="767"/>
         <source>Double-click to edit text.</source>
-        <translation>Double-cliquez pour modifier le texte.</translation>
+        <translation>Yazıyı değiştirmek için çift tıklayın.</translation>
     </message>
     <message>
         <location filename="../source/painters/systemrenderer.cpp" line="937"/>
         <source>Double-click to edit the active players.</source>
-        <translation>Double-cliquez pour modifier les musiciens actifs.</translation>
+        <translation>Aktif çalıcıları düzenlemek için çift tıklayın.</translation>
     </message>
     <message>
         <location filename="../source/painters/systemrenderer.cpp" line="1390"/>
         <source>Double-click to edit volume swell.</source>
-        <translation>Double-cliquez pour éditer la variation de volume.</translation>
+        <translation type="unfinished"></translation>
     </message>
     <message>
         <location filename="../source/painters/systemrenderer.cpp" line="1410"/>
         <source>Double-click to edit tremolo bar.</source>
-        <translation>Double-cliquez pour modifier la mesure de trémolo.</translation>
+        <translation>Tremolo kolunu düzenlemek için çift tıklayın.</translation>
     </message>
     <message>
         <location filename="../source/painters/systemrenderer.cpp" line="1585"/>
         <source>Double-click to edit dynamic.</source>
-        <translation>Double-cliquez pour modifier la nuance.</translation>
+        <translation>Dinamiği düzenlemek için çift tıklayın.</translation>
     </message>
     <message>
         <location filename="../source/painters/systemrenderer.cpp" line="1928"/>
         <source>Double-click to edit multi-bar rest.</source>
-        <translation>Double-cliquez pour modifier le silence multi-mesures.</translation>
+        <translation type="unfinished"></translation>
     </message>
     <message>
         <location filename="../source/painters/systemrenderer.cpp" line="2181"/>
         <source>Double-click to edit bend.</source>
-        <translation>Double-cliquez pour modifier le bend.</translation>
+        <translation>Bükmeyi düzenlemek için çift tıklayın.</translation>
     </message>
     <message>
         <location filename="../source/painters/timesignaturepainter.cpp" line="30"/>
         <source>Click to edit time signature.</source>
-        <translation>Cliquez pour éditer la signature rythmique.</translation>
+        <translation>Zamanlama işaretini düzenlemek için tıklayın.</translation>
     </message>
     <message>
         <location filename="../source/painters/chorddiagrampainter.cpp" line="242"/>
         <source>Double-click to edit chord diagram.</source>
-        <translation>Double-cliquez pour éditer le diagramme d&apos;accord.</translation>
+        <translation>Akor diyagramını düzenlemek için çift tıklayın.</translation>
     </message>
 </context>
 <context>
@@ -3700,92 +3644,92 @@
     <message>
         <location filename="../source/widgets/toolbox/scorepage.cpp" line="32"/>
         <source>Song</source>
-        <translation>Morceau</translation>
+        <translation>Şarkı</translation>
     </message>
     <message>
         <location filename="../source/widgets/toolbox/scorepage.cpp" line="36"/>
         <source>Add Instrument</source>
-        <translation>Ajouter un instrument</translation>
+        <translation>Enstürman Ekle</translation>
     </message>
     <message>
         <location filename="../source/widgets/toolbox/scorepage.cpp" line="40"/>
         <source>Add Percussion Track</source>
-        <translation>Ajouter une piste de percussions</translation>
+        <translation type="unfinished">Perküsyon Kısmı Ekle</translation>
     </message>
     <message>
         <location filename="../source/widgets/toolbox/scorepage.cpp" line="44"/>
         <source>Increase Tablature Line Height</source>
-        <translation>Augmenter l&apos;interligne de la tablature</translation>
+        <translation>Tablatür Çizgi Yüksekliğini Arttır</translation>
     </message>
     <message>
         <location filename="../source/widgets/toolbox/scorepage.cpp" line="48"/>
         <source>Decrease Tablature Line Height</source>
-        <translation>Diminuer l&apos;interligne de la tablature</translation>
+        <translation>Tablatür Çizgi Yüksekliğini Azalt</translation>
     </message>
     <message>
         <location filename="../source/widgets/toolbox/scorepage.cpp" line="64"/>
         <source>Section</source>
-        <translation>Section</translation>
+        <translation>Bölüm</translation>
     </message>
     <message>
         <location filename="../source/widgets/toolbox/scorepage.cpp" line="68"/>
         <source>Insert Section Before</source>
-        <translation>Insérer une section avant</translation>
+        <translation>Önceye Bölüm Ekle</translation>
     </message>
     <message>
         <location filename="../source/widgets/toolbox/scorepage.cpp" line="72"/>
         <source>Insert Section After</source>
-        <translation>Insérer une section après</translation>
+        <translation>Sonraya Bölüm Ekle</translation>
     </message>
     <message>
         <location filename="../source/widgets/toolbox/scorepage.cpp" line="76"/>
         <source>Remove Section</source>
-        <translation>Supprimer la section</translation>
+        <translation>Bölümü Kaldır</translation>
     </message>
     <message>
         <location filename="../source/widgets/toolbox/scorepage.cpp" line="80"/>
         <source>Add Bar</source>
-        <translation>Ajouter une barre</translation>
+        <translation type="unfinished"></translation>
     </message>
     <message>
         <location filename="../source/widgets/toolbox/scorepage.cpp" line="84"/>
         <source>Increase Width</source>
-        <translation>Augmenter la largeur</translation>
+        <translation>Genişliği Arttır</translation>
     </message>
     <message>
         <location filename="../source/widgets/toolbox/scorepage.cpp" line="89"/>
         <source>Decrease Width</source>
-        <translation>Diminuer la largeur</translation>
+        <translation>Genişliği Azalt</translation>
     </message>
     <message>
         <location filename="../source/widgets/toolbox/scorepage.cpp" line="94"/>
         <source>Justify</source>
-        <translation>Justifier</translation>
+        <translation type="unfinished"></translation>
     </message>
     <message>
         <location filename="../source/widgets/toolbox/scorepage.cpp" line="113"/>
         <source>Flow &amp;&amp; Dynamics</source>
-        <translation>Courant &amp;&amp; nuances</translation>
+        <translation>Akış &amp;&amp; Dinamikler</translation>
     </message>
     <message>
         <location filename="../source/widgets/toolbox/scorepage.cpp" line="117"/>
         <source>Add Rehearsal Sign</source>
-        <translation>Ajouter un signe de répétition</translation>
+        <translation>Prova İşareti Ekle</translation>
     </message>
     <message>
         <location filename="../source/widgets/toolbox/scorepage.cpp" line="121"/>
         <source>Add Musical Direction</source>
-        <translation>Ajouter une direction musicale</translation>
+        <translation type="unfinished"></translation>
     </message>
     <message>
         <location filename="../source/widgets/toolbox/scorepage.cpp" line="125"/>
         <source>Add Tempo Marker</source>
-        <translation>Ajouter un marqueur de tempo</translation>
+        <translation>Tempo İşareti Ekle</translation>
     </message>
     <message>
         <location filename="../source/widgets/toolbox/scorepage.cpp" line="129"/>
         <source>Add Volume Marker</source>
-        <translation>Ajouter un marqueur de volume</translation>
+        <translation>Ses Seviyesi İşareti Ekle</translation>
     </message>
 </context>
 <context>
@@ -3793,12 +3737,12 @@
     <message>
         <location filename="../source/actions/shiftpositions.cpp" line="24"/>
         <source>Shift Forward</source>
-        <translation>Décalage vers l&apos;avant</translation>
+        <translation>İleri Kaydır</translation>
     </message>
     <message>
         <location filename="../source/actions/shiftpositions.cpp" line="25"/>
         <source>Shift Backward</source>
-        <translation>Décalage vers l&apos;arrière</translation>
+        <translation>Geri Kaydır</translation>
     </message>
 </context>
 <context>
@@ -3806,12 +3750,12 @@
     <message>
         <location filename="../source/actions/shiftstring.cpp" line="25"/>
         <source>Shift String Up</source>
-        <translation>Décaler sur la corde supérieure</translation>
+        <translation>Teli Yukarı Kaydır</translation>
     </message>
     <message>
         <location filename="../source/actions/shiftstring.cpp" line="26"/>
         <source>Shift String Down</source>
-        <translation>Décaler sur la corde inférieure</translation>
+        <translation>Teli Aşşağı Kaydır</translation>
     </message>
 </context>
 <context>
@@ -3820,19 +3764,19 @@
         <location filename="../source/dialogs/staffdialog.ui" line="17"/>
         <location filename="../build/source/dialogs/ui_staffdialog.h" line="85"/>
         <source>Staff</source>
-        <translation>Portée</translation>
+        <translation type="unfinished"></translation>
     </message>
     <message>
         <location filename="../source/dialogs/staffdialog.ui" line="31"/>
         <location filename="../build/source/dialogs/ui_staffdialog.h" line="86"/>
         <source>Number of Strings:</source>
-        <translation>Nombre de cordes :</translation>
+        <translation>Tel Sayısı:</translation>
     </message>
     <message>
         <location filename="../source/dialogs/staffdialog.ui" line="41"/>
         <location filename="../build/source/dialogs/ui_staffdialog.h" line="87"/>
         <source>Clef Type:</source>
-        <translation>Type de clé :</translation>
+        <translation type="unfinished"></translation>
     </message>
 </context>
 <context>
@@ -3841,19 +3785,19 @@
         <location filename="../source/dialogs/tappedharmonicdialog.ui" line="17"/>
         <location filename="../build/source/dialogs/ui_tappedharmonicdialog.h" line="86"/>
         <source>Tapped Harmonic</source>
-        <translation>Harmonique tapé</translation>
+        <translation type="unfinished"></translation>
     </message>
     <message>
         <location filename="../source/dialogs/tappedharmonicdialog.ui" line="31"/>
         <location filename="../build/source/dialogs/ui_tappedharmonicdialog.h" line="87"/>
         <source>Current Fret:</source>
-        <translation>Frette courante :</translation>
+        <translation>Şimdiki Perde:</translation>
     </message>
     <message>
         <location filename="../source/dialogs/tappedharmonicdialog.ui" line="45"/>
         <location filename="../build/source/dialogs/ui_tappedharmonicdialog.h" line="88"/>
         <source>Tapped Fret:</source>
-        <translation>Frette tapée :</translation>
+        <translation>Tap Yapılan Perde:</translation>
     </message>
 </context>
 <context>
@@ -3862,55 +3806,55 @@
         <location filename="../source/dialogs/tempomarkerdialog.ui" line="17"/>
         <location filename="../build/source/dialogs/ui_tempomarkerdialog.h" line="416"/>
         <source>Tempo Marker</source>
-        <translation>Marqueur de tempo</translation>
+        <translation>Tempo İşareti</translation>
     </message>
     <message>
         <location filename="../source/dialogs/tempomarkerdialog.ui" line="34"/>
         <location filename="../build/source/dialogs/ui_tempomarkerdialog.h" line="417"/>
         <source>Description:</source>
-        <translation>Description :</translation>
+        <translation>Tanım:</translation>
     </message>
     <message>
         <location filename="../source/dialogs/tempomarkerdialog.ui" line="51"/>
         <location filename="../build/source/dialogs/ui_tempomarkerdialog.h" line="418"/>
         <source>Beat Type:</source>
-        <translation>Type de rythme :</translation>
+        <translation type="unfinished">Vuruş Tipi:</translation>
     </message>
     <message>
         <location filename="../source/dialogs/tempomarkerdialog.ui" line="295"/>
         <location filename="../build/source/dialogs/ui_tempomarkerdialog.h" line="429"/>
         <source>BPM:</source>
-        <translation>BPM :</translation>
+        <translation type="unfinished"></translation>
     </message>
     <message>
         <location filename="../source/dialogs/tempomarkerdialog.ui" line="305"/>
         <location filename="../build/source/dialogs/ui_tempomarkerdialog.h" line="430"/>
         <source>L&apos;istesso:</source>
-        <translation>L&apos;istesso :</translation>
+        <translation type="unfinished"></translation>
     </message>
     <message>
         <location filename="../source/dialogs/tempomarkerdialog.ui" line="317"/>
         <location filename="../build/source/dialogs/ui_tempomarkerdialog.h" line="431"/>
         <source>Enable</source>
-        <translation>Activer</translation>
+        <translation>Etkinleştirme</translation>
     </message>
     <message>
         <location filename="../source/dialogs/tempomarkerdialog.ui" line="556"/>
         <location filename="../build/source/dialogs/ui_tempomarkerdialog.h" line="442"/>
         <source>Triplet Feel:</source>
-        <translation>Effet du triolet :</translation>
+        <translation type="unfinished"></translation>
     </message>
     <message>
         <location filename="../source/dialogs/tempomarkerdialog.ui" line="568"/>
         <location filename="../build/source/dialogs/ui_tempomarkerdialog.h" line="443"/>
         <source>None</source>
-        <translation>Aucun</translation>
+        <translation>Yok</translation>
     </message>
     <message>
         <location filename="../source/dialogs/tempomarkerdialog.ui" line="648"/>
         <location filename="../build/source/dialogs/ui_tempomarkerdialog.h" line="448"/>
         <source>Show Metronome Marker:</source>
-        <translation>Afficher le marqueur du métronome :</translation>
+        <translation>Metronom İşaretini Göster:</translation>
     </message>
 </context>
 <context>
@@ -3920,18 +3864,18 @@
         <location filename="../build/source/dialogs/ui_textitemdialog.h" line="73"/>
         <location filename="../source/dialogs/textitemdialog.cpp" line="55"/>
         <source>Text</source>
-        <translation>Texte</translation>
+        <translation>Yazı</translation>
     </message>
     <message>
         <location filename="../source/dialogs/textitemdialog.ui" line="28"/>
         <location filename="../build/source/dialogs/ui_textitemdialog.h" line="74"/>
         <source>Contents:</source>
-        <translation>Contenu :</translation>
+        <translation>İçerikler:</translation>
     </message>
     <message>
         <location filename="../source/dialogs/textitemdialog.cpp" line="56"/>
         <source>The text cannot be empty.</source>
-        <translation>Le texte ne peut pas être vide.</translation>
+        <translation>Yazı boş bırakılamaz.</translation>
     </message>
 </context>
 <context>
@@ -3941,54 +3885,54 @@
         <location filename="../build/source/dialogs/ui_timesignaturedialog.h" line="175"/>
         <location filename="../source/dialogs/timesignaturedialog.cpp" line="130"/>
         <source>Time Signature</source>
-        <translation>Signature rythmique</translation>
+        <translation>Zaman İşareti</translation>
     </message>
     <message>
         <location filename="../source/dialogs/timesignaturedialog.ui" line="31"/>
         <location filename="../build/source/dialogs/ui_timesignaturedialog.h" line="176"/>
         <source>Show Time Signature:</source>
-        <translation>Afficher la signature rythmique :</translation>
+        <translation>Zaman İşaretini Göster:</translation>
     </message>
     <message>
         <location filename="../source/dialogs/timesignaturedialog.ui" line="41"/>
         <location filename="../build/source/dialogs/ui_timesignaturedialog.h" line="177"/>
         <source>Common Time:</source>
-        <translation>Heure courante :</translation>
+        <translation type="unfinished">Ortak Zaman:</translation>
     </message>
     <message>
         <location filename="../source/dialogs/timesignaturedialog.ui" line="51"/>
         <location filename="../build/source/dialogs/ui_timesignaturedialog.h" line="178"/>
         <source>Cut Time:</source>
-        <translation>C barré :</translation>
+        <translation type="unfinished">Kesme Zamanı:</translation>
     </message>
     <message>
         <location filename="../source/dialogs/timesignaturedialog.ui" line="61"/>
         <location filename="../build/source/dialogs/ui_timesignaturedialog.h" line="179"/>
         <source>Beats Per Measure:</source>
-        <translation>Battements Par Mesure :</translation>
+        <translation>Ölçü Başına Vuruş:</translation>
     </message>
     <message>
         <location filename="../source/dialogs/timesignaturedialog.ui" line="78"/>
         <location filename="../build/source/dialogs/ui_timesignaturedialog.h" line="180"/>
         <source>Beat Value:</source>
-        <translation>Valeur du rythme :</translation>
+        <translation>Vuruş Değeri:</translation>
     </message>
     <message>
         <location filename="../source/dialogs/timesignaturedialog.ui" line="95"/>
         <location filename="../build/source/dialogs/ui_timesignaturedialog.h" line="181"/>
         <source>Metronome Pulses Per Measure:</source>
-        <translation>Pulsations de Métronome Par Mesure :</translation>
+        <translation>Ölçü Başına Metronom Darbesi:</translation>
     </message>
     <message>
         <location filename="../source/dialogs/timesignaturedialog.ui" line="112"/>
         <location filename="../build/source/dialogs/ui_timesignaturedialog.h" line="182"/>
         <source>Beaming Pattern:</source>
-        <translation>Schéma rythmique :</translation>
+        <translation type="unfinished"></translation>
     </message>
     <message>
         <location filename="../source/dialogs/timesignaturedialog.cpp" line="131"/>
         <source>Invalid beaming pattern.</source>
-        <translation>Schéma rythmique invalide.</translation>
+        <translation type="unfinished"></translation>
     </message>
 </context>
 <context>
@@ -3997,13 +3941,13 @@
         <location filename="../source/widgets/toolbox/toolbox.ui" line="20"/>
         <location filename="../build/source/widgets/ui_toolbox.h" line="747"/>
         <source>Form</source>
-        <translation>Forme</translation>
+        <translation type="unfinished"></translation>
     </message>
     <message>
         <location filename="../source/widgets/toolbox/toolbox.ui" line="161"/>
         <location filename="../build/source/widgets/ui_toolbox.h" line="755"/>
         <source>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;&lt;br/&gt;&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</source>
-        <translation>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;&lt;br/&gt;&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</translation>
+        <translation type="unfinished"></translation>
     </message>
 </context>
 <context>
@@ -4012,72 +3956,72 @@
         <location filename="../source/dialogs/tremolobardialog.ui" line="17"/>
         <location filename="../build/source/dialogs/ui_tremolobardialog.h" line="117"/>
         <source>Tremolo Bar</source>
-        <translation>Mesure de trémolo</translation>
+        <translation>Tremolo Kolu</translation>
     </message>
     <message>
         <location filename="../source/dialogs/tremolobardialog.ui" line="31"/>
         <location filename="../build/source/dialogs/ui_tremolobardialog.h" line="118"/>
         <source>Type:</source>
-        <translation>Type :</translation>
+        <translation>Tip:</translation>
     </message>
     <message>
         <location filename="../source/dialogs/tremolobardialog.ui" line="41"/>
         <location filename="../build/source/dialogs/ui_tremolobardialog.h" line="119"/>
         <source>Resultant Pitch:</source>
-        <translation>Hauteur résultante :</translation>
+        <translation type="unfinished"></translation>
     </message>
     <message>
         <location filename="../source/dialogs/tremolobardialog.ui" line="51"/>
         <location filename="../build/source/dialogs/ui_tremolobardialog.h" line="120"/>
         <source>Bend Duration:</source>
-        <translation>Durée du bend :</translation>
+        <translation>Bükme Süresi:</translation>
     </message>
     <message>
         <location filename="../source/dialogs/tremolobardialog.ui" line="63"/>
         <location filename="../build/source/dialogs/ui_tremolobardialog.h" line="121"/>
         <source>Current note duration + next</source>
-        <translation>Durée de la note courante + suivante</translation>
+        <translation>Şimdiki nota süresi + sonraki</translation>
     </message>
     <message>
         <location filename="../source/dialogs/tremolobardialog.ui" line="73"/>
         <location filename="../build/source/dialogs/ui_tremolobardialog.h" line="122"/>
         <source>notes</source>
-        <translation>Notes</translation>
+        <translation>notalar</translation>
     </message>
     <message>
         <location filename="../source/dialogs/tremolobardialog.cpp" line="32"/>
         <source>Dip</source>
-        <translation>Appuyer puis relâcher rapidement</translation>
+        <translation type="unfinished"></translation>
     </message>
     <message>
         <location filename="../source/dialogs/tremolobardialog.cpp" line="32"/>
         <source>Dive and Release</source>
-        <translation>Appuyer puis relâcher</translation>
+        <translation>Dal ve Bırak</translation>
     </message>
     <message>
         <location filename="../source/dialogs/tremolobardialog.cpp" line="33"/>
         <source>Dive and Hold</source>
-        <translation>Appuyer puis maintenir</translation>
+        <translation>Dal ve Tut</translation>
     </message>
     <message>
         <location filename="../source/dialogs/tremolobardialog.cpp" line="33"/>
         <source>Release</source>
-        <translation>Relâcher</translation>
+        <translation>Bırak</translation>
     </message>
     <message>
         <location filename="../source/dialogs/tremolobardialog.cpp" line="34"/>
         <source>Return and Release</source>
-        <translation>Remonter puis lâcher</translation>
+        <translation>Dön ve Bırak</translation>
     </message>
     <message>
         <location filename="../source/dialogs/tremolobardialog.cpp" line="35"/>
         <source>Return and Hold</source>
-        <translation>Remonter puis maintenir</translation>
+        <translation>Dön ve Tut</translation>
     </message>
     <message>
         <location filename="../source/dialogs/tremolobardialog.cpp" line="35"/>
         <source>Inverted Dip</source>
-        <translation>Monter puis relâcher rapidement</translation>
+        <translation>Ters Batırma</translation>
     </message>
 </context>
 <context>
@@ -4087,24 +4031,24 @@
         <location filename="../build/source/dialogs/ui_trilldialog.h" line="85"/>
         <location filename="../source/dialogs/trilldialog.cpp" line="60"/>
         <source>Trill</source>
-        <translation>Trille</translation>
+        <translation type="unfinished"></translation>
     </message>
     <message>
         <location filename="../source/dialogs/trilldialog.ui" line="31"/>
         <location filename="../build/source/dialogs/ui_trilldialog.h" line="86"/>
         <source>Current Fret:</source>
-        <translation>Frette courante :</translation>
+        <translation>Şimdiki Perde:</translation>
     </message>
     <message>
         <location filename="../source/dialogs/trilldialog.ui" line="45"/>
         <location filename="../build/source/dialogs/ui_trilldialog.h" line="87"/>
         <source>Trill With Fret:</source>
-        <translation>Trille avec la frette :</translation>
+        <translation type="unfinished"></translation>
     </message>
     <message>
         <location filename="../source/dialogs/trilldialog.cpp" line="61"/>
         <source>The trilled fret number cannot be the same as the original fret number.</source>
-        <translation>Le numéro de frette utilisé pour le trill ne peut pas être identique au numéro de frette original.</translation>
+        <translation type="unfinished"></translation>
     </message>
 </context>
 <context>
@@ -4113,49 +4057,49 @@
         <location filename="../source/dialogs/tuningdialog.ui" line="17"/>
         <location filename="../build/source/dialogs/ui_tuningdialog.h" line="197"/>
         <source>Tuning</source>
-        <translation>Tonalité</translation>
+        <translation>Akort</translation>
     </message>
     <message>
         <location filename="../source/dialogs/tuningdialog.ui" line="31"/>
         <location filename="../build/source/dialogs/ui_tuningdialog.h" line="198"/>
         <source>Name:</source>
-        <translation>Nom :</translation>
+        <translation>İsim:</translation>
     </message>
     <message>
         <location filename="../source/dialogs/tuningdialog.ui" line="41"/>
         <location filename="../build/source/dialogs/ui_tuningdialog.h" line="199"/>
         <source>Sharps:</source>
-        <translation>Dièses :</translation>
+        <translation>Diyezler:</translation>
     </message>
     <message>
         <location filename="../source/dialogs/tuningdialog.ui" line="51"/>
         <location filename="../build/source/dialogs/ui_tuningdialog.h" line="200"/>
         <source>Music Notation Offset:</source>
-        <translation>Décalage de la notation musicale :</translation>
+        <translation type="unfinished"></translation>
     </message>
     <message>
         <location filename="../source/dialogs/tuningdialog.ui" line="61"/>
         <location filename="../build/source/dialogs/ui_tuningdialog.h" line="201"/>
         <source>Number of Strings:</source>
-        <translation>Nombre de cordes :</translation>
+        <translation>Tel Sayısı:</translation>
     </message>
     <message>
         <location filename="../source/dialogs/tuningdialog.ui" line="71"/>
         <location filename="../build/source/dialogs/ui_tuningdialog.h" line="202"/>
         <source>Tuning:</source>
-        <translation>Tonalité :</translation>
+        <translation>Akort:</translation>
     </message>
     <message>
         <location filename="../source/dialogs/tuningdialog.ui" line="106"/>
         <location filename="../build/source/dialogs/ui_tuningdialog.h" line="203"/>
         <source>Preset:</source>
-        <translation>Préréglage :</translation>
+        <translation type="unfinished"></translation>
     </message>
     <message>
         <location filename="../source/dialogs/tuningdialog.ui" line="120"/>
         <location filename="../build/source/dialogs/ui_tuningdialog.h" line="204"/>
         <source>Capo:</source>
-        <translation>Capo :</translation>
+        <translation>Kapo:</translation>
     </message>
 </context>
 <context>
@@ -4164,41 +4108,41 @@
         <location filename="../source/dialogs/tuningdictionarydialog.ui" line="17"/>
         <location filename="../build/source/dialogs/ui_tuningdictionarydialog.h" line="121"/>
         <source>Tuning Dictionary</source>
-        <translation>Dictionnaire de tonalités</translation>
+        <translation>Akort Sözlüğü</translation>
     </message>
     <message>
         <location filename="../source/dialogs/tuningdictionarydialog.ui" line="25"/>
         <location filename="../build/source/dialogs/ui_tuningdictionarydialog.h" line="122"/>
         <source>Number of Strings:</source>
-        <translation>Nombre de cordes :</translation>
+        <translation>Tel Sayısı:</translation>
     </message>
     <message>
         <location filename="../source/dialogs/tuningdictionarydialog.ui" line="52"/>
         <location filename="../build/source/dialogs/ui_tuningdictionarydialog.h" line="123"/>
         <source>New...</source>
-        <translation>Nouveau…</translation>
+        <translation>Yeni...</translation>
     </message>
     <message>
         <location filename="../source/dialogs/tuningdictionarydialog.ui" line="62"/>
         <location filename="../build/source/dialogs/ui_tuningdictionarydialog.h" line="124"/>
         <source>Edit...</source>
-        <translation>Modifier…</translation>
+        <translation>Düzenle...</translation>
     </message>
     <message>
         <location filename="../source/dialogs/tuningdictionarydialog.ui" line="72"/>
         <location filename="../build/source/dialogs/ui_tuningdictionarydialog.h" line="125"/>
         <source>Delete</source>
-        <translation>Supprimer</translation>
+        <translation>Sil</translation>
     </message>
     <message>
         <location filename="../source/dialogs/tuningdictionarydialog.cpp" line="40"/>
         <source>Name</source>
-        <translation>Nom</translation>
+        <translation>İsim</translation>
     </message>
     <message>
         <location filename="../source/dialogs/tuningdictionarydialog.cpp" line="40"/>
         <source>Tuning (Low to High)</source>
-        <translation>Tonalité (de bas en haut)</translation>
+        <translation>Akort (Düşükten Yükseğe)</translation>
     </message>
 </context>
 <context>
@@ -4207,13 +4151,13 @@
         <location filename="../source/dialogs/viewfilterdialog.ui" line="17"/>
         <location filename="../build/source/dialogs/ui_viewfilterdialog.h" line="240"/>
         <source>View Filters</source>
-        <translation>Voir les filtres</translation>
+        <translation>Filtreleri Görüntüle</translation>
     </message>
     <message>
         <location filename="../source/dialogs/viewfilterdialog.ui" line="76"/>
         <location filename="../build/source/dialogs/ui_viewfilterdialog.h" line="242"/>
         <source>Add Filter</source>
-        <translation>Ajouter un filtre</translation>
+        <translation>Filtre Ekle</translation>
     </message>
     <message>
         <location filename="../source/dialogs/viewfilterdialog.ui" line="79"/>
@@ -4221,43 +4165,43 @@
         <location filename="../build/source/dialogs/ui_viewfilterdialog.h" line="244"/>
         <location filename="../build/source/dialogs/ui_viewfilterdialog.h" line="254"/>
         <source>+</source>
-        <translation>+</translation>
+        <translation type="unfinished"></translation>
     </message>
     <message>
         <location filename="../source/dialogs/viewfilterdialog.ui" line="101"/>
         <location filename="../build/source/dialogs/ui_viewfilterdialog.h" line="246"/>
         <source>Remove Filter</source>
-        <translation>Supprimer le filtre</translation>
+        <translation>Filtreyi Kaldır</translation>
     </message>
     <message>
         <location filename="../source/dialogs/viewfilterdialog.ui" line="104"/>
         <location filename="../build/source/dialogs/ui_viewfilterdialog.h" line="248"/>
         <source>-</source>
-        <translation>-</translation>
+        <translation type="unfinished"></translation>
     </message>
     <message>
         <location filename="../source/dialogs/viewfilterdialog.ui" line="139"/>
         <location filename="../build/source/dialogs/ui_viewfilterdialog.h" line="249"/>
         <source>Name:</source>
-        <translation>Nom :</translation>
+        <translation>İsim:</translation>
     </message>
     <message>
         <location filename="../source/dialogs/viewfilterdialog.ui" line="149"/>
         <location filename="../build/source/dialogs/ui_viewfilterdialog.h" line="250"/>
         <source>Rules:</source>
-        <translation>Règles :</translation>
+        <translation>Kurallar:</translation>
     </message>
     <message>
         <location filename="../source/dialogs/viewfilterdialog.ui" line="276"/>
         <location filename="../build/source/dialogs/ui_viewfilterdialog.h" line="252"/>
         <source>Add Rule</source>
-        <translation>Ajouter une règle</translation>
+        <translation>Kural Ekle</translation>
     </message>
     <message>
         <location filename="../source/dialogs/viewfilterdialog.ui" line="293"/>
         <location filename="../build/source/dialogs/ui_viewfilterdialog.h" line="255"/>
         <source>Matches:</source>
-        <translation>Correspondances :</translation>
+        <translation>Eşleşmeler:</translation>
     </message>
 </context>
 <context>
@@ -4266,13 +4210,13 @@
         <location filename="../source/dialogs/volumeswelldialog.ui" line="17"/>
         <location filename="../build/source/dialogs/ui_volumeswelldialog.h" line="352"/>
         <source>Volume Swell</source>
-        <translation>Variation de volume</translation>
+        <translation type="unfinished"></translation>
     </message>
     <message>
         <location filename="../source/dialogs/volumeswelldialog.ui" line="34"/>
         <location filename="../build/source/dialogs/ui_volumeswelldialog.h" line="353"/>
         <source>Start Volume:</source>
-        <translation>Volume de départ :</translation>
+        <translation>Başlangıç Ses Seviyesi:</translation>
     </message>
     <message>
         <location filename="../source/dialogs/volumeswelldialog.ui" line="61"/>
@@ -4280,37 +4224,37 @@
         <location filename="../build/source/dialogs/ui_volumeswelldialog.h" line="354"/>
         <location filename="../build/source/dialogs/ui_volumeswelldialog.h" line="364"/>
         <source>Off</source>
-        <translation>Désactivé</translation>
+        <translation>Kapalı</translation>
     </message>
     <message>
         <location filename="../source/dialogs/volumeswelldialog.ui" line="317"/>
         <location filename="../build/source/dialogs/ui_volumeswelldialog.h" line="363"/>
         <source>End Volume:</source>
-        <translation>Volume de fin :</translation>
+        <translation>Bitiş Ses Seviyesi:</translation>
     </message>
     <message>
         <location filename="../source/dialogs/volumeswelldialog.ui" line="600"/>
         <location filename="../build/source/dialogs/ui_volumeswelldialog.h" line="373"/>
         <source>Swell Duration:</source>
-        <translation>Durée de la variation :</translation>
+        <translation type="unfinished"></translation>
     </message>
     <message>
         <location filename="../source/dialogs/volumeswelldialog.ui" line="609"/>
         <location filename="../build/source/dialogs/ui_volumeswelldialog.h" line="374"/>
         <source>Current Note</source>
-        <translation>Note courante</translation>
+        <translation>Şimdiki Nota</translation>
     </message>
     <message>
         <location filename="../source/dialogs/volumeswelldialog.ui" line="616"/>
         <location filename="../build/source/dialogs/ui_volumeswelldialog.h" line="375"/>
         <source>Current Note and Following Notes</source>
-        <translation>Note courante et suivantes</translation>
+        <translation>Şimdiki Nota ve Sonraki Notalar</translation>
     </message>
     <message>
         <location filename="../source/dialogs/volumeswelldialog.ui" line="625"/>
         <location filename="../build/source/dialogs/ui_volumeswelldialog.h" line="376"/>
         <source>Number of Notes:</source>
-        <translation>Nombre de notes :</translation>
+        <translation>Nota Sayısı:</translation>
     </message>
 </context>
 </TS>
