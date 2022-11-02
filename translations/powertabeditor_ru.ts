@@ -595,7 +595,7 @@
         <location filename="../source/dialogs/chorddiagramdialog.ui" line="9"/>
         <location filename="../build/source/dialogs/ui_chorddiagramdialog.h" line="110"/>
         <source>Chord Diagram</source>
-        <translation type="unfinished"></translation>
+        <translation>Диаграмма аккорда</translation>
     </message>
     <message>
         <location filename="../source/dialogs/chorddiagramdialog.ui" line="23"/>
@@ -2057,22 +2057,22 @@
     <message>
         <location filename="../source/widgets/playback/playbackwidget.cpp" line="110"/>
         <source>Click to move playback to the beginning of the score%1.</source>
-        <translation type="unfinished"></translation>
+        <translation>Нажмите, чтобы переместить воспроизведение к началу партитуры%1.</translation>
     </message>
     <message>
         <location filename="../source/widgets/playback/playbackwidget.cpp" line="117"/>
         <source>Click to start or pause playback%1.</source>
-        <translation type="unfinished"></translation>
+        <translation>Нажмите, чтобы начать или приостановить воспроизведение%1.</translation>
     </message>
     <message>
         <location filename="../source/widgets/playback/playbackwidget.cpp" line="124"/>
         <source>Click to stop playback and return to the initial location%1.</source>
-        <translation type="unfinished"></translation>
+        <translation>Нажмите, чтобы остановить воспроизведение и вернуться к исходному местоположению%1.</translation>
     </message>
     <message>
         <location filename="../source/widgets/playback/playbackwidget.cpp" line="133"/>
         <source>Click to toggle whether the metronome is turned on%1.</source>
-        <translation type="unfinished"></translation>
+        <translation>Нажмите, чтобы включить метроном%1.</translation>
     </message>
 </context>
 <context>
@@ -2445,7 +2445,7 @@
     <message>
         <location filename="../source/app/powertabeditor.cpp" line="2345"/>
         <source>Move to &amp;Start</source>
-        <translation type="unfinished"></translation>
+        <translation>Перейти к &amp;началу</translation>
     </message>
     <message>
         <location filename="../source/app/powertabeditor.cpp" line="2351"/>
@@ -2460,47 +2460,47 @@
     <message>
         <location filename="../source/app/powertabeditor.cpp" line="2363"/>
         <source>Next String</source>
-        <translation type="unfinished"></translation>
+        <translation>Следующая струна</translation>
     </message>
     <message>
         <location filename="../source/app/powertabeditor.cpp" line="2369"/>
         <source>Previous String</source>
-        <translation type="unfinished"></translation>
+        <translation>Предыдущая струна</translation>
     </message>
     <message>
         <location filename="../source/app/powertabeditor.cpp" line="2375"/>
         <source>Move to &amp;End</source>
-        <translation type="unfinished"></translation>
+        <translation>Переместить в &amp;конец</translation>
     </message>
     <message>
         <location filename="../source/app/powertabeditor.cpp" line="2381"/>
         <source>Next Staff</source>
-        <translation type="unfinished"></translation>
+        <translation>Следующий нотоносец</translation>
     </message>
     <message>
         <location filename="../source/app/powertabeditor.cpp" line="2387"/>
         <source>Previous Staff</source>
-        <translation type="unfinished"></translation>
+        <translation>Предыдущий нотоносец</translation>
     </message>
     <message>
         <location filename="../source/app/powertabeditor.cpp" line="2392"/>
         <source>Next Bar</source>
-        <translation type="unfinished"></translation>
+        <translation>Следующий такт</translation>
     </message>
     <message>
         <location filename="../source/app/powertabeditor.cpp" line="2398"/>
         <source>Previous Bar</source>
-        <translation type="unfinished"></translation>
+        <translation>Предыдущий такт</translation>
     </message>
     <message>
         <location filename="../source/app/powertabeditor.cpp" line="2414"/>
         <source>Remove Selected Item</source>
-        <translation type="unfinished"></translation>
+        <translation>Удалить выбранный элемент</translation>
     </message>
     <message>
         <location filename="../source/app/powertabeditor.cpp" line="2425"/>
         <source>Go To Barline...</source>
-        <translation type="unfinished"></translation>
+        <translation>Перейти к такту…</translation>
     </message>
     <message>
         <location filename="../source/app/powertabeditor.cpp" line="2431"/>
@@ -2545,27 +2545,27 @@
     <message>
         <location filename="../source/app/powertabeditor.cpp" line="2485"/>
         <source>Insert Staff Before</source>
-        <translation type="unfinished"></translation>
+        <translation>Вставить нотоносец перед</translation>
     </message>
     <message>
         <location filename="../source/app/powertabeditor.cpp" line="2491"/>
         <source>Insert Staff After</source>
-        <translation type="unfinished"></translation>
+        <translation>Вставить нотоносец после</translation>
     </message>
     <message>
         <location filename="../source/app/powertabeditor.cpp" line="2497"/>
         <source>Remove Current Staff</source>
-        <translation type="unfinished"></translation>
+        <translation>Удалить текущий нотоносец</translation>
     </message>
     <message>
         <location filename="../source/app/powertabeditor.cpp" line="2502"/>
         <source>Increase</source>
-        <translation type="unfinished"></translation>
+        <translation>Увеличить</translation>
     </message>
     <message>
         <location filename="../source/app/powertabeditor.cpp" line="2509"/>
         <source>Decrease</source>
-        <translation type="unfinished"></translation>
+        <translation>Уменьшить</translation>
     </message>
     <message>
         <location filename="../source/app/powertabeditor.cpp" line="2518"/>
@@ -2632,12 +2632,12 @@
     <message>
         <location filename="../source/app/powertabeditor.cpp" line="2565"/>
         <source>Add Dot</source>
-        <translation type="unfinished"></translation>
+        <translation>Добавить точку</translation>
     </message>
     <message>
         <location filename="../source/app/powertabeditor.cpp" line="2569"/>
         <source>Remove Dot</source>
-        <translation type="unfinished"></translation>
+        <translation>Убрать точку</translation>
     </message>
     <message>
         <location filename="../source/app/powertabeditor.cpp" line="2573"/>
@@ -2688,7 +2688,7 @@
     <message>
         <location filename="../source/app/powertabeditor.cpp" line="2618"/>
         <source>Staccato</source>
-        <translation type="unfinished"></translation>
+        <translation>Стаккато</translation>
     </message>
     <message>
         <location filename="../source/app/powertabeditor.cpp" line="2622"/>
@@ -3041,7 +3041,7 @@
     <message>
         <location filename="../source/app/powertabeditor.cpp" line="3274"/>
         <source>&amp;Line Spacing</source>
-        <translation type="unfinished"></translation>
+        <translation>&amp;Межлинейный промежуток</translation>
     </message>
     <message>
         <location filename="../source/app/powertabeditor.cpp" line="3279"/>
