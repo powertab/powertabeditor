@@ -14,7 +14,7 @@
     <message>
         <location filename="../source/actions/addspecialnoteproperty.h" line="93"/>
         <source>Add Artificial Harmonic</source>
-        <translation type="unfinished"></translation>
+        <translation>Добавить искусственный флажолет</translation>
     </message>
 </context>
 <context>
@@ -30,7 +30,7 @@
     <message>
         <location filename="../source/actions/addspecialnoteproperty.h" line="106"/>
         <source>Add Bend</source>
-        <translation type="unfinished"></translation>
+        <translation>Добавить бенд</translation>
     </message>
 </context>
 <context>
@@ -38,7 +38,7 @@
     <message>
         <location filename="../source/actions/chorddiagram.cpp" line="24"/>
         <source>Add Chord Diagram</source>
-        <translation type="unfinished"></translation>
+        <translation>Добавить диаграмму аккорда</translation>
     </message>
 </context>
 <context>
@@ -46,7 +46,7 @@
     <message>
         <location filename="../source/actions/addchordtext.cpp" line="24"/>
         <source>Add Chord Text</source>
-        <translation type="unfinished"></translation>
+        <translation>Добавить текст аккорда</translation>
     </message>
 </context>
 <context>
@@ -54,7 +54,7 @@
     <message>
         <location filename="../source/actions/adddirection.cpp" line="24"/>
         <source>Add Musical Direction</source>
-        <translation type="unfinished"></translation>
+        <translation>Добавить музыкальное направление</translation>
     </message>
 </context>
 <context>
@@ -62,7 +62,7 @@
     <message>
         <location filename="../source/actions/adddynamic.cpp" line="23"/>
         <source>Add Dynamic</source>
-        <translation type="unfinished"></translation>
+        <translation>Добавить динамику</translation>
     </message>
 </context>
 <context>
@@ -78,7 +78,7 @@
     <message>
         <location filename="../source/actions/addirregulargrouping.cpp" line="27"/>
         <source>Add Triplet</source>
-        <translation type="unfinished"></translation>
+        <translation>Добавить триоль</translation>
     </message>
     <message>
         <location filename="../source/actions/addirregulargrouping.cpp" line="29"/>
@@ -91,7 +91,7 @@
     <message>
         <location filename="../source/actions/addspecialnoteproperty.h" line="120"/>
         <source>Add Left Hand Fingering</source>
-        <translation type="unfinished"></translation>
+        <translation>Добавить аппликатуру левой руки</translation>
     </message>
 </context>
 <context>
@@ -99,7 +99,7 @@
     <message>
         <location filename="../source/actions/addmultibarrest.cpp" line="23"/>
         <source>Add Multi-Bar Rest</source>
-        <translation type="unfinished"></translation>
+        <translation>Добавить многотактовую паузу</translation>
     </message>
 </context>
 <context>
@@ -107,7 +107,7 @@
     <message>
         <location filename="../source/actions/addnote.cpp" line="24"/>
         <source>Add Note</source>
-        <translation type="unfinished"></translation>
+        <translation>Добавить ноту</translation>
     </message>
 </context>
 <context>
@@ -131,7 +131,7 @@
     <message>
         <location filename="../source/actions/editplayerchange.cpp" line="25"/>
         <source>Add Player Change</source>
-        <translation type="unfinished"></translation>
+        <translation>Добавить изменение исполнителя</translation>
     </message>
 </context>
 <context>
@@ -147,7 +147,7 @@
     <message>
         <location filename="../source/actions/editrehearsalsign.cpp" line="25"/>
         <source>Add Rehearsal Sign</source>
-        <translation type="unfinished"></translation>
+        <translation>Добавить знак репетиции</translation>
     </message>
 </context>
 <context>
@@ -155,7 +155,7 @@
     <message>
         <location filename="../source/actions/addrest.cpp" line="23"/>
         <source>Add Rest</source>
-        <translation type="unfinished"></translation>
+        <translation>Добавить паузу</translation>
     </message>
 </context>
 <context>
@@ -163,7 +163,7 @@
     <message>
         <location filename="../source/actions/addstaff.cpp" line="23"/>
         <source>Add Staff</source>
-        <translation type="unfinished"></translation>
+        <translation>Добавить нотный стан</translation>
     </message>
 </context>
 <context>
@@ -171,7 +171,7 @@
     <message>
         <location filename="../source/actions/addsystem.cpp" line="23"/>
         <source>Add System</source>
-        <translation type="unfinished"></translation>
+        <translation>Добавить систему</translation>
     </message>
 </context>
 <context>
@@ -179,7 +179,7 @@
     <message>
         <location filename="../source/actions/addspecialnoteproperty.h" line="65"/>
         <source>Add Tapped Harmonic</source>
-        <translation type="unfinished"></translation>
+        <translation>Добавить тэппинговый флажолет</translation>
     </message>
 </context>
 <context>
@@ -187,12 +187,12 @@
     <message>
         <location filename="../source/actions/edittempomarker.cpp" line="26"/>
         <source>Add Alteration of Pace</source>
-        <translation type="unfinished"></translation>
+        <translation>Добавить изменение темпа</translation>
     </message>
     <message>
         <location filename="../source/actions/edittempomarker.cpp" line="27"/>
         <source>Add Tempo Marker</source>
-        <translation type="unfinished"></translation>
+        <translation>Добавить указатель темпа</translation>
     </message>
 </context>
 <context>
@@ -216,7 +216,7 @@
     <message>
         <location filename="../source/actions/addspecialnoteproperty.h" line="78"/>
         <source>Add Trill</source>
-        <translation type="unfinished"></translation>
+        <translation>Добавить трель</translation>
     </message>
 </context>
 <context>
@@ -224,7 +224,7 @@
     <message>
         <location filename="../source/actions/volumeswell.cpp" line="22"/>
         <source>Add Volume Swell</source>
-        <translation type="unfinished"></translation>
+        <translation>Добавить нарастание громкости</translation>
     </message>
 </context>
 <context>
@@ -232,12 +232,12 @@
     <message>
         <location filename="../source/actions/adjustlinespacing.cpp" line="23"/>
         <source>Increase Line Spacing</source>
-        <translation type="unfinished"></translation>
+        <translation>Увеличить интервал между линиями</translation>
     </message>
     <message>
         <location filename="../source/actions/adjustlinespacing.cpp" line="24"/>
         <source>Decrease Line Spacing</source>
-        <translation type="unfinished"></translation>
+        <translation>Уменьшить интервал между линиями</translation>
     </message>
 </context>
 <context>
@@ -246,13 +246,13 @@
         <location filename="../source/dialogs/alterationofpacedialog.ui" line="17"/>
         <location filename="../build/source/dialogs/ui_alterationofpacedialog.h" line="73"/>
         <source>Alteration of Pace</source>
-        <translation type="unfinished"></translation>
+        <translation>Изменение темпа</translation>
     </message>
     <message>
         <location filename="../source/dialogs/alterationofpacedialog.ui" line="34"/>
         <location filename="../build/source/dialogs/ui_alterationofpacedialog.h" line="74"/>
         <source>Type:</source>
-        <translation type="unfinished"></translation>
+        <translation>Тип:</translation>
     </message>
 </context>
 <context>
@@ -281,7 +281,7 @@
     <message>
         <location filename="../source/dialogs/alternateendingdialog.cpp" line="119"/>
         <source>You must select at least one repeat number.</source>
-        <translation type="unfinished"></translation>
+        <translation>Вы должны выбрать хотя бы одно число повторов.</translation>
     </message>
 </context>
 <context>
@@ -290,13 +290,13 @@
         <location filename="../source/dialogs/artificialharmonicdialog.ui" line="17"/>
         <location filename="../build/source/dialogs/ui_artificialharmonicdialog.h" line="234"/>
         <source>Artificial Harmonic</source>
-        <translation type="unfinished"></translation>
+        <translation>Искусственный флажолет</translation>
     </message>
     <message>
         <location filename="../source/dialogs/artificialharmonicdialog.ui" line="28"/>
         <location filename="../build/source/dialogs/ui_artificialharmonicdialog.h" line="235"/>
         <source>Pitch:</source>
-        <translation type="unfinished"></translation>
+        <translation>Высота:</translation>
     </message>
     <message>
         <location filename="../source/dialogs/artificialharmonicdialog.ui" line="35"/>
@@ -326,43 +326,43 @@
         <location filename="../source/dialogs/artificialharmonicdialog.ui" line="98"/>
         <location filename="../build/source/dialogs/ui_artificialharmonicdialog.h" line="240"/>
         <source>C</source>
-        <translation type="unfinished"></translation>
+        <translation>C</translation>
     </message>
     <message>
         <location filename="../source/dialogs/artificialharmonicdialog.ui" line="124"/>
         <location filename="../build/source/dialogs/ui_artificialharmonicdialog.h" line="241"/>
         <source>D</source>
-        <translation type="unfinished"></translation>
+        <translation>D</translation>
     </message>
     <message>
         <location filename="../source/dialogs/artificialharmonicdialog.ui" line="150"/>
         <location filename="../build/source/dialogs/ui_artificialharmonicdialog.h" line="242"/>
         <source>E</source>
-        <translation type="unfinished"></translation>
+        <translation>E</translation>
     </message>
     <message>
         <location filename="../source/dialogs/artificialharmonicdialog.ui" line="176"/>
         <location filename="../build/source/dialogs/ui_artificialharmonicdialog.h" line="243"/>
         <source>F</source>
-        <translation type="unfinished"></translation>
+        <translation>F</translation>
     </message>
     <message>
         <location filename="../source/dialogs/artificialharmonicdialog.ui" line="202"/>
         <location filename="../build/source/dialogs/ui_artificialharmonicdialog.h" line="244"/>
         <source>G</source>
-        <translation type="unfinished"></translation>
+        <translation>G</translation>
     </message>
     <message>
         <location filename="../source/dialogs/artificialharmonicdialog.ui" line="228"/>
         <location filename="../build/source/dialogs/ui_artificialharmonicdialog.h" line="245"/>
         <source>A</source>
-        <translation type="unfinished"></translation>
+        <translation>A</translation>
     </message>
     <message>
         <location filename="../source/dialogs/artificialharmonicdialog.ui" line="254"/>
         <location filename="../build/source/dialogs/ui_artificialharmonicdialog.h" line="246"/>
         <source>B</source>
-        <translation type="unfinished"></translation>
+        <translation>B</translation>
     </message>
 </context>
 <context>
@@ -377,7 +377,7 @@
         <location filename="../source/dialogs/barlinedialog.ui" line="31"/>
         <location filename="../build/source/dialogs/ui_barlinedialog.h" line="86"/>
         <source>Type:</source>
-        <translation type="unfinished"></translation>
+        <translation>Тип:</translation>
     </message>
     <message>
         <location filename="../source/dialogs/barlinedialog.ui" line="41"/>
@@ -388,27 +388,27 @@
     <message>
         <location filename="../source/dialogs/barlinedialog.cpp" line="35"/>
         <source>Single</source>
-        <translation type="unfinished"></translation>
+        <translation>Одиночный</translation>
     </message>
     <message>
         <location filename="../source/dialogs/barlinedialog.cpp" line="36"/>
         <source>Double</source>
-        <translation type="unfinished"></translation>
+        <translation>Двойной</translation>
     </message>
     <message>
         <location filename="../source/dialogs/barlinedialog.cpp" line="37"/>
         <source>Free Time</source>
-        <translation type="unfinished"></translation>
+        <translation>Свободное время</translation>
     </message>
     <message>
         <location filename="../source/dialogs/barlinedialog.cpp" line="40"/>
         <source>Repeat Start</source>
-        <translation type="unfinished"></translation>
+        <translation>Повторить начало</translation>
     </message>
     <message>
         <location filename="../source/dialogs/barlinedialog.cpp" line="45"/>
         <source>Repeat End</source>
-        <translation type="unfinished"></translation>
+        <translation>Повторить конец</translation>
     </message>
     <message>
         <location filename="../source/dialogs/barlinedialog.cpp" line="46"/>
@@ -423,19 +423,19 @@
         <location filename="../build/source/dialogs/ui_benddialog.h" line="167"/>
         <location filename="../source/dialogs/benddialog.cpp" line="34"/>
         <source>Bend</source>
-        <translation type="unfinished"></translation>
+        <translation>Бенд</translation>
     </message>
     <message>
         <location filename="../source/dialogs/benddialog.ui" line="31"/>
         <location filename="../build/source/dialogs/ui_benddialog.h" line="168"/>
         <source>Bend Type:</source>
-        <translation type="unfinished"></translation>
+        <translation>Тип бенда:</translation>
     </message>
     <message>
         <location filename="../source/dialogs/benddialog.ui" line="41"/>
         <location filename="../build/source/dialogs/ui_benddialog.h" line="169"/>
         <source>Bent Pitch:</source>
-        <translation type="unfinished"></translation>
+        <translation>Высота бенда:</translation>
     </message>
     <message>
         <location filename="../source/dialogs/benddialog.ui" line="51"/>
@@ -447,7 +447,7 @@
         <location filename="../source/dialogs/benddialog.ui" line="61"/>
         <location filename="../build/source/dialogs/ui_benddialog.h" line="171"/>
         <source>Bend Duration:</source>
-        <translation type="unfinished"></translation>
+        <translation>Длительность бенда:</translation>
     </message>
     <message>
         <location filename="../source/dialogs/benddialog.ui" line="73"/>
@@ -459,25 +459,25 @@
         <location filename="../source/dialogs/benddialog.ui" line="85"/>
         <location filename="../build/source/dialogs/ui_benddialog.h" line="173"/>
         <source>Current note duration + next</source>
-        <translation type="unfinished"></translation>
+        <translation>Длительность текущей ноты + следующей</translation>
     </message>
     <message>
         <location filename="../source/dialogs/benddialog.ui" line="95"/>
         <location filename="../build/source/dialogs/ui_benddialog.h" line="174"/>
         <source>notes</source>
-        <translation type="unfinished"></translation>
+        <translation>ноты</translation>
     </message>
     <message>
         <location filename="../source/dialogs/benddialog.ui" line="106"/>
         <location filename="../build/source/dialogs/ui_benddialog.h" line="175"/>
         <source>Vertical Starting Point:</source>
-        <translation type="unfinished"></translation>
+        <translation>Вертикальная начальная точка:</translation>
     </message>
     <message>
         <location filename="../source/dialogs/benddialog.ui" line="116"/>
         <location filename="../build/source/dialogs/ui_benddialog.h" line="176"/>
         <source>Vertical Ending Point:</source>
-        <translation type="unfinished"></translation>
+        <translation>Вертикальная конечная точка:</translation>
     </message>
     <message>
         <location filename="../source/dialogs/benddialog.cpp" line="34"/>
@@ -492,7 +492,7 @@
     <message>
         <location filename="../source/dialogs/benddialog.cpp" line="35"/>
         <source>Pre-Bend</source>
-        <translation type="unfinished"></translation>
+        <translation>Пребенд</translation>
     </message>
     <message>
         <location filename="../source/dialogs/benddialog.cpp" line="35"/>
@@ -581,12 +581,12 @@
     <message>
         <location filename="../source/actions/changepositionspacing.cpp" line="32"/>
         <source>Decrease Position Spacing</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">Уменьшить расстояния между позициями</translation>
     </message>
     <message>
         <location filename="../source/actions/changepositionspacing.cpp" line="36"/>
         <source>Increase Position Spacing</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">Увеличить расстояния между позициями</translation>
     </message>
 </context>
 <context>
@@ -645,7 +645,7 @@
         <location filename="../source/dialogs/chordnamedialog.ui" line="53"/>
         <location filename="../build/source/dialogs/ui_chordnamedialog.h" line="551"/>
         <source>Key:</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">Тональность:</translation>
     </message>
     <message>
         <location filename="../source/dialogs/chordnamedialog.ui" line="65"/>
@@ -659,7 +659,7 @@
         <location filename="../build/source/dialogs/ui_chordnamedialog.h" line="553"/>
         <location filename="../build/source/dialogs/ui_chordnamedialog.h" line="569"/>
         <source>C</source>
-        <translation type="unfinished"></translation>
+        <translation>C</translation>
     </message>
     <message>
         <location filename="../source/dialogs/chordnamedialog.ui" line="115"/>
@@ -667,7 +667,7 @@
         <location filename="../build/source/dialogs/ui_chordnamedialog.h" line="554"/>
         <location filename="../build/source/dialogs/ui_chordnamedialog.h" line="570"/>
         <source>D</source>
-        <translation type="unfinished"></translation>
+        <translation>Д</translation>
     </message>
     <message>
         <location filename="../source/dialogs/chordnamedialog.ui" line="135"/>
@@ -675,7 +675,7 @@
         <location filename="../build/source/dialogs/ui_chordnamedialog.h" line="555"/>
         <location filename="../build/source/dialogs/ui_chordnamedialog.h" line="571"/>
         <source>E</source>
-        <translation type="unfinished"></translation>
+        <translation>Е</translation>
     </message>
     <message>
         <location filename="../source/dialogs/chordnamedialog.ui" line="155"/>
@@ -683,7 +683,7 @@
         <location filename="../build/source/dialogs/ui_chordnamedialog.h" line="556"/>
         <location filename="../build/source/dialogs/ui_chordnamedialog.h" line="572"/>
         <source>F</source>
-        <translation type="unfinished"></translation>
+        <translation>Ф</translation>
     </message>
     <message>
         <location filename="../source/dialogs/chordnamedialog.ui" line="175"/>
@@ -691,7 +691,7 @@
         <location filename="../build/source/dialogs/ui_chordnamedialog.h" line="557"/>
         <location filename="../build/source/dialogs/ui_chordnamedialog.h" line="573"/>
         <source>G</source>
-        <translation type="unfinished"></translation>
+        <translation>Г</translation>
     </message>
     <message>
         <location filename="../source/dialogs/chordnamedialog.ui" line="195"/>
@@ -699,7 +699,7 @@
         <location filename="../build/source/dialogs/ui_chordnamedialog.h" line="558"/>
         <location filename="../build/source/dialogs/ui_chordnamedialog.h" line="574"/>
         <source>A</source>
-        <translation type="unfinished"></translation>
+        <translation>А</translation>
     </message>
     <message>
         <location filename="../source/dialogs/chordnamedialog.ui" line="215"/>
@@ -707,19 +707,19 @@
         <location filename="../build/source/dialogs/ui_chordnamedialog.h" line="559"/>
         <location filename="../build/source/dialogs/ui_chordnamedialog.h" line="575"/>
         <source>B</source>
-        <translation type="unfinished"></translation>
+        <translation>Б</translation>
     </message>
     <message>
         <location filename="../source/dialogs/chordnamedialog.ui" line="300"/>
         <location filename="../build/source/dialogs/ui_chordnamedialog.h" line="562"/>
         <source>Brackets</source>
-        <translation type="unfinished"></translation>
+        <translation>Скобки</translation>
     </message>
     <message>
         <location filename="../source/dialogs/chordnamedialog.ui" line="309"/>
         <location filename="../build/source/dialogs/ui_chordnamedialog.h" line="563"/>
         <source>Formula:</source>
-        <translation type="unfinished"></translation>
+        <translation>Формула:</translation>
     </message>
     <message>
         <location filename="../source/dialogs/chordnamedialog.ui" line="316"/>
@@ -1425,25 +1425,25 @@
         <location filename="../source/dialogs/filterrulewidget.ui" line="103"/>
         <location filename="../build/source/dialogs/ui_filterrulewidget.h" line="138"/>
         <source>&lt;=</source>
-        <translation type="unfinished"></translation>
+        <translation>&lt;=</translation>
     </message>
     <message>
         <location filename="../source/dialogs/filterrulewidget.ui" line="108"/>
         <location filename="../build/source/dialogs/ui_filterrulewidget.h" line="139"/>
         <source>=</source>
-        <translation type="unfinished"></translation>
+        <translation>=</translation>
     </message>
     <message>
         <location filename="../source/dialogs/filterrulewidget.ui" line="113"/>
         <location filename="../build/source/dialogs/ui_filterrulewidget.h" line="140"/>
         <source>&gt;=</source>
-        <translation type="unfinished"></translation>
+        <translation>&gt;=</translation>
     </message>
     <message>
         <location filename="../source/dialogs/filterrulewidget.ui" line="118"/>
         <location filename="../build/source/dialogs/ui_filterrulewidget.h" line="141"/>
         <source>&gt;</source>
-        <translation type="unfinished"></translation>
+        <translation>&gt;</translation>
     </message>
 </context>
 <context>
@@ -1785,7 +1785,7 @@
         <location filename="../source/widgets/mixer/mixeritem.ui" line="129"/>
         <location filename="../build/source/widgets/ui_mixeritem.h" line="123"/>
         <source>Drag to adjust panning.</source>
-        <translation type="unfinished"></translation>
+        <translation>Перетащите, чтобы настроить панорамирование.</translation>
     </message>
     <message>
         <location filename="../source/widgets/mixer/mixeritem.ui" line="148"/>
@@ -1991,7 +1991,7 @@
     <message>
         <location filename="../source/widgets/toolbox/notepage.cpp" line="279"/>
         <source>Bend</source>
-        <translation type="unfinished"></translation>
+        <translation>Бенд</translation>
     </message>
     <message>
         <location filename="../source/widgets/toolbox/notepage.cpp" line="283"/>
