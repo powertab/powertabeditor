@@ -641,12 +641,15 @@ void PowerTabEditor::startStopPlayback(bool from_measure_start)
             Qt::ConnectionType(Qt::UniqueConnection | Qt::DirectConnection));
 
         // Notify the MIDI thread to start playing.
+        const ScoreLocation &location = getLocation();
+        MidiPlaybackSettings initial_settings(
+            myPlaybackWidget->getPlaybackSpeed(), location.getScore());
+
         QMetaObject::invokeMethod(
             myMidiPlayer,
-            [&]()
+            [=]()
             {
-                myMidiPlayer->playScore(getLocation(),
-                                        myPlaybackWidget->getPlaybackSpeed());
+                myMidiPlayer->playScore(location, initial_settings);
             },
             Qt::QueuedConnection);
     }
@@ -1980,7 +1983,20 @@ void PowerTabEditor::editPlayer(int playerIndex, const Player &player,
     ScoreLocation &location = getLocation();
 
     if (!undoable)
+    {
         location.getScore().getPlayers()[playerIndex] = player;
+
+        // This implies a change from the mixer, so update the player volume etc
+        // for midi playback.
+        QMetaObject::invokeMethod(
+            myMidiPlayer,
+            [&]()
+            {
+                myMidiPlayer->liveChangePlayerSettings(
+                    playerIndex, player.getMaxVolume(), player.getPan());
+            },
+            Qt::DirectConnection);
+    }
     else
     {
         myUndoManager->push(
@@ -2069,12 +2085,23 @@ bool PowerTabEditor::eventFilter(QObject *object, QEvent *event)
                                 location.getSystemIndex());
                 }
 
-                auto settings = mySettingsManager->getReadHandle();
-                if (settings->get(Settings::PlayNotesWhileEditing))
+                if (mySettingsManager->getReadHandle()->get(
+                        Settings::PlayNotesWhileEditing))
                 {
+                    const ScoreLocation &location = getLocation();
+                    // Generate the midi data and then transfer it to the midi
+                    // thread.
+                    MidiFile midi_data = MidiPlayer::generateSingleNote(
+                        location, *mySettingsManager);
+                    MidiPlaybackSettings initial_settings(100,
+                                                          location.getScore());
+
                     QMetaObject::invokeMethod(
                         myMidiPlayer,
-                        [&]() { myMidiPlayer->playSingleNote(getLocation()); },
+                        [=, midi_data = std::move(midi_data)]() mutable {
+                            myMidiPlayer->playSingleNote(midi_data, location,
+                                                         initial_settings);
+                        },
                         Qt::QueuedConnection);
                 }
 

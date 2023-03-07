@@ -18,18 +18,38 @@
 #ifndef AUDIO_MIDIPLAYER_H
 #define AUDIO_MIDIPLAYER_H
 
+#include <array>
 #include <atomic>
 #include <boost/signals2/connection.hpp>
 #include <midi/midievent.h>
+#include <midi/midifile.h>
 #include <optional>
 #include <QObject>
+#include <score/generalmidi.h>
 #include <score/scorelocation.h>
+#include <vector>
 
 class MidiFile;
 class MidiOutputDevice;
 class Score;
 class SettingsManager;
 class SystemLocation;
+
+/// Initial values for playback settings which can be updated live from the
+/// mixer, see liveChangePlayerSettings() and liveChangePlaybackSpeed().
+struct MidiPlaybackSettings
+{
+    MidiPlaybackSettings(int speed, const Score &score);
+
+    /// The current playback speed (percent).
+    int myPlaybackSpeed = 100;
+
+    /// Max volume for each player.
+    std::vector<uint8_t> myPlayerMaxVolumes;
+
+    /// Pan for each player.
+    std::vector<uint8_t> myPlayerPans;
+};
 
 class MidiPlayer : public QObject
 {
@@ -47,14 +67,24 @@ public:
 
     void stopPlayback();
 
+    static MidiFile generateSingleNote(const ConstScoreLocation &location,
+                                       const SettingsManager &settings);
+
 public slots:
     void init();
-    void playScore(const ConstScoreLocation &start_score_location, int speed);
-    void playSingleNote(const ConstScoreLocation &location);
+    void playScore(const ConstScoreLocation &start_score_location,
+                   const MidiPlaybackSettings &initial_settings);
+    void playSingleNote(MidiFile &midi_data,
+                        const ConstScoreLocation &start_location,
+                        const MidiPlaybackSettings &initial_settings);
 
     /// Thread-safe, Qt::DirectConnection may be used to invoke from another
     /// thread immediately while playback is running.
     void liveChangePlaybackSpeed(int speed);
+
+    /// Thread-safe, Qt::DirectConnection may be used to invoke from another
+    /// thread immediately while playback is running.
+    void liveChangePlayerSettings(int player, uint8_t max_volume, uint8_t pan);
 
 signals:
     /// These signals are used to move the caret when a position change is
@@ -72,12 +102,14 @@ private slots:
     void updateLiveSettings();
 
 private:
+    void setPlaybackSettings(const MidiPlaybackSettings &settings);
+
     void performCountIn(const Score &score,
                         const SystemLocation &location,
                         Midi::Tempo beat_duration);
-    bool playEvents(MidiFile &file, const Score &score,
-                    const SystemLocation &start_location,
-                    bool allow_count_in = true);
+    bool playEvents(MidiFile &file, const SystemLocation &start_location,
+                    const MidiPlaybackSettings &initial_settings,
+                    bool allow_count_in = false, const Score *score = nullptr);
 
     const SettingsManager &mySettingsManager;
     boost::signals2::scoped_connection mySettingsListener;
@@ -91,6 +123,10 @@ private:
     std::atomic<int> myPlaybackSpeed = 100;
     /// Location where playback began.
     std::optional<ConstScoreLocation> myStartLocation;
+
+    /// Max volume and pan for each channel.
+    std::array<std::atomic<uint8_t>, Midi::NUM_MIDI_CHANNELS_PER_PORT> myChannelMaxVolumes;
+    std::array<std::atomic<uint8_t>, Midi::NUM_MIDI_CHANNELS_PER_PORT> myChannelPans;
 };
 
 #endif

@@ -37,17 +37,6 @@ static const int METRONOME_CHANNEL = 9;
 
 using DurationType = std::chrono::duration<int, std::micro>;
 
-static int
-getPlayerFromChannel(const int channel)
-{
-    if (channel < METRONOME_CHANNEL)
-        return channel;
-    else if (channel == METRONOME_CHANNEL)
-        return -1;
-    else
-        return channel - 1;
-}
-
 MidiPlayer::MidiPlayer(SettingsManager &settings_manager)
     : mySettingsManager(settings_manager)
 {
@@ -132,6 +121,15 @@ MidiPlayer::liveChangePlaybackSpeed(int speed)
     myPlaybackSpeed = speed;
 }
 
+void
+MidiPlayer::liveChangePlayerSettings(int player, uint8_t max_volume,
+                                     uint8_t pan)
+{
+    const int channel = Midi::getPlayerChannel(player);
+    myChannelMaxVolumes[channel] = max_volume;
+    myChannelPans[channel] = pan;
+}
+
 static void
 loadMidiSettings(const SettingsManager &settings_manager,
                  MidiFile::LoadOptions &options)
@@ -167,10 +165,12 @@ mergeMidiEvents(MidiFile &file)
 }
 
 bool
-MidiPlayer::playEvents(MidiFile &file, const Score &score,
-                       const SystemLocation &start_location,
-                       bool allow_count_in)
+MidiPlayer::playEvents(MidiFile &file, const SystemLocation &start_location,
+                       const MidiPlaybackSettings &initial_settings,
+                       bool allow_count_in, const Score *score)
 {
+    setPlaybackSettings(initial_settings);
+
     myIsPlaying = true;
     Util::ScopeExit on_exit([&]() {
         myIsPlaying = false;
@@ -229,7 +229,7 @@ MidiPlayer::playEvents(MidiFile &file, const Score &score,
                     myDevice->setPitchBend(i, initial_pitch_wheel[i]);
 
                 if (allow_count_in)
-                    performCountIn(score, event.getLocation(), beat_duration);
+                    performCountIn(*score, event.getLocation(), beat_duration);
 
                 started = true;
             }
@@ -273,15 +273,8 @@ MidiPlayer::playEvents(MidiFile &file, const Score &score,
         if (!event.isMetaMessage())
         {
             const int channel = event.getChannel();
-            const int player_idx = getPlayerFromChannel(channel);
-            // If the channel corresponds to a valid player, set its maximum
-            // volume
-            if (player_idx >= 0)
-            {
-                const Player &player = score.getPlayers()[player_idx];
-                myDevice->setChannelMaxVolume(channel, player.getMaxVolume());
-                myDevice->setPan(channel, player.getPan());
-            }
+            myDevice->setChannelMaxVolume(channel, myChannelMaxVolumes[channel]);
+            myDevice->setPan(channel, myChannelPans[channel]);
 
             // handle volume change events
             // using device.setVolume() ensures that the maximum volume
@@ -319,9 +312,9 @@ MidiPlayer::playEvents(MidiFile &file, const Score &score,
 }
 
 void
-MidiPlayer::playScore(const ConstScoreLocation &start_score_location, int speed)
+MidiPlayer::playScore(const ConstScoreLocation &start_score_location,
+                      const MidiPlaybackSettings &initial_settings)
 {
-    myPlaybackSpeed = speed;
     myStartLocation.emplace(start_score_location);
     const Score &score = start_score_location.getScore();
 
@@ -336,28 +329,38 @@ MidiPlayer::playScore(const ConstScoreLocation &start_score_location, int speed)
     const SystemLocation start_location(myStartLocation->getSystemIndex(),
                                         myStartLocation->getPositionIndex());
 
-    if (playEvents(file, score, start_location))
+    if (playEvents(file, start_location, initial_settings, true,
+                   &score))
+    {
         emit playbackFinished();
+    }
 }
 
-void
-MidiPlayer::playSingleNote(const ConstScoreLocation &location)
+MidiFile
+MidiPlayer::generateSingleNote(const ConstScoreLocation &location,
+                               const SettingsManager &settings)
 {
-    myPlaybackSpeed = 100;
     const Score &score = location.getScore();
 
     MidiFile::LoadOptions options;
     options.myEnableMetronome = false;
     options.myRecordPositionChanges = false;
-    loadMidiSettings(mySettingsManager, options);
+    loadMidiSettings(settings, options);
 
     MidiFile file;
     file.loadSingleNote(score, location, options);
+    return file;
+}
 
-    const SystemLocation start_location(location.getSystemIndex(),
-                                        location.getPositionIndex());
+void
+MidiPlayer::playSingleNote(MidiFile &file, const ConstScoreLocation &location,
+                           const MidiPlaybackSettings &initial_settings)
+{
+    SystemLocation start_location(location.getSystemIndex(),
+                                  location.getPositionIndex());
 
-    playEvents(file, score, start_location, /* allow_count_in */ false);
+    playEvents(file, start_location, initial_settings,
+               /* allow_count_in */ false, nullptr);
     myDevice->stopAllNotes();
 }
 
@@ -421,4 +424,32 @@ void MidiPlayer::stopPlayback()
     }
 
     myDevice->stopAllNotes();
+}
+
+void
+MidiPlayer::setPlaybackSettings(const MidiPlaybackSettings &settings)
+{
+    myPlaybackSpeed = settings.myPlaybackSpeed;
+
+    std::fill(myChannelMaxVolumes.begin(), myChannelMaxVolumes.end(),
+              Midi::MAX_MIDI_CHANNEL_VOLUME);
+    std::fill(myChannelPans.begin(), myChannelPans.end(), Midi::DEFAULT_PAN);
+
+    // Set the initial volume and pan values.
+    for (size_t i = 0, n = settings.myPlayerMaxVolumes.size(); i < n; ++i)
+    {
+        const int channel = Midi::getPlayerChannel(i);
+        myChannelMaxVolumes[channel] = settings.myPlayerMaxVolumes[i];
+        myChannelPans[channel] = settings.myPlayerPans[i];
+    }
+}
+
+MidiPlaybackSettings::MidiPlaybackSettings(int speed, const Score &score)
+    : myPlaybackSpeed(speed)
+{
+    for (const Player &player : score.getPlayers())
+    {
+        myPlayerMaxVolumes.push_back(player.getMaxVolume());
+        myPlayerPans.push_back(player.getPan());
+    }
 }

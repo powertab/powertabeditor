@@ -16,6 +16,7 @@ Thanks to the following contributors who worked on this release:
 ### Changed
 
 ### Fixed
+- Fixed a frequent crash when the preference to play inserted notes while editing is enabled.
 
 ## [Alpha 19] - 2022-10-17
 

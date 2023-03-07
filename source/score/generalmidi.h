@@ -51,6 +51,8 @@ namespace Midi
 
     /// Default pitch wheel value.
     inline constexpr uint8_t DEFAULT_BEND = 64;
+    /// Default pan value.
+    inline constexpr uint8_t DEFAULT_PAN = 64;
 
     /// Minimum volume level for a MIDI channel.
     const uint8_t MIN_MIDI_CHANNEL_VOLUME = 0;

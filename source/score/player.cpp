@@ -25,7 +25,10 @@ const uint8_t Player::MAX_VOLUME = Midi::MAX_MIDI_CHANNEL_VOLUME;
 const uint8_t Player::MIN_PAN = Midi::MIN_MIDI_CHANNEL_EFFECT_LEVEL;
 const uint8_t Player::MAX_PAN = Midi::MAX_MIDI_CHANNEL_EFFECT_LEVEL;
 
-Player::Player() : myDescription("Untitled"), myMaxVolume(MAX_VOLUME), myPan(64)
+Player::Player()
+    : myDescription("Untitled"),
+      myMaxVolume(MAX_VOLUME),
+      myPan(Midi::DEFAULT_PAN)
 {
 }
 

@@ -58,6 +58,10 @@ public:
     };
 
     MidiFile();
+    MidiFile(const MidiFile &) = delete;
+    MidiFile &operator=(const MidiFile &) = delete;
+    MidiFile(MidiFile &&) = default;
+    MidiFile &operator=(MidiFile &&) = delete;
 
     void load(const Score &score, const LoadOptions &options);
     void loadSingleNote(const Score &score, const ConstScoreLocation &location,
