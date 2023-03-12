@@ -78,12 +78,12 @@ void
 MidiPlayer::updateDeviceSettings()
 {
     // Load MIDI settings.
-    int api;
-    int port;
+    std::string api;
+    std::string port;
     {
         auto settings = mySettingsManager.getReadHandle();
-        api = settings->get(Settings::MidiApi);
-        port = settings->get(Settings::MidiPort);
+        api = settings->get(Settings::MidiApiName);
+        port = settings->get(Settings::MidiPortName);
     }
 
     // Initialize RtMidi and set the port.
@@ -92,6 +92,11 @@ MidiPlayer::updateDeviceSettings()
     {
         myDevice.reset();
         QString msg = tr("Error initializing MIDI output device.");
+
+        msg += "\n\n";
+        msg += tr("MIDI interface: '%1'").arg(QString::fromStdString(api));
+        msg += "\n";
+        msg += tr("MIDI port: '%1'").arg(QString::fromStdString(port));
 
         // The snap package doesn't have ALSA / JACK access by default, so
         // suggest how to grant access.

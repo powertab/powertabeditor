@@ -9,6 +9,7 @@ Thanks to the following contributors who worked on this release:
 - @conker312
 
 ### Added
+- The preferred MIDI output device is now tracked by name rather than by port number, which is more robust if e.g. a new device is plugged in.
 - Translations
   - Added Turkish translation (#406)
   - Updated French translation (#406)

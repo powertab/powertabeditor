@@ -29,6 +29,7 @@
 #include <cstdint>
 #include <memory>
 #include <string>
+#include <string_view>
 #include <vector>
 #include <score/generalmidi.h>
 
@@ -40,8 +41,10 @@ public:
     MidiOutputDevice();
     ~MidiOutputDevice();
 
-    bool initialize(size_t preferredApi, unsigned int preferredPort);
+    bool initialize(const std::string_view &preferred_api,
+                    const std::string_view &preferred_port);
     size_t getApiCount();
+    std::string getApiName(size_t api);
     unsigned int getPortCount(size_t api);
     std::string getPortName(size_t api, unsigned int port);
 

@@ -23,8 +23,8 @@
 /// Audio-related settings and their default values.
 namespace Settings
 {
-    extern const Setting<int> MidiApi;
-    extern const Setting<int> MidiPort;
+    extern const Setting<std::string> MidiApiName;
+    extern const Setting<std::string> MidiPortName;
 
     extern const Setting<int> MidiVibratoLevel;
     extern const Setting<int> MidiWideVibratoLevel;

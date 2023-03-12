@@ -244,13 +244,11 @@
     <name>AlterationOfPaceDialog</name>
     <message>
         <location filename="../source/dialogs/alterationofpacedialog.ui" line="17"/>
-        <location filename="../build/source/dialogs/ui_alterationofpacedialog.h" line="73"/>
         <source>Alteration of Pace</source>
         <translation>Variation de tempo</translation>
     </message>
     <message>
         <location filename="../source/dialogs/alterationofpacedialog.ui" line="34"/>
-        <location filename="../build/source/dialogs/ui_alterationofpacedialog.h" line="74"/>
         <source>Type:</source>
         <translation>Type :</translation>
     </message>
@@ -288,79 +286,66 @@
     <name>ArtificialHarmonicDialog</name>
     <message>
         <location filename="../source/dialogs/artificialharmonicdialog.ui" line="17"/>
-        <location filename="../build/source/dialogs/ui_artificialharmonicdialog.h" line="234"/>
         <source>Artificial Harmonic</source>
         <translation>Harmonique artificiel</translation>
     </message>
     <message>
         <location filename="../source/dialogs/artificialharmonicdialog.ui" line="28"/>
-        <location filename="../build/source/dialogs/ui_artificialharmonicdialog.h" line="235"/>
         <source>Pitch:</source>
         <translation>Hauteur :</translation>
     </message>
     <message>
         <location filename="../source/dialogs/artificialharmonicdialog.ui" line="35"/>
-        <location filename="../build/source/dialogs/ui_artificialharmonicdialog.h" line="236"/>
         <source>Octave:</source>
         <translation>Octave :</translation>
     </message>
     <message>
         <location filename="../source/dialogs/artificialharmonicdialog.ui" line="44"/>
-        <location filename="../build/source/dialogs/ui_artificialharmonicdialog.h" line="237"/>
         <source>Loco</source>
         <translation>Loco</translation>
     </message>
     <message>
         <location filename="../source/dialogs/artificialharmonicdialog.ui" line="51"/>
-        <location filename="../build/source/dialogs/ui_artificialharmonicdialog.h" line="238"/>
         <source>8va</source>
         <translation>8va</translation>
     </message>
     <message>
         <location filename="../source/dialogs/artificialharmonicdialog.ui" line="58"/>
-        <location filename="../build/source/dialogs/ui_artificialharmonicdialog.h" line="239"/>
         <source>15ma</source>
         <translation>15ma</translation>
     </message>
     <message>
         <location filename="../source/dialogs/artificialharmonicdialog.ui" line="98"/>
-        <location filename="../build/source/dialogs/ui_artificialharmonicdialog.h" line="240"/>
         <source>C</source>
         <translation>Do</translation>
     </message>
     <message>
         <location filename="../source/dialogs/artificialharmonicdialog.ui" line="124"/>
-        <location filename="../build/source/dialogs/ui_artificialharmonicdialog.h" line="241"/>
         <source>D</source>
         <translation>Ré</translation>
     </message>
     <message>
         <location filename="../source/dialogs/artificialharmonicdialog.ui" line="150"/>
-        <location filename="../build/source/dialogs/ui_artificialharmonicdialog.h" line="242"/>
         <source>E</source>
         <translation>Mi</translation>
     </message>
     <message>
         <location filename="../source/dialogs/artificialharmonicdialog.ui" line="176"/>
-        <location filename="../build/source/dialogs/ui_artificialharmonicdialog.h" line="243"/>
         <source>F</source>
         <translation>Fa</translation>
     </message>
     <message>
         <location filename="../source/dialogs/artificialharmonicdialog.ui" line="202"/>
-        <location filename="../build/source/dialogs/ui_artificialharmonicdialog.h" line="244"/>
         <source>G</source>
         <translation>Sol</translation>
     </message>
     <message>
         <location filename="../source/dialogs/artificialharmonicdialog.ui" line="228"/>
-        <location filename="../build/source/dialogs/ui_artificialharmonicdialog.h" line="245"/>
         <source>A</source>
         <translation>La</translation>
     </message>
     <message>
         <location filename="../source/dialogs/artificialharmonicdialog.ui" line="254"/>
-        <location filename="../build/source/dialogs/ui_artificialharmonicdialog.h" line="246"/>
         <source>B</source>
         <translation>Si</translation>
     </message>
@@ -369,19 +354,16 @@
     <name>BarlineDialog</name>
     <message>
         <location filename="../source/dialogs/barlinedialog.ui" line="17"/>
-        <location filename="../build/source/dialogs/ui_barlinedialog.h" line="85"/>
         <source>Music Bar</source>
         <translation>Mesure</translation>
     </message>
     <message>
         <location filename="../source/dialogs/barlinedialog.ui" line="31"/>
-        <location filename="../build/source/dialogs/ui_barlinedialog.h" line="86"/>
         <source>Type:</source>
         <translation>Type :</translation>
     </message>
     <message>
         <location filename="../source/dialogs/barlinedialog.ui" line="41"/>
-        <location filename="../build/source/dialogs/ui_barlinedialog.h" line="87"/>
         <source>Play:</source>
         <translation>Lecture :</translation>
     </message>
@@ -420,62 +402,52 @@
     <name>BendDialog</name>
     <message>
         <location filename="../source/dialogs/benddialog.ui" line="17"/>
-        <location filename="../build/source/dialogs/ui_benddialog.h" line="167"/>
         <location filename="../source/dialogs/benddialog.cpp" line="34"/>
         <source>Bend</source>
         <translation>Bend</translation>
     </message>
     <message>
         <location filename="../source/dialogs/benddialog.ui" line="31"/>
-        <location filename="../build/source/dialogs/ui_benddialog.h" line="168"/>
         <source>Bend Type:</source>
         <translation>Type de bend :</translation>
     </message>
     <message>
         <location filename="../source/dialogs/benddialog.ui" line="41"/>
-        <location filename="../build/source/dialogs/ui_benddialog.h" line="169"/>
         <source>Bent Pitch:</source>
         <translation>Hauteur du bend :</translation>
     </message>
     <message>
         <location filename="../source/dialogs/benddialog.ui" line="51"/>
-        <location filename="../build/source/dialogs/ui_benddialog.h" line="170"/>
         <source>Release Pitch:</source>
         <translation>Hauteur du relâchement :</translation>
     </message>
     <message>
         <location filename="../source/dialogs/benddialog.ui" line="61"/>
-        <location filename="../build/source/dialogs/ui_benddialog.h" line="171"/>
         <source>Bend Duration:</source>
         <translation>Durée du bend :</translation>
     </message>
     <message>
         <location filename="../source/dialogs/benddialog.ui" line="73"/>
-        <location filename="../build/source/dialogs/ui_benddialog.h" line="172"/>
         <source>Default</source>
         <translation>Par défaut</translation>
     </message>
     <message>
         <location filename="../source/dialogs/benddialog.ui" line="85"/>
-        <location filename="../build/source/dialogs/ui_benddialog.h" line="173"/>
         <source>Current note duration + next</source>
         <translation>Durée de la note courante + suivante</translation>
     </message>
     <message>
         <location filename="../source/dialogs/benddialog.ui" line="95"/>
-        <location filename="../build/source/dialogs/ui_benddialog.h" line="174"/>
         <source>notes</source>
         <translation>Notes</translation>
     </message>
     <message>
         <location filename="../source/dialogs/benddialog.ui" line="106"/>
-        <location filename="../build/source/dialogs/ui_benddialog.h" line="175"/>
         <source>Vertical Starting Point:</source>
         <translation>Point de départ vertical :</translation>
     </message>
     <message>
         <location filename="../source/dialogs/benddialog.ui" line="116"/>
-        <location filename="../build/source/dialogs/ui_benddialog.h" line="176"/>
         <source>Vertical Ending Point:</source>
         <translation>Point de fin vertical :</translation>
     </message>
@@ -534,44 +506,53 @@
     <name>BulkConverterDialog</name>
     <message>
         <location filename="../source/dialogs/bulkconverterdialog.ui" line="14"/>
-        <location filename="../build/source/dialogs/ui_bulkconverterdialog.h" line="116"/>
         <source>Bulk Converter</source>
         <translation>Convertisseur en masse</translation>
     </message>
     <message>
-        <location filename="../source/dialogs/bulkconverterdialog.ui" line="29"/>
-        <location filename="../build/source/dialogs/ui_bulkconverterdialog.h" line="117"/>
+        <location filename="../source/dialogs/bulkconverterdialog.ui" line="37"/>
+        <source>Source Directory:</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../source/dialogs/bulkconverterdialog.ui" line="65"/>
+        <source>Destination Directory:</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../source/dialogs/bulkconverterdialog.ui" line="93"/>
+        <source>Convert To:</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
         <source>E&amp;xit</source>
-        <translation>Quitter</translation>
+        <translation type="vanished">Quitter</translation>
     </message>
     <message>
-        <location filename="../source/dialogs/bulkconverterdialog.ui" line="43"/>
-        <location filename="../build/source/dialogs/ui_bulkconverterdialog.h" line="118"/>
         <source>Destination Directory</source>
-        <translation>Dossier de destination</translation>
+        <translation type="vanished">Dossier de destination</translation>
     </message>
     <message>
-        <location filename="../source/dialogs/bulkconverterdialog.ui" line="50"/>
-        <location filename="../source/dialogs/bulkconverterdialog.ui" line="74"/>
-        <location filename="../build/source/dialogs/ui_bulkconverterdialog.h" line="119"/>
-        <location filename="../build/source/dialogs/ui_bulkconverterdialog.h" line="121"/>
+        <location filename="../source/dialogs/bulkconverterdialog.ui" line="56"/>
+        <location filename="../source/dialogs/bulkconverterdialog.ui" line="84"/>
         <source>...</source>
         <translation>…</translation>
     </message>
     <message>
-        <location filename="../source/dialogs/bulkconverterdialog.ui" line="60"/>
-        <location filename="../build/source/dialogs/ui_bulkconverterdialog.h" line="120"/>
         <source>&amp;Convert</source>
-        <translation>Convertir</translation>
+        <translation type="vanished">Convertir</translation>
     </message>
     <message>
-        <location filename="../source/dialogs/bulkconverterdialog.ui" line="81"/>
-        <location filename="../build/source/dialogs/ui_bulkconverterdialog.h" line="122"/>
         <source>Source Directory</source>
-        <translation>Dossier source</translation>
+        <translation type="vanished">Dossier source</translation>
     </message>
     <message>
-        <location filename="../source/dialogs/bulkconverterdialog.cpp" line="171"/>
+        <location filename="../source/dialogs/bulkconverterdialog.cpp" line="172"/>
+        <source>Convert</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../source/dialogs/bulkconverterdialog.cpp" line="190"/>
         <source>Directory To Convert</source>
         <translation>Dossier à convertir</translation>
     </message>
@@ -593,31 +574,26 @@
     <name>ChordDiagramDialog</name>
     <message>
         <location filename="../source/dialogs/chorddiagramdialog.ui" line="9"/>
-        <location filename="../build/source/dialogs/ui_chorddiagramdialog.h" line="110"/>
         <source>Chord Diagram</source>
         <translation>Diagramme d&apos;accord</translation>
     </message>
     <message>
         <location filename="../source/dialogs/chorddiagramdialog.ui" line="23"/>
-        <location filename="../build/source/dialogs/ui_chorddiagramdialog.h" line="111"/>
         <source>Chord Name:</source>
         <translation>Nom de l&apos;accord :</translation>
     </message>
     <message>
         <location filename="../source/dialogs/chorddiagramdialog.ui" line="33"/>
-        <location filename="../build/source/dialogs/ui_chorddiagramdialog.h" line="112"/>
         <source>Top Fret:</source>
         <translation>Frette de départ :</translation>
     </message>
     <message>
         <location filename="../source/dialogs/chorddiagramdialog.ui" line="43"/>
-        <location filename="../build/source/dialogs/ui_chorddiagramdialog.h" line="113"/>
         <source>Number of Strings:</source>
         <translation>Nombre de cordes :</translation>
     </message>
     <message>
         <location filename="../source/dialogs/chorddiagramdialog.ui" line="53"/>
-        <location filename="../build/source/dialogs/ui_chorddiagramdialog.h" line="114"/>
         <source>Diagram:</source>
         <translation>Diagramme :</translation>
     </message>
@@ -631,123 +607,98 @@
     <name>ChordNameDialog</name>
     <message>
         <location filename="../source/dialogs/chordnamedialog.ui" line="17"/>
-        <location filename="../build/source/dialogs/ui_chordnamedialog.h" line="549"/>
         <source>Chord Name</source>
         <translation>Nom de l&apos;accord</translation>
     </message>
     <message>
         <location filename="../source/dialogs/chordnamedialog.ui" line="36"/>
-        <location filename="../build/source/dialogs/ui_chordnamedialog.h" line="550"/>
         <source>Preview:</source>
         <translation>Aperçu :</translation>
     </message>
     <message>
         <location filename="../source/dialogs/chordnamedialog.ui" line="53"/>
-        <location filename="../build/source/dialogs/ui_chordnamedialog.h" line="551"/>
         <source>Key:</source>
         <translation>Clé :</translation>
     </message>
     <message>
         <location filename="../source/dialogs/chordnamedialog.ui" line="65"/>
-        <location filename="../build/source/dialogs/ui_chordnamedialog.h" line="552"/>
         <source>No Chord</source>
         <translation>Aucun accord</translation>
     </message>
     <message>
         <location filename="../source/dialogs/chordnamedialog.ui" line="95"/>
-        <location filename="../source/dialogs/chordnamedialog.ui" line="689"/>
-        <location filename="../build/source/dialogs/ui_chordnamedialog.h" line="553"/>
-        <location filename="../build/source/dialogs/ui_chordnamedialog.h" line="569"/>
+        <location filename="../source/dialogs/chordnamedialog.ui" line="702"/>
         <source>C</source>
         <translation>Do</translation>
     </message>
     <message>
         <location filename="../source/dialogs/chordnamedialog.ui" line="115"/>
-        <location filename="../source/dialogs/chordnamedialog.ui" line="709"/>
-        <location filename="../build/source/dialogs/ui_chordnamedialog.h" line="554"/>
-        <location filename="../build/source/dialogs/ui_chordnamedialog.h" line="570"/>
+        <location filename="../source/dialogs/chordnamedialog.ui" line="722"/>
         <source>D</source>
         <translation>Ré</translation>
     </message>
     <message>
         <location filename="../source/dialogs/chordnamedialog.ui" line="135"/>
-        <location filename="../source/dialogs/chordnamedialog.ui" line="729"/>
-        <location filename="../build/source/dialogs/ui_chordnamedialog.h" line="555"/>
-        <location filename="../build/source/dialogs/ui_chordnamedialog.h" line="571"/>
+        <location filename="../source/dialogs/chordnamedialog.ui" line="742"/>
         <source>E</source>
         <translation>Mi</translation>
     </message>
     <message>
         <location filename="../source/dialogs/chordnamedialog.ui" line="155"/>
-        <location filename="../source/dialogs/chordnamedialog.ui" line="749"/>
-        <location filename="../build/source/dialogs/ui_chordnamedialog.h" line="556"/>
-        <location filename="../build/source/dialogs/ui_chordnamedialog.h" line="572"/>
+        <location filename="../source/dialogs/chordnamedialog.ui" line="762"/>
         <source>F</source>
         <translation>Fa</translation>
     </message>
     <message>
         <location filename="../source/dialogs/chordnamedialog.ui" line="175"/>
-        <location filename="../source/dialogs/chordnamedialog.ui" line="769"/>
-        <location filename="../build/source/dialogs/ui_chordnamedialog.h" line="557"/>
-        <location filename="../build/source/dialogs/ui_chordnamedialog.h" line="573"/>
+        <location filename="../source/dialogs/chordnamedialog.ui" line="782"/>
         <source>G</source>
         <translation>Sol</translation>
     </message>
     <message>
         <location filename="../source/dialogs/chordnamedialog.ui" line="195"/>
-        <location filename="../source/dialogs/chordnamedialog.ui" line="789"/>
-        <location filename="../build/source/dialogs/ui_chordnamedialog.h" line="558"/>
-        <location filename="../build/source/dialogs/ui_chordnamedialog.h" line="574"/>
+        <location filename="../source/dialogs/chordnamedialog.ui" line="802"/>
         <source>A</source>
         <translation>La</translation>
     </message>
     <message>
         <location filename="../source/dialogs/chordnamedialog.ui" line="215"/>
-        <location filename="../source/dialogs/chordnamedialog.ui" line="809"/>
-        <location filename="../build/source/dialogs/ui_chordnamedialog.h" line="559"/>
-        <location filename="../build/source/dialogs/ui_chordnamedialog.h" line="575"/>
+        <location filename="../source/dialogs/chordnamedialog.ui" line="822"/>
         <source>B</source>
         <translation>Si</translation>
     </message>
     <message>
         <location filename="../source/dialogs/chordnamedialog.ui" line="300"/>
-        <location filename="../build/source/dialogs/ui_chordnamedialog.h" line="562"/>
         <source>Brackets</source>
         <translation>Accolades</translation>
     </message>
     <message>
         <location filename="../source/dialogs/chordnamedialog.ui" line="309"/>
-        <location filename="../build/source/dialogs/ui_chordnamedialog.h" line="563"/>
         <source>Formula:</source>
         <translation>Formule :</translation>
     </message>
     <message>
         <location filename="../source/dialogs/chordnamedialog.ui" line="316"/>
-        <location filename="../build/source/dialogs/ui_chordnamedialog.h" line="564"/>
         <source>Additions:</source>
         <translation>Ajouts :</translation>
     </message>
     <message>
         <location filename="../source/dialogs/chordnamedialog.ui" line="323"/>
-        <location filename="../build/source/dialogs/ui_chordnamedialog.h" line="565"/>
         <source>Extensions:</source>
         <translation>Extensions :</translation>
     </message>
     <message>
         <location filename="../source/dialogs/chordnamedialog.ui" line="330"/>
-        <location filename="../build/source/dialogs/ui_chordnamedialog.h" line="566"/>
         <source>Alterations:</source>
         <translation>Altérations :</translation>
     </message>
     <message>
         <location filename="../source/dialogs/chordnamedialog.ui" line="337"/>
-        <location filename="../build/source/dialogs/ui_chordnamedialog.h" line="567"/>
         <source>Bass Note:</source>
         <translation>Note basse :</translation>
     </message>
     <message>
-        <location filename="../source/dialogs/chordnamedialog.ui" line="898"/>
-        <location filename="../build/source/dialogs/ui_chordnamedialog.h" line="578"/>
+        <location filename="../source/dialogs/chordnamedialog.ui" line="911"/>
         <source>Chords in Score:</source>
         <translation>Accords de la partition :</translation>
     </message>
@@ -756,25 +707,21 @@
     <name>CrashDialog</name>
     <message>
         <location filename="../source/dialogs/crashdialog.ui" line="23"/>
-        <location filename="../build/source/dialogs/ui_crashdialog.h" line="99"/>
         <source>Error</source>
         <translation>Erreur</translation>
     </message>
     <message>
         <location filename="../source/dialogs/crashdialog.ui" line="37"/>
-        <location filename="../build/source/dialogs/ui_crashdialog.h" line="100"/>
         <source>Oops! Something went wrong.</source>
         <translation>Oups ! Une erreur s&apos;est produite.</translation>
     </message>
     <message>
         <location filename="../source/dialogs/crashdialog.ui" line="74"/>
-        <location filename="../build/source/dialogs/ui_crashdialog.h" line="101"/>
         <source>Report Bug...</source>
         <translation>Signaler un problème…</translation>
     </message>
     <message>
         <location filename="../source/dialogs/crashdialog.ui" line="84"/>
-        <location filename="../build/source/dialogs/ui_crashdialog.h" line="102"/>
         <source>Close</source>
         <translation>Fermer</translation>
     </message>
@@ -783,43 +730,36 @@
     <name>DirectionDialog</name>
     <message>
         <location filename="../source/dialogs/directiondialog.ui" line="17"/>
-        <location filename="../build/source/dialogs/ui_directiondialog.h" line="135"/>
         <source>Musical Direction</source>
         <translation>Direction musicale</translation>
     </message>
     <message>
         <location filename="../source/dialogs/directiondialog.ui" line="28"/>
-        <location filename="../build/source/dialogs/ui_directiondialog.h" line="136"/>
         <source>Symbol:</source>
         <translation>Symbole :</translation>
     </message>
     <message>
         <location filename="../source/dialogs/directiondialog.ui" line="38"/>
-        <location filename="../build/source/dialogs/ui_directiondialog.h" line="137"/>
         <source>Active Symbol:</source>
         <translation>Symbole actif :</translation>
     </message>
     <message>
         <location filename="../source/dialogs/directiondialog.ui" line="48"/>
-        <location filename="../build/source/dialogs/ui_directiondialog.h" line="138"/>
         <source>Repeat Number:</source>
         <translation>Nombre de répétitions :</translation>
     </message>
     <message>
         <location filename="../source/dialogs/directiondialog.ui" line="58"/>
-        <location filename="../build/source/dialogs/ui_directiondialog.h" line="139"/>
         <source>Direction:</source>
         <translation>Direction :</translation>
     </message>
     <message>
         <location filename="../source/dialogs/directiondialog.ui" line="86"/>
-        <location filename="../build/source/dialogs/ui_directiondialog.h" line="140"/>
         <source>Add</source>
         <translation>Ajouter</translation>
     </message>
     <message>
         <location filename="../source/dialogs/directiondialog.ui" line="93"/>
-        <location filename="../build/source/dialogs/ui_directiondialog.h" line="141"/>
         <source>Remove</source>
         <translation>Supprimer</translation>
     </message>
@@ -828,19 +768,16 @@
     <name>DynamicDialog</name>
     <message>
         <location filename="../source/dialogs/dynamicdialog.ui" line="17"/>
-        <location filename="../build/source/dialogs/ui_dynamicdialog.h" line="203"/>
         <source>Dynamic</source>
         <translation>Nuance</translation>
     </message>
     <message>
         <location filename="../source/dialogs/dynamicdialog.ui" line="40"/>
-        <location filename="../build/source/dialogs/ui_dynamicdialog.h" line="204"/>
         <source>Volume Level:</source>
         <translation>Niveau de volume :</translation>
     </message>
     <message>
         <location filename="../source/dialogs/dynamicdialog.ui" line="67"/>
-        <location filename="../build/source/dialogs/ui_dynamicdialog.h" line="205"/>
         <source>Off</source>
         <translation>Désactivé</translation>
     </message>
@@ -950,431 +887,356 @@
     <name>FileInformationDialog</name>
     <message>
         <location filename="../source/dialogs/fileinformationdialog.ui" line="17"/>
-        <location filename="../build/source/dialogs/ui_fileinformationdialog.h" line="706"/>
         <source>File Information</source>
         <translation>Informations sur le fichier</translation>
     </message>
     <message>
         <location filename="../source/dialogs/fileinformationdialog.ui" line="30"/>
-        <location filename="../build/source/dialogs/ui_fileinformationdialog.h" line="780"/>
         <source>Song Information</source>
         <translation>Informations sur le morceau</translation>
     </message>
     <message>
         <location filename="../source/dialogs/fileinformationdialog.ui" line="51"/>
-        <location filename="../build/source/dialogs/ui_fileinformationdialog.h" line="707"/>
         <source>Classification:</source>
         <translation>Classification :</translation>
     </message>
     <message>
         <location filename="../source/dialogs/fileinformationdialog.ui" line="63"/>
-        <location filename="../build/source/dialogs/ui_fileinformationdialog.h" line="708"/>
         <source>Song</source>
         <translation>Morceau</translation>
     </message>
     <message>
         <location filename="../source/dialogs/fileinformationdialog.ui" line="73"/>
-        <location filename="../build/source/dialogs/ui_fileinformationdialog.h" line="709"/>
         <source>Lesson</source>
         <translation>Leçon</translation>
     </message>
     <message>
         <location filename="../source/dialogs/fileinformationdialog.ui" line="113"/>
         <location filename="../source/dialogs/fileinformationdialog.ui" line="478"/>
-        <location filename="../build/source/dialogs/ui_fileinformationdialog.h" line="710"/>
-        <location filename="../build/source/dialogs/ui_fileinformationdialog.h" line="750"/>
         <source>Title:</source>
         <translation>Titre :</translation>
     </message>
     <message>
         <location filename="../source/dialogs/fileinformationdialog.ui" line="123"/>
         <location filename="../source/dialogs/fileinformationdialog.ui" line="488"/>
-        <location filename="../build/source/dialogs/ui_fileinformationdialog.h" line="711"/>
-        <location filename="../build/source/dialogs/ui_fileinformationdialog.h" line="751"/>
         <source>Subtitle:</source>
         <translation>Sous-titre :</translation>
     </message>
     <message>
         <location filename="../source/dialogs/fileinformationdialog.ui" line="133"/>
-        <location filename="../build/source/dialogs/ui_fileinformationdialog.h" line="712"/>
         <source>Artist:</source>
         <translation>Artiste :</translation>
     </message>
     <message>
         <location filename="../source/dialogs/fileinformationdialog.ui" line="152"/>
-        <location filename="../build/source/dialogs/ui_fileinformationdialog.h" line="713"/>
         <source>Release Information</source>
         <translation>Informations de sortie</translation>
     </message>
     <message>
         <location filename="../source/dialogs/fileinformationdialog.ui" line="164"/>
-        <location filename="../build/source/dialogs/ui_fileinformationdialog.h" line="714"/>
         <source>Release Type:</source>
         <translation>Type de sortie :</translation>
     </message>
     <message>
         <location filename="../source/dialogs/fileinformationdialog.ui" line="178"/>
-        <location filename="../build/source/dialogs/ui_fileinformationdialog.h" line="719"/>
         <source>Public Release (Audio)</source>
         <translation>Sortie publique (Audio)</translation>
     </message>
     <message>
         <location filename="../source/dialogs/fileinformationdialog.ui" line="183"/>
-        <location filename="../build/source/dialogs/ui_fileinformationdialog.h" line="721"/>
         <source>Public Release (Video)</source>
         <translation>Sortie publique (Vidéo)</translation>
     </message>
     <message>
         <location filename="../source/dialogs/fileinformationdialog.ui" line="188"/>
-        <location filename="../build/source/dialogs/ui_fileinformationdialog.h" line="723"/>
         <source>Bootleg</source>
         <translation>Bootleg</translation>
     </message>
     <message>
         <location filename="../source/dialogs/fileinformationdialog.ui" line="193"/>
-        <location filename="../build/source/dialogs/ui_fileinformationdialog.h" line="725"/>
         <source>Not Released</source>
         <translation>Non publié</translation>
     </message>
     <message>
         <location filename="../source/dialogs/fileinformationdialog.ui" line="223"/>
-        <location filename="../build/source/dialogs/ui_fileinformationdialog.h" line="728"/>
         <source>Album Title:</source>
         <translation>Titre de l&apos;album :</translation>
     </message>
     <message>
         <location filename="../source/dialogs/fileinformationdialog.ui" line="233"/>
-        <location filename="../build/source/dialogs/ui_fileinformationdialog.h" line="729"/>
         <source>Album Type:</source>
         <translation>Type d&apos;album :</translation>
     </message>
     <message>
         <location filename="../source/dialogs/fileinformationdialog.ui" line="241"/>
-        <location filename="../build/source/dialogs/ui_fileinformationdialog.h" line="730"/>
         <source>Single</source>
         <translation>Single</translation>
     </message>
     <message>
         <location filename="../source/dialogs/fileinformationdialog.ui" line="246"/>
-        <location filename="../build/source/dialogs/ui_fileinformationdialog.h" line="731"/>
         <source>EP</source>
         <translation>EP</translation>
     </message>
     <message>
         <location filename="../source/dialogs/fileinformationdialog.ui" line="251"/>
-        <location filename="../build/source/dialogs/ui_fileinformationdialog.h" line="732"/>
         <source>Album</source>
         <translation>Album</translation>
     </message>
     <message>
         <location filename="../source/dialogs/fileinformationdialog.ui" line="256"/>
-        <location filename="../build/source/dialogs/ui_fileinformationdialog.h" line="733"/>
         <source>Double Album</source>
         <translation>Double Album</translation>
     </message>
     <message>
         <location filename="../source/dialogs/fileinformationdialog.ui" line="261"/>
-        <location filename="../build/source/dialogs/ui_fileinformationdialog.h" line="734"/>
         <source>Triple Album</source>
         <translation>Triple Album</translation>
     </message>
     <message>
         <location filename="../source/dialogs/fileinformationdialog.ui" line="266"/>
-        <location filename="../build/source/dialogs/ui_fileinformationdialog.h" line="735"/>
         <source>Boxset</source>
         <translation>Coffret</translation>
     </message>
     <message>
         <location filename="../source/dialogs/fileinformationdialog.ui" line="274"/>
-        <location filename="../build/source/dialogs/ui_fileinformationdialog.h" line="737"/>
         <source>Year:</source>
         <translation>Année :</translation>
     </message>
     <message>
         <location filename="../source/dialogs/fileinformationdialog.ui" line="281"/>
         <location filename="../source/dialogs/fileinformationdialog.ui" line="322"/>
-        <location filename="../build/source/dialogs/ui_fileinformationdialog.h" line="738"/>
-        <location filename="../build/source/dialogs/ui_fileinformationdialog.h" line="740"/>
         <source>Live Recording:</source>
         <translation>Enregistrement live :</translation>
     </message>
     <message>
         <location filename="../source/dialogs/fileinformationdialog.ui" line="312"/>
-        <location filename="../build/source/dialogs/ui_fileinformationdialog.h" line="739"/>
         <source>Video Title:</source>
         <translation>Titre de la vidéo :</translation>
     </message>
     <message>
         <location filename="../source/dialogs/fileinformationdialog.ui" line="349"/>
-        <location filename="../build/source/dialogs/ui_fileinformationdialog.h" line="741"/>
         <source>Bootleg Title:</source>
         <translation>Titre du Bootleg :</translation>
     </message>
     <message>
         <location filename="../source/dialogs/fileinformationdialog.ui" line="359"/>
-        <location filename="../build/source/dialogs/ui_fileinformationdialog.h" line="742"/>
         <source>Bootleg Date:</source>
         <translation>Date du Bootleg :</translation>
     </message>
     <message>
         <location filename="../source/dialogs/fileinformationdialog.ui" line="382"/>
         <location filename="../source/dialogs/fileinformationdialog.ui" line="654"/>
-        <location filename="../build/source/dialogs/ui_fileinformationdialog.h" line="743"/>
-        <location filename="../build/source/dialogs/ui_fileinformationdialog.h" line="777"/>
         <source>Author Information</source>
         <translation>Informations sur l&apos;auteur</translation>
     </message>
     <message>
         <location filename="../source/dialogs/fileinformationdialog.ui" line="400"/>
-        <location filename="../build/source/dialogs/ui_fileinformationdialog.h" line="744"/>
         <source>Traditional (Author Unknown):</source>
         <translation>Traditionnel (Auteur inconnu) :</translation>
     </message>
     <message>
         <location filename="../source/dialogs/fileinformationdialog.ui" line="410"/>
-        <location filename="../build/source/dialogs/ui_fileinformationdialog.h" line="745"/>
         <source>Music By:</source>
         <translation>Musique par :</translation>
     </message>
     <message>
         <location filename="../source/dialogs/fileinformationdialog.ui" line="420"/>
-        <location filename="../build/source/dialogs/ui_fileinformationdialog.h" line="746"/>
         <source>Words By:</source>
         <translation>Paroles par :</translation>
     </message>
     <message>
         <location filename="../source/dialogs/fileinformationdialog.ui" line="430"/>
-        <location filename="../build/source/dialogs/ui_fileinformationdialog.h" line="747"/>
         <source>Arranged By:</source>
         <translation>Arrangé par :</translation>
     </message>
     <message>
         <location filename="../source/dialogs/fileinformationdialog.ui" line="440"/>
-        <location filename="../build/source/dialogs/ui_fileinformationdialog.h" line="748"/>
         <source>Transcribed By:</source>
         <translation>Transcrit par :</translation>
     </message>
     <message>
         <location filename="../source/dialogs/fileinformationdialog.ui" line="450"/>
         <location filename="../source/dialogs/fileinformationdialog.ui" line="679"/>
-        <location filename="../build/source/dialogs/ui_fileinformationdialog.h" line="749"/>
-        <location filename="../build/source/dialogs/ui_fileinformationdialog.h" line="779"/>
         <source>Copyright:</source>
         <translation>Droits d&apos;auteur :</translation>
     </message>
     <message>
         <location filename="../source/dialogs/fileinformationdialog.ui" line="498"/>
-        <location filename="../build/source/dialogs/ui_fileinformationdialog.h" line="752"/>
         <source>Style:</source>
         <translation>Genre :</translation>
     </message>
     <message>
         <location filename="../source/dialogs/fileinformationdialog.ui" line="506"/>
-        <location filename="../build/source/dialogs/ui_fileinformationdialog.h" line="753"/>
         <source>Alternative</source>
         <translation>Alternatif</translation>
     </message>
     <message>
         <location filename="../source/dialogs/fileinformationdialog.ui" line="511"/>
-        <location filename="../build/source/dialogs/ui_fileinformationdialog.h" line="754"/>
         <source>Bluegrass</source>
         <translation>Bluegrass</translation>
     </message>
     <message>
         <location filename="../source/dialogs/fileinformationdialog.ui" line="516"/>
-        <location filename="../build/source/dialogs/ui_fileinformationdialog.h" line="755"/>
         <source>Blues</source>
         <translation>Blues</translation>
     </message>
     <message>
         <location filename="../source/dialogs/fileinformationdialog.ui" line="521"/>
-        <location filename="../build/source/dialogs/ui_fileinformationdialog.h" line="756"/>
         <source>Country</source>
         <translation>Country</translation>
     </message>
     <message>
         <location filename="../source/dialogs/fileinformationdialog.ui" line="526"/>
-        <location filename="../build/source/dialogs/ui_fileinformationdialog.h" line="757"/>
         <source>Fingerpick</source>
         <translation>Picking</translation>
     </message>
     <message>
         <location filename="../source/dialogs/fileinformationdialog.ui" line="531"/>
-        <location filename="../build/source/dialogs/ui_fileinformationdialog.h" line="758"/>
         <source>Flamenco</source>
         <translation>Flamenco</translation>
     </message>
     <message>
         <location filename="../source/dialogs/fileinformationdialog.ui" line="536"/>
-        <location filename="../build/source/dialogs/ui_fileinformationdialog.h" line="759"/>
         <source>Folk</source>
         <translation>Folk</translation>
     </message>
     <message>
         <location filename="../source/dialogs/fileinformationdialog.ui" line="541"/>
-        <location filename="../build/source/dialogs/ui_fileinformationdialog.h" line="760"/>
         <source>Funk</source>
         <translation>Funk</translation>
     </message>
     <message>
         <location filename="../source/dialogs/fileinformationdialog.ui" line="546"/>
-        <location filename="../build/source/dialogs/ui_fileinformationdialog.h" line="761"/>
         <source>Fusion</source>
         <translation>Fusion</translation>
     </message>
     <message>
         <location filename="../source/dialogs/fileinformationdialog.ui" line="551"/>
-        <location filename="../build/source/dialogs/ui_fileinformationdialog.h" line="762"/>
         <source>General</source>
         <translation>Général</translation>
     </message>
     <message>
         <location filename="../source/dialogs/fileinformationdialog.ui" line="556"/>
-        <location filename="../build/source/dialogs/ui_fileinformationdialog.h" line="763"/>
         <source>Jazz</source>
         <translation>Jazz</translation>
     </message>
     <message>
         <location filename="../source/dialogs/fileinformationdialog.ui" line="561"/>
-        <location filename="../build/source/dialogs/ui_fileinformationdialog.h" line="764"/>
         <source>Metal/Shred</source>
         <translation>Métal/Shred</translation>
     </message>
     <message>
         <location filename="../source/dialogs/fileinformationdialog.ui" line="566"/>
-        <location filename="../build/source/dialogs/ui_fileinformationdialog.h" line="765"/>
         <source>Other</source>
         <translation>Autre</translation>
     </message>
     <message>
         <location filename="../source/dialogs/fileinformationdialog.ui" line="571"/>
-        <location filename="../build/source/dialogs/ui_fileinformationdialog.h" line="766"/>
         <source>Pop</source>
         <translation>Pop</translation>
     </message>
     <message>
         <location filename="../source/dialogs/fileinformationdialog.ui" line="576"/>
-        <location filename="../build/source/dialogs/ui_fileinformationdialog.h" line="767"/>
         <source>Progressive Rock</source>
         <translation>Rock progressif</translation>
     </message>
     <message>
         <location filename="../source/dialogs/fileinformationdialog.ui" line="581"/>
-        <location filename="../build/source/dialogs/ui_fileinformationdialog.h" line="768"/>
         <source>Punk</source>
         <translation>Punk</translation>
     </message>
     <message>
         <location filename="../source/dialogs/fileinformationdialog.ui" line="586"/>
-        <location filename="../build/source/dialogs/ui_fileinformationdialog.h" line="769"/>
         <source>Reggae</source>
         <translation>Reggae</translation>
     </message>
     <message>
         <location filename="../source/dialogs/fileinformationdialog.ui" line="591"/>
-        <location filename="../build/source/dialogs/ui_fileinformationdialog.h" line="770"/>
         <source>Rock</source>
         <translation>Rock</translation>
     </message>
     <message>
         <location filename="../source/dialogs/fileinformationdialog.ui" line="596"/>
-        <location filename="../build/source/dialogs/ui_fileinformationdialog.h" line="771"/>
         <source>Swing</source>
         <translation>Swing</translation>
     </message>
     <message>
         <location filename="../source/dialogs/fileinformationdialog.ui" line="604"/>
-        <location filename="../build/source/dialogs/ui_fileinformationdialog.h" line="773"/>
         <source>Level</source>
         <translation>Niveau</translation>
     </message>
     <message>
         <location filename="../source/dialogs/fileinformationdialog.ui" line="613"/>
-        <location filename="../build/source/dialogs/ui_fileinformationdialog.h" line="774"/>
         <source>Beginner</source>
         <translation>Débutant</translation>
     </message>
     <message>
         <location filename="../source/dialogs/fileinformationdialog.ui" line="623"/>
-        <location filename="../build/source/dialogs/ui_fileinformationdialog.h" line="775"/>
         <source>Intermediate</source>
         <translation>Intermédiaire</translation>
     </message>
     <message>
         <location filename="../source/dialogs/fileinformationdialog.ui" line="633"/>
-        <location filename="../build/source/dialogs/ui_fileinformationdialog.h" line="776"/>
         <source>Advanced</source>
         <translation>Avancé</translation>
     </message>
     <message>
         <location filename="../source/dialogs/fileinformationdialog.ui" line="669"/>
-        <location filename="../build/source/dialogs/ui_fileinformationdialog.h" line="778"/>
         <source>Author:</source>
         <translation>Auteur :</translation>
     </message>
     <message>
         <location filename="../source/dialogs/fileinformationdialog.ui" line="694"/>
-        <location filename="../build/source/dialogs/ui_fileinformationdialog.h" line="782"/>
         <source>Performance Notes</source>
         <translation>Notes de performance</translation>
     </message>
     <message>
         <location filename="../source/dialogs/fileinformationdialog.ui" line="718"/>
-        <location filename="../build/source/dialogs/ui_fileinformationdialog.h" line="781"/>
         <source>Notes:</source>
         <translation>Notes :</translation>
     </message>
     <message>
         <location filename="../source/dialogs/fileinformationdialog.ui" line="734"/>
-        <location filename="../build/source/dialogs/ui_fileinformationdialog.h" line="784"/>
         <source>Lyrics</source>
         <translation>Paroles</translation>
     </message>
     <message>
         <location filename="../source/dialogs/fileinformationdialog.ui" line="758"/>
-        <location filename="../build/source/dialogs/ui_fileinformationdialog.h" line="783"/>
         <source>Lyrics:</source>
         <translation>Paroles :</translation>
     </message>
     <message>
         <location filename="../source/dialogs/fileinformationdialog.ui" line="774"/>
-        <location filename="../build/source/dialogs/ui_fileinformationdialog.h" line="797"/>
         <source>Properties</source>
         <translation>Propriétés</translation>
     </message>
     <message>
         <location filename="../source/dialogs/fileinformationdialog.ui" line="798"/>
-        <location filename="../build/source/dialogs/ui_fileinformationdialog.h" line="785"/>
         <source>Name:</source>
         <translation>Nom :</translation>
     </message>
     <message>
         <location filename="../source/dialogs/fileinformationdialog.ui" line="812"/>
-        <location filename="../build/source/dialogs/ui_fileinformationdialog.h" line="787"/>
         <source>Location:</source>
         <translation>Emplacement :</translation>
     </message>
     <message>
         <location filename="../source/dialogs/fileinformationdialog.ui" line="826"/>
-        <location filename="../build/source/dialogs/ui_fileinformationdialog.h" line="789"/>
         <source>Size:</source>
         <translation>Taille :</translation>
     </message>
     <message>
         <location filename="../source/dialogs/fileinformationdialog.ui" line="840"/>
-        <location filename="../build/source/dialogs/ui_fileinformationdialog.h" line="791"/>
         <source>Created:</source>
         <translation>Date de création :</translation>
     </message>
     <message>
         <location filename="../source/dialogs/fileinformationdialog.ui" line="854"/>
-        <location filename="../build/source/dialogs/ui_fileinformationdialog.h" line="793"/>
         <source>Modified:</source>
         <translation>Date de modification :</translation>
     </message>
     <message>
         <location filename="../source/dialogs/fileinformationdialog.ui" line="868"/>
-        <location filename="../build/source/dialogs/ui_fileinformationdialog.h" line="795"/>
         <source>Accessed:</source>
         <translation>Date de lecture :</translation>
     </message>
@@ -1393,55 +1255,46 @@
     <name>FilterRuleWidget</name>
     <message>
         <location filename="../source/dialogs/filterrulewidget.ui" line="14"/>
-        <location filename="../build/source/dialogs/ui_filterrulewidget.h" line="132"/>
         <source>Form</source>
         <translation>Forme</translation>
     </message>
     <message>
         <location filename="../source/dialogs/filterrulewidget.ui" line="42"/>
-        <location filename="../build/source/dialogs/ui_filterrulewidget.h" line="133"/>
         <source>Player Name</source>
         <translation>Nom du musicien</translation>
     </message>
     <message>
         <location filename="../source/dialogs/filterrulewidget.ui" line="47"/>
-        <location filename="../build/source/dialogs/ui_filterrulewidget.h" line="134"/>
         <source>Number of Strings</source>
         <translation>Nombre de cordes</translation>
     </message>
     <message>
         <location filename="../source/dialogs/filterrulewidget.ui" line="71"/>
-        <location filename="../build/source/dialogs/ui_filterrulewidget.h" line="136"/>
         <source>matches</source>
         <translation>Correspondances</translation>
     </message>
     <message>
         <location filename="../source/dialogs/filterrulewidget.ui" line="98"/>
-        <location filename="../build/source/dialogs/ui_filterrulewidget.h" line="137"/>
         <source>&lt;</source>
         <translation>&lt;</translation>
     </message>
     <message>
         <location filename="../source/dialogs/filterrulewidget.ui" line="103"/>
-        <location filename="../build/source/dialogs/ui_filterrulewidget.h" line="138"/>
         <source>&lt;=</source>
         <translation>&lt;=</translation>
     </message>
     <message>
         <location filename="../source/dialogs/filterrulewidget.ui" line="108"/>
-        <location filename="../build/source/dialogs/ui_filterrulewidget.h" line="139"/>
         <source>=</source>
         <translation>=</translation>
     </message>
     <message>
         <location filename="../source/dialogs/filterrulewidget.ui" line="113"/>
-        <location filename="../build/source/dialogs/ui_filterrulewidget.h" line="140"/>
         <source>&gt;=</source>
         <translation>&gt;=</translation>
     </message>
     <message>
         <location filename="../source/dialogs/filterrulewidget.ui" line="118"/>
-        <location filename="../build/source/dialogs/ui_filterrulewidget.h" line="141"/>
         <source>&gt;</source>
         <translation>&gt;</translation>
     </message>
@@ -1450,13 +1303,11 @@
     <name>GoToBarlineDialog</name>
     <message>
         <location filename="../source/dialogs/gotobarlinedialog.ui" line="17"/>
-        <location filename="../build/source/dialogs/ui_gotobarlinedialog.h" line="71"/>
         <source>Go To Barline</source>
         <translation>Aller à la barre de mesure</translation>
     </message>
     <message>
         <location filename="../source/dialogs/gotobarlinedialog.ui" line="28"/>
-        <location filename="../build/source/dialogs/ui_gotobarlinedialog.h" line="72"/>
         <source>Barline:</source>
         <translation>Barre de mesure :</translation>
     </message>
@@ -1465,13 +1316,11 @@
     <name>GoToRehearsalSignDialog</name>
     <message>
         <location filename="../source/dialogs/gotorehearsalsigndialog.ui" line="17"/>
-        <location filename="../build/source/dialogs/ui_gotorehearsalsigndialog.h" line="73"/>
         <source>Go To Rehearsal Sign</source>
         <translation>Aller au signe de répétition</translation>
     </message>
     <message>
         <location filename="../source/dialogs/gotorehearsalsigndialog.ui" line="28"/>
-        <location filename="../build/source/dialogs/ui_gotorehearsalsigndialog.h" line="74"/>
         <source>Rehearsal Sign:</source>
         <translation>Signe de répétition :</translation>
     </message>
@@ -1480,13 +1329,11 @@
     <name>InfoDialog</name>
     <message>
         <location filename="../source/dialogs/infodialog.ui" line="14"/>
-        <location filename="../build/source/dialogs/ui_infodialog.h" line="61"/>
         <source>Application Info</source>
         <translation>Informations sur l&apos;application</translation>
     </message>
     <message>
         <location filename="../source/dialogs/infodialog.ui" line="39"/>
-        <location filename="../build/source/dialogs/ui_infodialog.h" line="62"/>
         <source>&amp;Copy to Clipboard</source>
         <translation>Copier dans le presse-papiers</translation>
     </message>
@@ -1510,31 +1357,26 @@
     <name>InstrumentPanelItem</name>
     <message>
         <location filename="../source/widgets/instruments/instrumentpanelitem.ui" line="26"/>
-        <location filename="../build/source/widgets/ui_instrumentpanelitem.h" line="91"/>
         <source>Form</source>
         <translation>Forme</translation>
     </message>
     <message>
         <location filename="../source/widgets/instruments/instrumentpanelitem.ui" line="50"/>
-        <location filename="../build/source/widgets/ui_instrumentpanelitem.h" line="92"/>
         <source>1.</source>
         <translation>1.</translation>
     </message>
     <message>
         <location filename="../source/widgets/instruments/instrumentpanelitem.ui" line="57"/>
-        <location filename="../build/source/widgets/ui_instrumentpanelitem.h" line="94"/>
         <source>Click to change instrument name.</source>
         <translation>Cliquez pour modifier le nom de l&apos;instrument.</translation>
     </message>
     <message>
         <location filename="../source/widgets/instruments/instrumentpanelitem.ui" line="60"/>
-        <location filename="../build/source/widgets/ui_instrumentpanelitem.h" line="96"/>
         <source>Instrument</source>
         <translation>Instrument</translation>
     </message>
     <message>
         <location filename="../source/widgets/instruments/instrumentpanelitem.ui" line="117"/>
-        <location filename="../build/source/widgets/ui_instrumentpanelitem.h" line="98"/>
         <source>Remove Instrument</source>
         <translation>Supprimer l&apos;instrument</translation>
     </message>
@@ -1543,19 +1385,16 @@
     <name>IrregularGroupingDialog</name>
     <message>
         <location filename="../source/dialogs/irregulargroupingdialog.ui" line="17"/>
-        <location filename="../build/source/dialogs/ui_irregulargroupingdialog.h" line="83"/>
         <source>Irregular Grouping</source>
         <translation>Groupement régulier</translation>
     </message>
     <message>
         <location filename="../source/dialogs/irregulargroupingdialog.ui" line="28"/>
-        <location filename="../build/source/dialogs/ui_irregulargroupingdialog.h" line="84"/>
         <source>Notes Played:</source>
         <translation>Notes jouées :</translation>
     </message>
     <message>
         <location filename="../source/dialogs/irregulargroupingdialog.ui" line="38"/>
-        <location filename="../build/source/dialogs/ui_irregulargroupingdialog.h" line="85"/>
         <source>Notes Played Over:</source>
         <translation>Notes jouées :</translation>
     </message>
@@ -1564,37 +1403,31 @@
     <name>KeySignatureDialog</name>
     <message>
         <location filename="../source/dialogs/keysignaturedialog.ui" line="17"/>
-        <location filename="../build/source/dialogs/ui_keysignaturedialog.h" line="111"/>
         <source>Key Signature</source>
         <translation>Armure</translation>
     </message>
     <message>
         <location filename="../source/dialogs/keysignaturedialog.ui" line="31"/>
-        <location filename="../build/source/dialogs/ui_keysignaturedialog.h" line="112"/>
         <source>Visible:</source>
         <translation>Visible :</translation>
     </message>
     <message>
         <location filename="../source/dialogs/keysignaturedialog.ui" line="41"/>
-        <location filename="../build/source/dialogs/ui_keysignaturedialog.h" line="113"/>
         <source>Key Type:</source>
         <translation>Type de clé :</translation>
     </message>
     <message>
         <location filename="../source/dialogs/keysignaturedialog.ui" line="50"/>
-        <location filename="../build/source/dialogs/ui_keysignaturedialog.h" line="114"/>
         <source>Major</source>
         <translation>Majeure</translation>
     </message>
     <message>
         <location filename="../source/dialogs/keysignaturedialog.ui" line="57"/>
-        <location filename="../build/source/dialogs/ui_keysignaturedialog.h" line="115"/>
         <source>Minor</source>
         <translation>Mineure</translation>
     </message>
     <message>
         <location filename="../source/dialogs/keysignaturedialog.ui" line="66"/>
-        <location filename="../build/source/dialogs/ui_keysignaturedialog.h" line="116"/>
         <source>Key:</source>
         <translation>Clé :</translation>
     </message>
@@ -1603,25 +1436,21 @@
     <name>KeyboardSettingsDialog</name>
     <message>
         <location filename="../source/dialogs/keyboardsettingsdialog.ui" line="23"/>
-        <location filename="../build/source/dialogs/ui_keyboardsettingsdialog.h" line="101"/>
         <source>Edit Keyboard Shortcuts</source>
         <translation>Modifier les raccourcis clavier</translation>
     </message>
     <message>
         <location filename="../source/dialogs/keyboardsettingsdialog.ui" line="46"/>
-        <location filename="../build/source/dialogs/ui_keyboardsettingsdialog.h" line="102"/>
         <source>Shortcut:</source>
         <translation>Raccourci :</translation>
     </message>
     <message>
         <location filename="../source/dialogs/keyboardsettingsdialog.ui" line="56"/>
-        <location filename="../build/source/dialogs/ui_keyboardsettingsdialog.h" line="103"/>
         <source>Reset</source>
         <translation>Réinitialiser</translation>
     </message>
     <message>
         <location filename="../source/dialogs/keyboardsettingsdialog.ui" line="63"/>
-        <location filename="../build/source/dialogs/ui_keyboardsettingsdialog.h" line="104"/>
         <source>Default</source>
         <translation>Par défaut</translation>
     </message>
@@ -1655,19 +1484,16 @@
     <name>LeftHandFingeringDialog</name>
     <message>
         <location filename="../source/dialogs/lefthandfingeringdialog.ui" line="17"/>
-        <location filename="../build/source/dialogs/ui_lefthandfingeringdialog.h" line="84"/>
         <source>Left Hand Fingering</source>
         <translation>Doigté main gauche</translation>
     </message>
     <message>
         <location filename="../source/dialogs/lefthandfingeringdialog.ui" line="31"/>
-        <location filename="../build/source/dialogs/ui_lefthandfingeringdialog.h" line="85"/>
         <source>Finger:</source>
         <translation>Doigt :</translation>
     </message>
     <message>
         <location filename="../source/dialogs/lefthandfingeringdialog.ui" line="41"/>
-        <location filename="../build/source/dialogs/ui_lefthandfingeringdialog.h" line="86"/>
         <source>Position relative to note head:</source>
         <translation>Position relative à la tête de la note :</translation>
     </message>
@@ -1745,64 +1571,70 @@
 <context>
     <name>MidiPlayer</name>
     <message>
-        <location filename="../source/audio/midiplayer.cpp" line="105"/>
+        <location filename="../source/audio/midiplayer.cpp" line="94"/>
         <source>Error initializing MIDI output device.</source>
         <translation>Erreur lors de l&apos;initialisation du périphérique de sortie MIDI.</translation>
+    </message>
+    <message>
+        <location filename="../source/audio/midiplayer.cpp" line="97"/>
+        <source>MIDI interface: &apos;%1&apos;</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../source/audio/midiplayer.cpp" line="99"/>
+        <source>MIDI port: &apos;%1&apos;</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../source/audio/midiplayer.cpp" line="105"/>
+        <source>The MIDI device may not be accessible. The following commands can be run to allow access:</source>
+        <translation type="unfinished"></translation>
     </message>
 </context>
 <context>
     <name>MixerItem</name>
     <message>
         <location filename="../source/widgets/mixer/mixeritem.ui" line="26"/>
-        <location filename="../build/source/widgets/ui_mixeritem.h" line="113"/>
         <source>Form</source>
         <translation>Forme</translation>
     </message>
     <message>
         <location filename="../source/widgets/mixer/mixeritem.ui" line="29"/>
-        <location filename="../build/source/widgets/ui_mixeritem.h" line="115"/>
         <source>Click to change player name.</source>
         <translation>Cliquez pour changer le nom du musicien.</translation>
     </message>
     <message>
         <location filename="../source/widgets/mixer/mixeritem.ui" line="53"/>
-        <location filename="../build/source/widgets/ui_mixeritem.h" line="117"/>
         <source>1.</source>
         <translation>1.</translation>
     </message>
     <message>
         <location filename="../source/widgets/mixer/mixeritem.ui" line="72"/>
-        <location filename="../build/source/widgets/ui_mixeritem.h" line="118"/>
         <source>Player Name</source>
         <translation>Nom du musicien</translation>
     </message>
     <message>
         <location filename="../source/widgets/mixer/mixeritem.ui" line="107"/>
-        <location filename="../build/source/widgets/ui_mixeritem.h" line="120"/>
         <source>Drag to adjust volume.</source>
         <translation>Faites glisser pour ajuster le volume.</translation>
     </message>
     <message>
         <location filename="../source/widgets/mixer/mixeritem.ui" line="129"/>
-        <location filename="../build/source/widgets/ui_mixeritem.h" line="123"/>
         <source>Drag to adjust panning.</source>
         <translation>Faites glisser pour ajuster le panoramique.</translation>
     </message>
     <message>
         <location filename="../source/widgets/mixer/mixeritem.ui" line="148"/>
-        <location filename="../build/source/widgets/ui_mixeritem.h" line="126"/>
         <source>Click to adjust tuning.</source>
         <translation>Faites glisser pour ajuster la tonalité.</translation>
     </message>
     <message>
         <location filename="../source/widgets/mixer/mixeritem.ui" line="151"/>
-        <location filename="../build/source/widgets/ui_mixeritem.h" line="128"/>
         <source>Tuning</source>
         <translation>Tonalité</translation>
     </message>
     <message>
         <location filename="../source/widgets/mixer/mixeritem.ui" line="176"/>
-        <location filename="../build/source/widgets/ui_mixeritem.h" line="130"/>
         <source>Remove Player</source>
         <translation>Supprimer le musicien</translation>
     </message>
@@ -1811,13 +1643,11 @@
     <name>MultiBarRestDialog</name>
     <message>
         <location filename="../source/dialogs/multibarrestdialog.ui" line="17"/>
-        <location filename="../build/source/dialogs/ui_multibarrestdialog.h" line="72"/>
         <source>Multi-Bar Rest</source>
         <translation>Silence multi-mesures</translation>
     </message>
     <message>
         <location filename="../source/dialogs/multibarrestdialog.ui" line="31"/>
-        <location filename="../build/source/dialogs/ui_multibarrestdialog.h" line="73"/>
         <source>Number of Bars:</source>
         <translation>Nombre de mesures :</translation>
     </message>
@@ -2009,43 +1839,36 @@
     <name>PlaybackWidget</name>
     <message>
         <location filename="../source/widgets/playback/playbackwidget.ui" line="14"/>
-        <location filename="../build/source/widgets/ui_playbackwidget.h" line="197"/>
         <source>Form</source>
         <translation>Forme</translation>
     </message>
     <message>
         <location filename="../source/widgets/playback/playbackwidget.ui" line="49"/>
-        <location filename="../build/source/widgets/ui_playbackwidget.h" line="198"/>
         <source>Voice:</source>
         <translation>Voix :</translation>
     </message>
     <message>
         <location filename="../source/widgets/playback/playbackwidget.ui" line="61"/>
-        <location filename="../build/source/widgets/ui_playbackwidget.h" line="199"/>
         <source>1</source>
         <translation>1</translation>
     </message>
     <message>
         <location filename="../source/widgets/playback/playbackwidget.ui" line="71"/>
-        <location filename="../build/source/widgets/ui_playbackwidget.h" line="200"/>
         <source>2</source>
         <translation>2</translation>
     </message>
     <message>
         <location filename="../source/widgets/playback/playbackwidget.ui" line="93"/>
-        <location filename="../build/source/widgets/ui_playbackwidget.h" line="201"/>
         <source>Speed:</source>
         <translation>Vitesse :</translation>
     </message>
     <message>
         <location filename="../source/widgets/playback/playbackwidget.ui" line="103"/>
-        <location filename="../build/source/widgets/ui_playbackwidget.h" line="203"/>
         <source>Adjusts the current playback speed.</source>
         <translation>Ajuste la vitesse de lecture courante.</translation>
     </message>
     <message>
-        <location filename="../source/widgets/playback/playbackwidget.ui" line="165"/>
-        <location filename="../build/source/widgets/ui_playbackwidget.h" line="209"/>
+        <location filename="../source/widgets/playback/playbackwidget.ui" line="175"/>
         <source>Zoom:</source>
         <translation>Zoom :</translation>
     </message>
@@ -2102,37 +1925,40 @@
         <translation type="vanished">300%</translation>
     </message>
     <message>
-        <location filename="../source/widgets/playback/playbackwidget.ui" line="210"/>
-        <location filename="../build/source/widgets/ui_playbackwidget.h" line="210"/>
+        <location filename="../source/widgets/playback/playbackwidget.ui" line="220"/>
         <source>System: 1, Staff: 1, Position: 1, String: 1</source>
         <translation>Système : 1, Portée : 1, Position : 1, Corde : 1</translation>
     </message>
     <message>
-        <location filename="../source/widgets/playback/playbackwidget.cpp" line="110"/>
+        <location filename="../source/widgets/playback/playbackwidget.cpp" line="111"/>
         <source>Click to move playback to the beginning of the score%1.</source>
         <translation>Cliquez pour reprendre la lecture au début de la partition %1.</translation>
     </message>
     <message>
-        <location filename="../source/widgets/playback/playbackwidget.cpp" line="117"/>
+        <location filename="../source/widgets/playback/playbackwidget.cpp" line="118"/>
         <source>Click to start or pause playback%1.</source>
         <translation>Cliquez pour reprendre ou mettre en pause la lecture %1.</translation>
     </message>
     <message>
-        <location filename="../source/widgets/playback/playbackwidget.cpp" line="124"/>
+        <location filename="../source/widgets/playback/playbackwidget.cpp" line="125"/>
         <source>Click to stop playback and return to the initial location%1.</source>
         <translation>Cliquez pour arrêter la lecture et retourner à la position initiale %1.</translation>
     </message>
     <message>
-        <location filename="../source/widgets/playback/playbackwidget.cpp" line="133"/>
+        <location filename="../source/widgets/playback/playbackwidget.cpp" line="134"/>
         <source>Click to toggle whether the metronome is turned on%1.</source>
         <translation>Cliquez pour activer ou désactiver le métronome %1.</translation>
+    </message>
+    <message>
+        <location filename="../source/widgets/playback/playbackwidget.cpp" line="142"/>
+        <source>Click to toggle whether a count-in before playback is enabled%1.</source>
+        <translation type="unfinished"></translation>
     </message>
 </context>
 <context>
     <name>PlayerChangeDialog</name>
     <message>
         <location filename="../source/dialogs/playerchangedialog.ui" line="17"/>
-        <location filename="../build/source/dialogs/ui_playerchangedialog.h" line="58"/>
         <source>Player Change</source>
         <translation>Changement de musicien</translation>
     </message>
@@ -2181,862 +2007,867 @@
         <translation>Impossible de coller des notes depuis une autre tonalité.</translation>
     </message>
     <message>
-        <location filename="../source/app/powertabeditor.cpp" line="174"/>
+        <location filename="../source/app/powertabeditor.cpp" line="175"/>
         <source>Toolbox</source>
         <translation>Boîte à outils</translation>
     </message>
     <message>
-        <location filename="../source/app/powertabeditor.cpp" line="247"/>
+        <location filename="../source/app/powertabeditor.cpp" line="248"/>
         <source>Open</source>
         <translation>Ouvrir</translation>
     </message>
     <message>
-        <location filename="../source/app/powertabeditor.cpp" line="277"/>
-        <location filename="../source/app/powertabeditor.cpp" line="302"/>
+        <location filename="../source/app/powertabeditor.cpp" line="278"/>
+        <location filename="../source/app/powertabeditor.cpp" line="303"/>
         <source>Error Opening File</source>
         <translation>Erreur lors de l&apos;ouverture du fichier</translation>
     </message>
     <message>
-        <location filename="../source/app/powertabeditor.cpp" line="278"/>
-        <location filename="../source/app/powertabeditor.cpp" line="399"/>
+        <location filename="../source/app/powertabeditor.cpp" line="279"/>
+        <location filename="../source/app/powertabeditor.cpp" line="400"/>
         <source>Unsupported file type.</source>
         <translation>Type de fichier non pris en charge.</translation>
     </message>
     <message>
-        <location filename="../source/app/powertabeditor.cpp" line="303"/>
+        <location filename="../source/app/powertabeditor.cpp" line="304"/>
         <source>Error opening file: %1</source>
         <translation>Erreur lors de l&apos;ouverture du fichier : %1</translation>
     </message>
     <message>
-        <location filename="../source/app/powertabeditor.cpp" line="336"/>
+        <location filename="../source/app/powertabeditor.cpp" line="337"/>
         <source>Close Document</source>
         <translation>Fermer le document</translation>
     </message>
     <message>
-        <location filename="../source/app/powertabeditor.cpp" line="337"/>
+        <location filename="../source/app/powertabeditor.cpp" line="338"/>
         <source>The document has been modified.</source>
         <translation>Le document a été modifié.</translation>
     </message>
     <message>
-        <location filename="../source/app/powertabeditor.cpp" line="338"/>
+        <location filename="../source/app/powertabeditor.cpp" line="339"/>
         <source>Do you want to save your changes?</source>
         <translation>Souhaitez-vous enregistrer les modifications ?</translation>
     </message>
     <message>
-        <location filename="../source/app/powertabeditor.cpp" line="398"/>
-        <location filename="../source/app/powertabeditor.cpp" line="413"/>
+        <location filename="../source/app/powertabeditor.cpp" line="399"/>
+        <location filename="../source/app/powertabeditor.cpp" line="414"/>
         <source>Error Saving File</source>
         <translation>Erreur lors de l&apos;enregistrement du fichier</translation>
     </message>
     <message>
-        <location filename="../source/app/powertabeditor.cpp" line="414"/>
+        <location filename="../source/app/powertabeditor.cpp" line="415"/>
         <source>Error saving file: %1</source>
         <translation>Erreur lors de l&apos;enregistrement du fichier : %1</translation>
     </message>
     <message>
-        <location filename="../source/app/powertabeditor.cpp" line="445"/>
+        <location filename="../source/app/powertabeditor.cpp" line="446"/>
         <source>Save As</source>
         <translation>Enregistrer sous</translation>
     </message>
     <message>
-        <location filename="../source/app/powertabeditor.cpp" line="537"/>
+        <location filename="../source/app/powertabeditor.cpp" line="538"/>
         <source>Cut Notes</source>
         <translation>Couper les notes</translation>
     </message>
     <message>
-        <location filename="../source/app/powertabeditor.cpp" line="553"/>
+        <location filename="../source/app/powertabeditor.cpp" line="554"/>
         <source>The clipboard does not contain any notes.</source>
         <translation>Le presse-papiers ne contient aucune note.</translation>
     </message>
     <message>
-        <location filename="../source/app/powertabeditor.cpp" line="558"/>
+        <location filename="../source/app/powertabeditor.cpp" line="559"/>
         <source>Paste Notes</source>
         <translation>Coller les notes</translation>
     </message>
     <message>
-        <location filename="../source/app/powertabeditor.cpp" line="603"/>
+        <location filename="../source/app/powertabeditor.cpp" line="604"/>
         <source>Midi Error</source>
         <translation>Erreur MIDI</translation>
     </message>
     <message>
-        <location filename="../source/app/powertabeditor.cpp" line="625"/>
+        <location filename="../source/app/powertabeditor.cpp" line="626"/>
         <source>Pause</source>
         <translation>Pause</translation>
     </message>
     <message>
-        <location filename="../source/app/powertabeditor.cpp" line="658"/>
-        <location filename="../source/app/powertabeditor.cpp" line="2263"/>
+        <location filename="../source/app/powertabeditor.cpp" line="662"/>
+        <location filename="../source/app/powertabeditor.cpp" line="2303"/>
         <source>Play</source>
         <translation>Lecture</translation>
     </message>
     <message>
-        <location filename="../source/app/powertabeditor.cpp" line="881"/>
-        <location filename="../source/app/powertabeditor.cpp" line="2420"/>
+        <location filename="../source/app/powertabeditor.cpp" line="885"/>
+        <location filename="../source/app/powertabeditor.cpp" line="2466"/>
         <source>Remove Position</source>
         <translation>Supprimer la position</translation>
     </message>
     <message>
-        <location filename="../source/app/powertabeditor.cpp" line="962"/>
+        <location filename="../source/app/powertabeditor.cpp" line="973"/>
         <source>Edit Chord Text</source>
         <translation>Modifier le texte de l&apos;accord</translation>
     </message>
     <message>
-        <location filename="../source/app/powertabeditor.cpp" line="999"/>
+        <location filename="../source/app/powertabeditor.cpp" line="1010"/>
         <source>Edit Text Item</source>
         <translation>Modifier l&apos;élément de texte</translation>
     </message>
     <message>
-        <location filename="../source/app/powertabeditor.cpp" line="1047"/>
+        <location filename="../source/app/powertabeditor.cpp" line="1058"/>
         <source>Edit Chord Diagram</source>
         <translation>Éditer le diagramme d&apos;accord</translation>
     </message>
     <message>
-        <location filename="../source/app/powertabeditor.cpp" line="1145"/>
+        <location filename="../source/app/powertabeditor.cpp" line="1156"/>
         <source>Edit Note Duration</source>
         <translation>Modifier la durée de la note</translation>
     </message>
     <message>
-        <location filename="../source/app/powertabeditor.cpp" line="1366"/>
+        <location filename="../source/app/powertabeditor.cpp" line="1386"/>
         <source>Cannot add a multi-bar rest to a non-empty measure.</source>
         <translation>Impossible d&apos;ajouter un silence multi-mesures à une mesure non vide.</translation>
     </message>
     <message>
-        <location filename="../source/app/powertabeditor.cpp" line="1384"/>
+        <location filename="../source/app/powertabeditor.cpp" line="1399"/>
         <source>Edit Multi-Bar Rest</source>
         <translation>Modifier le silence multi-mesures</translation>
     </message>
     <message>
-        <location filename="../source/app/powertabeditor.cpp" line="1461"/>
+        <location filename="../source/app/powertabeditor.cpp" line="1476"/>
         <source>Edit Tempo Marker</source>
         <translation>Modifier le marqueur de tempo</translation>
     </message>
     <message>
-        <location filename="../source/app/powertabeditor.cpp" line="1500"/>
+        <location filename="../source/app/powertabeditor.cpp" line="1515"/>
         <source>Edit Alteration of Pace</source>
         <translation>Éditer la variation du tempo</translation>
     </message>
     <message>
-        <location filename="../source/app/powertabeditor.cpp" line="1547"/>
+        <location filename="../source/app/powertabeditor.cpp" line="1562"/>
         <source>Edit Musical Direction</source>
         <translation>Modifier la direction musicale</translation>
     </message>
     <message>
-        <location filename="../source/app/powertabeditor.cpp" line="1585"/>
+        <location filename="../source/app/powertabeditor.cpp" line="1600"/>
         <source>Edit Repeat Ending</source>
         <translation>Modifier la boucle de fin</translation>
     </message>
     <message>
-        <location filename="../source/app/powertabeditor.cpp" line="1689"/>
+        <location filename="../source/app/powertabeditor.cpp" line="1704"/>
         <source>Edit Volume Swell</source>
         <translation>Éditer la variation de volume</translation>
     </message>
     <message>
-        <location filename="../source/app/powertabeditor.cpp" line="1726"/>
+        <location filename="../source/app/powertabeditor.cpp" line="1741"/>
         <source>Edit Tremolo Bar</source>
         <translation>Modifier la mesure de trémolo</translation>
     </message>
     <message>
-        <location filename="../source/app/powertabeditor.cpp" line="1826"/>
+        <location filename="../source/app/powertabeditor.cpp" line="1841"/>
         <source>Edit Bend</source>
         <translation>Modifier le bend</translation>
     </message>
     <message>
-        <location filename="../source/app/powertabeditor.cpp" line="1950"/>
+        <location filename="../source/app/powertabeditor.cpp" line="1965"/>
         <source>Edit Player Change</source>
         <translation>Modifier le changement de musicien</translation>
     </message>
     <message>
-        <location filename="../source/app/powertabeditor.cpp" line="2153"/>
+        <location filename="../source/app/powertabeditor.cpp" line="2192"/>
         <source>Untitled</source>
         <translation>Sans titre</translation>
     </message>
     <message>
-        <location filename="../source/app/powertabeditor.cpp" line="2166"/>
+        <location filename="../source/app/powertabeditor.cpp" line="2205"/>
         <source>&amp;New</source>
         <translation>Nouveau</translation>
     </message>
     <message>
-        <location filename="../source/app/powertabeditor.cpp" line="2171"/>
+        <location filename="../source/app/powertabeditor.cpp" line="2210"/>
         <source>&amp;Open...</source>
         <translation>Ouvrir…</translation>
     </message>
     <message>
-        <location filename="../source/app/powertabeditor.cpp" line="2176"/>
+        <location filename="../source/app/powertabeditor.cpp" line="2215"/>
         <source>&amp;Close Tab</source>
         <translation>Fermer l&apos;onglet</translation>
     </message>
     <message>
-        <location filename="../source/app/powertabeditor.cpp" line="2181"/>
+        <location filename="../source/app/powertabeditor.cpp" line="2220"/>
         <source>Save</source>
         <translation>Enregistrer</translation>
     </message>
     <message>
-        <location filename="../source/app/powertabeditor.cpp" line="2187"/>
+        <location filename="../source/app/powertabeditor.cpp" line="2226"/>
         <source>Save As...</source>
         <translation>Enregistrer sous…</translation>
     </message>
     <message>
-        <location filename="../source/app/powertabeditor.cpp" line="2192"/>
+        <location filename="../source/app/powertabeditor.cpp" line="2232"/>
         <source>Print...</source>
         <translation>Imprimer…</translation>
     </message>
     <message>
-        <location filename="../source/app/powertabeditor.cpp" line="2198"/>
+        <location filename="../source/app/powertabeditor.cpp" line="2238"/>
         <source>Print Preview...</source>
         <translation>Aperçu avant impression…</translation>
     </message>
     <message>
-        <location filename="../source/app/powertabeditor.cpp" line="2202"/>
+        <location filename="../source/app/powertabeditor.cpp" line="2242"/>
         <source>Bulk Converter...</source>
         <translation>Convertisseur en masse...</translation>
     </message>
     <message>
-        <location filename="../source/app/powertabeditor.cpp" line="2208"/>
+        <location filename="../source/app/powertabeditor.cpp" line="2248"/>
         <source>Customize Shortcuts...</source>
         <translation>Personnaliser les raccourcis…</translation>
     </message>
     <message>
-        <location filename="../source/app/powertabeditor.cpp" line="2214"/>
+        <location filename="../source/app/powertabeditor.cpp" line="2254"/>
         <source>&amp;Preferences...</source>
         <translation>Préférences…</translation>
     </message>
     <message>
-        <location filename="../source/app/powertabeditor.cpp" line="2220"/>
+        <location filename="../source/app/powertabeditor.cpp" line="2260"/>
         <source>&amp;Quit</source>
         <translation>Quitter</translation>
     </message>
     <message>
-        <location filename="../source/app/powertabeditor.cpp" line="2225"/>
+        <location filename="../source/app/powertabeditor.cpp" line="2265"/>
         <source>&amp;Undo</source>
         <translation>Annuler</translation>
     </message>
     <message>
-        <location filename="../source/app/powertabeditor.cpp" line="2228"/>
+        <location filename="../source/app/powertabeditor.cpp" line="2268"/>
         <source>&amp;Redo</source>
         <translation>Rétablir</translation>
     </message>
     <message>
-        <location filename="../source/app/powertabeditor.cpp" line="2232"/>
+        <location filename="../source/app/powertabeditor.cpp" line="2272"/>
         <source>Cut</source>
         <translation>Couper</translation>
     </message>
     <message>
-        <location filename="../source/app/powertabeditor.cpp" line="2236"/>
+        <location filename="../source/app/powertabeditor.cpp" line="2276"/>
         <source>Copy</source>
         <translation>Copier</translation>
     </message>
     <message>
-        <location filename="../source/app/powertabeditor.cpp" line="2241"/>
+        <location filename="../source/app/powertabeditor.cpp" line="2281"/>
         <source>Paste</source>
         <translation>Coller</translation>
     </message>
     <message>
-        <location filename="../source/app/powertabeditor.cpp" line="2245"/>
+        <location filename="../source/app/powertabeditor.cpp" line="2285"/>
         <source>Polish Score</source>
         <translation>Embellir la partition</translation>
     </message>
     <message>
-        <location filename="../source/app/powertabeditor.cpp" line="2250"/>
+        <location filename="../source/app/powertabeditor.cpp" line="2290"/>
         <source>Polish System</source>
         <translation>Système d&apos;embellissement</translation>
     </message>
     <message>
-        <location filename="../source/app/powertabeditor.cpp" line="2257"/>
+        <location filename="../source/app/powertabeditor.cpp" line="2297"/>
         <source>File Information...</source>
         <translation>Informations sur le fichier…</translation>
     </message>
     <message>
-        <location filename="../source/app/powertabeditor.cpp" line="2275"/>
+        <location filename="../source/app/powertabeditor.cpp" line="2315"/>
         <source>Play From Start Of Measure</source>
         <translation>Jouer depuis le début de la mesure</translation>
     </message>
     <message>
-        <location filename="../source/app/powertabeditor.cpp" line="2282"/>
+        <location filename="../source/app/powertabeditor.cpp" line="2322"/>
         <source>Stop</source>
         <translation>Arrêter</translation>
     </message>
     <message>
-        <location filename="../source/app/powertabeditor.cpp" line="2286"/>
+        <location filename="../source/app/powertabeditor.cpp" line="2326"/>
         <source>Rewind</source>
         <translation>Rembobiner</translation>
     </message>
     <message>
-        <location filename="../source/app/powertabeditor.cpp" line="2291"/>
+        <location filename="../source/app/powertabeditor.cpp" line="2331"/>
         <source>Metronome</source>
         <translation>Métronome</translation>
     </message>
     <message>
-        <location filename="../source/app/powertabeditor.cpp" line="2299"/>
+        <location filename="../source/app/powertabeditor.cpp" line="2337"/>
+        <source>Count-In</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../source/app/powertabeditor.cpp" line="2345"/>
         <source>First Section</source>
         <translation>Première section</translation>
     </message>
     <message>
-        <location filename="../source/app/powertabeditor.cpp" line="2305"/>
+        <location filename="../source/app/powertabeditor.cpp" line="2351"/>
         <source>Next Section</source>
         <translation>Section suivante</translation>
     </message>
     <message>
-        <location filename="../source/app/powertabeditor.cpp" line="2311"/>
+        <location filename="../source/app/powertabeditor.cpp" line="2357"/>
         <source>Previous Section</source>
         <translation>Section précédente</translation>
     </message>
     <message>
-        <location filename="../source/app/powertabeditor.cpp" line="2317"/>
+        <location filename="../source/app/powertabeditor.cpp" line="2363"/>
         <source>Last Section</source>
         <translation>Dernière section</translation>
     </message>
     <message>
-        <location filename="../source/app/powertabeditor.cpp" line="2323"/>
+        <location filename="../source/app/powertabeditor.cpp" line="2369"/>
         <source>Insert Space</source>
         <translation>Insérer un espace</translation>
     </message>
     <message>
-        <location filename="../source/app/powertabeditor.cpp" line="2329"/>
+        <location filename="../source/app/powertabeditor.cpp" line="2375"/>
         <source>Remove Space</source>
         <translation>Supprimer l&apos;espace</translation>
     </message>
     <message>
-        <location filename="../source/app/powertabeditor.cpp" line="2345"/>
+        <location filename="../source/app/powertabeditor.cpp" line="2391"/>
         <source>Move to &amp;Start</source>
         <translation>Aller au début</translation>
     </message>
     <message>
-        <location filename="../source/app/powertabeditor.cpp" line="2351"/>
+        <location filename="../source/app/powertabeditor.cpp" line="2397"/>
         <source>&amp;Next Position</source>
         <translation>Position suivante</translation>
     </message>
     <message>
-        <location filename="../source/app/powertabeditor.cpp" line="2357"/>
+        <location filename="../source/app/powertabeditor.cpp" line="2403"/>
         <source>&amp;Previous Position</source>
         <translation>Position précédente</translation>
     </message>
     <message>
-        <location filename="../source/app/powertabeditor.cpp" line="2363"/>
+        <location filename="../source/app/powertabeditor.cpp" line="2409"/>
         <source>Next String</source>
         <translation>Corde suivante</translation>
     </message>
     <message>
-        <location filename="../source/app/powertabeditor.cpp" line="2369"/>
+        <location filename="../source/app/powertabeditor.cpp" line="2415"/>
         <source>Previous String</source>
         <translation>Corde précédente</translation>
     </message>
     <message>
-        <location filename="../source/app/powertabeditor.cpp" line="2375"/>
+        <location filename="../source/app/powertabeditor.cpp" line="2421"/>
         <source>Move to &amp;End</source>
         <translation>Aller à la fin</translation>
     </message>
     <message>
-        <location filename="../source/app/powertabeditor.cpp" line="2381"/>
+        <location filename="../source/app/powertabeditor.cpp" line="2427"/>
         <source>Next Staff</source>
         <translation>Portée suivante</translation>
     </message>
     <message>
-        <location filename="../source/app/powertabeditor.cpp" line="2387"/>
+        <location filename="../source/app/powertabeditor.cpp" line="2433"/>
         <source>Previous Staff</source>
         <translation>Portée précédente</translation>
     </message>
     <message>
-        <location filename="../source/app/powertabeditor.cpp" line="2392"/>
+        <location filename="../source/app/powertabeditor.cpp" line="2438"/>
         <source>Next Bar</source>
         <translation>Barre suivante</translation>
     </message>
     <message>
-        <location filename="../source/app/powertabeditor.cpp" line="2398"/>
+        <location filename="../source/app/powertabeditor.cpp" line="2444"/>
         <source>Previous Bar</source>
         <translation>Barre précédente</translation>
     </message>
     <message>
-        <location filename="../source/app/powertabeditor.cpp" line="2414"/>
+        <location filename="../source/app/powertabeditor.cpp" line="2460"/>
         <source>Remove Selected Item</source>
         <translation>Supprimer l&apos;élément sélectionné</translation>
     </message>
     <message>
-        <location filename="../source/app/powertabeditor.cpp" line="2425"/>
+        <location filename="../source/app/powertabeditor.cpp" line="2471"/>
         <source>Go To Barline...</source>
         <translation>Aller à la barre de mesure…</translation>
     </message>
     <message>
-        <location filename="../source/app/powertabeditor.cpp" line="2431"/>
+        <location filename="../source/app/powertabeditor.cpp" line="2477"/>
         <source>Go To Rehearsal Sign...</source>
         <translation>Aller au signe de répétition…</translation>
     </message>
     <message>
-        <location filename="../source/app/powertabeditor.cpp" line="2438"/>
+        <location filename="../source/app/powertabeditor.cpp" line="2484"/>
         <source>Chord Name...</source>
         <translation>Nom de l&apos;accord…</translation>
     </message>
     <message>
-        <location filename="../source/app/powertabeditor.cpp" line="2444"/>
+        <location filename="../source/app/powertabeditor.cpp" line="2490"/>
         <source>Text...</source>
         <translation>Texte…</translation>
     </message>
     <message>
-        <location filename="../source/app/powertabeditor.cpp" line="2452"/>
+        <location filename="../source/app/powertabeditor.cpp" line="2498"/>
         <source>Add Chord Diagram...</source>
         <translation>Ajouter un diagramme d&apos;accord...</translation>
     </message>
     <message>
-        <location filename="../source/app/powertabeditor.cpp" line="2457"/>
+        <location filename="../source/app/powertabeditor.cpp" line="2503"/>
         <source>Insert System At End</source>
         <translation>Insérer un système à la fin</translation>
     </message>
     <message>
-        <location filename="../source/app/powertabeditor.cpp" line="2463"/>
+        <location filename="../source/app/powertabeditor.cpp" line="2509"/>
         <source>Insert System Before</source>
         <translation>Insérer un système avant</translation>
     </message>
     <message>
-        <location filename="../source/app/powertabeditor.cpp" line="2470"/>
+        <location filename="../source/app/powertabeditor.cpp" line="2516"/>
         <source>Insert System After</source>
         <translation>Insérer un système après</translation>
     </message>
     <message>
-        <location filename="../source/app/powertabeditor.cpp" line="2477"/>
+        <location filename="../source/app/powertabeditor.cpp" line="2523"/>
         <source>Remove Current System</source>
         <translation>Supprimer le système courant</translation>
     </message>
     <message>
-        <location filename="../source/app/powertabeditor.cpp" line="2485"/>
+        <location filename="../source/app/powertabeditor.cpp" line="2531"/>
         <source>Insert Staff Before</source>
         <translation>Insérer une portée avant</translation>
     </message>
     <message>
-        <location filename="../source/app/powertabeditor.cpp" line="2491"/>
+        <location filename="../source/app/powertabeditor.cpp" line="2537"/>
         <source>Insert Staff After</source>
         <translation>Insérer une portée après</translation>
     </message>
     <message>
-        <location filename="../source/app/powertabeditor.cpp" line="2497"/>
+        <location filename="../source/app/powertabeditor.cpp" line="2543"/>
         <source>Remove Current Staff</source>
         <translation>Supprimer la portée courante</translation>
     </message>
     <message>
-        <location filename="../source/app/powertabeditor.cpp" line="2502"/>
+        <location filename="../source/app/powertabeditor.cpp" line="2548"/>
         <source>Increase</source>
         <translation>Augmenter</translation>
     </message>
     <message>
-        <location filename="../source/app/powertabeditor.cpp" line="2509"/>
+        <location filename="../source/app/powertabeditor.cpp" line="2555"/>
         <source>Decrease</source>
         <translation>Diminuer</translation>
     </message>
     <message>
-        <location filename="../source/app/powertabeditor.cpp" line="2518"/>
-        <location filename="../source/app/powertabeditor.cpp" line="2661"/>
+        <location filename="../source/app/powertabeditor.cpp" line="2564"/>
+        <location filename="../source/app/powertabeditor.cpp" line="2707"/>
         <source>Whole</source>
         <translation>Ronde</translation>
     </message>
     <message>
-        <location filename="../source/app/powertabeditor.cpp" line="2521"/>
-        <location filename="../source/app/powertabeditor.cpp" line="2663"/>
+        <location filename="../source/app/powertabeditor.cpp" line="2567"/>
+        <location filename="../source/app/powertabeditor.cpp" line="2709"/>
         <source>Half</source>
         <translation>Blanche</translation>
     </message>
     <message>
-        <location filename="../source/app/powertabeditor.cpp" line="2524"/>
-        <location filename="../source/app/powertabeditor.cpp" line="2665"/>
+        <location filename="../source/app/powertabeditor.cpp" line="2570"/>
+        <location filename="../source/app/powertabeditor.cpp" line="2711"/>
         <source>Quarter</source>
         <translation>Noire</translation>
     </message>
     <message>
-        <location filename="../source/app/powertabeditor.cpp" line="2527"/>
-        <location filename="../source/app/powertabeditor.cpp" line="2667"/>
+        <location filename="../source/app/powertabeditor.cpp" line="2573"/>
+        <location filename="../source/app/powertabeditor.cpp" line="2713"/>
         <source>8th</source>
         <translation>Croche</translation>
     </message>
     <message>
-        <location filename="../source/app/powertabeditor.cpp" line="2530"/>
-        <location filename="../source/app/powertabeditor.cpp" line="2669"/>
+        <location filename="../source/app/powertabeditor.cpp" line="2576"/>
+        <location filename="../source/app/powertabeditor.cpp" line="2715"/>
         <source>16th</source>
         <translation>Double croche</translation>
     </message>
     <message>
-        <location filename="../source/app/powertabeditor.cpp" line="2533"/>
-        <location filename="../source/app/powertabeditor.cpp" line="2671"/>
+        <location filename="../source/app/powertabeditor.cpp" line="2579"/>
+        <location filename="../source/app/powertabeditor.cpp" line="2717"/>
         <source>32nd</source>
         <translation>Triple croche</translation>
     </message>
     <message>
-        <location filename="../source/app/powertabeditor.cpp" line="2537"/>
-        <location filename="../source/app/powertabeditor.cpp" line="2674"/>
+        <location filename="../source/app/powertabeditor.cpp" line="2583"/>
+        <location filename="../source/app/powertabeditor.cpp" line="2720"/>
         <source>64th</source>
         <translation>Quadruple croche</translation>
     </message>
     <message>
-        <location filename="../source/app/powertabeditor.cpp" line="2542"/>
+        <location filename="../source/app/powertabeditor.cpp" line="2588"/>
         <source>Increase Duration</source>
         <translation>Augmenter la durée</translation>
     </message>
     <message>
-        <location filename="../source/app/powertabeditor.cpp" line="2549"/>
+        <location filename="../source/app/powertabeditor.cpp" line="2595"/>
         <source>Decrease Duration</source>
         <translation>Diminuer la durée</translation>
     </message>
     <message>
-        <location filename="../source/app/powertabeditor.cpp" line="2556"/>
+        <location filename="../source/app/powertabeditor.cpp" line="2602"/>
         <source>Dotted</source>
         <translation>Pointée</translation>
     </message>
     <message>
-        <location filename="../source/app/powertabeditor.cpp" line="2560"/>
+        <location filename="../source/app/powertabeditor.cpp" line="2606"/>
         <source>Double Dotted</source>
         <translation>Pointée double</translation>
     </message>
     <message>
-        <location filename="../source/app/powertabeditor.cpp" line="2565"/>
+        <location filename="../source/app/powertabeditor.cpp" line="2611"/>
         <source>Add Dot</source>
         <translation>Ajouter un point</translation>
     </message>
     <message>
-        <location filename="../source/app/powertabeditor.cpp" line="2569"/>
+        <location filename="../source/app/powertabeditor.cpp" line="2615"/>
         <source>Remove Dot</source>
         <translation>Supprimer un point</translation>
     </message>
     <message>
-        <location filename="../source/app/powertabeditor.cpp" line="2573"/>
+        <location filename="../source/app/powertabeditor.cpp" line="2619"/>
         <source>Left Hand Fingering...</source>
         <translation>Doigté main gauche…</translation>
     </message>
     <message>
-        <location filename="../source/app/powertabeditor.cpp" line="2582"/>
+        <location filename="../source/app/powertabeditor.cpp" line="2628"/>
         <source>Shift String Up</source>
         <translation>Décaler sur la corde supérieure</translation>
     </message>
     <message>
-        <location filename="../source/app/powertabeditor.cpp" line="2588"/>
+        <location filename="../source/app/powertabeditor.cpp" line="2634"/>
         <source>Shift String Down</source>
         <translation>Décaler sur la corde inférieure</translation>
     </message>
     <message>
-        <location filename="../source/app/powertabeditor.cpp" line="2593"/>
-        <location filename="../source/app/powertabeditor.cpp" line="3885"/>
+        <location filename="../source/app/powertabeditor.cpp" line="2639"/>
+        <location filename="../source/app/powertabeditor.cpp" line="3933"/>
         <source>Tied</source>
         <translation>Liée</translation>
     </message>
     <message>
-        <location filename="../source/app/powertabeditor.cpp" line="2598"/>
+        <location filename="../source/app/powertabeditor.cpp" line="2644"/>
         <source>Muted</source>
         <translation>Muette</translation>
     </message>
     <message>
-        <location filename="../source/app/powertabeditor.cpp" line="2601"/>
+        <location filename="../source/app/powertabeditor.cpp" line="2647"/>
         <source>Ghost Note</source>
         <translation>Note fantôme</translation>
     </message>
     <message>
-        <location filename="../source/app/powertabeditor.cpp" line="2605"/>
+        <location filename="../source/app/powertabeditor.cpp" line="2651"/>
         <source>Fermata</source>
         <translation>Point d&apos;orgue</translation>
     </message>
     <message>
-        <location filename="../source/app/powertabeditor.cpp" line="2609"/>
+        <location filename="../source/app/powertabeditor.cpp" line="2655"/>
         <source>Let Ring</source>
         <translation>Laisser sonner</translation>
     </message>
     <message>
-        <location filename="../source/app/powertabeditor.cpp" line="2613"/>
+        <location filename="../source/app/powertabeditor.cpp" line="2659"/>
         <source>Grace Note</source>
         <translation>Appoggiature</translation>
     </message>
     <message>
-        <location filename="../source/app/powertabeditor.cpp" line="2618"/>
+        <location filename="../source/app/powertabeditor.cpp" line="2664"/>
         <source>Staccato</source>
         <translation>Staccato</translation>
     </message>
     <message>
-        <location filename="../source/app/powertabeditor.cpp" line="2622"/>
+        <location filename="../source/app/powertabeditor.cpp" line="2668"/>
         <source>Accent</source>
         <translation>Accent</translation>
     </message>
     <message>
-        <location filename="../source/app/powertabeditor.cpp" line="2626"/>
+        <location filename="../source/app/powertabeditor.cpp" line="2672"/>
         <source>Heavy Accent</source>
         <translation>Accent fort</translation>
     </message>
     <message>
-        <location filename="../source/app/powertabeditor.cpp" line="2632"/>
+        <location filename="../source/app/powertabeditor.cpp" line="2678"/>
         <source>8va</source>
         <translation>8va</translation>
     </message>
     <message>
-        <location filename="../source/app/powertabeditor.cpp" line="2635"/>
+        <location filename="../source/app/powertabeditor.cpp" line="2681"/>
         <source>15ma</source>
         <translation>15ma</translation>
     </message>
     <message>
-        <location filename="../source/app/powertabeditor.cpp" line="2638"/>
+        <location filename="../source/app/powertabeditor.cpp" line="2684"/>
         <source>8vb</source>
         <translation>8vb</translation>
     </message>
     <message>
-        <location filename="../source/app/powertabeditor.cpp" line="2641"/>
+        <location filename="../source/app/powertabeditor.cpp" line="2687"/>
         <source>15mb</source>
         <translation>15mb</translation>
     </message>
     <message>
-        <location filename="../source/app/powertabeditor.cpp" line="2645"/>
+        <location filename="../source/app/powertabeditor.cpp" line="2691"/>
         <source>Triplet</source>
         <translation>Triolet</translation>
     </message>
     <message>
-        <location filename="../source/app/powertabeditor.cpp" line="2652"/>
+        <location filename="../source/app/powertabeditor.cpp" line="2698"/>
         <source>Irregular Grouping</source>
         <translation>Groupe irrégulier</translation>
     </message>
     <message>
-        <location filename="../source/app/powertabeditor.cpp" line="2678"/>
+        <location filename="../source/app/powertabeditor.cpp" line="2724"/>
         <source>Add Rest</source>
         <translation>Ajouter un silence</translation>
     </message>
     <message>
-        <location filename="../source/app/powertabeditor.cpp" line="2684"/>
+        <location filename="../source/app/powertabeditor.cpp" line="2730"/>
         <source>Multi-Bar Rest...</source>
         <translation>Silence multi-mesures…</translation>
     </message>
     <message>
-        <location filename="../source/app/powertabeditor.cpp" line="2692"/>
+        <location filename="../source/app/powertabeditor.cpp" line="2738"/>
         <source>Rehearsal Sign...</source>
         <translation>Signe de répétition…</translation>
     </message>
     <message>
-        <location filename="../source/app/powertabeditor.cpp" line="2699"/>
+        <location filename="../source/app/powertabeditor.cpp" line="2745"/>
         <source>Tempo Marker...</source>
         <translation>Marqueur de tempo…</translation>
     </message>
     <message>
-        <location filename="../source/app/powertabeditor.cpp" line="2706"/>
+        <location filename="../source/app/powertabeditor.cpp" line="2752"/>
         <source>Alteration of Pace...</source>
         <translation>Variation de nuance...</translation>
     </message>
     <message>
-        <location filename="../source/app/powertabeditor.cpp" line="2712"/>
+        <location filename="../source/app/powertabeditor.cpp" line="2758"/>
         <source>Edit Key Signature...</source>
         <translation>Modifier l&apos;armure...</translation>
     </message>
     <message>
-        <location filename="../source/app/powertabeditor.cpp" line="2719"/>
+        <location filename="../source/app/powertabeditor.cpp" line="2765"/>
         <source>Edit Time Signature...</source>
         <translation>Modifier la signature rythmique...</translation>
     </message>
     <message>
-        <location filename="../source/app/powertabeditor.cpp" line="2726"/>
+        <location filename="../source/app/powertabeditor.cpp" line="2772"/>
         <source>Insert Standard Barline</source>
         <translation>Insérer une barre de mesure standard</translation>
     </message>
     <message>
-        <location filename="../source/app/powertabeditor.cpp" line="2733"/>
+        <location filename="../source/app/powertabeditor.cpp" line="2779"/>
         <source>Barline...</source>
         <translation>Barre de mesure…</translation>
     </message>
     <message>
-        <location filename="../source/app/powertabeditor.cpp" line="2739"/>
+        <location filename="../source/app/powertabeditor.cpp" line="2785"/>
         <source>Musical Direction...</source>
         <translation>Direction musicale…</translation>
     </message>
     <message>
-        <location filename="../source/app/powertabeditor.cpp" line="2747"/>
+        <location filename="../source/app/powertabeditor.cpp" line="2793"/>
         <source>Repeat Ending...</source>
         <translation>Boucle de fin…</translation>
     </message>
     <message>
-        <location filename="../source/app/powertabeditor.cpp" line="2755"/>
+        <location filename="../source/app/powertabeditor.cpp" line="2801"/>
         <source>Dynamic...</source>
         <translation>Nuance…</translation>
     </message>
     <message>
-        <location filename="../source/app/powertabeditor.cpp" line="2762"/>
-        <location filename="../source/app/powertabeditor.cpp" line="2765"/>
-        <location filename="../source/app/powertabeditor.cpp" line="2768"/>
-        <location filename="../source/app/powertabeditor.cpp" line="2771"/>
-        <location filename="../source/app/powertabeditor.cpp" line="2774"/>
-        <location filename="../source/app/powertabeditor.cpp" line="2777"/>
-        <location filename="../source/app/powertabeditor.cpp" line="2780"/>
-        <location filename="../source/app/powertabeditor.cpp" line="2783"/>
+        <location filename="../source/app/powertabeditor.cpp" line="2808"/>
+        <location filename="../source/app/powertabeditor.cpp" line="2811"/>
+        <location filename="../source/app/powertabeditor.cpp" line="2814"/>
+        <location filename="../source/app/powertabeditor.cpp" line="2817"/>
+        <location filename="../source/app/powertabeditor.cpp" line="2820"/>
+        <location filename="../source/app/powertabeditor.cpp" line="2823"/>
+        <location filename="../source/app/powertabeditor.cpp" line="2826"/>
+        <location filename="../source/app/powertabeditor.cpp" line="2829"/>
         <source>Dynamics</source>
         <translation>Nuances</translation>
     </message>
     <message>
-        <location filename="../source/app/powertabeditor.cpp" line="2788"/>
+        <location filename="../source/app/powertabeditor.cpp" line="2834"/>
         <source>Volume Swell...</source>
         <translation>Variation de volume...</translation>
     </message>
     <message>
-        <location filename="../source/app/powertabeditor.cpp" line="2795"/>
+        <location filename="../source/app/powertabeditor.cpp" line="2841"/>
         <source>Hammer On/Pull Off</source>
         <translation>Hammer On/Pull Off</translation>
     </message>
     <message>
-        <location filename="../source/app/powertabeditor.cpp" line="2803"/>
+        <location filename="../source/app/powertabeditor.cpp" line="2849"/>
         <source>Hammer On From Nowhere</source>
         <translation>Hammer-on de nulle part</translation>
     </message>
     <message>
-        <location filename="../source/app/powertabeditor.cpp" line="2808"/>
+        <location filename="../source/app/powertabeditor.cpp" line="2854"/>
         <source>Pull Off To Nowhere</source>
         <translation>Pull-off de nulle part</translation>
     </message>
     <message>
-        <location filename="../source/app/powertabeditor.cpp" line="2812"/>
+        <location filename="../source/app/powertabeditor.cpp" line="2858"/>
         <source>Natural Harmonic</source>
         <translation>Harmonique naturel</translation>
     </message>
     <message>
-        <location filename="../source/app/powertabeditor.cpp" line="2817"/>
+        <location filename="../source/app/powertabeditor.cpp" line="2863"/>
         <source>Artificial Harmonic...</source>
         <translation>Harmonique artificiel…</translation>
     </message>
     <message>
-        <location filename="../source/app/powertabeditor.cpp" line="2824"/>
+        <location filename="../source/app/powertabeditor.cpp" line="2870"/>
         <source>Tapped Harmonic...</source>
         <translation>Harmonique tapé...</translation>
     </message>
     <message>
-        <location filename="../source/app/powertabeditor.cpp" line="2833"/>
+        <location filename="../source/app/powertabeditor.cpp" line="2879"/>
         <source>Bend...</source>
         <translation>Bend…</translation>
     </message>
     <message>
-        <location filename="../source/app/powertabeditor.cpp" line="2840"/>
+        <location filename="../source/app/powertabeditor.cpp" line="2886"/>
         <source>Tremolo Bar...</source>
         <translation>Mesure de trémolo…</translation>
     </message>
     <message>
-        <location filename="../source/app/powertabeditor.cpp" line="2846"/>
+        <location filename="../source/app/powertabeditor.cpp" line="2892"/>
         <source>Vibrato</source>
         <translation>Vibrato</translation>
     </message>
     <message>
-        <location filename="../source/app/powertabeditor.cpp" line="2851"/>
+        <location filename="../source/app/powertabeditor.cpp" line="2897"/>
         <source>Wide Vibrato</source>
         <translation>Vibrato large</translation>
     </message>
     <message>
-        <location filename="../source/app/powertabeditor.cpp" line="2856"/>
+        <location filename="../source/app/powertabeditor.cpp" line="2902"/>
         <source>Palm Mute</source>
         <translation>Palm mute</translation>
     </message>
     <message>
-        <location filename="../source/app/powertabeditor.cpp" line="2860"/>
+        <location filename="../source/app/powertabeditor.cpp" line="2906"/>
         <source>Tremolo Picking</source>
         <translation>Picking trémolo</translation>
     </message>
     <message>
-        <location filename="../source/app/powertabeditor.cpp" line="2864"/>
+        <location filename="../source/app/powertabeditor.cpp" line="2910"/>
         <source>Arpeggio Up</source>
         <translation>Arpège ascendant</translation>
     </message>
     <message>
-        <location filename="../source/app/powertabeditor.cpp" line="2869"/>
+        <location filename="../source/app/powertabeditor.cpp" line="2915"/>
         <source>Arpeggio Down</source>
         <translation>Arpège descendant</translation>
     </message>
     <message>
-        <location filename="../source/app/powertabeditor.cpp" line="2874"/>
+        <location filename="../source/app/powertabeditor.cpp" line="2920"/>
         <source>Tap</source>
         <translation>Taper</translation>
     </message>
     <message>
-        <location filename="../source/app/powertabeditor.cpp" line="2878"/>
+        <location filename="../source/app/powertabeditor.cpp" line="2924"/>
         <source>Trill...</source>
         <translation>Trille…</translation>
     </message>
     <message>
-        <location filename="../source/app/powertabeditor.cpp" line="2884"/>
+        <location filename="../source/app/powertabeditor.cpp" line="2930"/>
         <source>Pickstroke Up</source>
         <translation>Jouer vers le haut</translation>
     </message>
     <message>
-        <location filename="../source/app/powertabeditor.cpp" line="2889"/>
+        <location filename="../source/app/powertabeditor.cpp" line="2935"/>
         <source>Pickstroke Down</source>
         <translation>Jouer vers le bas</translation>
     </message>
     <message>
-        <location filename="../source/app/powertabeditor.cpp" line="2895"/>
+        <location filename="../source/app/powertabeditor.cpp" line="2941"/>
         <source>Slide Into From Above</source>
         <translation>Glissé d&apos;entrée par le haut</translation>
     </message>
     <message>
-        <location filename="../source/app/powertabeditor.cpp" line="2900"/>
+        <location filename="../source/app/powertabeditor.cpp" line="2946"/>
         <source>Slide Into From Below</source>
         <translation>Glissé d&apos;entrée par le bas</translation>
     </message>
     <message>
-        <location filename="../source/app/powertabeditor.cpp" line="2905"/>
+        <location filename="../source/app/powertabeditor.cpp" line="2951"/>
         <source>Shift Slide</source>
         <translation>Glissé</translation>
     </message>
     <message>
-        <location filename="../source/app/powertabeditor.cpp" line="2909"/>
+        <location filename="../source/app/powertabeditor.cpp" line="2955"/>
         <source>Legato Slide</source>
         <translation>Glissé avec liaison</translation>
     </message>
     <message>
-        <location filename="../source/app/powertabeditor.cpp" line="2915"/>
+        <location filename="../source/app/powertabeditor.cpp" line="2961"/>
         <source>Slide Out Of Downwards</source>
         <translation>Glissé de sortie vers le bas</translation>
     </message>
     <message>
-        <location filename="../source/app/powertabeditor.cpp" line="2920"/>
+        <location filename="../source/app/powertabeditor.cpp" line="2966"/>
         <source>Slide Out Of Upwards</source>
         <translation>Glissé de sortie vers le haut</translation>
     </message>
     <message>
-        <location filename="../source/app/powertabeditor.cpp" line="2927"/>
+        <location filename="../source/app/powertabeditor.cpp" line="2973"/>
         <source>Add Player</source>
         <translation>Ajouter un musicien</translation>
     </message>
     <message>
-        <location filename="../source/app/powertabeditor.cpp" line="2932"/>
+        <location filename="../source/app/powertabeditor.cpp" line="2978"/>
         <source>Add Instrument</source>
         <translation>Ajouter un instrument</translation>
     </message>
     <message>
-        <location filename="../source/app/powertabeditor.cpp" line="2936"/>
+        <location filename="../source/app/powertabeditor.cpp" line="2982"/>
         <source>Player Change...</source>
         <translation>Changement de musicien…</translation>
     </message>
     <message>
-        <location filename="../source/app/powertabeditor.cpp" line="2943"/>
+        <location filename="../source/app/powertabeditor.cpp" line="2989"/>
         <source>Tuning Dictionary...</source>
         <translation>Dictionnaire de tonalités…</translation>
     </message>
     <message>
-        <location filename="../source/app/powertabeditor.cpp" line="2950"/>
+        <location filename="../source/app/powertabeditor.cpp" line="2996"/>
         <source>Edit View Filters...</source>
         <translation>Éditer les filtres...</translation>
     </message>
     <message>
-        <location filename="../source/app/powertabeditor.cpp" line="2967"/>
+        <location filename="../source/app/powertabeditor.cpp" line="3013"/>
         <source>Next Tab</source>
         <translation>Tablature suivante</translation>
     </message>
     <message>
-        <location filename="../source/app/powertabeditor.cpp" line="2973"/>
+        <location filename="../source/app/powertabeditor.cpp" line="3019"/>
         <source>Previous Tab</source>
         <translation>Tablature précédente</translation>
     </message>
     <message>
-        <location filename="../source/app/powertabeditor.cpp" line="2987"/>
+        <location filename="../source/app/powertabeditor.cpp" line="3033"/>
         <source>Zoom In</source>
         <translation>Zoomer</translation>
     </message>
     <message>
-        <location filename="../source/app/powertabeditor.cpp" line="2992"/>
+        <location filename="../source/app/powertabeditor.cpp" line="3038"/>
         <source>Zoom Out</source>
         <translation>Dézoomer</translation>
     </message>
     <message>
-        <location filename="../source/app/powertabeditor.cpp" line="2998"/>
+        <location filename="../source/app/powertabeditor.cpp" line="3044"/>
         <source>Report Bug...</source>
         <translation>Signaler un problème…</translation>
     </message>
     <message>
-        <location filename="../source/app/powertabeditor.cpp" line="3004"/>
+        <location filename="../source/app/powertabeditor.cpp" line="3050"/>
         <source>Translate This Application...</source>
         <translation>Traduire cette application...</translation>
     </message>
     <message>
-        <location filename="../source/app/powertabeditor.cpp" line="3010"/>
+        <location filename="../source/app/powertabeditor.cpp" line="3056"/>
         <source>Application Info...</source>
         <translation>Informations sur l&apos;application...</translation>
     </message>
@@ -3045,133 +2876,133 @@
         <translation type="vanished">Informations sur l&apos;application</translation>
     </message>
     <message>
-        <location filename="../source/app/powertabeditor.cpp" line="3054"/>
+        <location filename="../source/app/powertabeditor.cpp" line="3100"/>
         <source>Mixer</source>
         <translation>Mélangeur</translation>
     </message>
     <message>
-        <location filename="../source/app/powertabeditor.cpp" line="3079"/>
+        <location filename="../source/app/powertabeditor.cpp" line="3125"/>
         <source>Instruments</source>
         <translation>Instruments</translation>
     </message>
     <message>
-        <location filename="../source/app/powertabeditor.cpp" line="3182"/>
+        <location filename="../source/app/powertabeditor.cpp" line="3228"/>
         <source>&amp;File</source>
         <translation>Fichier</translation>
     </message>
     <message>
-        <location filename="../source/app/powertabeditor.cpp" line="3193"/>
+        <location filename="../source/app/powertabeditor.cpp" line="3239"/>
         <source>Recent Files</source>
         <translation>Fichiers récents</translation>
     </message>
     <message>
-        <location filename="../source/app/powertabeditor.cpp" line="3203"/>
+        <location filename="../source/app/powertabeditor.cpp" line="3249"/>
         <source>&amp;Edit</source>
         <translation>Édition</translation>
     </message>
     <message>
-        <location filename="../source/app/powertabeditor.cpp" line="3219"/>
+        <location filename="../source/app/powertabeditor.cpp" line="3265"/>
         <source>Play&amp;back</source>
         <translation>Lecture</translation>
     </message>
     <message>
-        <location filename="../source/app/powertabeditor.cpp" line="3227"/>
+        <location filename="../source/app/powertabeditor.cpp" line="3274"/>
         <source>&amp;Position</source>
         <translation>Position</translation>
     </message>
     <message>
-        <location filename="../source/app/powertabeditor.cpp" line="3228"/>
-        <location filename="../source/app/powertabeditor.cpp" line="3264"/>
+        <location filename="../source/app/powertabeditor.cpp" line="3275"/>
+        <location filename="../source/app/powertabeditor.cpp" line="3311"/>
         <source>&amp;Section</source>
         <translation>Section</translation>
     </message>
     <message>
-        <location filename="../source/app/powertabeditor.cpp" line="3234"/>
+        <location filename="../source/app/powertabeditor.cpp" line="3281"/>
         <source>&amp;Staff</source>
         <translation>Portée</translation>
     </message>
     <message>
-        <location filename="../source/app/powertabeditor.cpp" line="3257"/>
+        <location filename="../source/app/powertabeditor.cpp" line="3304"/>
         <source>&amp;Text</source>
         <translation>Texte</translation>
     </message>
     <message>
-        <location filename="../source/app/powertabeditor.cpp" line="3274"/>
+        <location filename="../source/app/powertabeditor.cpp" line="3321"/>
         <source>&amp;Line Spacing</source>
         <translation>Interligne</translation>
     </message>
     <message>
-        <location filename="../source/app/powertabeditor.cpp" line="3279"/>
+        <location filename="../source/app/powertabeditor.cpp" line="3326"/>
         <source>&amp;Notes</source>
         <translation>Notes</translation>
     </message>
     <message>
-        <location filename="../source/app/powertabeditor.cpp" line="3313"/>
+        <location filename="../source/app/powertabeditor.cpp" line="3360"/>
         <source>Octave</source>
         <translation>Octave</translation>
     </message>
     <message>
-        <location filename="../source/app/powertabeditor.cpp" line="3323"/>
+        <location filename="../source/app/powertabeditor.cpp" line="3370"/>
         <source>Rests</source>
         <translation>Silences</translation>
     </message>
     <message>
-        <location filename="../source/app/powertabeditor.cpp" line="3336"/>
+        <location filename="../source/app/powertabeditor.cpp" line="3383"/>
         <source>&amp;Music Symbols</source>
         <translation>Symboles musicaux</translation>
     </message>
     <message>
-        <location filename="../source/app/powertabeditor.cpp" line="3350"/>
+        <location filename="../source/app/powertabeditor.cpp" line="3397"/>
         <source>&amp;Tab Symbols</source>
         <translation>Symboles de tablature</translation>
     </message>
     <message>
-        <location filename="../source/app/powertabeditor.cpp" line="3351"/>
+        <location filename="../source/app/powertabeditor.cpp" line="3398"/>
         <source>&amp;Hammer Ons/Pull Offs</source>
         <translation>Hammer Ons/Pull Offs</translation>
     </message>
     <message>
-        <location filename="../source/app/powertabeditor.cpp" line="3365"/>
+        <location filename="../source/app/powertabeditor.cpp" line="3412"/>
         <source>Slide Into</source>
         <translation>Glissé d&apos;entrée</translation>
     </message>
     <message>
-        <location filename="../source/app/powertabeditor.cpp" line="3372"/>
+        <location filename="../source/app/powertabeditor.cpp" line="3419"/>
         <source>Slide Out Of</source>
         <translation>Glissé de sortie</translation>
     </message>
     <message>
-        <location filename="../source/app/powertabeditor.cpp" line="3392"/>
+        <location filename="../source/app/powertabeditor.cpp" line="3439"/>
         <source>&amp;Player</source>
         <translation>Musicien</translation>
     </message>
     <message>
-        <location filename="../source/app/powertabeditor.cpp" line="3401"/>
+        <location filename="../source/app/powertabeditor.cpp" line="3448"/>
         <source>&amp;Window</source>
         <translation>Fenêtre</translation>
     </message>
     <message>
-        <location filename="../source/app/powertabeditor.cpp" line="3412"/>
+        <location filename="../source/app/powertabeditor.cpp" line="3459"/>
         <source>&amp;Help</source>
         <translation>Aide</translation>
     </message>
     <message>
-        <location filename="../source/app/powertabeditor.cpp" line="3891"/>
+        <location filename="../source/app/powertabeditor.cpp" line="3939"/>
         <source>Insert Tied Note</source>
         <translation>Insérer une note liée</translation>
     </message>
     <message>
-        <location filename="../source/app/powertabeditor.cpp" line="3986"/>
+        <location filename="../source/app/powertabeditor.cpp" line="4034"/>
         <source>Edit Barline</source>
         <translation>Modifier la barre de mesure</translation>
     </message>
     <message>
-        <location filename="../source/app/powertabeditor.cpp" line="3991"/>
+        <location filename="../source/app/powertabeditor.cpp" line="4039"/>
         <source>Insert Barline</source>
         <translation>Insérer une barre de mesure</translation>
     </message>
     <message>
-        <location filename="../source/app/powertabeditor.cpp" line="3997"/>
+        <location filename="../source/app/powertabeditor.cpp" line="4045"/>
         <source>Barline</source>
         <translation>Barre de mesure</translation>
     </message>
@@ -3190,162 +3021,139 @@
     <name>PreferencesDialog</name>
     <message>
         <location filename="../source/dialogs/preferencesdialog.ui" line="17"/>
-        <location filename="../build/source/dialogs/ui_preferencesdialog.h" line="359"/>
         <source>Preferences</source>
         <translation>Préférences</translation>
     </message>
     <message>
         <location filename="../source/dialogs/preferencesdialog.ui" line="33"/>
-        <location filename="../build/source/dialogs/ui_preferencesdialog.h" line="374"/>
         <source>MIDI</source>
         <translation>MIDI</translation>
     </message>
     <message>
         <location filename="../source/dialogs/preferencesdialog.ui" line="39"/>
-        <location filename="../build/source/dialogs/ui_preferencesdialog.h" line="360"/>
         <source>Playback</source>
         <translation>Lecture</translation>
     </message>
     <message>
         <location filename="../source/dialogs/preferencesdialog.ui" line="50"/>
-        <location filename="../build/source/dialogs/ui_preferencesdialog.h" line="361"/>
         <source>MIDI Output Device:</source>
         <translation>Périphérique de sortie MIDI :</translation>
     </message>
     <message>
         <location filename="../source/dialogs/preferencesdialog.ui" line="60"/>
-        <location filename="../build/source/dialogs/ui_preferencesdialog.h" line="362"/>
         <source>Vibrato Strength:</source>
         <translation>Force du vibrato :</translation>
     </message>
     <message>
         <location filename="../source/dialogs/preferencesdialog.ui" line="76"/>
-        <location filename="../build/source/dialogs/ui_preferencesdialog.h" line="363"/>
         <source>Wide Vibrato Strength:</source>
         <translation>Force du vibrato large :</translation>
     </message>
     <message>
         <location filename="../source/dialogs/preferencesdialog.ui" line="86"/>
-        <location filename="../build/source/dialogs/ui_preferencesdialog.h" line="364"/>
         <source>Play Notes While Editing</source>
         <translation>Jouer les notes pendant l&apos;édition</translation>
     </message>
     <message>
         <location filename="../source/dialogs/preferencesdialog.ui" line="101"/>
-        <location filename="../build/source/dialogs/ui_preferencesdialog.h" line="365"/>
         <source>Metronome</source>
         <translation>Métronome</translation>
     </message>
     <message>
         <location filename="../source/dialogs/preferencesdialog.ui" line="112"/>
         <location filename="../source/dialogs/preferencesdialog.ui" line="180"/>
-        <location filename="../build/source/dialogs/ui_preferencesdialog.h" line="366"/>
-        <location filename="../build/source/dialogs/ui_preferencesdialog.h" line="371"/>
         <source>Enabled:</source>
         <translation>Activé :</translation>
     </message>
     <message>
         <location filename="../source/dialogs/preferencesdialog.ui" line="122"/>
-        <location filename="../source/dialogs/preferencesdialog.ui" line="190"/>
-        <location filename="../source/dialogs/preferencesdialog.ui" line="309"/>
-        <location filename="../build/source/dialogs/ui_preferencesdialog.h" line="367"/>
-        <location filename="../build/source/dialogs/ui_preferencesdialog.h" line="372"/>
-        <location filename="../build/source/dialogs/ui_preferencesdialog.h" line="384"/>
+        <location filename="../source/dialogs/preferencesdialog.ui" line="193"/>
+        <location filename="../source/dialogs/preferencesdialog.ui" line="322"/>
         <source>Preset:</source>
         <translation>Préréglage :</translation>
     </message>
     <message>
         <location filename="../source/dialogs/preferencesdialog.ui" line="138"/>
-        <location filename="../build/source/dialogs/ui_preferencesdialog.h" line="368"/>
         <source>Strong Accent Volume:</source>
         <translation>Volume de l&apos;accent fort :</translation>
     </message>
     <message>
         <location filename="../source/dialogs/preferencesdialog.ui" line="148"/>
-        <location filename="../build/source/dialogs/ui_preferencesdialog.h" line="369"/>
         <source>Weak Accent Volume:</source>
         <translation>Volume de l&apos;accent faible :</translation>
     </message>
     <message>
         <location filename="../source/dialogs/preferencesdialog.ui" line="163"/>
-        <location filename="../build/source/dialogs/ui_preferencesdialog.h" line="370"/>
         <source>Count-In Before Playback</source>
         <translation>Départ avant la lecture</translation>
     </message>
     <message>
-        <location filename="../source/dialogs/preferencesdialog.ui" line="200"/>
-        <location filename="../build/source/dialogs/ui_preferencesdialog.h" line="373"/>
+        <location filename="../source/dialogs/preferencesdialog.ui" line="203"/>
         <source>Volume:</source>
         <translation>Volume :</translation>
     </message>
     <message>
-        <location filename="../source/dialogs/preferencesdialog.ui" line="216"/>
-        <location filename="../build/source/dialogs/ui_preferencesdialog.h" line="382"/>
+        <location filename="../source/dialogs/preferencesdialog.ui" line="219"/>
         <source>General</source>
         <translation>Général</translation>
     </message>
     <message>
-        <location filename="../source/dialogs/preferencesdialog.ui" line="222"/>
-        <location filename="../build/source/dialogs/ui_preferencesdialog.h" line="375"/>
+        <location filename="../source/dialogs/preferencesdialog.ui" line="225"/>
         <source>Interface</source>
         <translation>Interface</translation>
     </message>
     <message>
-        <location filename="../source/dialogs/preferencesdialog.ui" line="236"/>
-        <location filename="../build/source/dialogs/ui_preferencesdialog.h" line="376"/>
+        <location filename="../source/dialogs/preferencesdialog.ui" line="239"/>
         <source>Open Files in New Window:</source>
         <translation>Ouvrir les fichiers dans une nouvelle fenêtre :</translation>
     </message>
     <message>
-        <location filename="../source/dialogs/preferencesdialog.ui" line="246"/>
-        <location filename="../build/source/dialogs/ui_preferencesdialog.h" line="377"/>
+        <location filename="../source/dialogs/preferencesdialog.ui" line="249"/>
         <source>Score Theme:</source>
         <translation>Thème de la partition :</translation>
     </message>
     <message>
-        <location filename="../source/dialogs/preferencesdialog.ui" line="260"/>
-        <location filename="../build/source/dialogs/ui_preferencesdialog.h" line="378"/>
+        <location filename="../source/dialogs/preferencesdialog.ui" line="263"/>
         <source>System Default</source>
         <translation>Système</translation>
     </message>
     <message>
-        <location filename="../source/dialogs/preferencesdialog.ui" line="265"/>
-        <location filename="../build/source/dialogs/ui_preferencesdialog.h" line="379"/>
+        <location filename="../source/dialogs/preferencesdialog.ui" line="268"/>
         <source>Light</source>
         <translation>Clair</translation>
     </message>
     <message>
-        <location filename="../source/dialogs/preferencesdialog.ui" line="270"/>
-        <location filename="../build/source/dialogs/ui_preferencesdialog.h" line="380"/>
+        <location filename="../source/dialogs/preferencesdialog.ui" line="273"/>
         <source>Dark</source>
         <translation>Sombre</translation>
     </message>
     <message>
-        <location filename="../source/dialogs/preferencesdialog.ui" line="284"/>
-        <location filename="../build/source/dialogs/ui_preferencesdialog.h" line="387"/>
+        <location filename="../source/dialogs/preferencesdialog.ui" line="281"/>
+        <source>System Spacing:</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../source/dialogs/preferencesdialog.ui" line="297"/>
         <source>Default Instrument</source>
         <translation>Instrument par défaut</translation>
     </message>
     <message>
-        <location filename="../source/dialogs/preferencesdialog.ui" line="299"/>
-        <location filename="../build/source/dialogs/ui_preferencesdialog.h" line="383"/>
+        <location filename="../source/dialogs/preferencesdialog.ui" line="312"/>
         <source>Name:</source>
         <translation>Nom :</translation>
     </message>
     <message>
-        <location filename="../source/dialogs/preferencesdialog.ui" line="319"/>
-        <location filename="../build/source/dialogs/ui_preferencesdialog.h" line="385"/>
+        <location filename="../source/dialogs/preferencesdialog.ui" line="332"/>
         <source>Tuning:</source>
         <translation>Tonalité :</translation>
     </message>
     <message>
-        <location filename="../source/dialogs/preferencesdialog.ui" line="326"/>
-        <location filename="../build/source/dialogs/ui_preferencesdialog.h" line="386"/>
+        <location filename="../source/dialogs/preferencesdialog.ui" line="339"/>
         <source>Tuning</source>
         <translation>Tonalité</translation>
     </message>
     <message>
-        <location filename="../source/dialogs/preferencesdialog.cpp" line="139"/>
+        <location filename="../source/dialogs/preferencesdialog.cpp" line="146"/>
         <source>Click to adjust tuning.</source>
         <translation>Cliquez pour ajuster la tonalité.</translation>
     </message>
@@ -3362,14 +3170,12 @@
     <name>RehearsalSignDialog</name>
     <message>
         <location filename="../source/dialogs/rehearsalsigndialog.ui" line="17"/>
-        <location filename="../build/source/dialogs/ui_rehearsalsigndialog.h" line="73"/>
         <location filename="../source/dialogs/rehearsalsigndialog.cpp" line="67"/>
         <source>Rehearsal Sign</source>
         <translation>Signe de répétition</translation>
     </message>
     <message>
         <location filename="../source/dialogs/rehearsalsigndialog.ui" line="31"/>
-        <location filename="../build/source/dialogs/ui_rehearsalsigndialog.h" line="74"/>
         <source>Description:</source>
         <translation>Description :</translation>
     </message>
@@ -3507,7 +3313,7 @@
         <translation>Supprimer la position</translation>
     </message>
     <message>
-        <location filename="../source/app/powertabeditor.cpp" line="1344"/>
+        <location filename="../source/app/powertabeditor.cpp" line="1355"/>
         <source>Remove Multi-Bar Rest</source>
         <translation>Supprimer le silence multi-mesures</translation>
     </message>
@@ -3635,52 +3441,52 @@
         <translation>Double-cliquez pour modifier le signe de répétition.</translation>
     </message>
     <message>
-        <location filename="../source/painters/systemrenderer.cpp" line="503"/>
+        <location filename="../source/painters/systemrenderer.cpp" line="507"/>
         <source>Double-click to edit repeat endings.</source>
         <translation>Double-cliquez pour modifier les boucles de fin.</translation>
     </message>
     <message>
-        <location filename="../source/painters/systemrenderer.cpp" line="634"/>
+        <location filename="../source/painters/systemrenderer.cpp" line="638"/>
         <source>Double-click to edit tempo marker.</source>
         <translation>Double-cliquez pour modifier le marqueur de tempo.</translation>
     </message>
     <message>
-        <location filename="../source/painters/systemrenderer.cpp" line="741"/>
+        <location filename="../source/painters/systemrenderer.cpp" line="745"/>
         <source>Double-click to edit chord text.</source>
         <translation>Double-cliquez pour modifier le texte de l&apos;accord.</translation>
     </message>
     <message>
-        <location filename="../source/painters/systemrenderer.cpp" line="767"/>
+        <location filename="../source/painters/systemrenderer.cpp" line="771"/>
         <source>Double-click to edit text.</source>
         <translation>Double-cliquez pour modifier le texte.</translation>
     </message>
     <message>
-        <location filename="../source/painters/systemrenderer.cpp" line="937"/>
+        <location filename="../source/painters/systemrenderer.cpp" line="941"/>
         <source>Double-click to edit the active players.</source>
         <translation>Double-cliquez pour modifier les musiciens actifs.</translation>
     </message>
     <message>
-        <location filename="../source/painters/systemrenderer.cpp" line="1390"/>
+        <location filename="../source/painters/systemrenderer.cpp" line="1394"/>
         <source>Double-click to edit volume swell.</source>
         <translation>Double-cliquez pour éditer la variation de volume.</translation>
     </message>
     <message>
-        <location filename="../source/painters/systemrenderer.cpp" line="1410"/>
+        <location filename="../source/painters/systemrenderer.cpp" line="1414"/>
         <source>Double-click to edit tremolo bar.</source>
         <translation>Double-cliquez pour modifier la mesure de trémolo.</translation>
     </message>
     <message>
-        <location filename="../source/painters/systemrenderer.cpp" line="1585"/>
+        <location filename="../source/painters/systemrenderer.cpp" line="1589"/>
         <source>Double-click to edit dynamic.</source>
         <translation>Double-cliquez pour modifier la nuance.</translation>
     </message>
     <message>
-        <location filename="../source/painters/systemrenderer.cpp" line="1928"/>
+        <location filename="../source/painters/systemrenderer.cpp" line="1932"/>
         <source>Double-click to edit multi-bar rest.</source>
         <translation>Double-cliquez pour modifier le silence multi-mesures.</translation>
     </message>
     <message>
-        <location filename="../source/painters/systemrenderer.cpp" line="2181"/>
+        <location filename="../source/painters/systemrenderer.cpp" line="2185"/>
         <source>Double-click to edit bend.</source>
         <translation>Double-cliquez pour modifier le bend.</translation>
     </message>
@@ -3818,19 +3624,16 @@
     <name>StaffDialog</name>
     <message>
         <location filename="../source/dialogs/staffdialog.ui" line="17"/>
-        <location filename="../build/source/dialogs/ui_staffdialog.h" line="85"/>
         <source>Staff</source>
         <translation>Portée</translation>
     </message>
     <message>
         <location filename="../source/dialogs/staffdialog.ui" line="31"/>
-        <location filename="../build/source/dialogs/ui_staffdialog.h" line="86"/>
         <source>Number of Strings:</source>
         <translation>Nombre de cordes :</translation>
     </message>
     <message>
         <location filename="../source/dialogs/staffdialog.ui" line="41"/>
-        <location filename="../build/source/dialogs/ui_staffdialog.h" line="87"/>
         <source>Clef Type:</source>
         <translation>Type de clé :</translation>
     </message>
@@ -3839,19 +3642,16 @@
     <name>TappedHarmonicDialog</name>
     <message>
         <location filename="../source/dialogs/tappedharmonicdialog.ui" line="17"/>
-        <location filename="../build/source/dialogs/ui_tappedharmonicdialog.h" line="86"/>
         <source>Tapped Harmonic</source>
         <translation>Harmonique tapé</translation>
     </message>
     <message>
         <location filename="../source/dialogs/tappedharmonicdialog.ui" line="31"/>
-        <location filename="../build/source/dialogs/ui_tappedharmonicdialog.h" line="87"/>
         <source>Current Fret:</source>
         <translation>Frette courante :</translation>
     </message>
     <message>
         <location filename="../source/dialogs/tappedharmonicdialog.ui" line="45"/>
-        <location filename="../build/source/dialogs/ui_tappedharmonicdialog.h" line="88"/>
         <source>Tapped Fret:</source>
         <translation>Frette tapée :</translation>
     </message>
@@ -3860,55 +3660,46 @@
     <name>TempoMarkerDialog</name>
     <message>
         <location filename="../source/dialogs/tempomarkerdialog.ui" line="17"/>
-        <location filename="../build/source/dialogs/ui_tempomarkerdialog.h" line="416"/>
         <source>Tempo Marker</source>
         <translation>Marqueur de tempo</translation>
     </message>
     <message>
         <location filename="../source/dialogs/tempomarkerdialog.ui" line="34"/>
-        <location filename="../build/source/dialogs/ui_tempomarkerdialog.h" line="417"/>
         <source>Description:</source>
         <translation>Description :</translation>
     </message>
     <message>
         <location filename="../source/dialogs/tempomarkerdialog.ui" line="51"/>
-        <location filename="../build/source/dialogs/ui_tempomarkerdialog.h" line="418"/>
         <source>Beat Type:</source>
         <translation>Type de rythme :</translation>
     </message>
     <message>
         <location filename="../source/dialogs/tempomarkerdialog.ui" line="295"/>
-        <location filename="../build/source/dialogs/ui_tempomarkerdialog.h" line="429"/>
         <source>BPM:</source>
         <translation>BPM :</translation>
     </message>
     <message>
         <location filename="../source/dialogs/tempomarkerdialog.ui" line="305"/>
-        <location filename="../build/source/dialogs/ui_tempomarkerdialog.h" line="430"/>
         <source>L&apos;istesso:</source>
         <translation>L&apos;istesso :</translation>
     </message>
     <message>
         <location filename="../source/dialogs/tempomarkerdialog.ui" line="317"/>
-        <location filename="../build/source/dialogs/ui_tempomarkerdialog.h" line="431"/>
         <source>Enable</source>
         <translation>Activer</translation>
     </message>
     <message>
         <location filename="../source/dialogs/tempomarkerdialog.ui" line="556"/>
-        <location filename="../build/source/dialogs/ui_tempomarkerdialog.h" line="442"/>
         <source>Triplet Feel:</source>
         <translation>Effet du triolet :</translation>
     </message>
     <message>
         <location filename="../source/dialogs/tempomarkerdialog.ui" line="568"/>
-        <location filename="../build/source/dialogs/ui_tempomarkerdialog.h" line="443"/>
         <source>None</source>
         <translation>Aucun</translation>
     </message>
     <message>
         <location filename="../source/dialogs/tempomarkerdialog.ui" line="648"/>
-        <location filename="../build/source/dialogs/ui_tempomarkerdialog.h" line="448"/>
         <source>Show Metronome Marker:</source>
         <translation>Afficher le marqueur du métronome :</translation>
     </message>
@@ -3917,14 +3708,12 @@
     <name>TextItemDialog</name>
     <message>
         <location filename="../source/dialogs/textitemdialog.ui" line="17"/>
-        <location filename="../build/source/dialogs/ui_textitemdialog.h" line="73"/>
         <location filename="../source/dialogs/textitemdialog.cpp" line="55"/>
         <source>Text</source>
         <translation>Texte</translation>
     </message>
     <message>
         <location filename="../source/dialogs/textitemdialog.ui" line="28"/>
-        <location filename="../build/source/dialogs/ui_textitemdialog.h" line="74"/>
         <source>Contents:</source>
         <translation>Contenu :</translation>
     </message>
@@ -3938,55 +3727,47 @@
     <name>TimeSignatureDialog</name>
     <message>
         <location filename="../source/dialogs/timesignaturedialog.ui" line="17"/>
-        <location filename="../build/source/dialogs/ui_timesignaturedialog.h" line="175"/>
-        <location filename="../source/dialogs/timesignaturedialog.cpp" line="130"/>
+        <location filename="../source/dialogs/timesignaturedialog.cpp" line="132"/>
         <source>Time Signature</source>
         <translation>Signature rythmique</translation>
     </message>
     <message>
         <location filename="../source/dialogs/timesignaturedialog.ui" line="31"/>
-        <location filename="../build/source/dialogs/ui_timesignaturedialog.h" line="176"/>
         <source>Show Time Signature:</source>
         <translation>Afficher la signature rythmique :</translation>
     </message>
     <message>
         <location filename="../source/dialogs/timesignaturedialog.ui" line="41"/>
-        <location filename="../build/source/dialogs/ui_timesignaturedialog.h" line="177"/>
         <source>Common Time:</source>
         <translation>Heure courante :</translation>
     </message>
     <message>
         <location filename="../source/dialogs/timesignaturedialog.ui" line="51"/>
-        <location filename="../build/source/dialogs/ui_timesignaturedialog.h" line="178"/>
         <source>Cut Time:</source>
         <translation>C barré :</translation>
     </message>
     <message>
         <location filename="../source/dialogs/timesignaturedialog.ui" line="61"/>
-        <location filename="../build/source/dialogs/ui_timesignaturedialog.h" line="179"/>
         <source>Beats Per Measure:</source>
         <translation>Battements Par Mesure :</translation>
     </message>
     <message>
         <location filename="../source/dialogs/timesignaturedialog.ui" line="78"/>
-        <location filename="../build/source/dialogs/ui_timesignaturedialog.h" line="180"/>
         <source>Beat Value:</source>
         <translation>Valeur du rythme :</translation>
     </message>
     <message>
         <location filename="../source/dialogs/timesignaturedialog.ui" line="95"/>
-        <location filename="../build/source/dialogs/ui_timesignaturedialog.h" line="181"/>
         <source>Metronome Pulses Per Measure:</source>
         <translation>Pulsations de Métronome Par Mesure :</translation>
     </message>
     <message>
         <location filename="../source/dialogs/timesignaturedialog.ui" line="112"/>
-        <location filename="../build/source/dialogs/ui_timesignaturedialog.h" line="182"/>
         <source>Beaming Pattern:</source>
         <translation>Schéma rythmique :</translation>
     </message>
     <message>
-        <location filename="../source/dialogs/timesignaturedialog.cpp" line="131"/>
+        <location filename="../source/dialogs/timesignaturedialog.cpp" line="133"/>
         <source>Invalid beaming pattern.</source>
         <translation>Schéma rythmique invalide.</translation>
     </message>
@@ -3995,13 +3776,11 @@
     <name>ToolBox</name>
     <message>
         <location filename="../source/widgets/toolbox/toolbox.ui" line="20"/>
-        <location filename="../build/source/widgets/ui_toolbox.h" line="747"/>
         <source>Form</source>
         <translation>Forme</translation>
     </message>
     <message>
         <location filename="../source/widgets/toolbox/toolbox.ui" line="161"/>
-        <location filename="../build/source/widgets/ui_toolbox.h" line="755"/>
         <source>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;&lt;br/&gt;&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</source>
         <translation>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;&lt;br/&gt;&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</translation>
     </message>
@@ -4010,37 +3789,31 @@
     <name>TremoloBarDialog</name>
     <message>
         <location filename="../source/dialogs/tremolobardialog.ui" line="17"/>
-        <location filename="../build/source/dialogs/ui_tremolobardialog.h" line="117"/>
         <source>Tremolo Bar</source>
         <translation>Mesure de trémolo</translation>
     </message>
     <message>
         <location filename="../source/dialogs/tremolobardialog.ui" line="31"/>
-        <location filename="../build/source/dialogs/ui_tremolobardialog.h" line="118"/>
         <source>Type:</source>
         <translation>Type :</translation>
     </message>
     <message>
         <location filename="../source/dialogs/tremolobardialog.ui" line="41"/>
-        <location filename="../build/source/dialogs/ui_tremolobardialog.h" line="119"/>
         <source>Resultant Pitch:</source>
         <translation>Hauteur résultante :</translation>
     </message>
     <message>
         <location filename="../source/dialogs/tremolobardialog.ui" line="51"/>
-        <location filename="../build/source/dialogs/ui_tremolobardialog.h" line="120"/>
         <source>Bend Duration:</source>
         <translation>Durée du bend :</translation>
     </message>
     <message>
         <location filename="../source/dialogs/tremolobardialog.ui" line="63"/>
-        <location filename="../build/source/dialogs/ui_tremolobardialog.h" line="121"/>
         <source>Current note duration + next</source>
         <translation>Durée de la note courante + suivante</translation>
     </message>
     <message>
         <location filename="../source/dialogs/tremolobardialog.ui" line="73"/>
-        <location filename="../build/source/dialogs/ui_tremolobardialog.h" line="122"/>
         <source>notes</source>
         <translation>Notes</translation>
     </message>
@@ -4084,20 +3857,17 @@
     <name>TrillDialog</name>
     <message>
         <location filename="../source/dialogs/trilldialog.ui" line="17"/>
-        <location filename="../build/source/dialogs/ui_trilldialog.h" line="85"/>
         <location filename="../source/dialogs/trilldialog.cpp" line="60"/>
         <source>Trill</source>
         <translation>Trille</translation>
     </message>
     <message>
         <location filename="../source/dialogs/trilldialog.ui" line="31"/>
-        <location filename="../build/source/dialogs/ui_trilldialog.h" line="86"/>
         <source>Current Fret:</source>
         <translation>Frette courante :</translation>
     </message>
     <message>
         <location filename="../source/dialogs/trilldialog.ui" line="45"/>
-        <location filename="../build/source/dialogs/ui_trilldialog.h" line="87"/>
         <source>Trill With Fret:</source>
         <translation>Trille avec la frette :</translation>
     </message>
@@ -4111,49 +3881,41 @@
     <name>TuningDialog</name>
     <message>
         <location filename="../source/dialogs/tuningdialog.ui" line="17"/>
-        <location filename="../build/source/dialogs/ui_tuningdialog.h" line="197"/>
         <source>Tuning</source>
         <translation>Tonalité</translation>
     </message>
     <message>
         <location filename="../source/dialogs/tuningdialog.ui" line="31"/>
-        <location filename="../build/source/dialogs/ui_tuningdialog.h" line="198"/>
         <source>Name:</source>
         <translation>Nom :</translation>
     </message>
     <message>
         <location filename="../source/dialogs/tuningdialog.ui" line="41"/>
-        <location filename="../build/source/dialogs/ui_tuningdialog.h" line="199"/>
         <source>Sharps:</source>
         <translation>Dièses :</translation>
     </message>
     <message>
         <location filename="../source/dialogs/tuningdialog.ui" line="51"/>
-        <location filename="../build/source/dialogs/ui_tuningdialog.h" line="200"/>
         <source>Music Notation Offset:</source>
         <translation>Décalage de la notation musicale :</translation>
     </message>
     <message>
         <location filename="../source/dialogs/tuningdialog.ui" line="61"/>
-        <location filename="../build/source/dialogs/ui_tuningdialog.h" line="201"/>
         <source>Number of Strings:</source>
         <translation>Nombre de cordes :</translation>
     </message>
     <message>
         <location filename="../source/dialogs/tuningdialog.ui" line="71"/>
-        <location filename="../build/source/dialogs/ui_tuningdialog.h" line="202"/>
         <source>Tuning:</source>
         <translation>Tonalité :</translation>
     </message>
     <message>
         <location filename="../source/dialogs/tuningdialog.ui" line="106"/>
-        <location filename="../build/source/dialogs/ui_tuningdialog.h" line="203"/>
         <source>Preset:</source>
         <translation>Préréglage :</translation>
     </message>
     <message>
         <location filename="../source/dialogs/tuningdialog.ui" line="120"/>
-        <location filename="../build/source/dialogs/ui_tuningdialog.h" line="204"/>
         <source>Capo:</source>
         <translation>Capo :</translation>
     </message>
@@ -4162,31 +3924,26 @@
     <name>TuningDictionaryDialog</name>
     <message>
         <location filename="../source/dialogs/tuningdictionarydialog.ui" line="17"/>
-        <location filename="../build/source/dialogs/ui_tuningdictionarydialog.h" line="121"/>
         <source>Tuning Dictionary</source>
         <translation>Dictionnaire de tonalités</translation>
     </message>
     <message>
         <location filename="../source/dialogs/tuningdictionarydialog.ui" line="25"/>
-        <location filename="../build/source/dialogs/ui_tuningdictionarydialog.h" line="122"/>
         <source>Number of Strings:</source>
         <translation>Nombre de cordes :</translation>
     </message>
     <message>
         <location filename="../source/dialogs/tuningdictionarydialog.ui" line="52"/>
-        <location filename="../build/source/dialogs/ui_tuningdictionarydialog.h" line="123"/>
         <source>New...</source>
         <translation>Nouveau…</translation>
     </message>
     <message>
         <location filename="../source/dialogs/tuningdictionarydialog.ui" line="62"/>
-        <location filename="../build/source/dialogs/ui_tuningdictionarydialog.h" line="124"/>
         <source>Edit...</source>
         <translation>Modifier…</translation>
     </message>
     <message>
         <location filename="../source/dialogs/tuningdictionarydialog.ui" line="72"/>
-        <location filename="../build/source/dialogs/ui_tuningdictionarydialog.h" line="125"/>
         <source>Delete</source>
         <translation>Supprimer</translation>
     </message>
@@ -4205,57 +3962,47 @@
     <name>ViewFilterDialog</name>
     <message>
         <location filename="../source/dialogs/viewfilterdialog.ui" line="17"/>
-        <location filename="../build/source/dialogs/ui_viewfilterdialog.h" line="240"/>
         <source>View Filters</source>
         <translation>Voir les filtres</translation>
     </message>
     <message>
         <location filename="../source/dialogs/viewfilterdialog.ui" line="76"/>
-        <location filename="../build/source/dialogs/ui_viewfilterdialog.h" line="242"/>
         <source>Add Filter</source>
         <translation>Ajouter un filtre</translation>
     </message>
     <message>
         <location filename="../source/dialogs/viewfilterdialog.ui" line="79"/>
         <location filename="../source/dialogs/viewfilterdialog.ui" line="279"/>
-        <location filename="../build/source/dialogs/ui_viewfilterdialog.h" line="244"/>
-        <location filename="../build/source/dialogs/ui_viewfilterdialog.h" line="254"/>
         <source>+</source>
         <translation>+</translation>
     </message>
     <message>
         <location filename="../source/dialogs/viewfilterdialog.ui" line="101"/>
-        <location filename="../build/source/dialogs/ui_viewfilterdialog.h" line="246"/>
         <source>Remove Filter</source>
         <translation>Supprimer le filtre</translation>
     </message>
     <message>
         <location filename="../source/dialogs/viewfilterdialog.ui" line="104"/>
-        <location filename="../build/source/dialogs/ui_viewfilterdialog.h" line="248"/>
         <source>-</source>
         <translation>-</translation>
     </message>
     <message>
         <location filename="../source/dialogs/viewfilterdialog.ui" line="139"/>
-        <location filename="../build/source/dialogs/ui_viewfilterdialog.h" line="249"/>
         <source>Name:</source>
         <translation>Nom :</translation>
     </message>
     <message>
         <location filename="../source/dialogs/viewfilterdialog.ui" line="149"/>
-        <location filename="../build/source/dialogs/ui_viewfilterdialog.h" line="250"/>
         <source>Rules:</source>
         <translation>Règles :</translation>
     </message>
     <message>
         <location filename="../source/dialogs/viewfilterdialog.ui" line="276"/>
-        <location filename="../build/source/dialogs/ui_viewfilterdialog.h" line="252"/>
         <source>Add Rule</source>
         <translation>Ajouter une règle</translation>
     </message>
     <message>
         <location filename="../source/dialogs/viewfilterdialog.ui" line="293"/>
-        <location filename="../build/source/dialogs/ui_viewfilterdialog.h" line="255"/>
         <source>Matches:</source>
         <translation>Correspondances :</translation>
     </message>
@@ -4264,51 +4011,42 @@
     <name>VolumeSwellDialog</name>
     <message>
         <location filename="../source/dialogs/volumeswelldialog.ui" line="17"/>
-        <location filename="../build/source/dialogs/ui_volumeswelldialog.h" line="352"/>
         <source>Volume Swell</source>
         <translation>Variation de volume</translation>
     </message>
     <message>
         <location filename="../source/dialogs/volumeswelldialog.ui" line="34"/>
-        <location filename="../build/source/dialogs/ui_volumeswelldialog.h" line="353"/>
         <source>Start Volume:</source>
         <translation>Volume de départ :</translation>
     </message>
     <message>
         <location filename="../source/dialogs/volumeswelldialog.ui" line="61"/>
         <location filename="../source/dialogs/volumeswelldialog.ui" line="344"/>
-        <location filename="../build/source/dialogs/ui_volumeswelldialog.h" line="354"/>
-        <location filename="../build/source/dialogs/ui_volumeswelldialog.h" line="364"/>
         <source>Off</source>
         <translation>Désactivé</translation>
     </message>
     <message>
         <location filename="../source/dialogs/volumeswelldialog.ui" line="317"/>
-        <location filename="../build/source/dialogs/ui_volumeswelldialog.h" line="363"/>
         <source>End Volume:</source>
         <translation>Volume de fin :</translation>
     </message>
     <message>
         <location filename="../source/dialogs/volumeswelldialog.ui" line="600"/>
-        <location filename="../build/source/dialogs/ui_volumeswelldialog.h" line="373"/>
         <source>Swell Duration:</source>
         <translation>Durée de la variation :</translation>
     </message>
     <message>
         <location filename="../source/dialogs/volumeswelldialog.ui" line="609"/>
-        <location filename="../build/source/dialogs/ui_volumeswelldialog.h" line="374"/>
         <source>Current Note</source>
         <translation>Note courante</translation>
     </message>
     <message>
         <location filename="../source/dialogs/volumeswelldialog.ui" line="616"/>
-        <location filename="../build/source/dialogs/ui_volumeswelldialog.h" line="375"/>
         <source>Current Note and Following Notes</source>
         <translation>Note courante et suivantes</translation>
     </message>
     <message>
         <location filename="../source/dialogs/volumeswelldialog.ui" line="625"/>
-        <location filename="../build/source/dialogs/ui_volumeswelldialog.h" line="376"/>
         <source>Number of Notes:</source>
         <translation>Nombre de notes :</translation>
     </message>

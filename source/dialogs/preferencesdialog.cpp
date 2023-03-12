@@ -26,7 +26,7 @@
 #include <score/generalmidi.h>
 #include <util/tostring.h>
 
-typedef std::pair<int, int> MidiApiAndPort;
+typedef std::pair<std::string, std::string> MidiApiAndPort;
 Q_DECLARE_METATYPE(MidiApiAndPort)
 
 PreferencesDialog::PreferencesDialog(QWidget *parent,
@@ -39,6 +39,9 @@ PreferencesDialog::PreferencesDialog(QWidget *parent,
 {
     ui->setupUi(this);
 
+    // Needed for findData() to work with QVariant's containing std::pair.
+    QMetaType::registerComparators<MidiApiAndPort>();
+
     connect(ui->buttonBox, &QDialogButtonBox::accepted, this, &QDialog::accept);
     connect(ui->buttonBox, &QDialogButtonBox::rejected, this, &QDialog::reject);
 
@@ -46,13 +49,14 @@ PreferencesDialog::PreferencesDialog(QWidget *parent,
     MidiOutputDevice device;
     for (size_t i = 0; i < device.getApiCount(); ++i)
     {
-        for(unsigned int j = 0; j < device.getPortCount(i); ++j)
+        std::string api_name = device.getApiName(i);
+
+        for (unsigned int j = 0; j < device.getPortCount(i); ++j)
         {
-            std::string portName = device.getPortName(i, j);
+            std::string port_name = device.getPortName(i, j);
             ui->midiPortComboBox->addItem(
-                QString::fromStdString(portName),
-                QVariant::fromValue(
-                    std::make_pair(static_cast<int>(i), static_cast<int>(j))));
+                QString::fromStdString(port_name),
+                QVariant::fromValue(std::make_pair(api_name, port_name)));
         }
     }
 
@@ -87,16 +91,14 @@ void PreferencesDialog::loadCurrentSettings()
 {
     auto settings = mySettingsManager.getReadHandle();
 
-    const unsigned int api = settings->get(Settings::MidiApi);
-    const unsigned int port = settings->get(Settings::MidiPort);
+    const std::string preferred_api = settings->get(Settings::MidiApiName);
+    const std::string preferred_port = settings->get(Settings::MidiPortName);
 
     // Find the preferred midi port in the combo box.
-    MidiOutputDevice device;
-    if (api < device.getApiCount() && port < device.getPortCount(api))
-    {
-        ui->midiPortComboBox->setCurrentIndex(ui->midiPortComboBox->findText(
-            QString::fromStdString(device.getPortName(api, port))));
-    }
+    int index = ui->midiPortComboBox->findData(
+        QVariant::fromValue(std::make_pair(preferred_api, preferred_port)));
+    if (index >= 0)
+        ui->midiPortComboBox->setCurrentIndex(index);
 
     ui->vibratoStrengthSpinBox->setValue(
         settings->get(Settings::MidiVibratoLevel));
@@ -156,8 +158,8 @@ void PreferencesDialog::accept()
 
     MidiApiAndPort apiAndPort = ui->midiPortComboBox->itemData(
                 ui->midiPortComboBox->currentIndex()).value<MidiApiAndPort>();
-    settings->set(Settings::MidiApi, apiAndPort.first);
-    settings->set(Settings::MidiPort, apiAndPort.second);
+    settings->set(Settings::MidiApiName, apiAndPort.first);
+    settings->set(Settings::MidiPortName, apiAndPort.second);
 
     settings->set(Settings::MidiVibratoLevel,
                   ui->vibratoStrengthSpinBox->value());

@@ -115,24 +115,45 @@ bool MidiOutputDevice::sendMidiMessage(unsigned char a, unsigned char b,
     return true;
 }
 
-bool MidiOutputDevice::initialize(size_t preferredApi,
-                                  unsigned int preferredPort)
+bool
+MidiOutputDevice::initialize(const std::string_view &preferred_api,
+                             const std::string_view &preferred_port)
 {
     if (myMidiOut)
         myMidiOut->closePort(); // Close any open ports.
 
-    if (preferredApi >= myMidiOuts.size())
-        return false;
+    myMidiOut = nullptr;
+    unsigned int port = 0;
 
-    myMidiOut = myMidiOuts[preferredApi].get();
-    unsigned int num_ports = myMidiOut->getPortCount();
+    for (auto &&midi_out : myMidiOuts)
+    {
+        if (RtMidi::getApiName(midi_out->getCurrentApi()) != preferred_api)
+            continue;
 
-    if (num_ports == 0)
+        for (unsigned int i = 0, n = midi_out->getPortCount(); i < n; ++i)
+        {
+            if (midi_out->getPortName(i) == preferred_port)
+            {
+                myMidiOut = midi_out.get();
+                port = i;
+                break;
+            }
+        }
+    }
+
+    // If there isn't an existing preference, just use the first port.
+    if (!myMidiOut && (preferred_api.empty() && preferred_port.empty()) &&
+        !myMidiOuts.empty() && myMidiOuts[0]->getPortCount())
+    {
+        myMidiOut = myMidiOuts[0].get();
+    }
+
+    if (!myMidiOut)
         return false;
 
     try
     {
-        myMidiOut->openPort(preferredPort);
+        myMidiOut->openPort(port);
     }
     catch (RtMidiError &e)
     {
@@ -146,6 +167,12 @@ bool MidiOutputDevice::initialize(size_t preferredApi,
 size_t MidiOutputDevice::getApiCount()
 {
     return myMidiOuts.size();
+}
+
+std::string
+MidiOutputDevice::getApiName(size_t api)
+{
+    return RtMidi::getApiName(myMidiOuts[api]->getCurrentApi());
 }
 
 unsigned int MidiOutputDevice::getPortCount(size_t api)

@@ -21,9 +21,9 @@
 
 namespace Settings
 {
-const Setting<int> MidiApi("midi/api", 0);
+const Setting<std::string> MidiApiName("midi/api_name", "");
 
-const Setting<int> MidiPort("midi/port", 0);
+const Setting<std::string> MidiPortName("midi/port_name", "");
 
 const Setting<int> MidiVibratoLevel("midi/vibrato_level", 85);
 
