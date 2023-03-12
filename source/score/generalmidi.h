@@ -41,7 +41,7 @@ namespace Midi
     const uint32_t MIDI_PPQN = MIDI_QUARTER;
 
     /// Number of MIDI channels per port.
-    const uint8_t NUM_MIDI_CHANNELS_PER_PORT = 16;
+    inline constexpr uint8_t NUM_MIDI_CHANNELS_PER_PORT = 16;
     /// First MIDI channel.
     const uint8_t FIRST_MIDI_CHANNEL = 0;
     /// Last MIDI channel.

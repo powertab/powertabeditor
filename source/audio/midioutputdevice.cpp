@@ -53,7 +53,7 @@ MidiOutputDevice::MidiOutputDevice() : myMidiOut(nullptr)
     {
         try
         {
-            myMidiOuts.emplace_back(new RtMidiOut(api));
+            myMidiOuts.emplace_back(std::make_unique<RtMidiOut>(api));
         }
         catch (RtMidiError &e)
         {

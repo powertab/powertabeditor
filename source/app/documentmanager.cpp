@@ -27,7 +27,7 @@ DocumentManager::DocumentManager()
 Document &DocumentManager::addDocument(
         const SettingsManager &settings_manager)
 {
-    myDocumentList.emplace_back(new Document());
+    myDocumentList.emplace_back(std::make_unique<Document>());
     myCurrentIndex = static_cast<int>(myDocumentList.size()) - 1;
 
     auto settings = settings_manager.getReadHandle();

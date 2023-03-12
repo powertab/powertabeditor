@@ -157,11 +157,12 @@
 
 PowerTabEditor::PowerTabEditor()
     : QMainWindow(nullptr),
-      mySettingsManager(new SettingsManager()),
-      myDocumentManager(new DocumentManager()),
-      myFileFormatManager(new FileFormatManager(*mySettingsManager)),
-      myUndoManager(new UndoManager()),
-      myTuningDictionary(new TuningDictionary()),
+      mySettingsManager(std::make_unique<SettingsManager>()),
+      myDocumentManager(std::make_unique<DocumentManager>()),
+      myFileFormatManager(
+          std::make_unique<FileFormatManager>(*mySettingsManager)),
+      myUndoManager(std::make_unique<UndoManager>()),
+      myTuningDictionary(std::make_unique<TuningDictionary>()),
       myIsPlaying(false),
       myRecentFiles(nullptr),
       myActiveDurationType(Position::EighthNote),

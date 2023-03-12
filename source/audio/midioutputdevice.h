@@ -30,14 +30,13 @@
 #include <memory>
 #include <string>
 #include <vector>
+#include <score/generalmidi.h>
 
 class RtMidiOut;
 
 class MidiOutputDevice
 {
 public:
-    static const int NUM_CHANNELS = 16;
-
     MidiOutputDevice();
     ~MidiOutputDevice();
 
@@ -95,9 +94,9 @@ private:
     std::vector<std::unique_ptr<RtMidiOut>> myMidiOuts;
     RtMidiOut *myMidiOut;
     /// Maximum volume for each channel (as set in the mixer).
-    std::array<uint8_t, NUM_CHANNELS> myMaxVolumes;
+    std::array<uint8_t, Midi::NUM_MIDI_CHANNELS_PER_PORT> myMaxVolumes;
     /// Volume of last active dynamic for each channel.
-    std::array<uint8_t, NUM_CHANNELS> myActiveVolumes;
+    std::array<uint8_t, Midi::NUM_MIDI_CHANNELS_PER_PORT> myActiveVolumes;
 };
 
 #endif

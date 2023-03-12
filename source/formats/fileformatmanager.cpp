@@ -28,15 +28,15 @@
 
 FileFormatManager::FileFormatManager(const SettingsManager &settings_manager)
 {
-    myImporters.emplace_back(new PowerTabImporter());
-    myImporters.emplace_back(new PowerTabOldImporter());
-    myImporters.emplace_back(new GuitarProImporter());
-    myImporters.emplace_back(new GpxImporter());
-    myImporters.emplace_back(new Gp7Importer());
+    myImporters.emplace_back(std::make_unique<PowerTabImporter>());
+    myImporters.emplace_back(std::make_unique<PowerTabOldImporter>());
+    myImporters.emplace_back(std::make_unique<GuitarProImporter>());
+    myImporters.emplace_back(std::make_unique<GpxImporter>());
+    myImporters.emplace_back(std::make_unique<Gp7Importer>());
 
-    myExporters.emplace_back(new PowerTabExporter());
-    myExporters.emplace_back(new Gp7Exporter());
-    myExporters.emplace_back(new MidiExporter(settings_manager));
+    myExporters.emplace_back(std::make_unique<PowerTabExporter>());
+    myExporters.emplace_back(std::make_unique<Gp7Exporter>());
+    myExporters.emplace_back(std::make_unique<MidiExporter>(settings_manager));
 }
 
 std::optional<FileFormat> FileFormatManager::findFormat(
