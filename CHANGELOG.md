@@ -9,15 +9,16 @@ Thanks to the following contributors who worked on this release:
 - @conker312
 
 ### Added
-- The preferred MIDI output device is now tracked by name rather than by port number, which is more robust if e.g. a new device is plugged in.
+- The preferred MIDI output device is now tracked by name rather than by port number, which is more robust if e.g. a new device is plugged in
 - Translations
   - Added Turkish translation (#406)
   - Updated French translation (#406)
 
 ### Changed
+- Updated the minimum required version of `RtMidi` to 4.0
 
 ### Fixed
-- Fixed a frequent crash when the preference to play inserted notes while editing is enabled.
+- Fixed a frequent crash when the preference to play inserted notes while editing is enabled
 
 ## [Alpha 19] - 2022-10-17
 

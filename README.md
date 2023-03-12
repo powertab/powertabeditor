@@ -34,7 +34,7 @@
   * stacktrace
 * [Qt](http://qt-project.org/) >= 5.10 version or greater
 * [nlohmann-json](https://github.com/nlohmann/json) >= 3.7.3
-* [RtMidi](https://www.music.mcgill.ca/~gary/rtmidi/)
+* [RtMidi](https://www.music.mcgill.ca/~gary/rtmidi/) >= 4.0
 * [pugixml](https://pugixml.org/)
 * [minizip](https://github.com/madler/zlib)
 * [doctest](https://github.com/onqtam/doctest)

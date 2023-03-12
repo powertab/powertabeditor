@@ -17,7 +17,7 @@ if ( FETCH_RTMIDI )
     target_include_directories( rtmidi::rtmidi INTERFACE ${rtmidi_src_SOURCE_DIR} )
 
 else ()
-    find_package( rtmidi REQUIRED )
+    find_package( rtmidi 4.0 REQUIRED )
 
     add_library( rtmidi::rtmidi IMPORTED SHARED )
     target_include_directories( rtmidi::rtmidi INTERFACE ${rtmidi_INCLUDE_DIRS} )
