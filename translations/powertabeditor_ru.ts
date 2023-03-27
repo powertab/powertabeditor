@@ -6,7 +6,7 @@
     <message>
         <location filename="../source/actions/addalternateending.cpp" line="24"/>
         <source>Add Repeat Ending</source>
-        <translation type="unfinished"></translation>
+        <translation>Добавить конец повторения</translation>
     </message>
 </context>
 <context>
@@ -22,7 +22,7 @@
     <message>
         <location filename="../source/actions/addbarline.cpp" line="23"/>
         <source>Insert Barline</source>
-        <translation type="unfinished"></translation>
+        <translation>Вставить разделительную черту</translation>
     </message>
 </context>
 <context>
@@ -83,7 +83,7 @@
     <message>
         <location filename="../source/actions/addirregulargrouping.cpp" line="29"/>
         <source>Add Irregular Grouping</source>
-        <translation type="unfinished"></translation>
+        <translation>Добавить нестандартную группировку</translation>
     </message>
 </context>
 <context>
@@ -115,7 +115,7 @@
     <message>
         <location filename="../source/actions/addnoteproperty.cpp" line="23"/>
         <source>Set %1</source>
-        <translation type="unfinished"></translation>
+        <translation>Установить в 1%</translation>
     </message>
 </context>
 <context>
@@ -139,7 +139,7 @@
     <message>
         <location filename="../source/actions/addpositionproperty.cpp" line="23"/>
         <source>Set %1</source>
-        <translation type="unfinished"></translation>
+        <translation>Установить в 1%</translation>
     </message>
 </context>
 <context>
@@ -208,7 +208,7 @@
     <message>
         <location filename="../source/actions/tremolobar.cpp" line="22"/>
         <source>Add Tremolo Bar</source>
-        <translation type="unfinished"></translation>
+        <translation>Добавить тремоло Бар</translation>
     </message>
 </context>
 <context>
@@ -618,7 +618,7 @@
     <message>
         <location filename="../source/dialogs/chordnamedialog.ui" line="53"/>
         <source>Key:</source>
-        <translation type="unfinished">Тональность:</translation>
+        <translation>Тон:</translation>
     </message>
     <message>
         <location filename="../source/dialogs/chordnamedialog.ui" line="65"/>
@@ -3653,12 +3653,12 @@
         <location filename="../source/dialogs/textitemdialog.ui" line="17"/>
         <location filename="../source/dialogs/textitemdialog.cpp" line="55"/>
         <source>Text</source>
-        <translation type="unfinished"></translation>
+        <translation>Текст</translation>
     </message>
     <message>
         <location filename="../source/dialogs/textitemdialog.ui" line="28"/>
         <source>Contents:</source>
-        <translation type="unfinished"></translation>
+        <translation>Содержание:</translation>
     </message>
     <message>
         <location filename="../source/dialogs/textitemdialog.cpp" line="56"/>
