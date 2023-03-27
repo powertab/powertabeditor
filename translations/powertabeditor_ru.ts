@@ -115,7 +115,7 @@
     <message>
         <location filename="../source/actions/addnoteproperty.cpp" line="23"/>
         <source>Set %1</source>
-        <translation>Установить в 1%</translation>
+        <translation>Поставить %1</translation>
     </message>
 </context>
 <context>
@@ -355,7 +355,7 @@
     <message>
         <location filename="../source/dialogs/barlinedialog.ui" line="17"/>
         <source>Music Bar</source>
-        <translation type="unfinished"></translation>
+        <translation>Такт музыки</translation>
     </message>
     <message>
         <location filename="../source/dialogs/barlinedialog.ui" line="31"/>
@@ -623,7 +623,7 @@
     <message>
         <location filename="../source/dialogs/chordnamedialog.ui" line="65"/>
         <source>No Chord</source>
-        <translation type="unfinished"></translation>
+        <translation>Без аккорда</translation>
     </message>
     <message>
         <location filename="../source/dialogs/chordnamedialog.ui" line="95"/>
@@ -695,12 +695,12 @@
     <message>
         <location filename="../source/dialogs/chordnamedialog.ui" line="337"/>
         <source>Bass Note:</source>
-        <translation type="unfinished"></translation>
+        <translation>Басовая нота:</translation>
     </message>
     <message>
         <location filename="../source/dialogs/chordnamedialog.ui" line="911"/>
         <source>Chords in Score:</source>
-        <translation type="unfinished"></translation>
+        <translation>Аккорды в партитуре:</translation>
     </message>
 </context>
 <context>
@@ -731,7 +731,7 @@
     <message>
         <location filename="../source/dialogs/directiondialog.ui" line="17"/>
         <source>Musical Direction</source>
-        <translation type="unfinished"></translation>
+        <translation>Музыкальное направление</translation>
     </message>
     <message>
         <location filename="../source/dialogs/directiondialog.ui" line="28"/>
@@ -741,12 +741,12 @@
     <message>
         <location filename="../source/dialogs/directiondialog.ui" line="38"/>
         <source>Active Symbol:</source>
-        <translation type="unfinished"></translation>
+        <translation>Активный символ:</translation>
     </message>
     <message>
         <location filename="../source/dialogs/directiondialog.ui" line="48"/>
         <source>Repeat Number:</source>
-        <translation type="unfinished"></translation>
+        <translation>Номер повтора:</translation>
     </message>
     <message>
         <location filename="../source/dialogs/directiondialog.ui" line="58"/>
@@ -774,7 +774,7 @@
     <message>
         <location filename="../source/dialogs/dynamicdialog.ui" line="40"/>
         <source>Volume Level:</source>
-        <translation type="unfinished"></translation>
+        <translation>Уровень громкости:</translation>
     </message>
     <message>
         <location filename="../source/dialogs/dynamicdialog.ui" line="67"/>
@@ -787,7 +787,7 @@
     <message>
         <location filename="../source/actions/editbarline.cpp" line="22"/>
         <source>Edit Barline Type</source>
-        <translation type="unfinished"></translation>
+        <translation>Редактировать тип такта</translation>
     </message>
 </context>
 <context>
@@ -795,7 +795,7 @@
     <message>
         <location filename="../source/actions/editdynamic.cpp" line="25"/>
         <source>Edit Dynamic</source>
-        <translation type="unfinished"></translation>
+        <translation>Редактирование динамики</translation>
     </message>
 </context>
 <context>
@@ -811,7 +811,7 @@
     <message>
         <location filename="../source/actions/editinstrument.cpp" line="24"/>
         <source>Edit Instrument</source>
-        <translation type="unfinished"></translation>
+        <translation>Редактировать инструмент</translation>
     </message>
 </context>
 <context>
@@ -819,7 +819,7 @@
     <message>
         <location filename="../source/actions/editkeysignature.cpp" line="25"/>
         <source>Edit Key Signature</source>
-        <translation type="unfinished"></translation>
+        <translation>Редактировать подпись тональности</translation>
     </message>
 </context>
 <context>
@@ -827,12 +827,12 @@
     <message>
         <location filename="../source/actions/editnoteduration.cpp" line="23"/>
         <source>Edit Rest Duration</source>
-        <translation type="unfinished"></translation>
+        <translation>Редактировать длительность паузы</translation>
     </message>
     <message>
         <location filename="../source/actions/editnoteduration.cpp" line="24"/>
         <source>Edit Note Duration</source>
-        <translation type="unfinished"></translation>
+        <translation>Редактировать длительность ноты</translation>
     </message>
 </context>
 <context>
@@ -840,7 +840,7 @@
     <message>
         <location filename="../source/actions/editplayer.cpp" line="23"/>
         <source>Edit Player</source>
-        <translation type="unfinished"></translation>
+        <translation>Изменить исполнителя</translation>
     </message>
 </context>
 <context>
@@ -848,7 +848,7 @@
     <message>
         <location filename="../source/actions/editrehearsalsign.cpp" line="48"/>
         <source>Edit Rehearsal Sign</source>
-        <translation type="unfinished"></translation>
+        <translation>Редактировать знак репетиции</translation>
     </message>
 </context>
 <context>
@@ -856,7 +856,7 @@
     <message>
         <location filename="../source/actions/editstaff.cpp" line="24"/>
         <source>Edit Staff</source>
-        <translation type="unfinished"></translation>
+        <translation>Редактировать нотный стан</translation>
     </message>
 </context>
 <context>
@@ -864,7 +864,7 @@
     <message>
         <location filename="../source/actions/edittabnumber.cpp" line="21"/>
         <source>Edit Tab Number</source>
-        <translation type="unfinished"></translation>
+        <translation>Редактировать номер вкладки</translation>
     </message>
 </context>
 <context>
@@ -872,7 +872,7 @@
     <message>
         <location filename="../source/actions/edittimesignature.cpp" line="25"/>
         <source>Edit Time Signature</source>
-        <translation type="unfinished"></translation>
+        <translation>Редактировать размер такта</translation>
     </message>
 </context>
 <context>
@@ -880,7 +880,7 @@
     <message>
         <location filename="../source/actions/editviewfilters.cpp" line="24"/>
         <source>Edit View Filters</source>
-        <translation type="unfinished"></translation>
+        <translation>Редактировать фильтры просмотра</translation>
     </message>
 </context>
 <context>
@@ -1138,7 +1138,7 @@
     <message>
         <location filename="../source/dialogs/fileinformationdialog.ui" line="576"/>
         <source>Progressive Rock</source>
-        <translation type="unfinished"></translation>
+        <translation>Прогрессивный рок</translation>
     </message>
     <message>
         <location filename="../source/dialogs/fileinformationdialog.ui" line="581"/>
@@ -1248,7 +1248,7 @@
     <message>
         <location filename="../source/dialogs/fileinformationdialog.cpp" line="177"/>
         <source>%1 bytes</source>
-        <translation type="unfinished"></translation>
+        <translation>%1 байт</translation>
     </message>
 </context>
 <context>
@@ -1261,7 +1261,7 @@
     <message>
         <location filename="../source/dialogs/filterrulewidget.ui" line="42"/>
         <source>Player Name</source>
-        <translation type="unfinished"></translation>
+        <translation>Имя исполнителя</translation>
     </message>
     <message>
         <location filename="../source/dialogs/filterrulewidget.ui" line="47"/>
@@ -1304,7 +1304,7 @@
     <message>
         <location filename="../source/dialogs/gotobarlinedialog.ui" line="17"/>
         <source>Go To Barline</source>
-        <translation type="unfinished"></translation>
+        <translation>Перейти к такту</translation>
     </message>
     <message>
         <location filename="../source/dialogs/gotobarlinedialog.ui" line="28"/>
@@ -1317,12 +1317,12 @@
     <message>
         <location filename="../source/dialogs/gotorehearsalsigndialog.ui" line="17"/>
         <source>Go To Rehearsal Sign</source>
-        <translation type="unfinished"></translation>
+        <translation>Перейти к знаку повтора</translation>
     </message>
     <message>
         <location filename="../source/dialogs/gotorehearsalsigndialog.ui" line="28"/>
         <source>Rehearsal Sign:</source>
-        <translation type="unfinished"></translation>
+        <translation>Знак повтора:</translation>
     </message>
 </context>
 <context>
