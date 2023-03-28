@@ -6,7 +6,7 @@
     <message>
         <location filename="../source/actions/addalternateending.cpp" line="24"/>
         <source>Add Repeat Ending</source>
-        <translation type="unfinished"></translation>
+        <translation>Добавить конец повторения</translation>
     </message>
 </context>
 <context>
@@ -22,7 +22,7 @@
     <message>
         <location filename="../source/actions/addbarline.cpp" line="23"/>
         <source>Insert Barline</source>
-        <translation type="unfinished"></translation>
+        <translation>Вставить разделительную черту</translation>
     </message>
 </context>
 <context>
@@ -83,7 +83,7 @@
     <message>
         <location filename="../source/actions/addirregulargrouping.cpp" line="29"/>
         <source>Add Irregular Grouping</source>
-        <translation type="unfinished"></translation>
+        <translation>Добавить нестандартную группировку</translation>
     </message>
 </context>
 <context>
@@ -115,7 +115,7 @@
     <message>
         <location filename="../source/actions/addnoteproperty.cpp" line="23"/>
         <source>Set %1</source>
-        <translation type="unfinished"></translation>
+        <translation>Установить в 1%</translation>
     </message>
 </context>
 <context>
@@ -139,7 +139,7 @@
     <message>
         <location filename="../source/actions/addpositionproperty.cpp" line="23"/>
         <source>Set %1</source>
-        <translation type="unfinished"></translation>
+        <translation>Установить в 1%</translation>
     </message>
 </context>
 <context>
@@ -208,7 +208,7 @@
     <message>
         <location filename="../source/actions/tremolobar.cpp" line="22"/>
         <source>Add Tremolo Bar</source>
-        <translation type="unfinished"></translation>
+        <translation>Добавить тремоло Бар</translation>
     </message>
 </context>
 <context>
@@ -259,7 +259,7 @@
         <location filename="../source/dialogs/alternateendingdialog.cpp" line="33"/>
         <location filename="../source/dialogs/alternateendingdialog.cpp" line="118"/>
         <source>Repeat Ending</source>
-        <translation type="unfinished"></translation>
+        <translation>Повторить окончание</translation>
     </message>
     <message>
         <location filename="../source/dialogs/alternateendingdialog.cpp" line="58"/>
@@ -494,12 +494,12 @@
     <message>
         <location filename="../source/dialogs/benddialog.cpp" line="111"/>
         <source>Middle</source>
-        <translation type="unfinished"></translation>
+        <translation>Середина</translation>
     </message>
     <message>
         <location filename="../source/dialogs/benddialog.cpp" line="112"/>
         <source>High</source>
-        <translation type="unfinished"></translation>
+        <translation>Высокая</translation>
     </message>
 </context>
 <context>
@@ -618,7 +618,7 @@
     <message>
         <location filename="../source/dialogs/chordnamedialog.ui" line="53"/>
         <source>Key:</source>
-        <translation type="unfinished">Тональность:</translation>
+        <translation>Тон:</translation>
     </message>
     <message>
         <location filename="../source/dialogs/chordnamedialog.ui" line="65"/>
@@ -629,43 +629,43 @@
         <location filename="../source/dialogs/chordnamedialog.ui" line="95"/>
         <location filename="../source/dialogs/chordnamedialog.ui" line="702"/>
         <source>C</source>
-        <translation>C</translation>
+        <translation>До</translation>
     </message>
     <message>
         <location filename="../source/dialogs/chordnamedialog.ui" line="115"/>
         <location filename="../source/dialogs/chordnamedialog.ui" line="722"/>
         <source>D</source>
-        <translation>Д</translation>
+        <translation>Ре</translation>
     </message>
     <message>
         <location filename="../source/dialogs/chordnamedialog.ui" line="135"/>
         <location filename="../source/dialogs/chordnamedialog.ui" line="742"/>
         <source>E</source>
-        <translation>Е</translation>
+        <translation>Ми</translation>
     </message>
     <message>
         <location filename="../source/dialogs/chordnamedialog.ui" line="155"/>
         <location filename="../source/dialogs/chordnamedialog.ui" line="762"/>
         <source>F</source>
-        <translation>Ф</translation>
+        <translation>Фа</translation>
     </message>
     <message>
         <location filename="../source/dialogs/chordnamedialog.ui" line="175"/>
         <location filename="../source/dialogs/chordnamedialog.ui" line="782"/>
         <source>G</source>
-        <translation>Г</translation>
+        <translation>Соль</translation>
     </message>
     <message>
         <location filename="../source/dialogs/chordnamedialog.ui" line="195"/>
         <location filename="../source/dialogs/chordnamedialog.ui" line="802"/>
         <source>A</source>
-        <translation>А</translation>
+        <translation>Ля</translation>
     </message>
     <message>
         <location filename="../source/dialogs/chordnamedialog.ui" line="215"/>
         <location filename="../source/dialogs/chordnamedialog.ui" line="822"/>
         <source>B</source>
-        <translation>Б</translation>
+        <translation>Си</translation>
     </message>
     <message>
         <location filename="../source/dialogs/chordnamedialog.ui" line="300"/>
@@ -680,17 +680,17 @@
     <message>
         <location filename="../source/dialogs/chordnamedialog.ui" line="316"/>
         <source>Additions:</source>
-        <translation type="unfinished"></translation>
+        <translation>Дополнения:</translation>
     </message>
     <message>
         <location filename="../source/dialogs/chordnamedialog.ui" line="323"/>
         <source>Extensions:</source>
-        <translation type="unfinished"></translation>
+        <translation>Расширения:</translation>
     </message>
     <message>
         <location filename="../source/dialogs/chordnamedialog.ui" line="330"/>
         <source>Alterations:</source>
-        <translation type="unfinished"></translation>
+        <translation>Алтерации:</translation>
     </message>
     <message>
         <location filename="../source/dialogs/chordnamedialog.ui" line="337"/>
@@ -736,7 +736,7 @@
     <message>
         <location filename="../source/dialogs/directiondialog.ui" line="28"/>
         <source>Symbol:</source>
-        <translation type="unfinished"></translation>
+        <translation>Символ:</translation>
     </message>
     <message>
         <location filename="../source/dialogs/directiondialog.ui" line="38"/>
@@ -751,7 +751,7 @@
     <message>
         <location filename="../source/dialogs/directiondialog.ui" line="58"/>
         <source>Direction:</source>
-        <translation type="unfinished"></translation>
+        <translation>Направление:</translation>
     </message>
     <message>
         <location filename="../source/dialogs/directiondialog.ui" line="86"/>
@@ -761,7 +761,7 @@
     <message>
         <location filename="../source/dialogs/directiondialog.ui" line="93"/>
         <source>Remove</source>
-        <translation type="unfinished"></translation>
+        <translation>Удалить</translation>
     </message>
 </context>
 <context>
@@ -769,7 +769,7 @@
     <message>
         <location filename="../source/dialogs/dynamicdialog.ui" line="17"/>
         <source>Dynamic</source>
-        <translation type="unfinished"></translation>
+        <translation>Динамика</translation>
     </message>
     <message>
         <location filename="../source/dialogs/dynamicdialog.ui" line="40"/>
@@ -975,7 +975,7 @@
     <message>
         <location filename="../source/dialogs/fileinformationdialog.ui" line="246"/>
         <source>EP</source>
-        <translation type="unfinished"></translation>
+        <translation>ЕР</translation>
     </message>
     <message>
         <location filename="../source/dialogs/fileinformationdialog.ui" line="251"/>
@@ -1063,77 +1063,77 @@
     <message>
         <location filename="../source/dialogs/fileinformationdialog.ui" line="498"/>
         <source>Style:</source>
-        <translation type="unfinished"></translation>
+        <translation>Стиль:</translation>
     </message>
     <message>
         <location filename="../source/dialogs/fileinformationdialog.ui" line="506"/>
         <source>Alternative</source>
-        <translation type="unfinished"></translation>
+        <translation>Альтернатива</translation>
     </message>
     <message>
         <location filename="../source/dialogs/fileinformationdialog.ui" line="511"/>
         <source>Bluegrass</source>
-        <translation type="unfinished"></translation>
+        <translation>Блюграсс</translation>
     </message>
     <message>
         <location filename="../source/dialogs/fileinformationdialog.ui" line="516"/>
         <source>Blues</source>
-        <translation type="unfinished"></translation>
+        <translation>Блюз</translation>
     </message>
     <message>
         <location filename="../source/dialogs/fileinformationdialog.ui" line="521"/>
         <source>Country</source>
-        <translation type="unfinished"></translation>
+        <translation>Кантри</translation>
     </message>
     <message>
         <location filename="../source/dialogs/fileinformationdialog.ui" line="526"/>
         <source>Fingerpick</source>
-        <translation type="unfinished"></translation>
+        <translation>Фингерстайл</translation>
     </message>
     <message>
         <location filename="../source/dialogs/fileinformationdialog.ui" line="531"/>
         <source>Flamenco</source>
-        <translation type="unfinished"></translation>
+        <translation>Фламенко</translation>
     </message>
     <message>
         <location filename="../source/dialogs/fileinformationdialog.ui" line="536"/>
         <source>Folk</source>
-        <translation type="unfinished"></translation>
+        <translation>Фолк</translation>
     </message>
     <message>
         <location filename="../source/dialogs/fileinformationdialog.ui" line="541"/>
         <source>Funk</source>
-        <translation type="unfinished"></translation>
+        <translation>Фанк</translation>
     </message>
     <message>
         <location filename="../source/dialogs/fileinformationdialog.ui" line="546"/>
         <source>Fusion</source>
-        <translation type="unfinished"></translation>
+        <translation>Фьюжш</translation>
     </message>
     <message>
         <location filename="../source/dialogs/fileinformationdialog.ui" line="551"/>
         <source>General</source>
-        <translation type="unfinished">Общие</translation>
+        <translation>Общий</translation>
     </message>
     <message>
         <location filename="../source/dialogs/fileinformationdialog.ui" line="556"/>
         <source>Jazz</source>
-        <translation type="unfinished"></translation>
+        <translation>Джаз</translation>
     </message>
     <message>
         <location filename="../source/dialogs/fileinformationdialog.ui" line="561"/>
         <source>Metal/Shred</source>
-        <translation type="unfinished"></translation>
+        <translation>Метал/Шред</translation>
     </message>
     <message>
         <location filename="../source/dialogs/fileinformationdialog.ui" line="566"/>
         <source>Other</source>
-        <translation type="unfinished"></translation>
+        <translation>Другое</translation>
     </message>
     <message>
         <location filename="../source/dialogs/fileinformationdialog.ui" line="571"/>
         <source>Pop</source>
-        <translation type="unfinished"></translation>
+        <translation>Поп</translation>
     </message>
     <message>
         <location filename="../source/dialogs/fileinformationdialog.ui" line="576"/>
@@ -1143,42 +1143,42 @@
     <message>
         <location filename="../source/dialogs/fileinformationdialog.ui" line="581"/>
         <source>Punk</source>
-        <translation type="unfinished"></translation>
+        <translation>Панк</translation>
     </message>
     <message>
         <location filename="../source/dialogs/fileinformationdialog.ui" line="586"/>
         <source>Reggae</source>
-        <translation type="unfinished"></translation>
+        <translation>Регги</translation>
     </message>
     <message>
         <location filename="../source/dialogs/fileinformationdialog.ui" line="591"/>
         <source>Rock</source>
-        <translation type="unfinished"></translation>
+        <translation>Рок</translation>
     </message>
     <message>
         <location filename="../source/dialogs/fileinformationdialog.ui" line="596"/>
         <source>Swing</source>
-        <translation type="unfinished"></translation>
+        <translation>Свинг</translation>
     </message>
     <message>
         <location filename="../source/dialogs/fileinformationdialog.ui" line="604"/>
         <source>Level</source>
-        <translation type="unfinished"></translation>
+        <translation>Уровень</translation>
     </message>
     <message>
         <location filename="../source/dialogs/fileinformationdialog.ui" line="613"/>
         <source>Beginner</source>
-        <translation type="unfinished"></translation>
+        <translation>Новичок</translation>
     </message>
     <message>
         <location filename="../source/dialogs/fileinformationdialog.ui" line="623"/>
         <source>Intermediate</source>
-        <translation type="unfinished"></translation>
+        <translation>Средний</translation>
     </message>
     <message>
         <location filename="../source/dialogs/fileinformationdialog.ui" line="633"/>
         <source>Advanced</source>
-        <translation type="unfinished"></translation>
+        <translation>Продвинутый</translation>
     </message>
     <message>
         <location filename="../source/dialogs/fileinformationdialog.ui" line="669"/>
@@ -1243,7 +1243,7 @@
     <message>
         <location filename="../source/dialogs/fileinformationdialog.cpp" line="165"/>
         <source>Untitled</source>
-        <translation type="unfinished"></translation>
+        <translation>Без названия</translation>
     </message>
     <message>
         <location filename="../source/dialogs/fileinformationdialog.cpp" line="177"/>
@@ -1256,7 +1256,7 @@
     <message>
         <location filename="../source/dialogs/filterrulewidget.ui" line="14"/>
         <source>Form</source>
-        <translation type="unfinished"></translation>
+        <translation>Форма</translation>
     </message>
     <message>
         <location filename="../source/dialogs/filterrulewidget.ui" line="42"/>
@@ -1271,12 +1271,12 @@
     <message>
         <location filename="../source/dialogs/filterrulewidget.ui" line="71"/>
         <source>matches</source>
-        <translation type="unfinished"></translation>
+        <translation>совпадения</translation>
     </message>
     <message>
         <location filename="../source/dialogs/filterrulewidget.ui" line="98"/>
         <source>&lt;</source>
-        <translation type="unfinished"></translation>
+        <translation>&lt;</translation>
     </message>
     <message>
         <location filename="../source/dialogs/filterrulewidget.ui" line="103"/>
@@ -1309,7 +1309,7 @@
     <message>
         <location filename="../source/dialogs/gotobarlinedialog.ui" line="28"/>
         <source>Barline:</source>
-        <translation type="unfinished"></translation>
+        <translation>Такт:</translation>
     </message>
 </context>
 <context>
@@ -1357,12 +1357,12 @@
     <message>
         <location filename="../source/widgets/instruments/instrumentpanelitem.ui" line="26"/>
         <source>Form</source>
-        <translation type="unfinished"></translation>
+        <translation>Форма</translation>
     </message>
     <message>
         <location filename="../source/widgets/instruments/instrumentpanelitem.ui" line="50"/>
         <source>1.</source>
-        <translation type="unfinished"></translation>
+        <translation>1.</translation>
     </message>
     <message>
         <location filename="../source/widgets/instruments/instrumentpanelitem.ui" line="57"/>
@@ -1489,7 +1489,7 @@
     <message>
         <location filename="../source/dialogs/lefthandfingeringdialog.ui" line="31"/>
         <source>Finger:</source>
-        <translation type="unfinished"></translation>
+        <translation>Палец:</translation>
     </message>
     <message>
         <location filename="../source/dialogs/lefthandfingeringdialog.ui" line="41"/>
@@ -1524,12 +1524,12 @@
     <message>
         <location filename="../source/dialogs/lefthandfingeringdialog.cpp" line="32"/>
         <source>Thumb</source>
-        <translation type="unfinished"></translation>
+        <translation>Большой палец</translation>
     </message>
     <message>
         <location filename="../source/dialogs/lefthandfingeringdialog.cpp" line="36"/>
         <source>Left</source>
-        <translation type="unfinished"></translation>
+        <translation>Лево</translation>
     </message>
     <message>
         <location filename="../source/dialogs/lefthandfingeringdialog.cpp" line="36"/>
@@ -1549,7 +1549,7 @@
     <message>
         <location filename="../source/dialogs/lefthandfingeringdialog.cpp" line="37"/>
         <source>Right</source>
-        <translation type="unfinished"></translation>
+        <translation>Право</translation>
     </message>
     <message>
         <location filename="../source/dialogs/lefthandfingeringdialog.cpp" line="37"/>
@@ -1595,7 +1595,7 @@
     <message>
         <location filename="../source/widgets/mixer/mixeritem.ui" line="26"/>
         <source>Form</source>
-        <translation type="unfinished"></translation>
+        <translation>Форма</translation>
     </message>
     <message>
         <location filename="../source/widgets/mixer/mixeritem.ui" line="29"/>
@@ -1605,7 +1605,7 @@
     <message>
         <location filename="../source/widgets/mixer/mixeritem.ui" line="53"/>
         <source>1.</source>
-        <translation type="unfinished"></translation>
+        <translation>1.</translation>
     </message>
     <message>
         <location filename="../source/widgets/mixer/mixeritem.ui" line="72"/>
@@ -1630,7 +1630,7 @@
     <message>
         <location filename="../source/widgets/mixer/mixeritem.ui" line="151"/>
         <source>Tuning</source>
-        <translation type="unfinished"></translation>
+        <translation>Строй</translation>
     </message>
     <message>
         <location filename="../source/widgets/mixer/mixeritem.ui" line="176"/>
@@ -1656,7 +1656,7 @@
     <message>
         <location filename="../source/widgets/toolbox/notepage.cpp" line="34"/>
         <source>Notes</source>
-        <translation type="unfinished"></translation>
+        <translation>Ноты</translation>
     </message>
     <message>
         <location filename="../source/widgets/toolbox/notepage.cpp" line="47"/>
@@ -1761,7 +1761,7 @@
     <message>
         <location filename="../source/widgets/toolbox/notepage.cpp" line="191"/>
         <source>Fermata</source>
-        <translation type="unfinished"></translation>
+        <translation>Фермата</translation>
     </message>
     <message>
         <location filename="../source/widgets/toolbox/notepage.cpp" line="211"/>
@@ -3653,12 +3653,12 @@
         <location filename="../source/dialogs/textitemdialog.ui" line="17"/>
         <location filename="../source/dialogs/textitemdialog.cpp" line="55"/>
         <source>Text</source>
-        <translation type="unfinished"></translation>
+        <translation>Текст</translation>
     </message>
     <message>
         <location filename="../source/dialogs/textitemdialog.ui" line="28"/>
         <source>Contents:</source>
-        <translation type="unfinished"></translation>
+        <translation>Содержание:</translation>
     </message>
     <message>
         <location filename="../source/dialogs/textitemdialog.cpp" line="56"/>
