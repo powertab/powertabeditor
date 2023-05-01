@@ -512,17 +512,17 @@
     <message>
         <location filename="../source/dialogs/bulkconverterdialog.ui" line="37"/>
         <source>Source Directory:</source>
-        <translation type="unfinished"></translation>
+        <translation>Répertoire source :</translation>
     </message>
     <message>
         <location filename="../source/dialogs/bulkconverterdialog.ui" line="65"/>
         <source>Destination Directory:</source>
-        <translation type="unfinished"></translation>
+        <translation>Répertoire de destination :</translation>
     </message>
     <message>
         <location filename="../source/dialogs/bulkconverterdialog.ui" line="93"/>
         <source>Convert To:</source>
-        <translation type="unfinished"></translation>
+        <translation>Convertir en :</translation>
     </message>
     <message>
         <source>E&amp;xit</source>
@@ -549,7 +549,7 @@
     <message>
         <location filename="../source/dialogs/bulkconverterdialog.cpp" line="172"/>
         <source>Convert</source>
-        <translation type="unfinished"></translation>
+        <translation>Convertir</translation>
     </message>
     <message>
         <location filename="../source/dialogs/bulkconverterdialog.cpp" line="190"/>
@@ -1578,17 +1578,17 @@
     <message>
         <location filename="../source/audio/midiplayer.cpp" line="97"/>
         <source>MIDI interface: &apos;%1&apos;</source>
-        <translation type="unfinished"></translation>
+        <translation>Interface MIDI : &apos;%1&apos;</translation>
     </message>
     <message>
         <location filename="../source/audio/midiplayer.cpp" line="99"/>
         <source>MIDI port: &apos;%1&apos;</source>
-        <translation type="unfinished"></translation>
+        <translation>Port MIDI : &apos;%1&apos;</translation>
     </message>
     <message>
         <location filename="../source/audio/midiplayer.cpp" line="105"/>
         <source>The MIDI device may not be accessible. The following commands can be run to allow access:</source>
-        <translation type="unfinished"></translation>
+        <translation>Le périphérique MIDI n&apos;est peut-être pas accessible. Les commandes suivantes peuvent être exécutées pour autoriser l&apos;accès :</translation>
     </message>
 </context>
 <context>
@@ -1952,7 +1952,7 @@
     <message>
         <location filename="../source/widgets/playback/playbackwidget.cpp" line="142"/>
         <source>Click to toggle whether a count-in before playback is enabled%1.</source>
-        <translation type="unfinished"></translation>
+        <translation>Cliquez pour activer ou désactiver le décompte avant la lecture&apos;%1&apos;.</translation>
     </message>
 </context>
 <context>
@@ -2294,7 +2294,7 @@
     <message>
         <location filename="../source/app/powertabeditor.cpp" line="2337"/>
         <source>Count-In</source>
-        <translation type="unfinished"></translation>
+        <translation>Compte à rebours</translation>
     </message>
     <message>
         <location filename="../source/app/powertabeditor.cpp" line="2345"/>
@@ -3130,7 +3130,7 @@
     <message>
         <location filename="../source/dialogs/preferencesdialog.ui" line="281"/>
         <source>System Spacing:</source>
-        <translation type="unfinished"></translation>
+        <translation>Espacement des systèmes :</translation>
     </message>
     <message>
         <location filename="../source/dialogs/preferencesdialog.ui" line="297"/>
