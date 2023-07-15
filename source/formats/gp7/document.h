@@ -111,7 +111,7 @@ struct ChordName
             DoubleSharp = 2
         };
 
-        std::string myStep;
+        std::string myStep = "C";
         Accidental myAccidental = Accidental::Natural;
     };
 

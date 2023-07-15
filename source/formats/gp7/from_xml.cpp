@@ -204,20 +204,25 @@ parseChords(const pugi::xml_node &collection_node)
         Gp7::Chord chord;
         Gp7::ChordName &chord_name = chord.myName;
 
-        // Chord name
+        // Chord name - note older files may not specify this (see bug #442).
         auto chord_node = node.child("Chord");
-        chord_name.myKeyNote = parseChordNote(chord_node.child("KeyNote"));
-        chord_name.myBassNote = parseChordNote(chord_node.child("BassNote"));
+        if (chord_node)
+        {
+            chord_name.myKeyNote = parseChordNote(chord_node.child("KeyNote"));
+            chord_name.myBassNote =
+                parseChordNote(chord_node.child("BassNote"));
 
-        chord_name.mySecond = parseChordDegree(chord_node, "Second");
-        chord_name.myThird = parseChordDegree(chord_node, "Third");
-        chord_name.myFourth = parseChordDegree(chord_node, "Fourth");
-        chord_name.myFifth = parseChordDegree(chord_node, "Fifth");
-        chord_name.mySixth = parseChordDegree(chord_node, "Sixth");
-        chord_name.mySeventh = parseChordDegree(chord_node, "Seventh");
-        chord_name.myNinth = parseChordDegree(chord_node, "Ninth");
-        chord_name.myEleventh = parseChordDegree(chord_node, "Eleventh");
-        chord_name.myThirteenth = parseChordDegree(chord_node, "Thirteenth");
+            chord_name.mySecond = parseChordDegree(chord_node, "Second");
+            chord_name.myThird = parseChordDegree(chord_node, "Third");
+            chord_name.myFourth = parseChordDegree(chord_node, "Fourth");
+            chord_name.myFifth = parseChordDegree(chord_node, "Fifth");
+            chord_name.mySixth = parseChordDegree(chord_node, "Sixth");
+            chord_name.mySeventh = parseChordDegree(chord_node, "Seventh");
+            chord_name.myNinth = parseChordDegree(chord_node, "Ninth");
+            chord_name.myEleventh = parseChordDegree(chord_node, "Eleventh");
+            chord_name.myThirteenth =
+                parseChordDegree(chord_node, "Thirteenth");
+        }
 
         // Chord diagram.
         {
