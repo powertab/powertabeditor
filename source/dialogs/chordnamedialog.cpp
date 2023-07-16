@@ -42,6 +42,9 @@ ChordNameDialog::ChordNameDialog(QWidget *parent,
     connect(ui->buttonBox, &QDialogButtonBox::accepted, this, &QDialog::accept);
     connect(ui->buttonBox, &QDialogButtonBox::rejected, this, &QDialog::reject);
 
+    connect(ui->customLabelEdit, &QLineEdit::textChanged, this,
+            &ChordNameDialog::updateState);
+
     initCheckBox(ui->noChordCheckBox);
     initCheckBox(ui->bracketsCheckBox);
 
@@ -134,6 +137,12 @@ const ChordName &ChordNameDialog::getChordName() const
 
 void ChordNameDialog::updateState()
 {
+    std::optional<std::string> label;
+    if (!ui->customLabelEdit->text().isEmpty())
+        label = ui->customLabelEdit->text().toStdString();
+
+    myChord.setLabel(label);
+
     myChord.setNoChord(ui->noChordCheckBox->isChecked());
     myChord.setBrackets(ui->bracketsCheckBox->isChecked());
 
@@ -234,6 +243,8 @@ void ChordNameDialog::initCheckBox(QCheckBox *checkbox)
 void
 ChordNameDialog::setToChord(const ChordName &chord)
 {
+    if (chord.hasCustomLabel())
+        ui->customLabelEdit->setText(QString::fromStdString(chord.getLabel()));
     ui->noChordCheckBox->setChecked(chord.isNoChord());
     ui->bracketsCheckBox->setChecked(chord.hasBrackets());
 

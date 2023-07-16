@@ -127,6 +127,7 @@ public:
     /// typically is generated from the chord name components.
     std::string getLabel() const;
     void setLabel(std::optional<std::string> label);
+    bool hasCustomLabel() const { return myLabel.has_value(); }
 
 private:
     std::string buildLabel() const;
