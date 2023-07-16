@@ -784,7 +784,7 @@ convertChordKey(const std::string &name)
 }
 
 static ChordName
-convertChordName(const Gp7::ChordName &gp_chord)
+convertChordName(const std::string &label, const Gp7::ChordName &gp_chord)
 {
     using Alteration = Gp7::ChordName::Degree::Alteration;
 
@@ -797,6 +797,9 @@ convertChordName(const Gp7::ChordName &gp_chord)
     chord.setBassKey(convertChordKey(gp_chord.myBassNote.myStep));
     chord.setBassVariation(
         static_cast<ChordName::Variation>(gp_chord.myBassNote.myAccidental));
+
+    if (!label.empty())
+        chord.setLabel(label);
 
     if (!gp_chord.myFifth)
         return chord;
@@ -972,7 +975,8 @@ static ChordDiagram
 convertChordDiagram(const Gp7::Chord &gp_chord)
 {
     ChordDiagram diagram;
-    diagram.setChordName(convertChordName(gp_chord.myName));
+    diagram.setChordName(
+        convertChordName(gp_chord.myDescription, gp_chord.myName));
     diagram.setTopFret(gp_chord.myDiagram.myBaseFret);
 
     std::vector<int> frets = gp_chord.myDiagram.myFrets;
@@ -1101,7 +1105,8 @@ convertSystem(const Gp7::Document &doc, Score &score, int bar_begin,
                         const Gp7::Chord &gp_chord =
                             doc.myTracks[track_idx].myChords.at(*gp_beat.myChordId);
 
-                        ChordName chord_name = convertChordName(gp_chord.myName);
+                        ChordName chord_name = convertChordName(
+                            gp_chord.myDescription, gp_chord.myName);
                         // Avoid inserting duplicates since many tracks may
                         // have the same chord name.
                         if (!ScoreUtils::findByPosition(system.getChords(),

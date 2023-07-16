@@ -579,11 +579,19 @@ TEST_CASE("Formats/Gp7Import/Text")
             REQUIRE(chord.getLabel() == "D7sus4");
         }
         {
-            const ChordName &chord = system.getChords()[1].getChordName();
+            ChordName chord = system.getChords()[1].getChordName();
+            // The label imported from the .gp file uses '##' rather than our
+            // behaviour of using 'x'
+            REQUIRE(chord.getLabel() == "F#/B##");
+            chord.setLabel(std::nullopt);
             REQUIRE(chord.getLabel() == "F#/Bx");
         }
         {
-            const ChordName &chord = system.getChords()[2].getChordName();
+            ChordName chord = system.getChords()[2].getChordName();
+            // The label imported from the .gp file uses 'dim' rather than our
+            // behaviour of using the degree symbol.
+            REQUIRE(chord.getLabel() == "Bbdimadd9");
+            chord.setLabel(std::nullopt);
             REQUIRE(chord.getLabel() == "Bb°add9");
         }
     }
@@ -592,13 +600,6 @@ TEST_CASE("Formats/Gp7Import/Text")
         const System &system = score.getSystems()[1];
 
         REQUIRE(system.getChords().size() == 24);
-
-        std::vector<std::string> actual_names;
-        for (int i = 0; i < 24; ++i)
-        {
-            actual_names.push_back(
-                system.getChords()[i].getChordName().getLabel());
-        }
 
         // Note: the last one should be D13b11, but we don't currently have
         // that...
@@ -609,7 +610,15 @@ TEST_CASE("Formats/Gp7Import/Text")
             "Dmaj7sus4", "D5",    "Dadd9", "D+9",    "D9b5",    "D13"
         };
 
-        REQUIRE(actual_names == expected_names);
+        for (int i = 0; i < 24; ++i)
+        {
+            ChordName chord_name = system.getChords()[i].getChordName();
+            // Clear the label override imported from the .gp file, so we test
+            // whether the chord elements were imported properly.
+            chord_name.setLabel(std::nullopt);
+
+            REQUIRE(chord_name.getLabel() == expected_names[i]);
+        }
     }
 }
 

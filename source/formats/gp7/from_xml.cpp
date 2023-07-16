@@ -202,12 +202,14 @@ parseChords(const pugi::xml_node &collection_node)
     for (auto node : collection_node.child("Items").children("Item"))
     {
         Gp7::Chord chord;
-        Gp7::ChordName &chord_name = chord.myName;
+        chord.myDescription = node.attribute("name").as_string();
 
         // Chord name - note older files may not specify this (see bug #442).
         auto chord_node = node.child("Chord");
         if (chord_node)
         {
+            Gp7::ChordName &chord_name = chord.myName;
+
             chord_name.myKeyNote = parseChordNote(chord_node.child("KeyNote"));
             chord_name.myBassNote =
                 parseChordNote(chord_node.child("BassNote"));
