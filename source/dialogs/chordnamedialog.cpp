@@ -245,6 +245,7 @@ ChordNameDialog::setToChord(const ChordName &chord)
 {
     if (chord.hasCustomLabel())
         ui->customLabelEdit->setText(QString::fromStdString(chord.getLabel()));
+
     ui->noChordCheckBox->setChecked(chord.isNoChord());
     ui->bracketsCheckBox->setChecked(chord.hasBrackets());
 
