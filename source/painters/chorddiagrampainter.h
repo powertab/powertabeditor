@@ -59,7 +59,6 @@ private:
     const QRectF myBounds;
     const QColor myColor;
     const ChordDiagram &myDiagram;
-    double myXPad = 0;
 };
 
 #endif

@@ -28,8 +28,10 @@
 #include <score/chorddiagram.h>
 #include <score/score.h>
 
-static constexpr double DIAGRAM_WIDTH = 46;
+static constexpr double DIAGRAM_WIDTH = 48;
 static constexpr double DIAGRAM_HEIGHT = 55;
+static constexpr double LEFT_PAD = 5;
+static constexpr double TOP_FRET_PAD = 3;
 static constexpr double TOP_FRET_Y = 22;
 
 /// Size of the fret marker dots.
@@ -54,8 +56,6 @@ ChordDiagramPainter::ChordDiagramPainter(const ChordDiagram &diagram,
       myDiagram(diagram)
 {
     setAcceptHoverEvents(true);
-    myXPad =
-        (DIAGRAM_WIDTH - FRET_SPACING * (diagram.getStringCount() - 1)) * 0.5;
 }
 
 void
@@ -81,14 +81,14 @@ ChordDiagramPainter::paint(QPainter *painter, const QStyleOptionGraphicsItem *,
         else
             painter->setPen(default_pen);
 
-        painter->drawLine(
-            QLineF(myXPad, y, myXPad + (num_strings - 1) * STRING_SPACING, y));
+        painter->drawLine(QLineF(
+            LEFT_PAD, y, LEFT_PAD + (num_strings - 1) * STRING_SPACING, y));
     }
 
     // Draw a line for each string, and marker dots for the chord's frets.
     for (int i = 0; i < num_strings; ++i)
     {
-        const double x = myXPad + i * STRING_SPACING;
+        const double x = LEFT_PAD + i * STRING_SPACING;
         painter->drawLine(QLineF(x, TOP_FRET_Y, x,
                                  TOP_FRET_Y + (NUM_FRETS - 1) * FRET_SPACING));
 
@@ -123,10 +123,11 @@ ChordDiagramPainter::paint(QPainter *painter, const QStyleOptionGraphicsItem *,
         font.setPixelSize(7);
         painter->setFont(font);
 
-        // Adding 1 since the next fret is where a finger can be placed.
-        const QString text = QString::number(myDiagram.getTopFret() + 1);
-        painter->drawText(DIAGRAM_WIDTH - myXPad + 3, TOP_FRET_Y + FRET_SPACING,
-                          text);
+        const QString text = QString::number(myDiagram.getTopFret());
+        painter->drawText(
+            LEFT_PAD + (myDiagram.getStringCount() - 1) * STRING_SPACING +
+                TOP_FRET_PAD,
+            TOP_FRET_Y + 0.5 * FRET_SPACING, text);
     }
 }
 
@@ -142,7 +143,7 @@ ChordDiagramPainter::findFretAtPosition(const QPointF &pos, int &string,
 
         for (int j = 0; j < num_strings; ++j)
         {
-            const double x = myXPad + j * STRING_SPACING;
+            const double x = LEFT_PAD + j * STRING_SPACING;
 
             if ((pos - QPointF(x, y)).manhattanLength() < HIT_RADIUS)
             {

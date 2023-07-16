@@ -58,7 +58,7 @@
       <widget class="QGraphicsView" name="diagramView">
        <property name="maximumSize">
         <size>
-         <width>180</width>
+         <width>190</width>
          <height>200</height>
         </size>
        </property>

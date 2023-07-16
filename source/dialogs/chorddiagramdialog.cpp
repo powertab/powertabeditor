@@ -67,7 +67,7 @@ ChordDiagramDialog::ChordDiagramDialog(QWidget *parent, const Score &score,
     // Set up a graphics view for the rendered diagram. This is scaled up more
     // than in the score view.
     ui->diagramView->setScene(&myScene);
-    ui->diagramView->setSceneRect(QRectF(0,15,46, 40));
+    ui->diagramView->setSceneRect(QRectF(0, 15, 48, 40));
 
     QTransform xform;
     xform.scale(4, 4);
