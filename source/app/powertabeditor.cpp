@@ -2067,6 +2067,14 @@ bool PowerTabEditor::eventFilter(QObject *object, QEvent *event)
             const int number = keyEvent->key() - Qt::Key_0;
             ScoreLocation &location = getLocation();
 
+            // Add a space if the user is attempting to add a note at the end of
+            // the system.
+            if (location.getBarline() ==
+                &location.getSystem().getBarlines().back())
+            {
+                shiftForward();
+            }
+
             // Don't allow inserting notes at the same position as a barline,
             // unless it's the first position of the system.
             if (!location.getBarline() || location.getPositionIndex() == 0)

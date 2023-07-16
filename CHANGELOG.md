@@ -11,6 +11,7 @@ Thanks to the following contributors who worked on this release:
 ### Added
 - The preferred MIDI output device is now tracked by name rather than by port number, which is more robust if e.g. a new device is plugged in
 - Chord names can now use a custom label instead of the auto-generated chord name. This is primarily used for chords imported from Guitar Pro files (#442)
+- When attempting to insert a note at the end of a system, a space is now automatically inserted to allow the note to be added (#439)
 - Translations
   - Added Turkish translation (#406)
   - Updated French translation (#406)
