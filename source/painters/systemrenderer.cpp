@@ -745,7 +745,7 @@ SystemRenderer::drawChordText(const ConstScoreLocation &location,
             ScoreArea::tr("Double-click to edit chord text."),
             myScoreArea->getClickEvent(), item_location, ScoreItem::ChordText);
 
-        const std::string text = chord.getChordName().getLabel();
+        const std::string text = chord.getChordName().getDescription();
         auto textItem = new SimpleTextItem(QString::fromStdString(text),
                                            myPlainTextFont, TextAlignment::Top,
                                            QPen(myPalette.text().color()));
@@ -1178,7 +1178,7 @@ QGraphicsItem* SystemRenderer::createArtificialHarmonicText(
     name.setBassKey(harmonic.getKey());
     name.setBassVariation(harmonic.getVariation());
 
-    return createPlainTextSymbol(QString::fromStdString(name.getLabel()),
+    return createPlainTextSymbol(QString::fromStdString(name.getDescription()),
                                  QFont::StyleNormal);
 }
 

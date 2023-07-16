@@ -249,7 +249,7 @@ ChordDiagramPainter::renderDiagrams(const Score &score, const QColor &color,
 
         // Overlay the chord name, using SimpleTextItem to keep the
         // ChordDiagramPainter simpler.
-        const std::string text = diagram.getChordName().getLabel();
+        const std::string text = diagram.getChordName().getDescription();
         auto text_item = new SimpleTextItem(QString::fromStdString(text), font,
                                             TextAlignment::Top, QPen(color));
         text_item->setPos(

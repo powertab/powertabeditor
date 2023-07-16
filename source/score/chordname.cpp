@@ -44,7 +44,7 @@ bool ChordName::operator==(const ChordName &other) const
            myModifications == other.myModifications &&
            myHasBrackets == other.myHasBrackets &&
            myIsNoChord == other.myIsNoChord &&
-           myLabel == other.myLabel;
+           myDescription == other.myDescription;
 }
 
 bool ChordName::isNoChord() const
@@ -130,19 +130,19 @@ void ChordName::setTonicKey(Key key)
 }
 
 std::string
-ChordName::getLabel() const
+ChordName::getDescription() const
 {
-    return myLabel.has_value() ? *myLabel : buildLabel();
+    return myDescription.has_value() ? *myDescription : buildDescription();
 }
 
 void
-ChordName::setLabel(std::optional<std::string> label)
+ChordName::setDescription(std::optional<std::string> description)
 {
-    myLabel = std::move(label);
+    myDescription = std::move(description);
 }
 
 std::string
-ChordName::buildLabel() const
+ChordName::buildDescription() const
 {
     std::ostringstream os;
 

@@ -308,7 +308,7 @@ ScoreUtils::findAllChordNames(const Score &score)
     // by implementing operator< for ChordName's.
     std::sort(names.begin(), names.end(),
               [](auto c1, auto c2)
-              { return c1.getLabel() < c2.getLabel(); });
+              { return c1.getDescription() < c2.getDescription(); });
     return names;
 }
 

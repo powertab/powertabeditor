@@ -784,7 +784,7 @@ convertChordKey(const std::string &name)
 }
 
 static ChordName
-convertChordName(const std::string &label, const Gp7::ChordName &gp_chord)
+convertChordName(const std::string &description, const Gp7::ChordName &gp_chord)
 {
     using Alteration = Gp7::ChordName::Degree::Alteration;
 
@@ -798,8 +798,8 @@ convertChordName(const std::string &label, const Gp7::ChordName &gp_chord)
     chord.setBassVariation(
         static_cast<ChordName::Variation>(gp_chord.myBassNote.myAccidental));
 
-    if (!label.empty())
-        chord.setLabel(label);
+    if (!description.empty())
+        chord.setDescription(description);
 
     if (!gp_chord.myFifth)
         return chord;

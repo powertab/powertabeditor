@@ -125,12 +125,12 @@ public:
     /// Returns the display label for the chord diagram. This can be an
     /// explicitly set label (e.g. for compatibility with Guitar Pro files), but
     /// typically is generated from the chord name components.
-    std::string getLabel() const;
-    void setLabel(std::optional<std::string> label);
-    bool hasCustomLabel() const { return myLabel.has_value(); }
+    std::string getDescription() const;
+    void setDescription(std::optional<std::string> description);
+    bool hasCustomDescription() const { return myDescription.has_value(); }
 
 private:
-    std::string buildLabel() const;
+    std::string buildDescription() const;
 
     Key myTonicKey;
     Variation myTonicVariation;
@@ -140,7 +140,7 @@ private:
     Util::EnumFlags<FormulaModification> myModifications;
     bool myHasBrackets;
     bool myIsNoChord;
-    std::optional<std::string> myLabel;
+    std::optional<std::string> myDescription;
 };
 
 UTIL_DECLARE_ENUMTOSTRING(ChordName::Key)
@@ -160,8 +160,8 @@ void ChordName::serialize(Archive &ar, const FileVersion version)
     ar("brackets", myHasBrackets);
     ar("no_chord", myIsNoChord);
 
-    if (version >= FileVersion::CHORD_DIAGRAM_LABELS)
-        ar("label", myLabel);
+    if (version >= FileVersion::CHORD_DIAGRAM_DESCRIPTIONS)
+        ar("description", myDescription);
 }
 
 /// Enable the use of ChordName as a key for std::unordered_map, etc.

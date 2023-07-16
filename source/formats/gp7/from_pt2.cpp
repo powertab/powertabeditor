@@ -263,7 +263,7 @@ convertChords(const Score &score, ChordNameIdMap &chord_name_ids)
         chord_name_ids[diagram.getChordName()] = chord_id;
 
         Gp7::Chord gp_chord;
-        gp_chord.myDescription = diagram.getChordName().getLabel();
+        gp_chord.myDescription = diagram.getChordName().getDescription();
         gp_chord.myName = convertChordName(diagram.getChordName());
         gp_chord.myDiagram = convertChordDiagram(diagram);
         chords.emplace(chord_id, gp_chord);
@@ -283,7 +283,7 @@ convertChords(const Score &score, ChordNameIdMap &chord_name_ids)
             chord_name_ids[name] = chord_id;
 
             Gp7::Chord gp_chord;
-            gp_chord.myDescription = name.getLabel();
+            gp_chord.myDescription = name.getDescription();
             gp_chord.myName = convertChordName(name);
             chords.emplace(chord_id, gp_chord);
         }

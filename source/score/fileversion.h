@@ -43,8 +43,8 @@ enum class FileVersion : int
     /// Changes to make the JSON format easier to parse in other applications.
     JSON_CLEANUP = 10,
     /// Added an optional label to chord diagrams.
-    CHORD_DIAGRAM_LABELS = 11,
-    LATEST_VERSION = CHORD_DIAGRAM_LABELS
+    CHORD_DIAGRAM_DESCRIPTIONS = 11,
+    LATEST_VERSION = CHORD_DIAGRAM_DESCRIPTIONS
 };
 
 #endif

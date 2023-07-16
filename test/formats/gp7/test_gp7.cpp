@@ -576,23 +576,23 @@ TEST_CASE("Formats/Gp7Import/Text")
         REQUIRE(system.getChords().size() == 3);
         {
             const ChordName &chord = system.getChords()[0].getChordName();
-            REQUIRE(chord.getLabel() == "D7sus4");
+            REQUIRE(chord.getDescription() == "D7sus4");
         }
         {
             ChordName chord = system.getChords()[1].getChordName();
             // The label imported from the .gp file uses '##' rather than our
             // behaviour of using 'x'
-            REQUIRE(chord.getLabel() == "F#/B##");
-            chord.setLabel(std::nullopt);
-            REQUIRE(chord.getLabel() == "F#/Bx");
+            REQUIRE(chord.getDescription() == "F#/B##");
+            chord.setDescription(std::nullopt);
+            REQUIRE(chord.getDescription() == "F#/Bx");
         }
         {
             ChordName chord = system.getChords()[2].getChordName();
             // The label imported from the .gp file uses 'dim' rather than our
             // behaviour of using the degree symbol.
-            REQUIRE(chord.getLabel() == "Bbdimadd9");
-            chord.setLabel(std::nullopt);
-            REQUIRE(chord.getLabel() == "Bb°add9");
+            REQUIRE(chord.getDescription() == "Bbdimadd9");
+            chord.setDescription(std::nullopt);
+            REQUIRE(chord.getDescription() == "Bb°add9");
         }
     }
 
@@ -615,9 +615,9 @@ TEST_CASE("Formats/Gp7Import/Text")
             ChordName chord_name = system.getChords()[i].getChordName();
             // Clear the label override imported from the .gp file, so we test
             // whether the chord elements were imported properly.
-            chord_name.setLabel(std::nullopt);
+            chord_name.setDescription(std::nullopt);
 
-            REQUIRE(chord_name.getLabel() == expected_names[i]);
+            REQUIRE(chord_name.getDescription() == expected_names[i]);
         }
     }
 }

@@ -30,7 +30,7 @@ ChordNameDialog::ChordNameDialog(QWidget *parent,
     ui->setupUi(this);
 
     for (const ChordName &name : myScoreChords)
-        ui->chordsList->addItem(QString::fromStdString(name.getLabel()));
+        ui->chordsList->addItem(QString::fromStdString(name.getDescription()));
 
     connect(ui->chordsList, &QListWidget::currentRowChanged,
             [&](int row)
@@ -141,7 +141,7 @@ void ChordNameDialog::updateState()
     if (!ui->customLabelEdit->text().isEmpty())
         label = ui->customLabelEdit->text().toStdString();
 
-    myChord.setLabel(label);
+    myChord.setDescription(label);
 
     myChord.setNoChord(ui->noChordCheckBox->isChecked());
     myChord.setBrackets(ui->bracketsCheckBox->isChecked());
@@ -200,7 +200,7 @@ void ChordNameDialog::updateState()
     myChord.setModification(ChordName::Suspended4th,
                             ui->sus4CheckBox->isChecked());
 
-    ui->previewLineEdit->setText(QString::fromStdString(myChord.getLabel()));
+    ui->previewLineEdit->setText(QString::fromStdString(myChord.getDescription()));
 }
 
 void ChordNameDialog::onTonicVariationClicked(QAbstractButton *clickedButton)
@@ -243,8 +243,8 @@ void ChordNameDialog::initCheckBox(QCheckBox *checkbox)
 void
 ChordNameDialog::setToChord(const ChordName &chord)
 {
-    if (chord.hasCustomLabel())
-        ui->customLabelEdit->setText(QString::fromStdString(chord.getLabel()));
+    if (chord.hasCustomDescription())
+        ui->customLabelEdit->setText(QString::fromStdString(chord.getDescription()));
 
     ui->noChordCheckBox->setChecked(chord.isNoChord());
     ui->bracketsCheckBox->setChecked(chord.hasBrackets());
