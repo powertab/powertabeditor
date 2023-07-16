@@ -216,11 +216,11 @@ void ScoreArea::print(QPrinter &printer)
     const QPalette *orig_palette = myActivePalette;
     myActivePalette = &myLightPalette;
 
+    // Render the document after the palette has been set to print colors
+    this->renderDocument(*myDocument);
+
     // Hide the caret when printing.
     myCaretPainter->hide();
-
-    //render the document after the palette has been set to print colors
-    this->renderDocument(*myDocument);
 
     // Scale the score based on the ratio between the device's width and our
     // normal staff width in the UI.
