@@ -4214,7 +4214,7 @@ void PowerTabEditor::updateActiveViewFilter(bool is_player, int index)
 {
     ViewOptions &options = myDocumentManager->getCurrentDocument().getViewOptions();
     if (is_player)
-        options.setFilterbyPlayer(getLocation().getScore(), index);
+        options.setPlayerFilter(getLocation().getScore(), index);
     else
         options.setSelectedFilter(index);
 

@@ -45,7 +45,7 @@ ViewOptions::ensureValid(const Score &score)
         else
         {
             // Update for any changes to the player's name.
-            setFilterbyPlayer(score, *myPlayerFilterIndex);
+            setPlayerFilter(score, *myPlayerFilterIndex);
         }
     }
 }
@@ -69,7 +69,7 @@ ViewOptions::setSelectedFilter(int filter)
 }
 
 void
-ViewOptions::setFilterbyPlayer(const Score &score, int player_idx)
+ViewOptions::setPlayerFilter(const Score &score, int player_idx)
 {
     mySelectedFilter = std::nullopt;
 
