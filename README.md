@@ -9,7 +9,7 @@
 
 ### Users
 * New user? Read the [intro page](https://github.com/powertab/powertabeditor/wiki/Power-Tab-Editor-2.0,-Here-at-last!) to learn more about the project!
-* You can get the latest releases from our [downloads page](https://github.com/powertab/powertabeditor/releases).
+* You can get the latest stable releases from our [downloads page](https://github.com/powertab/powertabeditor/releases). The latest development releases can be downloaded from the [actions page](https://github.com/powertab/powertabeditor/actions) (requires a GitHub login to download).
 * You can report bugs or suggest features on our [issue tracker](https://github.com/powertab/powertabeditor/issues), or discuss ideas on the [discussions forum](https://github.com/powertab/powertabeditor/discussions)
 * You can [translate](https://hosted.weblate.org/engage/powertabeditor/) the project into your language.
 * Join the [Discord community](https://discord.gg/mpXfquuzxe)
