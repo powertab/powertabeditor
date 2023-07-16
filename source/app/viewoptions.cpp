@@ -19,9 +19,65 @@
 
 #include <algorithm>
 #include <functional> /* std::greater */
+#include <score/score.h>
 
 ViewOptions::ViewOptions() : myZoom(100)
 {
+}
+
+void
+ViewOptions::ensureValid(const Score &score)
+{
+    if (mySelectedFilter)
+    {
+        if (score.getViewFilters().empty())
+            mySelectedFilter = std::nullopt;
+        else if (*mySelectedFilter >=
+                 static_cast<int>(score.getViewFilters().size()))
+        {
+            mySelectedFilter = 0;
+        }
+    }
+    else if (myPlayerFilterIndex)
+    {
+        if (*myPlayerFilterIndex >= static_cast<int>(score.getPlayers().size()))
+            myPlayerFilterIndex = std::nullopt;
+        else
+        {
+            // Update for any changes to the player's name.
+            setFilterbyPlayer(score, *myPlayerFilterIndex);
+        }
+    }
+}
+
+const ViewFilter *
+ViewOptions::getFilter(const Score &score) const
+{
+    if (mySelectedFilter.has_value())
+        return &score.getViewFilters()[*mySelectedFilter];
+    else if (myPlayerFilterIndex.has_value())
+        return &myPlayerFilter;
+    else
+        return nullptr;
+}
+
+void
+ViewOptions::setSelectedFilter(int filter)
+{
+    mySelectedFilter = filter;
+    myPlayerFilterIndex = std::nullopt;
+}
+
+void
+ViewOptions::setFilterbyPlayer(const Score &score, int player_idx)
+{
+    mySelectedFilter = std::nullopt;
+
+    const Player &player = score.getPlayers()[player_idx];
+    myPlayerFilterIndex = player_idx;
+    myPlayerFilter = ViewFilter();
+    myPlayerFilter.addRule(
+        FilterRule(FilterRule::Subject::PlayerName, player.getDescription()));
 }
 
 bool ViewOptions::setZoom(int percent)

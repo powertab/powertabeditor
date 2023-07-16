@@ -369,8 +369,8 @@ private:
     void toggleCountIn();
     /// Sets the current voice that is being edited.
     void updateActiveVoice(int);
-    /// Sets the current score filter.
-    void updateActiveFilter(int);
+    /// Sets the current view filter.
+    void updateActiveViewFilter(bool is_player, int index);
     /// Apply the zoom level to all interested parties - e.g. the playback and score.
     void applyZoomChange(bool pb_widget_update=false);
     /// Updates the zoom level.

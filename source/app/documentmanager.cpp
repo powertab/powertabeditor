@@ -173,14 +173,7 @@ Score &Document::getScore()
 
 void Document::validateViewOptions()
 {
-    if (myScore.getViewFilters().empty())
-        myViewOptions.clearFilter();
-    else if (myViewOptions.getFilter() &&
-             *myViewOptions.getFilter() >=
-                 static_cast<int>(myScore.getViewFilters().size()))
-    {
-        myViewOptions.setFilter(0);
-    }
+    myViewOptions.ensureValid(myScore);
 }
 
 const Caret &Document::getCaret() const

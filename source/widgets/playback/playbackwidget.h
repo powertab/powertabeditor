@@ -55,7 +55,7 @@ public:
 signals:
     void playbackSpeedChanged(int speed);
     void activeVoiceChanged(int voice);
-    void activeFilterChanged(int filter);
+    void activeFilterChanged(bool is_player, int index);
     void zoomChanged(int zoom);
 
 private:
@@ -64,6 +64,7 @@ private:
 
     Ui::PlaybackWidget *ui;
     QButtonGroup *myVoices;
+    int myPlayerFilterStart = 0;
 };
 
 #endif

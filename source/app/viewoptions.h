@@ -18,8 +18,11 @@
 #ifndef APP_VIEWOPTIONS_H
 #define APP_VIEWOPTIONS_H
 
-#include <optional>
 #include <array>
+#include <score/viewfilter.h>
+#include <optional>
+
+class Score;
 
 /// Stores any view options that are not saved with the score (e.g. the current
 /// zoom level or the active score filter).
@@ -33,9 +36,20 @@ public:
 public:
     ViewOptions();
 
-    const std::optional<int> &getFilter() const { return myFilter; }
-    void setFilter(int filter) { myFilter = filter; }
-    void clearFilter() { myFilter.reset(); }
+    /// If the score has changed, update the view options to remove references
+    /// to invalid items.
+    void ensureValid(const Score &score);
+
+    /// The view filter that should be used when displaying the score. If this is nullptr,
+    /// everything should be displayed.
+    const ViewFilter *getFilter(const Score &score) const;
+
+    /// Select an existing view filter from the score.
+    void setSelectedFilter(int filter);
+    const std::optional<int> &getSelectedFilterIndex() const { return mySelectedFilter; }
+    /// Filter to view only the specified player.
+    void setPlayerFilter(const Score &score, int player_idx);
+    const std::optional<int> &getPlayerFilterIndex() const { return myPlayerFilterIndex; }
 
     int getZoom() const { return myZoom; }
 
@@ -48,7 +62,12 @@ public:
     bool decreaseZoom();
 
 private:
-    std::optional<int> myFilter;
+    /// The view filter is either a predefined filter from the score, or a
+    /// temporary filter defined in the UI (e.g. a specific player).
+    std::optional<int> mySelectedFilter;
+    std::optional<int> myPlayerFilterIndex;
+    ViewFilter myPlayerFilter;
+
     int myZoom;
 };
 

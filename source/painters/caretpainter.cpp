@@ -172,10 +172,7 @@ void CaretPainter::onLocationChanged()
 
     myLayout = std::make_unique<LayoutInfo>(location);
 
-    const ViewFilter *filter =
-        myViewOptions.getFilter()
-            ? &location.getScore().getViewFilters()[*myViewOptions.getFilter()]
-            : nullptr;
+    const ViewFilter *filter = myViewOptions.getFilter(location.getScore());
 
     // Compute the offset due to the previous (visible) staves.
     double offset = 0;

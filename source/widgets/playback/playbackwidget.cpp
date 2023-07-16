@@ -152,8 +152,18 @@ PlaybackWidget::PlaybackWidget(const QAction &play_pause_command,
             this, &PlaybackWidget::activeVoiceChanged);
     connect(ui->speedSpinner,qOverload<int>(&QSpinBox::valueChanged), this,
             &PlaybackWidget::playbackSpeedChanged);
-    connect(ui->filterComboBox, qOverload<int>(&QComboBox::currentIndexChanged),
-            this, &PlaybackWidget::activeFilterChanged);
+    connect(ui->filterComboBox, qOverload<int>(&QComboBox::currentIndexChanged), this,
+            [&](int index)
+            {
+                bool is_player = false;
+                if (index >= myPlayerFilterStart)
+                {
+                    is_player = true;
+                    index -= myPlayerFilterStart;
+                }
+                emit activeFilterChanged(is_player, index);
+            });
+
     connectButtonToAction(ui->playPauseButton, &play_pause_command);
     connectButtonToAction(ui->metronomeToggleButton, &metronome_command);
     connectButtonToAction(ui->countInToggleButton, &count_in_command);
@@ -180,9 +190,22 @@ void PlaybackWidget::reset(const Document &doc)
             QString::fromStdString(filter.getDescription()));
     }
 
+    ui->filterComboBox->insertSeparator(ui->filterComboBox->count());
+    myPlayerFilterStart = ui->filterComboBox->count();
+    for (const Player &player : doc.getScore().getPlayers())
+    {
+        ui->filterComboBox->addItem(
+            QString::fromStdString(player.getDescription()));
+    }
+
     // Update the selected filter.
-    if (doc.getViewOptions().getFilter())
-        ui->filterComboBox->setCurrentIndex(*doc.getViewOptions().getFilter());
+    if (doc.getViewOptions().getSelectedFilterIndex())
+        ui->filterComboBox->setCurrentIndex(*doc.getViewOptions().getSelectedFilterIndex());
+    else if (doc.getViewOptions().getPlayerFilterIndex())
+    {
+        ui->filterComboBox->setCurrentIndex(myPlayerFilterStart +
+                                            *doc.getViewOptions().getPlayerFilterIndex());
+    }
 
     // Update the selected voice.
     myVoices->button(doc.getCaret().getLocation().getVoiceIndex())

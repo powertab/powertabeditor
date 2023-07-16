@@ -3568,7 +3568,7 @@ void PowerTabEditor::createTabArea()
             &PowerTabEditor::updateActiveVoice);
 
     connect(myPlaybackWidget, &PlaybackWidget::activeFilterChanged, this,
-            &PowerTabEditor::updateActiveFilter);
+            &PowerTabEditor::updateActiveViewFilter);
 
     connect(myPlaybackWidget, &PlaybackWidget::zoomChanged, this, [=](int percent) {
         setScoreZoom(percent, true);
@@ -4210,9 +4210,14 @@ void PowerTabEditor::updateActiveVoice(int voice)
     updateCommands();
 }
 
-void PowerTabEditor::updateActiveFilter(int filter)
+void PowerTabEditor::updateActiveViewFilter(bool is_player, int index)
 {
-    myDocumentManager->getCurrentDocument().getViewOptions().setFilter(filter);
+    ViewOptions &options = myDocumentManager->getCurrentDocument().getViewOptions();
+    if (is_player)
+        options.setFilterbyPlayer(getLocation().getScore(), index);
+    else
+        options.setSelectedFilter(index);
+
     redrawScore();
 }
 

@@ -86,10 +86,7 @@ QGraphicsItem *SystemRenderer::operator()(const System &system,
     myParentSystem = new QGraphicsRectItem();
     myParentSystem->setPen(QPen(myPalette.text(), 0.5));
 
-    const ViewFilter *filter =
-        myViewOptions.getFilter()
-            ? &myScore.getViewFilters()[*myViewOptions.getFilter()]
-            : nullptr;
+    const ViewFilter *filter = myViewOptions.getFilter(myScore);
 
     // Draw each staff.
     double height = 0;

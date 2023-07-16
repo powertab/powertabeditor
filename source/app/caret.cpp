@@ -105,10 +105,7 @@ void Caret::moveToStaff(int staff)
     const int end = is_increasing ? num_staves : -1;
 
     const Score &score = myLocation.getScore();
-    const ViewFilter *filter =
-        myViewOptions.getFilter()
-            ? &score.getViewFilters()[*myViewOptions.getFilter()]
-            : nullptr;
+    const ViewFilter *filter = myViewOptions.getFilter(score);
 
     // If the specified staff is hidden by the current filter, try the staves
     // before or after in that direction.
