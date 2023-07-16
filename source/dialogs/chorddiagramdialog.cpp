@@ -21,7 +21,6 @@
 #include "chordnamedialog.h"
 #include <painters/chorddiagrampainter.h>
 #include <score/score.h>
-#include <util/tostring.h>
 
 ChordDiagramDialog::ChordDiagramDialog(QWidget *parent, const Score &score,
                                        const ChordDiagram *current_diagram)
@@ -47,7 +46,7 @@ ChordDiagramDialog::ChordDiagramDialog(QWidget *parent, const Score &score,
 
     ui->chordNameButton->setToolTip(tr("Click to edit chord name."));
     ui->chordNameButton->setText(
-        QString::fromStdString(Util::toString(myDiagram.getChordName())));
+        QString::fromStdString(myDiagram.getChordName().getLabel()));
     connect(ui->chordNameButton, &ClickableLabel::clicked, this,
             &ChordDiagramDialog::editChordName);
 
@@ -94,8 +93,7 @@ ChordDiagramDialog::editChordName()
     {
         ChordName name = dialog.getChordName();
         myDiagram.setChordName(name);
-        ui->chordNameButton->setText(
-            QString::fromStdString(Util::toString(name)));
+        ui->chordNameButton->setText(QString::fromStdString(name.getLabel()));
     }
 }
 

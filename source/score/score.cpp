@@ -20,7 +20,6 @@
 #include <boost/range/adaptor/reversed.hpp>
 #include <stdexcept>
 #include <unordered_set>
-#include <util/tostring.h>
 
 const int Score::MIN_LINE_SPACING = 6;
 const int Score::MAX_LINE_SPACING = 14;
@@ -309,7 +308,7 @@ ScoreUtils::findAllChordNames(const Score &score)
     // by implementing operator< for ChordName's.
     std::sort(names.begin(), names.end(),
               [](auto c1, auto c2)
-              { return Util::toString(c1) < Util::toString(c2); });
+              { return c1.getLabel() < c2.getLabel(); });
     return names;
 }
 

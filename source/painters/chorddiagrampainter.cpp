@@ -27,7 +27,6 @@
 #include <QPainter>
 #include <score/chorddiagram.h>
 #include <score/score.h>
-#include <util/tostring.h>
 
 static constexpr double DIAGRAM_WIDTH = 46;
 static constexpr double DIAGRAM_HEIGHT = 55;
@@ -249,7 +248,7 @@ ChordDiagramPainter::renderDiagrams(const Score &score, const QColor &color,
 
         // Overlay the chord name, using SimpleTextItem to keep the
         // ChordDiagramPainter simpler.
-        const std::string text = Util::toString(diagram.getChordName());
+        const std::string text = diagram.getChordName().getLabel();
         auto text_item = new SimpleTextItem(QString::fromStdString(text), font,
                                             TextAlignment::Top, QPen(color));
         text_item->setPos(

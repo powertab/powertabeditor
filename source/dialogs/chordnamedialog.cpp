@@ -19,7 +19,6 @@
 #include "ui_chordnamedialog.h"
 
 #include <QButtonGroup>
-#include <util/tostring.h>
 
 ChordNameDialog::ChordNameDialog(QWidget *parent,
                                  const ChordName &initial_chord,
@@ -31,7 +30,7 @@ ChordNameDialog::ChordNameDialog(QWidget *parent,
     ui->setupUi(this);
 
     for (const ChordName &name : myScoreChords)
-        ui->chordsList->addItem(QString::fromStdString(Util::toString(name)));
+        ui->chordsList->addItem(QString::fromStdString(name.getLabel()));
 
     connect(ui->chordsList, &QListWidget::currentRowChanged,
             [&](int row)
@@ -192,8 +191,7 @@ void ChordNameDialog::updateState()
     myChord.setModification(ChordName::Suspended4th,
                             ui->sus4CheckBox->isChecked());
 
-    ui->previewLineEdit->setText(
-        QString::fromStdString(Util::toString(myChord)));
+    ui->previewLineEdit->setText(QString::fromStdString(myChord.getLabel()));
 }
 
 void ChordNameDialog::onTonicVariationClicked(QAbstractButton *clickedButton)

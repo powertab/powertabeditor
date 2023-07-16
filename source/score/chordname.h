@@ -21,6 +21,8 @@
 #include "fileversion.h"
 #include <iosfwd>
 #include <memory>
+#include <optional>
+#include <string>
 #include <util/enumflags.h>
 #include <util/enumtostring_fwd.h>
 
@@ -120,7 +122,15 @@ public:
     bool isNoChord() const;
     void setNoChord(bool value);
 
+    /// Returns the display label for the chord diagram. This can be an
+    /// explicitly set label (e.g. for compatibility with Guitar Pro files), but
+    /// typically is generated from the chord name components.
+    std::string getLabel() const;
+    void setLabel(std::optional<std::string> label);
+
 private:
+    std::string buildLabel() const;
+
     Key myTonicKey;
     Variation myTonicVariation;
     Key myBassKey;
@@ -129,6 +139,7 @@ private:
     Util::EnumFlags<FormulaModification> myModifications;
     bool myHasBrackets;
     bool myIsNoChord;
+    std::optional<std::string> myLabel;
 };
 
 UTIL_DECLARE_ENUMTOSTRING(ChordName::Key)
@@ -137,7 +148,7 @@ UTIL_DECLARE_ENUMTOSTRING(ChordName::Formula)
 UTIL_DECLARE_ENUMTOSTRING(ChordName::FormulaModification)
 
 template <class Archive>
-void ChordName::serialize(Archive &ar, const FileVersion /*version*/)
+void ChordName::serialize(Archive &ar, const FileVersion version)
 {
     ar("tonic_key", myTonicKey);
     ar("tonic_variation", myTonicVariation);
@@ -147,9 +158,10 @@ void ChordName::serialize(Archive &ar, const FileVersion /*version*/)
     ar("modifications", myModifications);
     ar("brackets", myHasBrackets);
     ar("no_chord", myIsNoChord);
-}
 
-std::ostream &operator<<(std::ostream &os, const ChordName &chord);
+    if (version >= FileVersion::CHORD_DIAGRAM_LABELS)
+        ar("label", myLabel);
+}
 
 /// Enable the use of ChordName as a key for std::unordered_map, etc.
 template<>

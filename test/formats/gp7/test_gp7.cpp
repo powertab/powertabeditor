@@ -576,15 +576,15 @@ TEST_CASE("Formats/Gp7Import/Text")
         REQUIRE(system.getChords().size() == 3);
         {
             const ChordName &chord = system.getChords()[0].getChordName();
-            REQUIRE(Util::toString(chord) == "D7sus4");
+            REQUIRE(chord.getLabel() == "D7sus4");
         }
         {
             const ChordName &chord = system.getChords()[1].getChordName();
-            REQUIRE(Util::toString(chord) == "F#/Bx");
+            REQUIRE(chord.getLabel() == "F#/Bx");
         }
         {
             const ChordName &chord = system.getChords()[2].getChordName();
-            REQUIRE(Util::toString(chord) == "Bb°add9");
+            REQUIRE(chord.getLabel() == "Bb°add9");
         }
     }
 
@@ -597,7 +597,7 @@ TEST_CASE("Formats/Gp7Import/Text")
         for (int i = 0; i < 24; ++i)
         {
             actual_names.push_back(
-                Util::toString(system.getChords()[i].getChordName()));
+                system.getChords()[i].getChordName().getLabel());
         }
 
         // Note: the last one should be D13b11, but we don't currently have

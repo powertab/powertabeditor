@@ -42,7 +42,9 @@ enum class FileVersion : int
     CHORD_DIAGRAMS = 9,
     /// Changes to make the JSON format easier to parse in other applications.
     JSON_CLEANUP = 10,
-    LATEST_VERSION = JSON_CLEANUP
+    /// Added an optional label to chord diagrams.
+    CHORD_DIAGRAM_LABELS = 11,
+    LATEST_VERSION = CHORD_DIAGRAM_LABELS
 };
 
 #endif

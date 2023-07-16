@@ -20,6 +20,7 @@
 #include <array>
 #include <boost/algorithm/string/replace.hpp>
 #include <boost/functional/hash.hpp>
+#include <sstream>
 #include <util/enumtostring.h>
 
 ChordName::ChordName()
@@ -42,7 +43,8 @@ bool ChordName::operator==(const ChordName &other) const
            myFormula == other.myFormula &&
            myModifications == other.myModifications &&
            myHasBrackets == other.myHasBrackets &&
-           myIsNoChord == other.myIsNoChord;
+           myIsNoChord == other.myIsNoChord &&
+           myLabel == other.myLabel;
 }
 
 bool ChordName::isNoChord() const
@@ -127,8 +129,23 @@ void ChordName::setTonicKey(Key key)
     myTonicKey = key;
 }
 
-std::ostream &operator<<(std::ostream &os, const ChordName &chord)
+std::string
+ChordName::getLabel() const
 {
+    return myLabel.has_value() ? *myLabel : buildLabel();
+}
+
+void
+ChordName::setLabel(std::optional<std::string> label)
+{
+    myLabel = std::move(label);
+}
+
+std::string
+ChordName::buildLabel() const
+{
+    std::ostringstream os;
+
     static std::string theKeys[] = { "C", "D", "E", "F", "G", "A", "B" };
     static std::string theVariations[] = { "bb", "b", "", "#", "x" };
     static std::string theSuffixes[] = { "",   "m",  "+",      "°",    "5",
@@ -148,31 +165,31 @@ std::ostream &operator<<(std::ostream &os, const ChordName &chord)
         "b13",  "+11",  "b9",   "+9",   "b5",   "+5", "b6"
     };
 
-    if (chord.isNoChord())
+    if (isNoChord())
     {
         os << "N.C.";
 
         // Unless the chord has brackets, we're done.
-        if (!chord.hasBrackets())
-            return os;
+        if (!hasBrackets())
+            return os.str();
     }
 
-    if (chord.hasBrackets())
+    if (hasBrackets())
         os << "(";
 
-    os << theKeys[chord.getTonicKey()];
-    os << theVariations[chord.getTonicVariation() - ChordName::DoubleFlat];
+    os << theKeys[getTonicKey()];
+    os << theVariations[getTonicVariation() - ChordName::DoubleFlat];
 
     // Display the chord formula.
     {
-        std::string formula = theSuffixes[chord.getFormula()];
+        std::string formula = theSuffixes[getFormula()];
 
         // Handle chord extensions.
-        if (chord.hasModification(ChordName::Extended13th))
+        if (hasModification(ChordName::Extended13th))
             boost::algorithm::replace_first(formula, "7", "13");
-        else if (chord.hasModification(ChordName::Extended11th))
+        else if (hasModification(ChordName::Extended11th))
             boost::algorithm::replace_first(formula, "7", "11");
-        else if (chord.hasModification(ChordName::Extended9th))
+        else if (hasModification(ChordName::Extended9th))
             boost::algorithm::replace_first(formula, "7", "9");
 
         os << formula;
@@ -180,24 +197,24 @@ std::ostream &operator<<(std::ostream &os, const ChordName &chord)
         // Display modifications such as 'add9'.
         for (size_t i = 0; i < theModifications.size(); ++i)
         {
-            if (chord.hasModification(theModifications[i]))
+            if (hasModification(theModifications[i]))
                 os << theModificationText[i];
         }
     }
 
     // If the tonic key and bass note are different, display the bass note.
-    if (chord.getTonicKey() != chord.getBassKey() ||
-        chord.getTonicVariation() != chord.getBassVariation())
+    if (getTonicKey() != getBassKey() ||
+        getTonicVariation() != getBassVariation())
     {
         os << "/";
-        os << theKeys[chord.getBassKey()];
-        os << theVariations[chord.getBassVariation() - ChordName::DoubleFlat];
+        os << theKeys[getBassKey()];
+        os << theVariations[getBassVariation() - ChordName::DoubleFlat];
     }
 
-    if (chord.hasBrackets())
+    if (hasBrackets())
         os << ")";
 
-    return os;
+    return os.str();
 }
 
 size_t

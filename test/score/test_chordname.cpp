@@ -18,7 +18,6 @@
 #include <doctest/doctest.h>
 
 #include <score/chordname.h>
-#include <util/tostring.h>
 #include "test_serialization.h"
 
 TEST_CASE("Score/ChordName/Serialization")
@@ -28,16 +27,17 @@ TEST_CASE("Score/ChordName/Serialization")
     name.setBrackets(true);
     name.setTonicVariation(ChordName::DoubleFlat);
     name.setTonicKey(ChordName::D);
+    name.setLabel("foo");
 
     Serialization::test("chord_name", name);
 }
 
-TEST_CASE("Score/ChordName/ToString")
+TEST_CASE("Score/ChordName/Label")
 {
     ChordName chord;
 
     chord.setNoChord(true);
-    REQUIRE(Util::toString(chord) == "N.C.");
+    REQUIRE(chord.getLabel() == "N.C.");
 
     chord.setBrackets(true);
     chord.setTonicKey(ChordName::F);
@@ -45,10 +45,10 @@ TEST_CASE("Score/ChordName/ToString")
     chord.setBassKey(ChordName::F);
     chord.setBassVariation(ChordName::Flat);
     chord.setFormula(ChordName::Major7th);
-    REQUIRE(Util::toString(chord) == "N.C.(Fbmaj7)");
+    REQUIRE(chord.getLabel() == "N.C.(Fbmaj7)");
 
     chord.setModification(ChordName::Extended11th);
-    REQUIRE(Util::toString(chord) == "N.C.(Fbmaj11)");
+    REQUIRE(chord.getLabel() == "N.C.(Fbmaj11)");
     chord.setModification(ChordName::Extended11th, false);
 
     chord.setNoChord(false);
@@ -56,5 +56,10 @@ TEST_CASE("Score/ChordName/ToString")
     chord.setBassKey(ChordName::C);
     chord.setBassVariation(ChordName::Sharp);
     chord.setModification(ChordName::Flatted9th);
-    REQUIRE(Util::toString(chord) == "(F#maj7b9/C#)");
+    REQUIRE(chord.getLabel() == "(F#maj7b9/C#)");
+
+    chord.setLabel("mylabel");
+    REQUIRE(chord.getLabel() == "mylabel");
+    chord.setLabel(std::nullopt);
+    REQUIRE(chord.getLabel() == "(F#maj7b9/C#)");
 }

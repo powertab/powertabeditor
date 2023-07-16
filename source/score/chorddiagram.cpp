@@ -49,7 +49,7 @@ ChordDiagram::setStringCount(int count)
 std::ostream &
 operator<<(std::ostream &os, const ChordDiagram &diagram)
 {
-    os << diagram.getChordName() << ": ";
+    os << diagram.getChordName().getLabel() << ": ";
 
     for (int i = diagram.getStringCount() - 1; i >= 0; --i)
     {
