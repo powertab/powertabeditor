@@ -21,6 +21,7 @@ Thanks to the following contributors who worked on this release:
 ### Fixed
 - Fixed a frequent crash when the preference to play inserted notes while editing is enabled
 - Fixed a potential crash when importing Guitar Pro files (#442)
+- Fixed a bug where the scroll bar's range did not update when the visible height of the score shrank (#443)
 
 ## [Alpha 19] - 2022-10-17
 

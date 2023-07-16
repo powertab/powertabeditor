@@ -157,6 +157,10 @@ void ScoreArea::renderDocument(const Document &document)
 
     myScene.addItem(myCaretPainter);
 
+    // If the sceneRect is unset, it contains the largest bounding rect since
+    // creation and never shrinks (bug #443).
+    myScene.setSceneRect(myScene.itemsBoundingRect());
+
     auto end = std::chrono::high_resolution_clock::now();
     qDebug() << "Score rendered in"
              << std::chrono::duration_cast<std::chrono::milliseconds>(
