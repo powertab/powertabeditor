@@ -13,7 +13,7 @@ BinPackParameters: true
 BreakBeforeBinaryOperators: false
 BreakBeforeBraces: Allman
 BreakConstructorInitializersBeforeComma: false
-ColumnLimit: 80
+ColumnLimit: 100
 ConstructorInitializerAllOnOneLineOrOnePerLine: true
 ConstructorInitializerIndentWidth: 4
 Cpp11BracedListStyle: false
