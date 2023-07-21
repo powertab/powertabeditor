@@ -14,7 +14,7 @@
     <message>
         <location filename="../source/actions/addspecialnoteproperty.h" line="93"/>
         <source>Add Artificial Harmonic</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">Add Artificial Harmonic</translation>
     </message>
 </context>
 <context>
@@ -22,7 +22,7 @@
     <message>
         <location filename="../source/actions/addbarline.cpp" line="23"/>
         <source>Insert Barline</source>
-        <translation>Insertar barra de compás</translation>
+        <translation>Inserte Barline</translation>
     </message>
 </context>
 <context>
@@ -30,7 +30,7 @@
     <message>
         <location filename="../source/actions/addspecialnoteproperty.h" line="106"/>
         <source>Add Bend</source>
-        <translation type="unfinished"></translation>
+        <translation>Add Bend</translation>
     </message>
 </context>
 <context>
@@ -38,7 +38,7 @@
     <message>
         <location filename="../source/actions/chorddiagram.cpp" line="24"/>
         <source>Add Chord Diagram</source>
-        <translation type="unfinished"></translation>
+        <translation>Añadir diagrama de acordes</translation>
     </message>
 </context>
 <context>
