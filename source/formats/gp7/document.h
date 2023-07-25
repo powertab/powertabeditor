@@ -159,7 +159,7 @@ struct Chord
 {
     std::string myDescription;
     ChordName myName;
-    ChordDiagram myDiagram;
+    std::optional<ChordDiagram> myDiagram;
 };
 
 struct SoundChange

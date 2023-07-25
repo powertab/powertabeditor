@@ -98,3 +98,16 @@ TEST_CASE("Formats/GpxImport/ChordDiagrams")
     REQUIRE(Util::toString(score.getChordDiagrams()[3]) ==
             "F#: x 2 4 4 3 x x");
 }
+
+TEST_CASE("Formats/GpxImport/ChordNames")
+{
+    Score score;
+    GpxImporter importer;
+    importer.load(Paths::getAppDirPath("data/chord_names.gpx"), score);
+
+    REQUIRE(score.getChordDiagrams().size() == 0);
+    const System &system = score.getSystems()[0];
+    REQUIRE(system.getChords().size() == 1);
+
+    REQUIRE(system.getChords()[0].getChordName().getDescription() == "G");
+}

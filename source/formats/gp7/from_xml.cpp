@@ -227,9 +227,9 @@ parseChords(const pugi::xml_node &collection_node)
         }
 
         // Chord diagram.
+        if (auto diagram_node = node.child("Diagram"))
         {
-            Gp7::ChordDiagram &diagram = chord.myDiagram;
-            auto diagram_node = node.child("Diagram");
+            Gp7::ChordDiagram diagram;
 
             diagram.myBaseFret = diagram_node.attribute("baseFret").as_int();
             diagram.myFrets.resize(
@@ -242,6 +242,8 @@ parseChords(const pugi::xml_node &collection_node)
                 int fret = child_node.attribute("fret").as_int();
                 diagram.myFrets[string] = fret;
             }
+
+            chord.myDiagram = std::move(diagram);
         }
 
         const int id = node.attribute("id").as_int();
@@ -270,10 +272,17 @@ parseStaff(const pugi::xml_node &node, Gp7::Track &track)
     staff.myTuning =
         toIntList(splitString(tuning_property.child_value("Pitches")));
 
-    auto diagram_property = properties.find_child_by_attribute(
-        "Property", "name", "DiagramCollection");
-    if (diagram_property)
+    if (auto diagram_property =
+            properties.find_child_by_attribute("Property", "name", "DiagramCollection"))
+    {
         track.myChords = parseChords(diagram_property);
+    }
+    else if (auto collection_property =
+                 properties.find_child_by_attribute("Property", "name", "ChordCollection"))
+    {
+        // Older .gpx files may contain a chord collection with no diagrams.
+        track.myChords = parseChords(collection_property);
+    }
 
     track.myStaves.push_back(staff);
 }

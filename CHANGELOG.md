@@ -23,7 +23,7 @@ Thanks to the following contributors who worked on this release:
 
 ### Fixed
 - Fixed a frequent crash when the preference to play inserted notes while editing is enabled
-- Fixed a potential crash when importing Guitar Pro files (#442)
+- Fixed potential crashes when importing Guitar Pro files (#442, #444)
 - Fixed a bug where the scroll bar's range did not update when the visible height of the score shrank (#443)
 - Fixed a bug where the caret was rendered when printing or displaying a print preview (#441)
 - Fixed issues where the top fret number of a chord diagram could be cut off in the chord name dialog (#408)

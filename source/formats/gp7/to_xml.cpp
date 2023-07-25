@@ -197,9 +197,11 @@ saveChordDiagrams(pugi::xml_node chords_node, const Track &track)
         item.append_attribute("name").set_value(chord.myDescription.c_str());
 
         // Chord diagram
-        auto diagram_node = item.append_child("Diagram");
-        const ChordDiagram &diagram = chord.myDiagram;
-        saveDiagram(diagram_node, diagram);
+        if (chord.myDiagram)
+        {
+            auto diagram_node = item.append_child("Diagram");
+            saveDiagram(diagram_node, *chord.myDiagram);
+        }
 
         // Chord name
         auto chord_node = item.append_child("Chord");

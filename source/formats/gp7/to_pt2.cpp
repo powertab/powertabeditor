@@ -974,12 +974,14 @@ convertChordName(const std::string &description, const Gp7::ChordName &gp_chord)
 static ChordDiagram
 convertChordDiagram(const Gp7::Chord &gp_chord)
 {
+    assert(gp_chord.myDiagram.has_value());
+
     ChordDiagram diagram;
     diagram.setChordName(
         convertChordName(gp_chord.myDescription, gp_chord.myName));
-    diagram.setTopFret(gp_chord.myDiagram.myBaseFret);
+    diagram.setTopFret(gp_chord.myDiagram->myBaseFret);
 
-    std::vector<int> frets = gp_chord.myDiagram.myFrets;
+    std::vector<int> frets = gp_chord.myDiagram->myFrets;
     // Strings are in the opposite order, and frets are relative to the top
     // fret.
     std::reverse(frets.begin(), frets.end());
@@ -999,8 +1001,11 @@ convertChordDiagrams(const Gp7::Document &doc, Score &score)
     std::unordered_set<ChordDiagram> unique_diagrams;
     for (const Gp7::Track &track : doc.myTracks)
     {
-        for (auto &&[_, chord] : track.myChords)
-            unique_diagrams.insert(convertChordDiagram(chord));
+        for (auto &&[id, chord] : track.myChords)
+        {
+            if (chord.myDiagram)
+                unique_diagrams.insert(convertChordDiagram(chord));
+        }
     }
 
     // Sort by chord name to insert in a deterministic order.
