@@ -88,7 +88,7 @@ struct PListSerializer
         {
             std::string prev_key = myKey;
             if (!myKey.empty())
-                myKey += ".";
+                myKey += "/";
             myKey += pair.first;
 
             auto obj = std::visit(PListValueVisitor(), pair.second);
@@ -160,7 +160,6 @@ void SettingsTree::loadFromPlist()
     for (NSString *key in [dict allKeys])
     {
         std::string key_str([key UTF8String]);
-        boost::replace_all(key_str, ".", "/");
 
         NSObject *obj = [prefs objectForKey:key];
         setImpl(key_str, converToSettingValue(obj));

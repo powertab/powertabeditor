@@ -22,6 +22,7 @@ Thanks to the following contributors who worked on this release:
 - Updated the minimum required version of `RtMidi` to 4.0
 
 ### Fixed
+- Fixed a bug that caused some preferences such as custom shortcuts to not persist on macOS. Note that all other preferences (such as MIDI settings) are reset by this fix and will need to be manually changed to the desired values (#447).
 - Fixed a frequent crash when the preference to play inserted notes while editing is enabled
 - Fixed potential crashes when importing Guitar Pro files (#442, #444)
 - Fixed a bug where the scroll bar's range did not update when the visible height of the score shrank (#443)
