@@ -52,8 +52,8 @@ Power Tab Editor 2.0 - A powerful cross platform guitar tablature viewer and edi
 ## Users
 * New user? Read the [intro page](https://github.com/powertab/powertabeditor/wiki/Power-Tab-Editor-2.0,-Here-at-last!) to learn more about the project!
 * Download:
-  - latest stable releases [ here ](https://github.com/powertab/powertabeditor/releases)
-  - latest development releases [ here ](https://github.com/powertab/powertabeditor/actions) (requires a GitHub login to download)
+  - Latest stable releases [ here ](https://github.com/powertab/powertabeditor/releases)
+  - Latest development releases [ here ](https://github.com/powertab/powertabeditor/actions) (requires a GitHub login to download)
 * You can report bugs or suggest features on our [issue tracker](https://github.com/powertab/powertabeditor/issues), or discuss ideas on the [discussions forum](https://github.com/powertab/powertabeditor/discussions)
 * You can [translate](https://hosted.weblate.org/engage/powertabeditor/) the project into your language.
 * Join the [Discord community](https://discord.gg/mpXfquuzxe)
