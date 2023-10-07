@@ -38,6 +38,8 @@ public:
                                 int staff = 0, int position = 0, int voice = 0,
                                 int string = 0);
 
+    explicit ConstScoreLocation(const ConstScoreLocation& location, int position);
+
     const Score &getScore() const;
 
     int getSystemIndex() const;
