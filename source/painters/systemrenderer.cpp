@@ -223,8 +223,7 @@ SystemRenderer::drawBarlines(const ConstScoreLocation &location,
     const System &system = location.getSystem();
     for (const Barline &barline : system.getBarlines())
     {
-        ConstScoreLocation bar_location(location);
-        bar_location.setPositionIndex(barline.getPosition());
+        const ConstScoreLocation bar_location(location, barline.getPosition());
 
         const KeySignature &keySig = barline.getKeySignature();
         const TimeSignature &timeSig = barline.getTimeSignature();
@@ -497,8 +496,7 @@ SystemRenderer::drawAlternateEndings(const ConstScoreLocation &location,
         const double start_x = layout.getPositionX(ending.getPosition()) +
                                0.5 * layout.getPositionSpacing();
 
-        ConstScoreLocation ending_location(location);
-        ending_location.setPositionIndex(ending.getPosition());
+        const ConstScoreLocation ending_location(location, ending.getPosition());
 
         auto group = new ClickableGroup(
             ScoreArea::tr("Double-click to edit repeat endings."),
@@ -629,8 +627,8 @@ SystemRenderer::drawTempoMarkers(const ConstScoreLocation &location,
 
         const double x = layout.getPositionX(tempo.getPosition());
 
-        ConstScoreLocation marker_location(location);
-        marker_location.setPositionIndex(tempo.getPosition());
+        const ConstScoreLocation marker_location(location, tempo.getPosition());
+
         auto group = new ClickableGroup(
             ScoreArea::tr("Double-click to edit tempo marker."),
             myScoreArea->getClickEvent(), marker_location,
@@ -736,8 +734,8 @@ SystemRenderer::drawChordText(const ConstScoreLocation &location,
     {
         const double x = layout.getPositionX(chord.getPosition());
 
-        ConstScoreLocation item_location(location);
-        item_location.setPositionIndex(chord.getPosition());
+        const ConstScoreLocation item_location(location, chord.getPosition());
+
         auto group = new ClickableGroup(
             ScoreArea::tr("Double-click to edit chord text."),
             myScoreArea->getClickEvent(), item_location, ScoreItem::ChordText);
@@ -762,8 +760,8 @@ SystemRenderer::drawTextItems(const ConstScoreLocation &location,
     {
         const QString &contents = QString::fromStdString(text.getContents());
 
-        ConstScoreLocation item_location(location);
-        item_location.setPositionIndex(text.getPosition());
+        const ConstScoreLocation item_location(location, text.getPosition());
+
         auto group = new ClickableGroup(
             ScoreArea::tr("Double-click to edit text."),
             myScoreArea->getClickEvent(), item_location, ScoreItem::TextItem);
@@ -932,8 +930,8 @@ SystemRenderer::drawPlayerChanges(const ConstScoreLocation &location,
         const std::vector<ActivePlayer> activePlayers =
                 change.getActivePlayers(location.getStaffIndex());
 
-        ConstScoreLocation change_location(location);
-        change_location.setPositionIndex(change.getPosition());
+        const ConstScoreLocation change_location(location, change.getPosition());
+
         auto group = new ClickableGroup(
             ScoreArea::tr("Double-click to edit the active players."),
             myScoreArea->getClickEvent(), change_location,
@@ -1369,8 +1367,7 @@ SystemRenderer::createVolumeSwell(const ConstScoreLocation &location,
     assert(pos && pos->hasVolumeSwell());
     const VolumeSwell &swell = pos->getVolumeSwell();
 
-    ConstScoreLocation swell_location(location);
-    swell_location.setPositionIndex(pos->getPosition());
+    const ConstScoreLocation swell_location(location, pos->getPosition());
 
     // The width of the symbol rectangle is the number of positions that the
     // volume swell spans.
@@ -1405,8 +1402,8 @@ SystemRenderer::createTremoloBar(const ConstScoreLocation &location,
     assert(pos && pos->hasTremoloBar());
     const TremoloBar &trem = pos->getTremoloBar();
 
-    ConstScoreLocation trem_location(location);
-    trem_location.setPositionIndex(pos->getPosition());
+    const ConstScoreLocation trem_location(location, pos->getPosition());
+
     auto group = new ClickableGroup(
         ScoreArea::tr("Double-click to edit tremolo bar."),
         myScoreArea->getClickEvent(), trem_location, ScoreItem::TremoloBar);
@@ -1580,8 +1577,8 @@ SystemRenderer::createDynamic(const ConstScoreLocation &location,
 
     // Sticking the text in a QGraphicsItemGroup allows us to offset the
     // position of the text from its default location.
-    ConstScoreLocation item_location(location);
-    item_location.setPositionIndex(dynamic->getPosition());
+    const ConstScoreLocation item_location(location, dynamic->getPosition());
+
     auto group = new ClickableGroup(
         ScoreArea::tr("Double-click to edit dynamic."),
         myScoreArea->getClickEvent(), item_location, ScoreItem::Dynamic);
@@ -1609,8 +1606,8 @@ SystemRenderer::drawStdNotation(const ConstScoreLocation &location,
 
             if (pos.hasMultiBarRest())
             {
-                ConstScoreLocation rest_location(location);
-                rest_location.setPositionIndex(pos.getPosition());
+                const ConstScoreLocation rest_location(location, pos.getPosition());
+
                 drawMultiBarRest(rest_location, *prevBar, layout,
                                  pos.getMultiBarRestCount());
             }
@@ -2174,8 +2171,7 @@ SystemRenderer::createBendGroup(const ConstScoreLocation &location,
             if (!note.hasBend())
                 continue;
 
-            ConstScoreLocation bend_location(location);
-            bend_location.setPositionIndex(pos->getPosition());
+            ConstScoreLocation bend_location(location, pos->getPosition());
             bend_location.setString(note.getString());
 
             auto bend_group = new ClickableGroup(

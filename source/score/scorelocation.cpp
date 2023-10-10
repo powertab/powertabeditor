@@ -33,6 +33,16 @@ ConstScoreLocation::ConstScoreLocation(const Score &score, int system,
 {
 }
 
+ConstScoreLocation::ConstScoreLocation(const ConstScoreLocation& location, int position)
+    :  myScore(location.myScore),
+       mySystemIndex(location.mySystemIndex),
+       myStaffIndex(location.myStaffIndex),
+       myPositionIndex(position),
+       mySelectionStart(position),
+       myVoiceIndex(location.myVoiceIndex),
+       myString(location.myString)
+{}
+
 ScoreLocation::ScoreLocation(Score &score, int system, int staff, int position,
                              int voice, int string)
     : ConstScoreLocation(score, system, staff, position, voice, string),
