@@ -197,7 +197,7 @@ ChordDiagramPainter::hoverLeaveEvent(QGraphicsSceneHoverEvent *event)
 }
 
 /// Empty graphics item to be the parent for the chord diagrams, since they
-/// aren't invidually selectable if they're part of a QGraphicsItemGroup.
+/// aren't individually selectable if they're part of a QGraphicsItemGroup.
 class EmptyGraphicsItem : public QGraphicsItem
 {
 public:

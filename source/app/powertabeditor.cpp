@@ -3830,7 +3830,7 @@ canDeleteItem(ScoreItem item)
             return false;
     }
 
-    // This is unreachable, but neccessary to avoid a gcc warning.
+    // This is unreachable, but necessary to avoid a gcc warning.
     return false;
 }
 }

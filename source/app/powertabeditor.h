@@ -338,7 +338,7 @@ private:
                                        const QKeySequence &shortcut,
                                        Position::SimpleProperty property,
                                        const QString &iconFileName = QString());
-    /// Helper function to reate a dynamic command.
+    /// Helper function to create a dynamic command.
     void createDynamicCommand(Command *&command,
                               const QString &menuName,
                               const QString &commandName,
