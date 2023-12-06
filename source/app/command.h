@@ -47,7 +47,7 @@ private:
     /// Returns the name of the key used for storing the customized shortcut.
     std::string getSettingsKey() const;
 
-    /// Unique identifer (used when storing a customized key sequence).
+    /// Unique identifier (used when storing a customized key sequence).
     const QString myId;
     const QKeySequence myDefaultShortcut;
 };

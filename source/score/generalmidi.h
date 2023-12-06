@@ -59,7 +59,7 @@ namespace Midi
     /// Maximum volume level for a MIDI channel.
     const uint8_t MAX_MIDI_CHANNEL_VOLUME = 0x7f;
 
-    /// Miniumum level for channel effects (chorus, reverb, etc.).
+    /// Minimum level for channel effects (chorus, reverb, etc.).
     const uint8_t MIN_MIDI_CHANNEL_EFFECT_LEVEL = 0;
     /// Maximum level for channel effects (chorus, reverb, etc.).
     const uint8_t MAX_MIDI_CHANNEL_EFFECT_LEVEL = 0x7f;

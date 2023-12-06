@@ -127,7 +127,7 @@ void KeyboardSettingsDialog::processKeyPress(QKeyEvent *e)
 {
     int key = e->key();
 
-    // Ignore a modifer key by itself (i.e. just the Ctrl key).
+    // Ignore a modifier key by itself (i.e. just the Ctrl key).
     if (key == Qt::Key_Control || key == Qt::Key_Shift ||
             key == Qt::Key_Meta || key == Qt::Key_Alt)
     {
@@ -144,7 +144,7 @@ void KeyboardSettingsDialog::processKeyPress(QKeyEvent *e)
     }
     else
     {
-        // Add in any modifers like Shift or Ctrl, but remove the keypad modifer
+        // Add in any modifiers like Shift or Ctrl, but remove the keypad modifier
         // since QKeySequence doesn't handle that well.
         key |= (e->modifiers() & ~Qt::KeypadModifier);
         
