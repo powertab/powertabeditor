@@ -7,7 +7,7 @@ function ( pte_add_compile_flags target )
 
     # Use C++11.
     set_target_properties( ${target} PROPERTIES
-        CXX_STANDARD 17
+        CXX_STANDARD 20
         CXX_STANDARD_REQUIRED YES
         CXX_EXTENSIONS NO
     )
