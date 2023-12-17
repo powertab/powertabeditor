@@ -167,17 +167,17 @@ namespace detail
         template <typename T>
         JSONValue convert(const T &obj)
         {
+            // Save ints / bools / etc or strings as-is.
             // Save enums as strings. The exception is the FileVersion enum
             // which is left as an integer.
-            if constexpr (std::is_enum_v<T> && !std::is_same_v<T, FileVersion>)
-            {
-                return Util::enumToString(obj);
-            }
-            // Save ints / bools / etc or strings as-is.
-            else if constexpr (std::is_pod_v<T> ||
-                               std::is_same_v<T, std::string>)
+            if constexpr (std::is_arithmetic_v<T> || std::is_same_v<T, FileVersion> ||
+                          std::is_same_v<T, std::string>)
             {
                 return obj;
+            }
+            else if constexpr (std::is_enum_v<T>)
+            {
+                return Util::enumToString(obj);
             }
             else // score objects.
             {
