@@ -54,7 +54,7 @@ void UndoManager::push(QUndoCommand *cmd, int affectedSystem)
     auto onUndo = new SignalOnUndo();
     if (affectedSystem >= 0)
     {
-        connect(onUndo, &SignalOnUndo::triggered, [=]() {
+        connect(onUndo, &SignalOnUndo::triggered, [=, this]() {
             onSystemChanged(affectedSystem);
         });
     }
@@ -70,7 +70,7 @@ void UndoManager::push(QUndoCommand *cmd, int affectedSystem)
     auto onRedo = new SignalOnRedo();
     if (affectedSystem >= 0)
     {
-        connect(onRedo, &SignalOnRedo::triggered, [=]() {
+        connect(onRedo, &SignalOnRedo::triggered, [=, this]() {
             onSystemChanged(affectedSystem);
         });
     }

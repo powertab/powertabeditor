@@ -40,10 +40,10 @@ KeySignatureDialog::KeySignatureDialog(QWidget *parent,
     else
         ui->minorKeyButton->setChecked(true);
 
-    connect(ui->majorKeyButton, &QAbstractButton::clicked, [=]() {
+    connect(ui->majorKeyButton, &QAbstractButton::clicked, [this]() {
         populateKeyTypes(KeySignature::Major);
     });
-    connect(ui->minorKeyButton, &QAbstractButton::clicked, [=]() {
+    connect(ui->minorKeyButton, &QAbstractButton::clicked, [this]() {
         populateKeyTypes(KeySignature::Minor);
     });
 

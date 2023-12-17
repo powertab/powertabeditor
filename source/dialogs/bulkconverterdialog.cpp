@@ -154,11 +154,11 @@ BulkConverterDialog::BulkConverterDialog(QWidget *parent,
     auto flags = windowFlags();
     setWindowFlags(flags | Qt::WindowStaysOnTopHint);
 
-    connect(ui->fileLocatorSource, &QAbstractButton::clicked, [=]() {
+    connect(ui->fileLocatorSource, &QAbstractButton::clicked, [this]() {
         setPath(ui->sourcePathEdit);
     });
 
-    connect(ui->fileLocatorDestination, &QAbstractButton::clicked, [=]() {
+    connect(ui->fileLocatorDestination, &QAbstractButton::clicked, [this]() {
         setPath(ui->destinationPathEdit);
     });
 
@@ -170,7 +170,7 @@ BulkConverterDialog::BulkConverterDialog(QWidget *parent,
 
     convertButton()->setEnabled(false);
     convertButton()->setText(tr("Convert"));
-    connect(convertButton(), &QAbstractButton::clicked, [=](){ convert(); });
+    connect(convertButton(), &QAbstractButton::clicked, [this](){ convert(); });
     connect(ui->buttonBox, &QDialogButtonBox::rejected, this, &QDialog::reject);
 }
 

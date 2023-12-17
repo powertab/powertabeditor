@@ -92,7 +92,7 @@ void ScoreArea::renderDocument(const Document &document)
 
     myCaretPainter = new CaretPainter(
         document.getCaret(), document.getViewOptions(), *myActivePalette);
-    myCaretPainter->subscribeToMovement([=]() {
+    myCaretPainter->subscribeToMovement([this]() {
         adjustScroll();
     });
 

@@ -39,10 +39,10 @@ void Mixer::reset(const Score &score)
     {
         auto item = new MixerItem(this, i, score.getPlayers()[i], myDictionary);
         connect(item, &MixerItem::playerEdited,
-                [=](const Player &player, bool undoable) {
+                [=, this](const Player &player, bool undoable) {
                     playerEdited(i, player, undoable);
                 });
-        connect(item, &MixerItem::playerRemoved, [=]() { playerRemoved(i); });
+        connect(item, &MixerItem::playerRemoved, [=, this]() { playerRemoved(i); });
         myLayout->addWidget(item);
     }
 }
