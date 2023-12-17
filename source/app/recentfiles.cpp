@@ -84,7 +84,7 @@ void RecentFiles::updateMenu()
         auto fileAction = new QAction(fileName, myRecentFilesMenu);
         myRecentFilesMenu->addAction(fileAction);
 
-        connect(fileAction, &QAction::triggered, [=]() {
+        connect(fileAction, &QAction::triggered, [=, this]() {
             handleFileSelection(fileName);
         });
     }

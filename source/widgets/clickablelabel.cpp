@@ -27,7 +27,7 @@ ClickableLabel::ClickableLabel(QWidget *parent)
 
 void ClickableLabel::enterEvent(QEvent *)
 {
-    setFrameStyle(QFrame::StyledPanel | QFrame::Raised);
+    setFrameStyle(static_cast<int>(QFrame::StyledPanel) | static_cast<int>(QFrame::Raised));
     setCursor(Qt::PointingHandCursor);
 }
 

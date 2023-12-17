@@ -48,7 +48,7 @@ InstrumentPanelItem::InstrumentPanelItem(QWidget *parent, int instrumentIndex,
             ui->instrumentNameLabel, &QWidget::hide);
     connect(ui->instrumentNameLabel, &ClickableLabel::clicked,
             ui->instrumentNameEdit, &QWidget::show);
-    connect(ui->instrumentNameLabel, &ClickableLabel::clicked, [=]()
+    connect(ui->instrumentNameLabel, &ClickableLabel::clicked, [this]()
     { ui->instrumentNameEdit->setFocus(); });
 
     connect(ui->instrumentNameEdit, &QLineEdit::editingFinished, this,

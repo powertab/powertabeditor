@@ -52,17 +52,17 @@ MixerItem::MixerItem(QWidget *parent, int playerIndex, const Player &player,
             &QWidget::hide);
     connect(ui->playerNameLabel, &ClickableLabel::clicked, ui->playerNameEdit,
             &QWidget::show);
-    connect(ui->playerNameLabel, &ClickableLabel::clicked, [=]() {
+    connect(ui->playerNameLabel, &ClickableLabel::clicked, [this]() {
         ui->playerNameEdit->setFocus();
     });
 
     connect(ui->playerNameEdit, &QLineEdit::editingFinished, this,
             &MixerItem::onPlayerNameEdited);
 
-    connect(ui->playerVolume, &QSlider::valueChanged, [=]() {
+    connect(ui->playerVolume, &QSlider::valueChanged, [this]() {
         onEdited(false);
     });
-    connect(ui->playerPan, &QDial::valueChanged, [=]() {
+    connect(ui->playerPan, &QDial::valueChanged, [this]() {
         onEdited(false);
     });
 

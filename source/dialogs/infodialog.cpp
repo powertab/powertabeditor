@@ -32,7 +32,7 @@ InfoDialog::InfoDialog(QWidget *parent) :
 
     setInfo();
 
-    connect(ui->copyToClipboardButton, &QAbstractButton::clicked, [=]() {
+    connect(ui->copyToClipboardButton, &QAbstractButton::clicked, [this]() {
         QClipboard *clipboard = QApplication::clipboard();
         clipboard->setText(ui->appInfo->toPlainText());
     });

@@ -38,9 +38,9 @@ void InstrumentPanel::reset(const Score &score)
     {
         auto item = new InstrumentPanelItem(this, i, score.getInstruments()[i]);
         connect(item, &InstrumentPanelItem::instrumentEdited,
-                [=](const Instrument &inst) { instrumentEdited(i, inst); });
+                [=, this](const Instrument &inst) { instrumentEdited(i, inst); });
         connect(item, &InstrumentPanelItem::instrumentRemoved,
-                [=]() { instrumentRemoved(i); });
+                [=, this]() { instrumentRemoved(i); });
 
         myLayout->addWidget(item);
     }

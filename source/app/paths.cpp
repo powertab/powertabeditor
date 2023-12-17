@@ -88,11 +88,13 @@ getAppDirPath(const path &relative_path)
 
 path fromQString(const QString &str)
 {
-    return std::filesystem::u8path(str.toStdString());
+    std::string u8_str = str.toStdString();
+    return std::filesystem::path(std::u8string(u8_str.begin(), u8_str.end()));
 }
 
 QString toQString(const path &str)
 {
-    return QString::fromStdString(str.u8string());
+    std::u8string u8_str = str.u8string();
+    return QString::fromStdString(std::string(u8_str.begin(), u8_str.end()));
 }
 }

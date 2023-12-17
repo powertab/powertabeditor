@@ -110,10 +110,10 @@ void ViewFilterDialog::update(const std::vector<std::string> &names,
             ui->filterRuleLayout->addWidget(widget);
 
             connect(widget, &FilterRuleWidget::changed,
-                    [=](const FilterRule &rule) {
+                    [=, this](const FilterRule &rule) {
                 myPresenter->editRule(i, rule);
             });
-            connect(widget, &FilterRuleWidget::removeRequested, [=]() {
+            connect(widget, &FilterRuleWidget::removeRequested, [=, this]() {
                 myPresenter->removeRule(i);
             });
         }

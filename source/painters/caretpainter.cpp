@@ -39,7 +39,7 @@ CaretPainter::CaretPainter(const Caret &caret, const ViewOptions &view_options,
       myViewOptions(view_options),
       myPalette(palette),
       myCaretConnection(
-          caret.subscribeToChanges([=]() { onLocationChanged(); }))
+          caret.subscribeToChanges([this]() { onLocationChanged(); }))
 {
 }
 

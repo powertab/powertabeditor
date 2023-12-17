@@ -258,7 +258,7 @@ PlaybackWidget::setupZoomComboBox(double initial_zoom)
     ui->zoomComboBox->setValidator(new PercentageValidator(ui->zoomComboBox));
 
     connect(ui->zoomComboBox, &QComboBox::currentTextChanged,
-            [=](const QString &text) {
+            [this](const QString &text) {
                 // Trigger an update for the stylesheet.
                 ui->zoomComboBox->style()->unpolish(ui->zoomComboBox);
                 ui->zoomComboBox->style()->polish(ui->zoomComboBox);
