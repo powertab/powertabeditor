@@ -68,7 +68,7 @@ jobs:
 
     - name: Upload Installer
       if: github.event_name != 'pull_request'
-      uses: actions/upload-artifact@v3
+      uses: actions/upload-artifact@v4
       with:
         name: powertabeditor-osx-${{ steps.version.outputs.VERSION_ID }}.dmg
         path: ${{runner.workspace}}/build/powertabeditor-osx.dmg
@@ -121,7 +121,7 @@ jobs:
         mv installer/windows/powertabeditor.exe installer/windows/powertabeditor-windows-${{ matrix.arch }}-${{ steps.version.outputs.VERSION_ID }}.exe
 
     - name: Upload Installer
-      uses: actions/upload-artifact@v3
+      uses: actions/upload-artifact@v4
       with:
         name: powertabeditor-windows-${{ matrix.arch }}-${{ steps.version.outputs.VERSION_ID }}.exe
         path: installer/windows/powertabeditor-windows-${{ matrix.arch }}-${{ steps.version.outputs.VERSION_ID }}.exe
