@@ -149,6 +149,7 @@
 
 #include <util/tostring.h>
 #include <util/version.h>
+#include <util/log.h>
 
 #include <widgets/instruments/instrumentpanel.h>
 #include <widgets/mixer/mixer.h>
@@ -260,14 +261,14 @@ void PowerTabEditor::openFile(QString filename)
     int validationResult = myDocumentManager->findDocument(path);
     if (validationResult > -1)
     {
-        qDebug() << "File: " << filename << " is already open";
+        Log::d("file: {} is already open", filename.toStdString());
         myTabWidget->setCurrentIndex(validationResult);
         return;
     }
 
     auto start = std::chrono::high_resolution_clock::now();
 
-    qDebug() << "Opening file: " << filename;
+    Log::d("opening file: {}", filename.toStdString());
 
     QFileInfo fileInfo(filename);
     std::optional<FileFormat> format = myFileFormatManager->findFormat(
@@ -285,9 +286,8 @@ void PowerTabEditor::openFile(QString filename)
         Document &doc = myDocumentManager->addDocument(*mySettingsManager);
         myFileFormatManager->importFile(doc.getScore(), path, *format);
         auto end = std::chrono::high_resolution_clock::now();
-        qDebug() << "File loaded in"
-                 << std::chrono::duration_cast<std::chrono::milliseconds>(end - start) .count()
-                 << "ms";
+
+	Log::d("file loaded in: {}ms", std::chrono::duration_cast<std::chrono::milliseconds>(end - start).count());
 
         doc.setFilename(path);
         setPreviousDirectory(filename);
@@ -3616,7 +3616,7 @@ void PowerTabEditor::setPreviousDirectory(const QString &fileName)
 void PowerTabEditor::setupNewTab()
 {
     auto start = std::chrono::high_resolution_clock::now();
-    qDebug() << "Tab creation started ...";
+    Log::d("tab creation started...");
 
     Q_ASSERT(myDocumentManager->hasOpenDocuments());
     Document &doc = myDocumentManager->getCurrentDocument();
@@ -3788,9 +3788,7 @@ void PowerTabEditor::setupNewTab()
     scorearea->setFocus();
 
     auto end = std::chrono::high_resolution_clock::now();
-    qDebug() << "Tab opened in"
-             << std::chrono::duration_cast<std::chrono::milliseconds>(
-                    end - start).count() << "ms";
+    Log::d("tab opened in: {}ms", std::chrono::duration_cast<std::chrono::milliseconds>(end - start).count());
 }
 
 namespace

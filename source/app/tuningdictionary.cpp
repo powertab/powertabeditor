@@ -26,6 +26,7 @@
 #include <score/serialization.h>
 #include <stdexcept>
 #include <unordered_set>
+#include <util/log.h>
 
 static const char *theTuningDictFilename = "tunings.json";
 
@@ -70,11 +71,11 @@ TuningDictionary::load()
 
     if (entries.empty())
     {
-        std::cerr << "Could not locate tuning dictionary." << std::endl;
-        std::cerr << "Candidate paths:" << std::endl;
+        Log::e("could not locate tuning dictionary");
+        Log::e("candidate paths: ");
 
         for (std::filesystem::path dir : Paths::getDataDirs())
-            std::cerr << (dir / theTuningDictFilename) << std::endl;
+            Log::e(" - {}", (dir / theTuningDictFilename).generic_string());
     }
 
     return entries;
