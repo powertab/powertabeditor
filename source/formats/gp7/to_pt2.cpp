@@ -38,6 +38,7 @@
 #include <score/utils/scorepolisher.h>
 #include <score/voiceutils.h>
 #include <util/tostring.h>
+#include <util/log.h>
 
 #include <iostream>
 #include <unordered_set>
@@ -182,7 +183,7 @@ getHarmonicPitchOffset(double harmonic_fret)
     }
     else
     {
-        std::cerr << "Unexpected harmonic type" << std::endl;
+        Log::e("unexpected harmonic type");
         return 12;
     }
 }

@@ -14,14 +14,19 @@
   * You should have received a copy of the GNU General Public License
   * along with this program.  If not, see <http://www.gnu.org/licenses/>.
 */
-  
+
 #include "macros.h"
+
+#include <util/log.h>
+
 #include <algorithm> // std::transform
 #include <iostream>
 
 void logToDebug(const std::string& msg, const std::string& file, int line)
 {
-    std::cerr << msg << std::endl << file << std::endl << "Line: " <<  line << std::endl;
+    Log::e("{}", msg);
+    Log::e("{}", file);
+    Log::e("line: {}", line);
 }
 
 std::string ArabicToRoman(uint32_t number, bool upperCase)
