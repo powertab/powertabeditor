@@ -26,6 +26,9 @@ namespace Paths {
     /// Return a path to a directory where config files should be written to.
     path getConfigDir();
 
+    /// Return a path to the log file
+    path getLogPath();
+
     /// Return a path to a directory where persistent application data should
     /// be written to.
     path getUserDataDir();
