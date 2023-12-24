@@ -42,8 +42,7 @@ InputArchive::InputArchive(std::istream &is)
     }
     else
     {
-        std::cerr << "Warning: Reading an unknown file version - " << version
-                  << std::endl;
+        Log::e("warning: reading an unknown file version - {}", version);
 
         // Reading in a newer version. Just do the best we can with the latest
         // file version we're aware of.
