@@ -14,7 +14,7 @@
   * You should have received a copy of the GNU General Public License
   * along with this program.  If not, see <http://www.gnu.org/licenses/>.
 */
-  
+
 #include "midioutputdevice.h"
 
 #include <RtMidi.h>
@@ -22,6 +22,7 @@
 #include <score/dynamic.h>
 #include <score/generalmidi.h>
 #include <cassert>
+#include <util/log.h>
 
 #ifdef __APPLE__
 #include "midisoftwaresynth.h"
@@ -38,7 +39,7 @@ MidiOutputDevice::MidiOutputDevice() : myMidiOut(nullptr)
     }
     catch (std::exception &e)
     {
-        std::cerr << e.what() << std::endl;
+        Log::e("could not start midisoftwaresynth: {}", e.what());
     };
 #endif
 
