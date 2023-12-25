@@ -23,10 +23,12 @@
 #include <fstream>
 #include <sstream>
 #include <filesystem>
-#include <format>
-
+#include <optional>
 #include <vector>
+#include <mutex>
 
+/* TODO: fmtlib: replace with std, when all compilers support `format'. */
+#include <fmt/core.h>
 
 namespace Log {
 
@@ -48,6 +50,8 @@ extern std::filesystem::path logPath;
 
 extern std::optional<std::ofstream> logFile;
 
+extern std::mutex lock;
+
 void init(enum Level lvl, std::filesystem::path logPath);
 
 /**
@@ -58,6 +62,8 @@ std::string all();
 template <typename... Args>
 void backend(enum Level level, std::string_view fmt, Args&&... args)
 {
+    std::lock_guard<std::mutex> _guard(Log::lock);
+
     /* formats a timestamp in a rfc3339 fashion; I believe the system clock
      * defaults to epoch, which should be UTC, but I might be wrong.  */
     const auto timestamp_now_str_fn = []() -> std::string {
@@ -85,7 +91,7 @@ void backend(enum Level level, std::string_view fmt, Args&&... args)
     std::cout
         << timestamp_now_str_fn() << ": "
         << level_str_fn(level) << ": "
-        << std::vformat(fmt, std::make_format_args(args...))
+        << fmt::vformat(fmt, fmt::make_format_args(args...))
         << std::endl;
 
     if (!logFile) {
@@ -97,10 +103,10 @@ void backend(enum Level level, std::string_view fmt, Args&&... args)
         logFile.value()
             << timestamp_now_str_fn() << ": "
             << level_str_fn(level) << ": "
-            << std::vformat(fmt, std::make_format_args(args...))
+            << fmt::vformat(fmt, fmt::make_format_args(args...))
             << std::endl;
     } else {
-        std::cout << std::format(
+        std::cout << fmt::format(
             "{} {} could not open file at ({})",
             timestamp_now_str_fn(),
 	    level_str_fn(Level::Warning),
