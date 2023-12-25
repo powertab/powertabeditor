@@ -98,7 +98,7 @@ jobs:
       run: echo "::set-output name=VERSION_ID::$(git describe --tags --long --always)"
 
     - name: Install Dependencies
-      run: vcpkg install --triplet ${{ matrix.arch }}-windows boost-algorithm boost-date-time boost-endian boost-functional boost-iostreams boost-range boost-rational boost-signals2 boost-stacktrace doctest minizip nlohmann-json pugixml
+      run: vcpkg install --triplet ${{ matrix.arch }}-windows boost-algorithm boost-date-time boost-endian boost-functional boost-iostreams boost-range boost-rational boost-signals2 boost-stacktrace doctest minizip nlohmann-json pugixml fmt
 
     # Building Qt via vcpkg would take a while ...
     - name: Install Qt
