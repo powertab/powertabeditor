@@ -24,8 +24,8 @@
 #include <sstream>
 #include <filesystem>
 #include <optional>
-#include <vector>
 #include <mutex>
+#include <vector>
 
 /* TODO: fmtlib: replace with std, when all compilers support `format'. */
 #include <fmt/core.h>
@@ -58,6 +58,7 @@ void init(enum Level lvl, std::filesystem::path logPath);
  * return the full contents of the log file
  */
 std::string all();
+
 
 template <typename... Args>
 void backend(enum Level level, std::string_view fmt, Args&&... args)
@@ -93,11 +94,6 @@ void backend(enum Level level, std::string_view fmt, Args&&... args)
         << level_str_fn(level) << ": "
         << fmt::vformat(fmt, fmt::make_format_args(args...))
         << std::endl;
-
-    if (!logFile) {
-        const auto mode = std::ios_base::out | std::ios_base::app;
-        logFile = std::ofstream(logPath, mode);
-    }
 
     if (logFile.value().good()) {
         logFile.value()

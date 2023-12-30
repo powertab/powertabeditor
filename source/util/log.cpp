@@ -25,10 +25,47 @@ std::filesystem::path logPath;
 
 std::mutex lock;
 
+void trim(const unsigned int count)
+{
+    /* a poorman's circular buffer that keeps the last 'count' log lines. */
+    std::vector<std::string> v(count);
+
+    std::ifstream input(logPath);
+    std::size_t index = 0;
+    std::string s;
+    while (std::getline(input, s)) {
+        v[index % count] = s;
+	index++;
+    }
+
+    input.close();
+
+    // required because of len/cap discrepancy in vector used as a circular
+    // buffer.
+    const auto upto = (count == index ? index : count);
+
+    std::ofstream output(logPath, std::ios::trunc);
+    if (output.good()) {
+        for (size_t i = 0; i < upto; ++i)
+            output << v[(index + i) % count] << std::endl;
+    } else {
+        std::cerr << "could not open log file for trimming" << std::endl;
+    }
+    output.close();
+}
+
 void init(enum Level lvl, std::filesystem::path lp)
 {
     FilterLevel = lvl;
     logPath = lp;
+
+    // keep only the last X lines
+    trim(1000);
+
+    if (!logFile) {
+        const auto mode = std::ios_base::out | std::ios_base::app;
+        logFile = std::ofstream(logPath, mode);
+    }
 }
 
 std::string all()
