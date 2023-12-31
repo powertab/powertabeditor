@@ -18,10 +18,10 @@
 #ifndef SCORE_VOICE_H
 #define SCORE_VOICE_H
 
-#include <boost/range/iterator_range_core.hpp>
 #include "fileversion.h"
 #include "irregulargrouping.h"
 #include "position.h"
+#include <span>
 #include <vector>
 
 class Voice
@@ -29,21 +29,15 @@ class Voice
 public:
     Voice();
 
-    typedef std::vector<Position>::iterator PositionIterator;
-    typedef std::vector<Position>::const_iterator PositionConstIterator;
-    typedef std::vector<IrregularGrouping>::iterator IrregularGroupingIterator;
-    typedef std::vector<IrregularGrouping>::const_iterator
-    IrregularGroupingConstIterator;
-
     bool operator==(const Voice &other) const;
 
     template <class Archive>
     void serialize(Archive &ar, const FileVersion version);
 
     /// Returns the set of positions in the voice.
-    boost::iterator_range<PositionIterator> getPositions();
+    std::span<Position> getPositions() { return myPositions; }
     /// Returns the set of positions in the voice.
-    boost::iterator_range<PositionConstIterator> getPositions() const;
+    std::span<const Position> getPositions() const { return myPositions; }
 
     /// @{
     /// Adds a new position to the voice.
@@ -60,10 +54,9 @@ public:
     void setPositionsCapacity(size_t capacity) { myPositions.reserve(capacity); }
 
     /// Returns the set of irregular groupings in the voice.
-    boost::iterator_range<IrregularGroupingIterator> getIrregularGroupings();
+    std::span<IrregularGrouping> getIrregularGroupings() { return myIrregularGroupings; }
     /// Returns the set of irregular groupings in the voice.
-    boost::iterator_range<IrregularGroupingConstIterator>
-    getIrregularGroupings() const;
+    std::span<const IrregularGrouping> getIrregularGroupings() const { return myIrregularGroupings; }
 
     /// Adds a new irregular grouping to the voice.
     void insertIrregularGrouping(const IrregularGrouping &group);

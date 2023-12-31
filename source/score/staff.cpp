@@ -71,26 +71,6 @@ void Staff::setStringCount(int count)
     }
 }
 
-boost::iterator_range<Staff::VoiceIterator> Staff::getVoices()
-{
-    return boost::make_iterator_range(myVoices);
-}
-
-boost::iterator_range<Staff::VoiceConstIterator> Staff::getVoices() const
-{
-    return boost::make_iterator_range(myVoices);
-}
-
-boost::iterator_range<Staff::DynamicIterator> Staff::getDynamics()
-{
-    return boost::make_iterator_range(myDynamics);
-}
-
-boost::iterator_range<Staff::DynamicConstIterator> Staff::getDynamics() const
-{
-    return boost::make_iterator_range(myDynamics);
-}
-
 void Staff::insertDynamic(const Dynamic &dynamic)
 {
     ScoreUtils::insertObject(myDynamics, dynamic);

@@ -20,7 +20,6 @@
 
 #include "alternateending.h"
 #include "barline.h"
-#include <boost/range/iterator_range_core.hpp>
 #include "chordtext.h"
 #include "direction.h"
 #include "fileversion.h"
@@ -28,28 +27,12 @@
 #include "staff.h"
 #include "tempomarker.h"
 #include "textitem.h"
+#include <span>
 #include <vector>
 
 class System
 {
 public:
-    typedef std::vector<Staff>::iterator StaffIterator;
-    typedef std::vector<Staff>::const_iterator StaffConstIterator;
-    typedef std::vector<Barline>::iterator BarlineIterator;
-    typedef std::vector<Barline>::const_iterator BarlineConstIterator;
-    typedef std::vector<TempoMarker>::iterator TempoMarkerIterator;
-    typedef std::vector<TempoMarker>::const_iterator TempoMarkerConstIterator;
-    typedef std::vector<AlternateEnding>::iterator AlternateEndingIterator;
-    typedef std::vector<AlternateEnding>::const_iterator AlternateEndingConstIterator;
-    typedef std::vector<Direction>::iterator DirectionIterator;
-    typedef std::vector<Direction>::const_iterator DirectionConstIterator;
-    typedef std::vector<PlayerChange>::iterator PlayerChangeIterator;
-    typedef std::vector<PlayerChange>::const_iterator PlayerChangeConstIterator;
-    typedef std::vector<ChordText>::iterator ChordTextIterator;
-    typedef std::vector<ChordText>::const_iterator ChordTextConstIterator;
-    typedef std::vector<TextItem>::iterator TextItemIterator;
-    typedef std::vector<TextItem>::const_iterator TextItemConstIterator;
-
     System();
 
     bool operator==(const System &other) const;
@@ -58,9 +41,9 @@ public:
     void serialize(Archive &ar, const FileVersion version);
 
     /// Returns the set of staves in the system.
-    boost::iterator_range<StaffIterator> getStaves();
+    std::span<Staff> getStaves() { return myStaves; }
     /// Returns the set of staves in the system.
-    boost::iterator_range<StaffConstIterator> getStaves() const;
+    std::span<const Staff> getStaves() const { return myStaves; }
 
     /// Adds a new staff to the system.
     void insertStaff(const Staff &staff);
@@ -70,9 +53,9 @@ public:
     void removeStaff(int index);
 
     /// Returns the set of barlines in the system.
-    boost::iterator_range<BarlineIterator> getBarlines();
+    std::span<Barline> getBarlines() { return myBarlines; }
     /// Returns the set of barlines in the system.
-    boost::iterator_range<BarlineConstIterator> getBarlines() const;
+    std::span<const Barline> getBarlines() const { return myBarlines; }
 
     /// Adds a new barline to the system.
     void insertBarline(const Barline &barline);
@@ -86,9 +69,9 @@ public:
     Barline *getNextBarline(int position);
 
     /// Returns the set of tempo markers in the system.
-    boost::iterator_range<TempoMarkerIterator> getTempoMarkers();
+    std::span<TempoMarker> getTempoMarkers() { return myTempoMarkers; }
     /// Returns the set of tempo markers in the system.
-    boost::iterator_range<TempoMarkerConstIterator> getTempoMarkers() const;
+    std::span<const TempoMarker> getTempoMarkers() const { return myTempoMarkers; }
 
     /// Adds a new tempo marker to the system.
     void insertTempoMarker(const TempoMarker &marker);
@@ -96,9 +79,9 @@ public:
     void removeTempoMarker(const TempoMarker &marker);
 
     /// Returns the set of alternate endings in the system.
-    boost::iterator_range<AlternateEndingIterator> getAlternateEndings();
+    std::span<AlternateEnding> getAlternateEndings() { return myAlternateEndings; }
     /// Returns the set of alternate endings in system.
-    boost::iterator_range<AlternateEndingConstIterator> getAlternateEndings() const;
+    std::span<const AlternateEnding> getAlternateEndings() const { return myAlternateEndings; }
 
     /// Adds a new alternate ending to the system.
     void insertAlternateEnding(const AlternateEnding &ending);
@@ -106,9 +89,9 @@ public:
     void removeAlternateEnding(const AlternateEnding &ending);
 
     /// Returns the set of musical directions in the system.
-    boost::iterator_range<DirectionIterator> getDirections();
+    std::span<Direction> getDirections() { return myDirections; }
     /// Returns the set of musical directions in system.
-    boost::iterator_range<DirectionConstIterator> getDirections() const;
+    std::span<const Direction> getDirections() const { return myDirections; }
 
     /// Adds a new musical direction to the system.
     void insertDirection(const Direction &direction);
@@ -116,9 +99,9 @@ public:
     void removeDirection(const Direction &direction);
 
     /// Returns the set of player changes in the system.
-    boost::iterator_range<PlayerChangeIterator> getPlayerChanges();
+    std::span<PlayerChange> getPlayerChanges() { return myPlayerChanges; }
     /// Returns the set of player changes in system.
-    boost::iterator_range<PlayerChangeConstIterator> getPlayerChanges() const;
+    std::span<const PlayerChange> getPlayerChanges() const { return myPlayerChanges; }
 
     /// Adds a new player change to the system.
     void insertPlayerChange(const PlayerChange &change);
@@ -126,9 +109,9 @@ public:
     void removePlayerChange(const PlayerChange &change);
 
     /// Returns the set of chord symbols in the system.
-    boost::iterator_range<ChordTextIterator> getChords();
+    std::span<ChordText> getChords() { return myChords; }
     /// Returns the set of chord symbols in system.
-    boost::iterator_range<ChordTextConstIterator> getChords() const;
+    std::span<const ChordText> getChords() const { return myChords; }
 
     /// Adds a new chord symbol to the system.
     void insertChord(const ChordText &chord);
@@ -136,9 +119,9 @@ public:
     void removeChord(const ChordText &chord);
 
     /// Returns the set of text items in the system.
-    boost::iterator_range<TextItemIterator> getTextItems();
+    std::span<TextItem> getTextItems() { return myTextItems; }
     /// Returns the set of text items in system.
-    boost::iterator_range<TextItemConstIterator> getTextItems() const;
+    std::span<const TextItem> getTextItems() const { return myTextItems; }
 
     /// Adds a new text item to the system.
     void insertTextItem(const TextItem &text);

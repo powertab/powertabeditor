@@ -19,8 +19,6 @@
 
 #include <app/scorearea.h>
 #include <app/viewoptions.h>
-#include <boost/range/adaptor/map.hpp>
-#include <boost/range/algorithm/find_if.hpp>
 #include <painters/antialiasedpathitem.h>
 #include <painters/barlinepainter.h>
 #include <painters/clickableitem.h>
@@ -43,6 +41,7 @@
 #include <util/tostring.h>
 
 #include <algorithm>
+#include <ranges>
 
 void SystemRenderer::centerHorizontally(QGraphicsItem &item, double xmin,
                                         double xmax)
@@ -1159,7 +1158,7 @@ QGraphicsItem* SystemRenderer::createArtificialHarmonicText(
         const Position &position)
 {
     // Find the note that has the harmonic.
-    auto it = boost::range::find_if(position.getNotes(), [] (const Note &note) {
+    auto it = std::ranges::find_if(position.getNotes(), [] (const Note &note) {
         return note.hasArtificialHarmonic();
     });
 
@@ -2036,7 +2035,7 @@ void SystemRenderer::drawLedgerLines(
 {
     QPainterPath path;
 
-    for (const int position : minNoteLocations | boost::adaptors::map_keys)
+    for (auto [position, _] : minNoteLocations)
     {
         const double highestNote = minNoteLocations.at(position);
         const double lowestNote = maxNoteLocations.at(position);

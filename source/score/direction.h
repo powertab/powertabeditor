@@ -18,9 +18,10 @@
 #ifndef SCORE_DIRECTION_H
 #define SCORE_DIRECTION_H
 
-#include <boost/range/iterator_range_core.hpp>
 #include "fileversion.h"
 #include <util/enumtostring_fwd.h>
+
+#include <span>
 #include <vector>
 
 class DirectionSymbol
@@ -103,9 +104,9 @@ public:
     void setPosition(int position);
 
     /// Returns the set of symbols in the direction.
-    boost::iterator_range<SymbolIterator> getSymbols();
+    std::span<DirectionSymbol> getSymbols() { return mySymbols; }
     /// Returns the set of symbols in the direction.
-    boost::iterator_range<SymbolConstIterator> getSymbols() const;
+    std::span<const DirectionSymbol> getSymbols() const { return mySymbols; }
 
     /// Adds a new symbol to the direction.
     void insertSymbol(const DirectionSymbol &symbol);

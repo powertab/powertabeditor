@@ -20,6 +20,8 @@
 #include <actions/editviewfilters.h>
 #include <score/score.h>
 
+#include <ranges>
+
 TEST_CASE("Actions/EditViewFilters")
 {
     Score score;
@@ -38,8 +40,8 @@ TEST_CASE("Actions/EditViewFilters")
     EditViewFilters action(score, new_filters);
 
     action.redo();
-    REQUIRE(score.getViewFilters() == new_filters);
+    REQUIRE(std::ranges::equal(score.getViewFilters(), new_filters));
 
     action.undo();
-    REQUIRE(score.getViewFilters() == old_filters);
+    REQUIRE(std::ranges::equal(score.getViewFilters(), old_filters));
 }

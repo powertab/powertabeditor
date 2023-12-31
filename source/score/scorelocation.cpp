@@ -20,6 +20,8 @@
 #include <score/score.h>
 #include <score/utils.h>
 
+#include <ostream>
+
 ConstScoreLocation::ConstScoreLocation(const Score &score, int system,
                                        int staff, int position, int voice,
                                        int string)

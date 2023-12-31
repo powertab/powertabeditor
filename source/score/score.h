@@ -18,7 +18,6 @@
 #ifndef SCORE_SCORE_H
 #define SCORE_SCORE_H
 
-#include <boost/range/iterator_range_core.hpp>
 #include "fileversion.h"
 #include "chorddiagram.h"
 #include "chordname.h"
@@ -27,6 +26,7 @@
 #include "scoreinfo.h"
 #include "system.h"
 #include "viewfilter.h"
+#include <span>
 #include <vector>
 
 class PlayerChange;
@@ -34,17 +34,6 @@ class PlayerChange;
 class Score
 {
 public:
-    typedef std::vector<System>::iterator SystemIterator;
-    typedef std::vector<System>::const_iterator SystemConstIterator;
-    typedef std::vector<Player>::iterator PlayerIterator;
-    typedef std::vector<Player>::const_iterator PlayerConstIterator;
-    typedef std::vector<Instrument>::iterator InstrumentIterator;
-    typedef std::vector<Instrument>::const_iterator InstrumentConstIterator;
-    typedef std::vector<ChordDiagram>::iterator ChordDiagramIterator;
-    typedef std::vector<ChordDiagram>::const_iterator ChordDiagramConstIterator;
-    typedef std::vector<ViewFilter>::iterator ViewFilterIterator;
-    typedef std::vector<ViewFilter>::const_iterator ViewFilterConstIterator;
-
     Score();
     Score(const Score &other) = delete;
     Score &operator=(const Score &other) = delete;
@@ -59,9 +48,9 @@ public:
     void setScoreInfo(const ScoreInfo &info);
 
     /// Returns the set of systems in the score.
-    boost::iterator_range<SystemIterator> getSystems();
+    std::span<System> getSystems() { return mySystems; }
     /// Returns the set of systems in the score.
-    boost::iterator_range<SystemConstIterator> getSystems() const;
+    std::span<const System> getSystems() const { return mySystems; }
 
     /// Adds a new system to the score, optionally at a specific index.
     void insertSystem(const System &system, int index = -1);
@@ -70,9 +59,9 @@ public:
     void removeSystem(int index);
 
     /// Returns the set of players in the score.
-    boost::iterator_range<PlayerIterator> getPlayers();
+    std::span<Player> getPlayers() { return myPlayers; }
     /// Returns the set of players in the score.
-    boost::iterator_range<PlayerConstIterator> getPlayers() const;
+    std::span<const Player> getPlayers() const { return myPlayers; }
 
     /// Adds a new player to the score.
     void insertPlayer(const Player &player);
@@ -81,9 +70,9 @@ public:
     void removePlayer(int index);
 
     /// Returns the set of instruments in the score.
-    boost::iterator_range<InstrumentIterator> getInstruments();
+    std::span<Instrument> getInstruments() { return myInstruments; }
     /// Returns the set of instruments in the score.
-    boost::iterator_range<InstrumentConstIterator> getInstruments() const;
+    std::span<const Instrument> getInstruments() const { return myInstruments; }
 
     /// Adds a new instrument to the score.
     void insertInstrument(const Instrument &instrument);
@@ -92,9 +81,9 @@ public:
     void removeInstrument(int index);
 
     /// Returns the set of chord diagrams in the score.
-    boost::iterator_range<ViewFilterIterator> getViewFilters();
+    std::span<ViewFilter> getViewFilters() { return myViewFilters; }
     /// Returns the set of view filters in the score.
-    boost::iterator_range<ViewFilterConstIterator> getViewFilters() const;
+    std::span<const ViewFilter> getViewFilters() const { return myViewFilters; }
 
     /// Adds a new chord diagram to the score.
     void insertChordDiagram(const ChordDiagram &diagram);
@@ -103,9 +92,9 @@ public:
     void removeChordDiagram(int index);
 
     /// Returns the set of chord diagrams in the score.
-    boost::iterator_range<ChordDiagramIterator> getChordDiagrams();
+    std::span<ChordDiagram> getChordDiagrams() { return myChordDiagrams; }
     /// Returns the set of chord diagrams in the score.
-    boost::iterator_range<ChordDiagramConstIterator> getChordDiagrams() const;
+    std::span<const ChordDiagram> getChordDiagrams() const { return myChordDiagrams; }
 
     /// Adds a new filter to the score.
     void insertViewFilter(const ViewFilter &filter);

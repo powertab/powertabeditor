@@ -18,8 +18,8 @@
 #include "gp345to7converter.h"
 
 #include <boost/algorithm/string/join.hpp>
-#include <boost/range/adaptor/reversed.hpp>
 #include <cmath>
+#include <ranges>
 
 static Gp7::ScoreInfo
 convertScoreInfo(const Gp::Document &doc)
@@ -139,9 +139,7 @@ static Gp7::Note *
 findTiedNoteOrigin(Gp7::Document &doc, const Gp7::Voice &voice,
                    const int string)
 {
-    using namespace boost::adaptors;
-
-    for (int beat_id : reverse(voice.myBeatIds))
+    for (int beat_id : std::views::reverse(voice.myBeatIds))
     {
         const Gp7::Beat &beat = doc.myBeats.at(beat_id);
         for (int note_id : beat.myNoteIds)
@@ -161,15 +159,13 @@ static Gp7::Note *
 findTiedNoteOrigin(Gp7::Document &doc, const Gp7::Voice &current_voice,
                    const int staff_idx, const int voice_idx, const int string)
 {
-    using namespace boost::adaptors;
-
     // First, check the current measure that is tn the process of being built.
     Gp7::Note *tie_origin = findTiedNoteOrigin(doc, current_voice, string);
     if (tie_origin)
         return tie_origin;
 
     // Otherwise, search through all the previous measures.
-    for (const Gp7::MasterBar &master_bar : reverse(doc.myMasterBars))
+    for (const Gp7::MasterBar &master_bar : std::views::reverse(doc.myMasterBars))
     {
         const int bar_id = master_bar.myBarIds.at(staff_idx);
         const Gp7::Bar &bar = doc.myBars.at(bar_id);

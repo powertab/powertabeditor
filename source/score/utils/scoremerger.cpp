@@ -373,11 +373,9 @@ static int importNotes(
 
 template <typename Symbol>
 static void copySymbols(
-    const boost::iterator_range<typename std::vector<Symbol>::const_iterator> &
-        src_symbols,
+    std::span<const Symbol> src_symbols,
     System &dest_system,
-    const boost::iterator_range<typename std::vector<Symbol>::const_iterator> &
-        dest_symbols,
+    std::span<Symbol> dest_symbols,
     void (System::*add_symbol)(const Symbol &), int offset, int left, int right)
 {
     std::unordered_set<int> filled_positions;

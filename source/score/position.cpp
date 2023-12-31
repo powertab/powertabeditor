@@ -256,16 +256,6 @@ Position::clearTremoloBar()
     myTremoloBar.reset();
 }
 
-boost::iterator_range<Position::NoteIterator> Position::getNotes()
-{
-    return boost::make_iterator_range(myNotes);
-}
-
-boost::iterator_range<Position::NoteConstIterator> Position::getNotes() const
-{
-    return boost::make_iterator_range(myNotes);
-}
-
 /// Keep notes sorted by string. This is a very small list so re-sorting is
 /// easiest.
 static inline void

@@ -10,6 +10,7 @@
 #include <optional>
 #include <regex>
 #include <set>
+#include <span>
 #include <sstream>
 #include <stack>
 #include <stdexcept>
@@ -18,7 +19,4 @@
 #include <vector>
 
 #include <boost/operators.hpp>
-#include <boost/range/adaptor/filtered.hpp>
-#include <boost/range/adaptor/reversed.hpp>
-#include <boost/range/iterator_range_core.hpp>
 #include <boost/rational.hpp>

@@ -18,10 +18,10 @@
 #ifndef SCORE_VIEWFILTER_H
 #define SCORE_VIEWFILTER_H
 
-#include <boost/range/iterator_range_core.hpp>
 #include <cassert>
 #include "fileversion.h"
 #include <memory>
+#include <span>
 #include <string>
 #include <util/enumtostring_fwd.h>
 #include <vector>
@@ -93,9 +93,6 @@ UTIL_DECLARE_ENUMTOSTRING(FilterRule::Operation)
 class ViewFilter
 {
 public:
-    typedef std::vector<FilterRule>::iterator RuleIterator;
-    typedef std::vector<FilterRule>::const_iterator RuleConstIterator;
-
     ViewFilter();
     bool operator==(const ViewFilter &other) const;
 
@@ -113,9 +110,9 @@ public:
     void removeRule(int index);
 
     /// Returns the list of rules in the filter.
-    boost::iterator_range<RuleIterator> getRules();
+    std::span<FilterRule> getRules() { return myRules; }
     /// Returns the list of rules in the filter.
-    boost::iterator_range<RuleConstIterator> getRules() const;
+    std::span<const FilterRule> getRules() const { return myRules; }
 
     /// Returns whether the given staff is visible.
     bool accept(const Score &score, int system_index, int staff_index) const;

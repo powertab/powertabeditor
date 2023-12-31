@@ -19,9 +19,8 @@
 #define SCORE_UTILS_H
 
 #include <algorithm>
-#include <boost/range/adaptor/filtered.hpp>
-#include <boost/range/algorithm/lower_bound.hpp>
-#include <boost/range/iterator_range_core.hpp>
+#include <cassert>
+#include <ranges>
 
 namespace ScoreUtils {
 
@@ -35,20 +34,24 @@ namespace Detail
         {
             return obj1.getPosition() < obj2.getPosition();
         }
+    };
 
+    /// Functor to project objects to their positions in the system.
+    struct ProjectToPosition
+    {
         template <typename T>
-        bool operator()(const T &obj1, int position) const
+        int operator()(const T &obj)
         {
-            return obj1.getPosition() < position;
+            return obj.getPosition();
         }
     };
 
     /// Equivalent of std::binary_search, but returning an iterator.
     /// The positions are required to be unique so equal_range() is not needed.
     template <typename Range>
-    auto binarySearch(const Range &range, int position)
+    auto binarySearch(Range &&range, int position)
     {
-        auto it = boost::range::lower_bound(range, position, OrderByPosition());
+        auto it = std::ranges::lower_bound(range, position, {}, ProjectToPosition{});
         if (it != range.end() && it->getPosition() == position)
             return it;
         else
@@ -75,18 +78,18 @@ namespace Detail
 } // namespace Detail
 
     /// Returns the object at the given position, or nullptr.
-    template <typename T>
-    typename T::pointer
-    findByPosition(const boost::iterator_range<T> &range, int position)
+    template <typename Range>
+    auto
+    findByPosition(Range &&range, int position)
     {
         auto it = Detail::binarySearch(range, position);
         return it != range.end() ? &*it : nullptr;
     }
 
     /// Returns the index of the object with the given position, or -1.
-    template <typename T>
+    template <typename Range>
     int
-    findIndexByPosition(const boost::iterator_range<T> &range, int position)
+    findIndexByPosition(Range &&range, int position)
     {
         auto it = Detail::binarySearch(range, position);
         return it != range.end()
@@ -96,19 +99,17 @@ namespace Detail
 
     /// Returns the objects within the specified position range (inclusive).
     template <typename Range>
-    boost::filtered_range<Detail::InPositionRange, Range>
+    auto
     findInRange(Range range, int left, int right)
     {
-        return boost::adaptors::filter(range,
-                                       Detail::InPositionRange(left, right));
+        return std::views::filter(range, Detail::InPositionRange(left, right));
     }
 
     /// Inserts the object, sorted by position.
     template <typename T, typename Y>
     void insertObject(std::vector<T> &objects, Y &&obj)
     {
-        auto it = boost::range::lower_bound(objects, obj.getPosition(),
-                                            Detail::OrderByPosition());
+        auto it = std::ranges::lower_bound(objects, obj.getPosition(), {}, Detail::ProjectToPosition{});
         if (it != objects.end() && it->getPosition() == obj.getPosition())
         {
             // Shouldn't insert duplicates!

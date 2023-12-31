@@ -23,8 +23,8 @@
 #include "note.h"
 
 #include <algorithm>
-#include <boost/range/iterator_range_core.hpp>
 #include <optional>
+#include <span>
 #include <util/enumflags.h>
 #include <util/enumtostring_fwd.h>
 #include <vector>
@@ -105,9 +105,6 @@ UTIL_DECLARE_ENUMTOSTRING(TremoloBar::Type)
 class Position
 {
 public:
-    typedef std::vector<Note>::iterator NoteIterator;
-    typedef std::vector<Note>::const_iterator NoteConstIterator;
-
     enum DurationType
     {
         WholeNote = 1,
@@ -201,9 +198,9 @@ public:
     void clearTremoloBar();
 
     /// Returns the set of notes in the position.
-    boost::iterator_range<NoteIterator> getNotes();
+    std::span<Note> getNotes() { return myNotes; }
     /// Returns the set of notes in the position.
-    boost::iterator_range<NoteConstIterator> getNotes() const;
+    std::span<const Note> getNotes() const { return myNotes; }
 
     /// @{
     /// Adds a new note to the position.

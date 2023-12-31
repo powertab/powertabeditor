@@ -17,7 +17,7 @@
 
 #include "score.h"
 
-#include <boost/range/adaptor/reversed.hpp>
+#include <ranges>
 #include <stdexcept>
 #include <unordered_set>
 
@@ -49,16 +49,6 @@ void Score::setScoreInfo(const ScoreInfo &info)
     myScoreInfo = info;
 }
 
-boost::iterator_range<Score::SystemIterator> Score::getSystems()
-{
-    return boost::make_iterator_range(mySystems);
-}
-
-boost::iterator_range<Score::SystemConstIterator> Score::getSystems() const
-{
-    return boost::make_iterator_range(mySystems);
-}
-
 void Score::insertSystem(const System &system, int index)
 {
     if (index < 0)
@@ -77,16 +67,6 @@ void Score::removeSystem(int index)
     mySystems.erase(mySystems.begin() + index);
 }
 
-boost::iterator_range<Score::PlayerIterator> Score::getPlayers()
-{
-    return boost::make_iterator_range(myPlayers);
-}
-
-boost::iterator_range<Score::PlayerConstIterator> Score::getPlayers() const
-{
-    return boost::make_iterator_range(myPlayers);
-}
-
 void Score::insertPlayer(const Player &player)
 {
     myPlayers.push_back(player);
@@ -100,16 +80,6 @@ void Score::insertPlayer(const Player &player, int index)
 void Score::removePlayer(int index)
 {
     myPlayers.erase(myPlayers.begin() + index);
-}
-
-boost::iterator_range<Score::InstrumentIterator> Score::getInstruments()
-{
-    return boost::make_iterator_range(myInstruments);
-}
-
-boost::iterator_range<Score::InstrumentConstIterator> Score::getInstruments() const
-{
-    return boost::make_iterator_range(myInstruments);
 }
 
 void Score::insertInstrument(const Instrument &instrument)
@@ -127,18 +97,6 @@ void Score::removeInstrument(int index)
     myInstruments.erase(myInstruments.begin() + index);
 }
 
-boost::iterator_range<Score::ChordDiagramIterator>
-Score::getChordDiagrams()
-{
-    return boost::make_iterator_range(myChordDiagrams);
-}
-
-boost::iterator_range<Score::ChordDiagramConstIterator>
-Score::getChordDiagrams() const
-{
-    return boost::make_iterator_range(myChordDiagrams);
-}
-
 void
 Score::insertChordDiagram(const ChordDiagram &diagram)
 {
@@ -154,16 +112,6 @@ void
 Score::removeChordDiagram(int index)
 {
     myChordDiagrams.erase(myChordDiagrams.begin() + index);
-}
-
-boost::iterator_range<Score::ViewFilterIterator> Score::getViewFilters()
-{
-    return boost::make_iterator_range(myViewFilters);
-}
-
-boost::iterator_range<Score::ViewFilterConstIterator> Score::getViewFilters() const
-{
-    return boost::make_iterator_range(myViewFilters);
 }
 
 void Score::insertViewFilter(const ViewFilter &filter)
@@ -197,7 +145,7 @@ findCurrentSymbol(const Score &score, int system_idx, int position_idx,
     // First check the current system.
     {
         const System &system = score.getSystems()[system_idx];
-        for (const T &obj : boost::adaptors::reverse(get_symbols(system)))
+        for (const T &obj : std::views::reverse(get_symbols(system)))
         {
             if (obj.getPosition() <= position_idx)
                 return &obj;

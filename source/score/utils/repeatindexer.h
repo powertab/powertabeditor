@@ -18,7 +18,6 @@
 #ifndef SCORE_UTILS_REPEATINDEXER_H
 #define SCORE_UTILS_REPEATINDEXER_H
 
-#include <boost/range/iterator_range.hpp>
 #include <map>
 #include <optional>
 #include <score/systemlocation.h>
@@ -78,17 +77,12 @@ private:
 class RepeatIndexer
 {
 public:
-    typedef std::set<RepeatedSection>::const_iterator RepeatedSectionIterator;
-
     RepeatIndexer(const Score &score);
 
     /// Given a location in the score, find the repeat that
     /// surrounds it (if possible).
     const RepeatedSection *findRepeat(const SystemLocation &loc) const;
     RepeatedSection *findRepeat(const SystemLocation &loc);
-
-    /// Returns a list of the repeated sections in the score.
-    boost::iterator_range<RepeatedSectionIterator> getRepeats() const;
 
 private:
     std::set<RepeatedSection> myRepeats;

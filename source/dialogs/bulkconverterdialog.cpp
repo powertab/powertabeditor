@@ -98,9 +98,7 @@ void BulkConverterWorker::walkAndConvert()
 
         if (!std::filesystem::is_directory(p)) continue;
 
-        auto dir_it = std::filesystem::directory_iterator(p);
-
-        for(auto& entry : boost::make_iterator_range(dir_it, {}))
+        for(auto& entry : std::filesystem::directory_iterator(p))
         {
             if (std::filesystem::is_directory(entry)) {
                children.emplace_back(entry);

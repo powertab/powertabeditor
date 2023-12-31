@@ -19,9 +19,9 @@
 #define SCORE_STAFF_H
 
 #include <array>
-#include <boost/range/iterator_range_core.hpp>
 #include "dynamic.h"
 #include "fileversion.h"
+#include <span>
 #include <util/enumtostring_fwd.h>
 #include <vector>
 #include "voice.h"
@@ -37,12 +37,6 @@ public:
         TrebleClef,
         BassClef
     };
-
-    typedef std::array<Voice, NUM_VOICES> VoiceList;
-    typedef VoiceList::iterator VoiceIterator;
-    typedef VoiceList::const_iterator VoiceConstIterator;
-    typedef std::vector<Dynamic>::iterator DynamicIterator;
-    typedef std::vector<Dynamic>::const_iterator DynamicConstIterator;
 
     Staff();
     explicit Staff(int stringCount);
@@ -64,14 +58,14 @@ public:
     void setStringCount(int count);
 
     /// Returns the voices in the staff.
-    boost::iterator_range<VoiceIterator> getVoices();
+    std::span<Voice> getVoices() { return myVoices; }
     /// Returns the voices in the staff.
-    boost::iterator_range<VoiceConstIterator> getVoices() const;
+    std::span<const Voice> getVoices() const { return myVoices; }
 
     /// Returns the set of dynamics in the staff.
-    boost::iterator_range<DynamicIterator> getDynamics();
+    std::span<Dynamic> getDynamics() { return myDynamics; }
     /// Returns the set of dynamics in the staff.
-    boost::iterator_range<DynamicConstIterator> getDynamics() const;
+    std::span<const Dynamic> getDynamics() const { return myDynamics; }
 
     /// Adds a new dynamic to the staff.
     void insertDynamic(const Dynamic &dynamic);
