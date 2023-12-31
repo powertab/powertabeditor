@@ -9,5 +9,6 @@ installer/windows/powertabeditor.exe
 .DS_Store
 compile_commands.json
 .vs
+.vscode
 .clangd
 .cache
