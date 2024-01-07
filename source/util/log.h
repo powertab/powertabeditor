@@ -1,5 +1,5 @@
 /*
- * Copyright (C) 2021-2023 Simon Symeonidis
+ * Copyright (C) 2021-2024 Simon Symeonidis
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -18,15 +18,8 @@
 #ifndef UTIL_LOG_H
 #define UTIL_LOG_H
 
-#include <chrono>
-#include <iostream>
-#include <iomanip> /* put_time */
-#include <fstream>
-#include <sstream>
 #include <filesystem>
-#include <optional>
-#include <mutex>
-#include <vector>
+#include <string>
 
 /* TODO: fmtlib: replace with std, when all compilers support `format'. */
 #include <fmt/core.h>
@@ -47,12 +40,6 @@ enum class Level {
  */
 extern enum Level CurrentLevel;
 
-extern std::filesystem::path logPath;
-
-extern std::optional<std::ofstream> logFile;
-
-extern std::mutex lock;
-
 void init(enum Level lvl, std::filesystem::path logPath);
 
 /**
@@ -60,56 +47,18 @@ void init(enum Level lvl, std::filesystem::path logPath);
  */
 std::string all();
 
+/**
+ * takes a string, and emits it.  Our emitters consider only a log file on the
+ * platform, and print to console if there is a problem if the file can not be
+ * opened.  The emitters will also add the current timestamp, and the log level
+ * of the message.
+ */
+void emitLog(enum Level level, const std::string& str);
 
 template <typename... Args>
-void backend(enum Level level, std::string_view fmt, Args&&... args)
+void backend(const enum Level level, std::string_view fmt, Args&&... args)
 {
-    std::lock_guard<std::mutex> _guard(Log::lock);
-
-    /* formats a timestamp in a rfc3339 fashion; I believe the system clock
-     * defaults to epoch, which should be UTC, but I might be wrong.  */
-    const auto timestamp_now_str_fn = []() -> std::string {
-	auto now = std::chrono::system_clock::now();
-	auto now_t = std::chrono::system_clock::to_time_t(now);
-
-	std::stringstream ss;
-	ss << std::put_time(std::localtime(&now_t), "%Y-%m-%dT%H:%M:%SZ");
-	return ss.str();
-    };
-
-    const auto level_str_fn = [](enum Level l) noexcept {
-        switch (l) {
-        case Level::Debug: return "[debug]";
-        case Level::Info: return "[info]";
-        case Level::Notify: return "[notify]";
-        case Level::Warning: return "[warn]";
-        case Level::Error: return "[error]";
-        /* unreachable */
-	default:
-	    return "unknown";
-        }
-    };
-
-    std::cout
-        << timestamp_now_str_fn() << ": "
-        << level_str_fn(level) << ": "
-        << fmt::vformat(fmt, fmt::make_format_args(args...))
-        << std::endl;
-
-    if (logFile.value().good()) {
-        logFile.value()
-            << timestamp_now_str_fn() << ": "
-            << level_str_fn(level) << ": "
-            << fmt::vformat(fmt, fmt::make_format_args(args...))
-            << std::endl;
-    } else {
-        std::cout << fmt::format(
-            "{} {} could not open file at ({})",
-            timestamp_now_str_fn(),
-	    level_str_fn(Level::Warning),
-	    logPath.generic_string()
-	);
-    }
+    emitLog(level, fmt::vformat(fmt, fmt::make_format_args(args...)));
 }
 
 template <typename... Args>

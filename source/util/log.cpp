@@ -1,4 +1,4 @@
-/* Copyright (C) 2021-2023 Simon Symeonidis
+/* Copyright (C) 2021-2024 Simon Symeonidis
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -14,6 +14,15 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 #include "log.h"
+
+#include <chrono>
+#include <iostream>
+#include <iomanip> /* put_time */
+#include <fstream>
+#include <sstream>
+#include <mutex>
+#include <optional>
+#include <vector>
 
 namespace Log {
 
@@ -65,6 +74,56 @@ void init(enum Level lvl, std::filesystem::path lp)
     if (!logFile) {
         const auto mode = std::ios_base::out | std::ios_base::app;
         logFile = std::ofstream(logPath, mode);
+    }
+}
+
+void emitLog(enum Level level, const std::string& str)
+{
+    std::lock_guard<std::mutex> _guard(Log::lock);
+
+    /* formats a timestamp in a rfc3339 fashion; I believe the system clock
+     * defaults to epoch, which should be UTC, but I might be wrong.  */
+    const auto timestamp_now_str_fn = []() -> std::string {
+	auto now = std::chrono::system_clock::now();
+	auto now_t = std::chrono::system_clock::to_time_t(now);
+
+	std::stringstream ss;
+	ss << std::put_time(std::localtime(&now_t), "%Y-%m-%dT%H:%M:%SZ");
+	return ss.str();
+    };
+
+    const auto level_str_fn = [](enum Level l) noexcept {
+        switch (l) {
+        case Level::Debug: return "[debug]";
+        case Level::Info: return "[info]";
+        case Level::Notify: return "[notify]";
+        case Level::Warning: return "[warn]";
+        case Level::Error: return "[error]";
+        /* unreachable */
+	default:
+	    return "unknown";
+        }
+    };
+
+    std::cout
+        << timestamp_now_str_fn() << ": "
+        << level_str_fn(level) << ": "
+        << str
+        << std::endl;
+
+    if (logFile.value().good()) {
+        logFile.value()
+            << timestamp_now_str_fn() << ": "
+            << level_str_fn(level) << ": "
+            << str
+            << std::endl;
+    } else {
+        std::cout << fmt::format(
+            "{} {} could not open file at ({})",
+            timestamp_now_str_fn(),
+	    level_str_fn(Level::Warning),
+	    logPath.generic_string()
+	);
     }
 }
 
