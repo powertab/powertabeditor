@@ -17,6 +17,8 @@
 
 #include "settingsmanager.h"
 
+#include <util/log.h>
+
 #include <fstream>
 #include <iostream>
 
@@ -47,7 +49,7 @@ void SettingsManager::load(const std::filesystem::path &dir)
     }
     catch (const std::exception &e)
     {
-        std::cerr << "Error loading " << path << ": " << e.what() << std::endl;
+        Log::e("error loading {}: {}", path.generic_string(), e.what());
     }
 #endif
 }

@@ -39,6 +39,11 @@ path getConfigDir()
 #endif
 }
 
+path getLogPath()
+{
+    return getConfigDir() / "log.txt";
+}
+
 path getUserDataDir()
 {
     return fromQString(

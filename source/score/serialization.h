@@ -31,6 +31,7 @@
 #include <util/date.h>
 #include <util/enumflags.h>
 #include <util/enumtostring_fwd.h>
+#include <util/log.h>
 #include <vector>
 
 namespace ScoreUtils
@@ -113,8 +114,7 @@ namespace detail
                         val = *result;
                     else
                     {
-                        std::cerr << "Unknown enum value: " << text
-                                  << std::endl;
+                        Log::e("unknown enum value: {}", text);
                     }
                 }
             }

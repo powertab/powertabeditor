@@ -14,7 +14,7 @@
   * You should have received a copy of the GNU General Public License
   * along with this program.  If not, see <http://www.gnu.org/licenses/>.
 */
-  
+
 #include "scorearea.h"
 
 #include <app/documentmanager.h>
@@ -32,6 +32,7 @@
 #include <QPrinter>
 #include <QScrollBar>
 #include <score/score.h>
+#include <util/log.h>
 
 void ScoreArea::Scene::dragEnterEvent(QGraphicsSceneDragDropEvent *event)
 {
@@ -114,7 +115,7 @@ void ScoreArea::renderDocument(const Document &document)
 #endif
     std::vector<std::future<void>> tasks;
     const int work_size = myRenderedSystems.size() / num_threads;
-    qDebug() << "Using" << num_threads << "worker thread(s)";
+    Log::d("using {} worker thread(s)", num_threads);
 
     for (int i = 0; i < num_threads; ++i)
     {
@@ -162,10 +163,13 @@ void ScoreArea::renderDocument(const Document &document)
     myScene.setSceneRect(myScene.itemsBoundingRect());
 
     auto end = std::chrono::high_resolution_clock::now();
-    qDebug() << "Score rendered in"
-             << std::chrono::duration_cast<std::chrono::milliseconds>(
-                    end - start).count() << "ms";
-    qDebug() << "Rendered " << myScene.items().size() << "items";
+
+    namespace sc = std::chrono;
+    const auto time_elapsed = static_cast<long long int>
+        (sc::duration_cast<sc::milliseconds>(end - start).count());
+
+    Log::d("score rendered in {} ms", time_elapsed);
+    Log::d("rendered {} items", myScene.items().size());
 }
 
 void ScoreArea::redrawSystem(int index)

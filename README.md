@@ -82,9 +82,10 @@ Power Tab Editor 2.0 - A powerful cross platform guitar tablature viewer and edi
 * [pugixml](https://pugixml.org/)
 * [minizip](https://github.com/madler/zlib)
 * [doctest](https://github.com/onqtam/doctest)
+* [fmtlib](https://github.com/fmtlib/fmt)
 * (Linux only) - ALSA library (e.g. `libasound2-dev`)
 * (Linux only) - MIDI sequencer (e.g. `timidity-daemon`)
-* A compiler with C++17 support.
+* A compiler with C++20 support.
 
 ### Building:
 #### Windows:

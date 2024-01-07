@@ -19,6 +19,7 @@
 
 #include <iostream>
 #include <score/score.h>
+#include <util/log.h>
 
 DirectionIndex::DirectionIndex(const Score &score)
     : myScore(score), myActiveSymbol(DirectionSymbol::ActiveNone)
@@ -147,8 +148,7 @@ SystemLocation DirectionIndex::followDirection(DirectionSymbol::SymbolType type)
     else
     {
         // This should not happen if the score is properly written.
-        std::cerr << "Could not find the symbol "
-                  << static_cast<int>(nextSymbol) << std::endl;
+        Log::e("Could not find the symbol {}", static_cast<int>(nextSymbol));
         return SystemLocation(0, 0);
     }
 }

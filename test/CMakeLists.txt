@@ -188,6 +188,7 @@ pte_executable(
     PCH_EXCLUDE test_main.cpp
     DEPENDS
         doctest::doctest
+        fmt::fmt
         pteapp
         rtmidi::rtmidi
 )

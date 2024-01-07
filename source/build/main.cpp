@@ -14,8 +14,9 @@
   * You should have received a copy of the GNU General Public License
   * along with this program.  If not, see <http://www.gnu.org/licenses/>.
 */
- 
+
 #include <app/appinfo.h>
+#include <app/log.h>
 #include <app/paths.h>
 #include <app/powertabeditor.h>
 #include <app/settings.h>
@@ -60,7 +61,7 @@ static void displayError(const std::string &reason)
     // If there is no QApplication instance, something went seriously wrong
     // during startup - just dump the error to the console.
     if (!QApplication::instance())
-        std::cerr << message << std::endl;
+        Log::e("{}", message);
     else
     {
         CrashDialog dialog(QString::fromStdString(message),
@@ -135,23 +136,25 @@ loadTranslations(QApplication &app, QTranslator &qt_translator,
                  QTranslator &ptb_translator)
 {
     QLocale locale;
-    qDebug() << "Finding translations for locale" << locale
-             << "with UI languages" << locale.uiLanguages();
+
+    Log::d("finding translations for locale:");
+    for (const auto& loc : locale.uiLanguages())
+        Log::d("  locale: {}", loc);
 
     for (auto &&path : Paths::getTranslationDirs())
     {
         QString dir = Paths::toQString(path);
-        qDebug() << "  - Checking" << dir;
+        Log::d("  - checking: {}", path.generic_string());
 
         if (ptb_translator.isEmpty() &&
             ptb_translator.load(locale, QStringLiteral("powertabeditor"),
                                 QStringLiteral("_"), dir))
         {
 #if (QT_VERSION >= QT_VERSION_CHECK(5,15,0))
-            qDebug() << "Loaded application translations from"
-                     << ptb_translator.filePath();
+            Log::d("loaded application translations from: {}",
+		   ptb_translator.filePath());
 #else
-            qDebug() << "Loaded application translations";
+            Log::d("loaded application translations");
 #endif
             app.installTranslator(&ptb_translator);
         }
@@ -161,10 +164,10 @@ loadTranslations(QApplication &app, QTranslator &qt_translator,
                                QStringLiteral("_"), dir))
         {
 #if (QT_VERSION >= QT_VERSION_CHECK(5,15,0))
-            qDebug() << "Loaded Qt base translations from"
-                     << qt_translator.filePath();
+            Log::d("loaded qt base translations from {}",
+                   qt_translator.filePath());
 #else
-            qDebug() << "Loaded Qt base translations";
+            Log::d("loaded Qt base translations");
 #endif
             app.installTranslator(&qt_translator);
         }
@@ -173,6 +176,10 @@ loadTranslations(QApplication &app, QTranslator &qt_translator,
 
 int main(int argc, char *argv[])
 {
+    Log::init(Log::Level::Debug, Paths::getLogPath());
+
+    Log::d("started powertab editor ({})", AppInfo::APPLICATION_VERSION);
+
     // Register handlers for unhandled exceptions and segmentation faults.
     std::set_terminate(terminateHandler);
     std::signal(SIGSEGV, signalHandler);

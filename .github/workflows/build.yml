@@ -17,7 +17,7 @@ jobs:
     steps:
     - uses: actions/checkout@v4
     - name: Install Apt Dependencies
-      run: sudo apt update && sudo apt install ninja-build qtbase5-dev qttools5-dev libboost-dev libboost-date-time-dev libboost-iostreams-dev nlohmann-json3-dev libasound2-dev librtmidi-dev libminizip-dev doctest-dev
+      run: sudo apt update && sudo apt install ninja-build qtbase5-dev qttools5-dev libboost-dev libboost-date-time-dev libboost-iostreams-dev nlohmann-json3-dev libasound2-dev librtmidi-dev libminizip-dev doctest-dev libfmt-dev
     - name: Install Other Dependencies
       run: vcpkg install pugixml
     - name: Create Build Directory
@@ -44,7 +44,7 @@ jobs:
 
     - name: Install Dependencies
       # CMake 3.17 is already installed
-      run: brew install boost doctest minizip ninja nlohmann-json pugixml qt5 pugixml rtmidi
+      run: brew install boost doctest minizip ninja nlohmann-json pugixml qt5 pugixml rtmidi fmt
     - name: Generate Project
       run: cmake -S ${GITHUB_WORKSPACE} -B ${{runner.workspace}}/build -G Ninja -DCMAKE_BUILD_TYPE=Release -DCMAKE_PREFIX_PATH=/usr/local/opt/qt5/lib/cmake
     - name: Build
@@ -98,7 +98,7 @@ jobs:
       run: echo "::set-output name=VERSION_ID::$(git describe --tags --long --always)"
 
     - name: Install Dependencies
-      run: vcpkg install --triplet ${{ matrix.arch }}-windows boost-algorithm boost-date-time boost-endian boost-functional boost-iostreams boost-range boost-rational boost-signals2 boost-stacktrace doctest minizip nlohmann-json pugixml
+      run: vcpkg install --triplet ${{ matrix.arch }}-windows boost-algorithm boost-date-time boost-endian boost-functional boost-iostreams boost-range boost-rational boost-signals2 boost-stacktrace doctest minizip nlohmann-json pugixml fmt
 
     # Building Qt via vcpkg would take a while ...
     - name: Install Qt

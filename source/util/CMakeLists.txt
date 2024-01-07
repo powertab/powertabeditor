@@ -32,6 +32,7 @@ if ( PLATFORM_OSX )
 endif ()
 
 set( srcs
+    log.cpp
     settingstree.cpp
     version.cpp
 
@@ -43,6 +44,7 @@ set( headers
     enumflags.h
     enumtostring.h
     enumtostring_fwd.h
+    log.h
     settingstree.h
     tostring.h
     toutf8.h
@@ -62,5 +64,5 @@ pte_library(
     HEADERS ${headers}
     DEPENDS
         PUBLIC Boost::headers
-        PRIVATE nlohmann_json::nlohmann_json ${platform_depends}
+        PRIVATE fmt::fmt nlohmann_json::nlohmann_json ${platform_depends}
 )

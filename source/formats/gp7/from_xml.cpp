@@ -19,6 +19,7 @@
 
 #include <formats/fileformat.h>
 #include <score/generalmidi.h>
+#include <util/log.h>
 
 #include <boost/algorithm/string/split.hpp>
 #include <string>
@@ -167,8 +168,7 @@ parseChordNote(const pugi::xml_node &node)
         note.myAccidental = *accidental;
     else
     {
-        std::cerr << "Unknown accidental type: " << accidental_text
-                  << std::endl;
+        Log::e("unknown accidental type: {}", accidental_text);
     }
 
     return note;
@@ -189,7 +189,7 @@ parseChordDegree(const pugi::xml_node &chord_node, const char *name)
     if (auto alteration = Util::toEnum<Alteration>(text))
         degree.myAlteration = *alteration;
     else
-        std::cerr << "Unknown alteration type: " << text << std::endl;
+        Log::e("unknown alteration type: {}", text);
 
     return degree;
 }
@@ -425,8 +425,7 @@ parseMasterBars(const pugi::xml_node &master_bars_node)
                     master_bar.myDirectionTargets.push_back(*target);
                 else
                 {
-                    std::cerr << "Invalid direction target type: " << target_str
-                              << std::endl;
+                    Log::e("invalid direction target type: {}", target_str);
                 }
             }
 
@@ -438,8 +437,7 @@ parseMasterBars(const pugi::xml_node &master_bars_node)
                     master_bar.myDirectionJumps.push_back(*jump);
                 else
                 {
-                    std::cerr << "Invalid direction jump type: " << jump_str
-                              << std::endl;
+                    Log::e("invalid direction jump type: {}", jump_str);
                 }
             }
         }
@@ -463,7 +461,7 @@ parseBars(const pugi::xml_node &bars_node)
         if (auto clef_type = Util::toEnum<Gp7::Bar::ClefType>(clef_name))
             bar.myClefType = *clef_type;
         else
-            std::cerr << "Invalid clef type: " << clef_name << std::endl;
+            Log::e("invalid clef type: {}", clef_name);
 
         // TODO - import the 'Ottavia' key if the clef has 8va, etc
 
@@ -507,7 +505,7 @@ parseBeats(const pugi::xml_node &beats_node, Gp7::Version version)
         {
             beat.myOttavia = Util::toEnum<Gp7::Beat::Ottavia>(ottavia);
             if (!beat.myOttavia)
-                std::cerr << "Invalid ottavia value: " << ottavia << std::endl;
+                Log::e("invalid ottavia value: {}", ottavia);
         }
 
         beat.myFreeText = node.child_value("FreeText");
@@ -654,8 +652,7 @@ parseNotes(const pugi::xml_node &notes_node)
                 note.myHarmonic = Util::toEnum<HarmonicType>(harmonic_type);
                 if (!note.myHarmonic)
                 {
-                    std::cerr << "Unknown harmonic type: " << harmonic_type
-                              << std::endl;
+                    Log::e("unknown harmonic type: {}", harmonic_type);
                 }
             }
             else if (name == "Bended")
@@ -718,8 +715,7 @@ parseNotes(const pugi::xml_node &notes_node)
             note.myLeftFinger = Util::toEnum<FingerType>(finger_type);
             if (!note.myLeftFinger)
             {
-                std::cerr << "Unknown finger type: " << finger_type
-                          << std::endl;
+                Log::e("unknown finger type: {}", finger_type);
             }
         }
 
