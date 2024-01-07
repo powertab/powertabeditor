@@ -79,6 +79,7 @@
 #include <app/command.h>
 #include <app/documentmanager.h>
 #include <app/paths.h>
+#include <app/log.h>
 #include <app/recentfiles.h>
 #include <app/scorearea.h>
 #include <app/settings.h>
@@ -149,7 +150,6 @@
 
 #include <util/tostring.h>
 #include <util/version.h>
-#include <util/log.h>
 
 #include <widgets/instruments/instrumentpanel.h>
 #include <widgets/mixer/mixer.h>
@@ -261,14 +261,14 @@ void PowerTabEditor::openFile(QString filename)
     int validationResult = myDocumentManager->findDocument(path);
     if (validationResult > -1)
     {
-        Log::d("file: {} is already open", filename.toStdString());
+        Log::d("file: {} is already open", filename);
         myTabWidget->setCurrentIndex(validationResult);
         return;
     }
 
     auto start = std::chrono::high_resolution_clock::now();
 
-    Log::d("opening file: {}", filename.toStdString());
+    Log::d("opening file: {}", filename);
 
     QFileInfo fileInfo(filename);
     std::optional<FileFormat> format = myFileFormatManager->findFormat(

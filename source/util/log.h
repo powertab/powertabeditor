@@ -14,8 +14,9 @@
  * You should have received a copy of the GNU General Public License
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
-#ifndef APP_LOG_H
-#define APP_LOG_H
+
+#ifndef UTIL_LOG_H
+#define UTIL_LOG_H
 
 #include <chrono>
 #include <iostream>

@@ -23,6 +23,7 @@ set( headers
     command.h
     documentmanager.h
     paths.h
+    log.h
     powertabeditor.h
     recentfiles.h
     scorearea.h

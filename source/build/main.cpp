@@ -16,11 +16,11 @@
 */
 
 #include <app/appinfo.h>
+#include <app/log.h>
 #include <app/paths.h>
 #include <app/powertabeditor.h>
 #include <app/settings.h>
 #include <app/settingsmanager.h>
-#include <util/log.h>
 #include <csignal>
 #include <dialogs/crashdialog.h>
 #include <exception>
@@ -139,7 +139,7 @@ loadTranslations(QApplication &app, QTranslator &qt_translator,
 
     Log::d("finding translations for locale:");
     for (const auto& loc : locale.uiLanguages())
-        Log::d("  locale: {}", loc.toStdString());
+        Log::d("  locale: {}", loc);
 
     for (auto &&path : Paths::getTranslationDirs())
     {
@@ -152,7 +152,7 @@ loadTranslations(QApplication &app, QTranslator &qt_translator,
         {
 #if (QT_VERSION >= QT_VERSION_CHECK(5,15,0))
             Log::d("loaded application translations from: {}",
-		   ptb_translator.filePath().toStdString());
+		   ptb_translator.filePath());
 #else
             Log::d("loaded application translations");
 #endif
@@ -165,7 +165,7 @@ loadTranslations(QApplication &app, QTranslator &qt_translator,
         {
 #if (QT_VERSION >= QT_VERSION_CHECK(5,15,0))
             Log::d("loaded qt base translations from {}",
-                   qt_translator.filePath().toStdString());
+                   qt_translator.filePath());
 #else
             Log::d("loaded Qt base translations");
 #endif
