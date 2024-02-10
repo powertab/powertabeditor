@@ -18,5 +18,4 @@
 #include <unordered_map>
 #include <vector>
 
-#include <boost/operators.hpp>
 #include <boost/rational.hpp>

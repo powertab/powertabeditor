@@ -18,22 +18,16 @@
 #ifndef SCORE_SYSTEMLOCATION_H
 #define SCORE_SYSTEMLOCATION_H
 
-#include <boost/operators.hpp>
 #include <memory>
 
 /// Convenience class to represent a location in a system.
-class SystemLocation :
-        // Generate != from operator==
-        boost::equality_comparable<SystemLocation>,
-        // Generate <=, >, >= from operator<
-        boost::less_than_comparable<SystemLocation>
+class SystemLocation
 {
 public:
-    SystemLocation();
+    SystemLocation() = default;
     SystemLocation(int system, int position);
 
-    bool operator<(const SystemLocation &location) const;
-    bool operator==(const SystemLocation &location) const;
+    auto operator<=>(const SystemLocation &location) const = default;
 
     void setSystem(int system);
     int getSystem() const;
@@ -42,8 +36,8 @@ public:
     int getPosition() const;
 
 private:
-    int mySystem;
-    int myPosition;
+    int mySystem = 0;
+    int myPosition = 0;
 };
 
 /// Enable the use of SystemLocation as a key for std::unordered_map, etc.

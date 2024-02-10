@@ -87,7 +87,6 @@ static SystemLocation moveToNextBar(MidiEventList &event_list, int ticks,
                                     RepeatController &repeat_controller)
 {
     SystemLocation prev_location = location;
-    SystemLocation new_location;
 
     // Move to the next barline and follow any directions / repeats / alternate
     // endings.

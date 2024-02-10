@@ -25,25 +25,6 @@ SystemLocation::SystemLocation(int system, int position)
 {
 }
 
-SystemLocation::SystemLocation()
-    : mySystem(0),
-      myPosition(0)
-{
-}
-
-bool SystemLocation::operator<(const SystemLocation &location) const
-{
-    if (mySystem == location.mySystem)
-        return myPosition < location.myPosition;
-    else
-        return mySystem < location.mySystem;
-}
-
-bool SystemLocation::operator==(const SystemLocation &location) const
-{
-    return mySystem == location.mySystem && myPosition == location.myPosition;
-}
-
 void SystemLocation::setPosition(int position)
 {
     myPosition = position;
