@@ -2397,8 +2397,8 @@ void PowerTabEditor::createCommands()
 #ifdef Q_OS_MAC
     // Use Command-Left instead of Control-Left, which is used for changing
     // desktops.
-    QKeySequence move_start_seq = Qt::CTRL + Qt::Key_Left;
-    QKeySequence move_end_seq = Qt::CTRL + Qt::Key_Right;
+    QKeySequence move_start_seq = Qt::CTRL | Qt::Key_Left;
+    QKeySequence move_end_seq = Qt::CTRL | Qt::Key_Right;
 #else
     QKeySequence move_start_seq = QKeySequence::MoveToStartOfLine;
     QKeySequence move_end_seq = QKeySequence::MoveToEndOfLine;
@@ -3019,8 +3019,8 @@ void PowerTabEditor::createCommands()
 #ifdef Q_OS_MAC
     // NextChild is Command-{ on OS X, so use the more conventional Control-Tab
     // to match Safari, Finder, etc.
-    QKeySequence next_tab_seq = Qt::META + Qt::Key_Tab;
-    QKeySequence prev_tab_seq = Qt::META + Qt::SHIFT + Qt::Key_Tab;
+    QKeySequence next_tab_seq = Qt::META | Qt::Key_Tab;
+    QKeySequence prev_tab_seq = Qt::META | Qt::SHIFT | Qt::Key_Tab;
 #else
     QKeySequence next_tab_seq = QKeySequence::NextChild;
     QKeySequence prev_tab_seq = QKeySequence::PreviousChild;
