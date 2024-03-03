@@ -1,9 +1,10 @@
 param(
     [string]
-    $vcpkg_dir = "C:\Program Files\vcpkg\"
-)
+    $vcpkg_dir = "C:\Program Files\vcpkg\",
 
-$qt_path = "$($PSScriptRoot)/Qt";
+    [string]
+    $qt_path = "$($PSScriptRoot)/Qt"
+)
 
 if (!(Test-Path "$vcpkg_dir")) {
     throw "could not find the vcpkg directory please update this value with your path to vcpkg directory";
