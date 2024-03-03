@@ -17,7 +17,7 @@ if (!(Test-Path "$qt_path")) {
 $qt5_widgets_cmake_path = "$($qt_path)/5.15.2/msvc2019_64/lib/cmake/Qt5Widgets/";
 $qt5_network_cmake_path = "$($qt_path)/5.15.2/msvc2019_64/lib/cmake/Qt5Network/";
 $qt5_printsupport_cmake_path = "$($qt_path)/5.15.2/msvc2019_64/lib/cmake/Qt5PrintSupport/";
-$qt5_linguisttools_cmake_path = "$($qt_path)/5.15.2/msvc2019_64/lib/cmake/Q t5LinguistTools";
+$qt5_linguisttools_cmake_path = "$($qt_path)/5.15.2/msvc2019_64/lib/cmake/Qt5LinguistTools";
 
 <#
     https://cmake.org/cmake/help/latest/envvar/CMAKE_PREFIX_PATH.html#envvar:CMAKE_PREFIX_PATH
