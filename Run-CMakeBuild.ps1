@@ -11,7 +11,7 @@ if (!(Test-Path "$vcpkg_dir")) {
 }
 
 if (!(Test-Path "$qt_path")) {
-    throw "Qt dependency is not installed yet, `\n for this script to work install Qt to this project's root directory or change the path to your Qt installation";
+    throw "Qt dependency is not installed yet, for this script to work install Qt to this project's root directory or change the path to your Qt installation";
 }
 
 $qt5_widgets_cmake_path = "$($qt_path)/5.15.2/msvc2019_64/lib/cmake/Qt5Widgets/";
