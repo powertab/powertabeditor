@@ -19,13 +19,26 @@ $qt5_network_cmake_path = "$($qt_path)/5.15.2/msvc2019_64/lib/cmake/Qt5Network/"
 $qt5_printsupport_cmake_path = "$($qt_path)/5.15.2/msvc2019_64/lib/cmake/Qt5PrintSupport/";
 $qt5_linguisttools_cmake_path = "$($qt_path)/5.15.2/msvc2019_64/lib/cmake/Qt5LinguistTools";
 
+<#
+    https://cmake.org/cmake/help/latest/envvar/CMAKE_PREFIX_PATH.html#envvar:CMAKE_PREFIX_PATH
+#>
 $cmake_prefix_path = $(
-    @(
-        $qt5_widgets_cmake_path, 
-        $qt5_network_cmake_path, 
-        $qt5_printsupport_cmake_path, 
-        $qt5_linguisttools_cmake_path
-    ) -join ";"
+    if ($env:OS -match "Windows") {
+        @(
+            $qt5_widgets_cmake_path, 
+            $qt5_network_cmake_path, 
+            $qt5_printsupport_cmake_path, 
+            $qt5_linguisttools_cmake_path
+        ) -join ";"
+        
+    } else { # probably a unix system as per cmake documentation are colon separated
+        @(
+            $qt5_widgets_cmake_path, 
+            $qt5_network_cmake_path, 
+            $qt5_printsupport_cmake_path, 
+            $qt5_linguisttools_cmake_path
+        ) -join ":"
+    }
 );
 
 
