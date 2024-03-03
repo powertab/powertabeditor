@@ -29,7 +29,7 @@ $cmake_prefix_path = $(
         $qt5_printsupport_cmake_path, 
         $qt5_linguisttools_cmake_path
         # probably a unix system as per cmake documentation are colon separated
-    ) -join $(if ($env:OS) {";"} else {":"})
+    ) -join $(if ($env:OS -match "Windows") {";"} else {":"})
 );
 
 
