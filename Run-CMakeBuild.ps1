@@ -5,6 +5,10 @@ param(
 
 $qt_path = "$($PSScriptRoot)/Qt";
 
+if (!(Test-Path "$vcpkg_dir")) {
+    throw "could not find the vcpkg directory please update this value with your path to vcpkg directory";
+}
+
 if (!(Test-Path "$qt_path")) {
     throw "Qt dependency is not installed yet, `\n for this script to work install Qt to this project's root directory or change the path to your Qt installation";
 }
