@@ -3,7 +3,7 @@ param(
     $vcpkg_dir = "C:\Program Files\vcpkg\",
 
     [string]
-    $qt_path = "$($PSScriptRoot)/Qt"
+    $qt_path = "$($PSScriptRoot)/../Qt"
 )
 
 if (!(Test-Path "$vcpkg_dir")) {
