@@ -99,8 +99,8 @@ Power Tab Editor 2.0 - A powerful cross platform guitar tablature viewer and edi
   - with at least PowerShell 5.1 is installed on your machine
   - Run these powershell scripts in your powershell terminal with your shell working directory as your cloned project
 ```powershell
-.\Get-Dependencies.ps1 -vcpkg_exe_path "your/path/to/your/vcpkg.exe" -python_exe_path "your/path/to/your/python.exe";
-.\Run-CMakeBuild.ps1 -vcpkg_dir "your/path/to/your/vcpkg" -qt_path "your/path/to/qt";
+.\scripts\Get-Dependencies.ps1 -vcpkg_exe_path "your/path/to/your/vcpkg.exe" -python_exe_path "your/path/to/your/python.exe";
+.\scripts\Run-CMakeBuild.ps1 -vcpkg_dir "your/path/to/your/vcpkg" -qt_path "your/path/to/qt";
 ```
 You'll have to update the variables for your specific paths to `$vcpkg_exe_path`, `$python_exe_path`, and `$qt_path`
 
