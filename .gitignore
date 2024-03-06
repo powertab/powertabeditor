@@ -12,3 +12,5 @@ compile_commands.json
 .vscode
 .clangd
 .cache
+Qt/**
+aqtinstall.log

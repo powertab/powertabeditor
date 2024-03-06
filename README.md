@@ -28,6 +28,7 @@
     - [Dependencies](#dependencies)
     - [Building](#building)
       - [Windows](#windows)
+        - [PowerShell](#powershell-installation-scripts)
       - [Linux](#linux)
       - [OS X](#os-x)
 
@@ -92,6 +93,17 @@ Power Tab Editor 2.0 - A powerful cross platform guitar tablature viewer and edi
 * Install Qt by running `vcpkg install --triplet x64-windows qt5-base qt5-tools` (this may take a while), or install a binary release from the Qt website or https://github.com/miurahr/aqtinstall.
 * Open the project folder in Visual Studio and build.
   * If running CMake manually, set `CMAKE_TOOLCHAIN_FILE` to `[vcpkg root]\scripts\buildsystems\vcpkg.cmake`
+
+##### PowerShell Installation Scripts
+* For a more installation streamlined process
+  - with at least PowerShell 5.1 is installed on your machine
+  - Run these powershell scripts in your powershell terminal with your shell working directory as your cloned project
+```powershell
+.\scripts\Get-Dependencies.ps1 -vcpkg_exe_path "your/path/to/your/vcpkg.exe" -python_exe_path "your/path/to/your/python.exe";
+.\scripts\Run-CMakeBuild.ps1 -vcpkg_dir "your/path/to/your/vcpkg" -qt_path "your/path/to/qt";
+```
+You'll have to update the variables for your specific paths to `$vcpkg_exe_path`, `$python_exe_path`, and `$qt_path`
+
 
 #### Linux:
 * These instructions assume a recent Ubuntu/Debian-based system, but the package names should be similar for other package managers.
