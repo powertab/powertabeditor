@@ -534,8 +534,11 @@ SystemRenderer::drawAlternateEndings(const ConstScoreLocation &location,
         // Otherwise, if there is no repeat bar just go to the next barline.
         if (end_x == 0)
         {
-            end_x = layout.getPositionX(
-                system.getNextBarline(ending.getPosition())->getPosition());
+            const Barline *next_bar = system.getNextBarline(ending.getPosition());
+            if (next_bar)
+                end_x = layout.getPositionX(next_bar->getPosition());
+            else
+                end_x = start_x;
         }
 
         // Draw to the center of the barline's position.
