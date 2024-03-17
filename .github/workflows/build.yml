@@ -49,7 +49,7 @@ jobs:
         rm /usr/local/bin/idle3*
         rm /usr/local/bin/pydoc3*
         rm /usr/local/bin/python3*
-        rm /usr/local/bin/python3-config*
+        rm /usr/local/bin/python3*-config
         brew install --overwrite boost cmake doctest minizip ninja nlohmann-json pugixml qt5 pugixml rtmidi
     - name: Generate Project
       run: cmake -S ${GITHUB_WORKSPACE} -B ${{runner.workspace}}/build -G Ninja -DCMAKE_BUILD_TYPE=Release -DCMAKE_PREFIX_PATH=/usr/local/opt/qt@5/lib/cmake
