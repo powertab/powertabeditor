@@ -43,8 +43,8 @@ jobs:
       run: echo "::set-output name=VERSION_ID::$(git describe --tags --long --always)"
 
     - name: Install Dependencies
-      # CMake 3.17 is already installed
-      run: brew install boost doctest minizip ninja nlohmann-json pugixml qt5 pugixml rtmidi
+      # Note: using --overwrite to work around Github actions python conflicts (https://github.com/actions/setup-python/issues/577)
+      run: brew install --overwrite boost cmake doctest minizip ninja nlohmann-json pugixml qt5 pugixml rtmidi
     - name: Generate Project
       run: cmake -S ${GITHUB_WORKSPACE} -B ${{runner.workspace}}/build -G Ninja -DCMAKE_BUILD_TYPE=Release -DCMAKE_PREFIX_PATH=/usr/local/opt/qt@5/lib/cmake
     - name: Build
