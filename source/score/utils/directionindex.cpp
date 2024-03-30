@@ -84,15 +84,10 @@ SystemLocation DirectionIndex::performDirection(
 
 SystemLocation DirectionIndex::followDirection(DirectionSymbol::SymbolType type)
 {
-    // Go to the end of the score.
     if (type == DirectionSymbol::Fine)
     {
-        const auto lastSystemIndex = myScore.getSystems().size() - 1;
-        return SystemLocation(static_cast<int>(lastSystemIndex),
-                              myScore.getSystems()[lastSystemIndex]
-                                  .getBarlines()
-                                  .back()
-                                  .getPosition());
+        // Go to the end of the score to stop playback.
+        return SystemLocation(static_cast<int>(myScore.getSystems().size()), 0);
     }
 
     DirectionSymbol::SymbolType nextSymbol = DirectionSymbol::Coda;

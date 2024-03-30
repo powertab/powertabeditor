@@ -29,6 +29,7 @@ Thanks to the following contributors who worked on this release:
 - Fixed a bug where the caret was rendered when printing or displaying a print preview (#441)
 - Fixed issues where the top fret number of a chord diagram could be cut off in the chord name dialog (#408)
 - Fixed a crash when an alternate ending was located on the last position of a system (#449)
+- Fixed a crash during playback when a score contained a `Fine` symbol (#470)
 
 ## [Alpha 19] - 2022-10-17
 
