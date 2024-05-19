@@ -6,7 +6,7 @@
     <message>
         <location filename="../source/actions/addalternateending.cpp" line="24"/>
         <source>Add Repeat Ending</source>
-        <translation type="unfinished"></translation>
+        <translation>Wiederholungsende hinzufügen</translation>
     </message>
 </context>
 <context>
@@ -14,7 +14,7 @@
     <message>
         <location filename="../source/actions/addspecialnoteproperty.h" line="93"/>
         <source>Add Artificial Harmonic</source>
-        <translation type="unfinished"></translation>
+        <translation>Künstliche Harmonie hinzufügen</translation>
     </message>
 </context>
 <context>
@@ -22,7 +22,7 @@
     <message>
         <location filename="../source/actions/addbarline.cpp" line="23"/>
         <source>Insert Barline</source>
-        <translation type="unfinished"></translation>
+        <translation>Taktstrich hinzufügen</translation>
     </message>
 </context>
 <context>
@@ -30,7 +30,7 @@
     <message>
         <location filename="../source/actions/addspecialnoteproperty.h" line="106"/>
         <source>Add Bend</source>
-        <translation type="unfinished"></translation>
+        <translation>Biegung hinzufügen</translation>
     </message>
 </context>
 <context>
