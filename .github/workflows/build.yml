@@ -107,7 +107,7 @@ jobs:
 
     # Building Qt via vcpkg would take a while ...
     - name: Install Qt
-      uses: jurplel/install-qt-action@v3
+      uses: jurplel/install-qt-action@v4
       with:
         arch: ${{ matrix.qt_arch }}
         version: 5.15.2
