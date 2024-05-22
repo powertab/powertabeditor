@@ -6,7 +6,7 @@
     <message>
         <location filename="../source/actions/addalternateending.cpp" line="24"/>
         <source>Add Repeat Ending</source>
-        <translation type="unfinished"></translation>
+        <translation>重复结束</translation>
     </message>
 </context>
 <context>
@@ -14,7 +14,7 @@
     <message>
         <location filename="../source/actions/addspecialnoteproperty.h" line="93"/>
         <source>Add Artificial Harmonic</source>
-        <translation type="unfinished"></translation>
+        <translation>人工泛音</translation>
     </message>
 </context>
 <context>
@@ -22,7 +22,7 @@
     <message>
         <location filename="../source/actions/addbarline.cpp" line="23"/>
         <source>Insert Barline</source>
-        <translation type="unfinished"></translation>
+        <translation>插入小节线</translation>
     </message>
 </context>
 <context>
@@ -30,7 +30,7 @@
     <message>
         <location filename="../source/actions/addspecialnoteproperty.h" line="106"/>
         <source>Add Bend</source>
-        <translation type="unfinished"></translation>
+        <translation>加入推弦</translation>
     </message>
 </context>
 <context>
@@ -38,7 +38,7 @@
     <message>
         <location filename="../source/actions/chorddiagram.cpp" line="24"/>
         <source>Add Chord Diagram</source>
-        <translation type="unfinished"></translation>
+        <translation>新增和弦图</translation>
     </message>
 </context>
 <context>
@@ -46,7 +46,7 @@
     <message>
         <location filename="../source/actions/addchordtext.cpp" line="24"/>
         <source>Add Chord Text</source>
-        <translation type="unfinished"></translation>
+        <translation>新增和弦文本</translation>
     </message>
 </context>
 <context>
@@ -54,7 +54,7 @@
     <message>
         <location filename="../source/actions/adddirection.cpp" line="24"/>
         <source>Add Musical Direction</source>
-        <translation type="unfinished"></translation>
+        <translation>新增音乐说明</translation>
     </message>
 </context>
 <context>
@@ -62,7 +62,7 @@
     <message>
         <location filename="../source/actions/adddynamic.cpp" line="23"/>
         <source>Add Dynamic</source>
-        <translation type="unfinished"></translation>
+        <translation>新增动态</translation>
     </message>
 </context>
 <context>
@@ -70,7 +70,7 @@
     <message>
         <location filename="../source/actions/addinstrument.cpp" line="23"/>
         <source>Add Instrument</source>
-        <translation type="unfinished"></translation>
+        <translation>新增乐器</translation>
     </message>
 </context>
 <context>
@@ -78,12 +78,12 @@
     <message>
         <location filename="../source/actions/addirregulargrouping.cpp" line="27"/>
         <source>Add Triplet</source>
-        <translation type="unfinished"></translation>
+        <translation>新增三连音</translation>
     </message>
     <message>
         <location filename="../source/actions/addirregulargrouping.cpp" line="29"/>
         <source>Add Irregular Grouping</source>
-        <translation type="unfinished"></translation>
+        <translation>新增不规则组</translation>
     </message>
 </context>
 <context>
@@ -91,7 +91,7 @@
     <message>
         <location filename="../source/actions/addspecialnoteproperty.h" line="120"/>
         <source>Add Left Hand Fingering</source>
-        <translation type="unfinished"></translation>
+        <translation>新增左手指法</translation>
     </message>
 </context>
 <context>
@@ -99,7 +99,7 @@
     <message>
         <location filename="../source/actions/addmultibarrest.cpp" line="23"/>
         <source>Add Multi-Bar Rest</source>
-        <translation type="unfinished"></translation>
+        <translation>新增多小节休止</translation>
     </message>
 </context>
 <context>
@@ -107,7 +107,7 @@
     <message>
         <location filename="../source/actions/addnote.cpp" line="24"/>
         <source>Add Note</source>
-        <translation type="unfinished"></translation>
+        <translation>新增音符</translation>
     </message>
 </context>
 <context>
@@ -123,7 +123,7 @@
     <message>
         <location filename="../source/actions/addplayer.cpp" line="23"/>
         <source>Add Player</source>
-        <translation type="unfinished"></translation>
+        <translation>新增乐手</translation>
     </message>
 </context>
 <context>
@@ -131,7 +131,7 @@
     <message>
         <location filename="../source/actions/editplayerchange.cpp" line="25"/>
         <source>Add Player Change</source>
-        <translation type="unfinished"></translation>
+        <translation>新增改变乐手</translation>
     </message>
 </context>
 <context>
@@ -147,7 +147,7 @@
     <message>
         <location filename="../source/actions/editrehearsalsign.cpp" line="25"/>
         <source>Add Rehearsal Sign</source>
-        <translation type="unfinished"></translation>
+        <translation>新增彩排标志</translation>
     </message>
 </context>
 <context>
@@ -155,7 +155,7 @@
     <message>
         <location filename="../source/actions/addrest.cpp" line="23"/>
         <source>Add Rest</source>
-        <translation type="unfinished"></translation>
+        <translation>新增休止</translation>
     </message>
 </context>
 <context>
@@ -163,7 +163,7 @@
     <message>
         <location filename="../source/actions/addstaff.cpp" line="23"/>
         <source>Add Staff</source>
-        <translation type="unfinished"></translation>
+        <translation>新增五线谱</translation>
     </message>
 </context>
 <context>
@@ -171,7 +171,7 @@
     <message>
         <location filename="../source/actions/addsystem.cpp" line="23"/>
         <source>Add System</source>
-        <translation type="unfinished"></translation>
+        <translation>新增系统</translation>
     </message>
 </context>
 <context>
@@ -179,7 +179,7 @@
     <message>
         <location filename="../source/actions/addspecialnoteproperty.h" line="65"/>
         <source>Add Tapped Harmonic</source>
-        <translation type="unfinished"></translation>
+        <translation>新增点弦泛音</translation>
     </message>
 </context>
 <context>
@@ -187,12 +187,12 @@
     <message>
         <location filename="../source/actions/edittempomarker.cpp" line="26"/>
         <source>Add Alteration of Pace</source>
-        <translation type="unfinished"></translation>
+        <translation>新增节奏改变</translation>
     </message>
     <message>
         <location filename="../source/actions/edittempomarker.cpp" line="27"/>
         <source>Add Tempo Marker</source>
-        <translation type="unfinished"></translation>
+        <translation>新增节奏记号</translation>
     </message>
 </context>
 <context>
@@ -200,7 +200,7 @@
     <message>
         <location filename="../source/actions/edittextitem.cpp" line="24"/>
         <source>Add Text</source>
-        <translation type="unfinished"></translation>
+        <translation>新增文本</translation>
     </message>
 </context>
 <context>
@@ -208,7 +208,7 @@
     <message>
         <location filename="../source/actions/tremolobar.cpp" line="22"/>
         <source>Add Tremolo Bar</source>
-        <translation type="unfinished"></translation>
+        <translation>新增摇把</translation>
     </message>
 </context>
 <context>
@@ -216,7 +216,7 @@
     <message>
         <location filename="../source/actions/addspecialnoteproperty.h" line="78"/>
         <source>Add Trill</source>
-        <translation type="unfinished"></translation>
+        <translation>新增颤音</translation>
     </message>
 </context>
 <context>
@@ -224,7 +224,7 @@
     <message>
         <location filename="../source/actions/volumeswell.cpp" line="22"/>
         <source>Add Volume Swell</source>
-        <translation type="unfinished"></translation>
+        <translation>新增音量增加</translation>
     </message>
 </context>
 <context>
@@ -232,12 +232,12 @@
     <message>
         <location filename="../source/actions/adjustlinespacing.cpp" line="23"/>
         <source>Increase Line Spacing</source>
-        <translation type="unfinished"></translation>
+        <translation>增加行距</translation>
     </message>
     <message>
         <location filename="../source/actions/adjustlinespacing.cpp" line="24"/>
         <source>Decrease Line Spacing</source>
-        <translation type="unfinished"></translation>
+        <translation>减小行距</translation>
     </message>
 </context>
 <context>
@@ -245,12 +245,12 @@
     <message>
         <location filename="../source/dialogs/alterationofpacedialog.ui" line="17"/>
         <source>Alteration of Pace</source>
-        <translation type="unfinished"></translation>
+        <translation>速度改变</translation>
     </message>
     <message>
         <location filename="../source/dialogs/alterationofpacedialog.ui" line="34"/>
         <source>Type:</source>
-        <translation type="unfinished"></translation>
+        <translation>类型：</translation>
     </message>
 </context>
 <context>
@@ -259,7 +259,7 @@
         <location filename="../source/dialogs/alternateendingdialog.cpp" line="33"/>
         <location filename="../source/dialogs/alternateendingdialog.cpp" line="118"/>
         <source>Repeat Ending</source>
-        <translation type="unfinished"></translation>
+        <translation>重复结束</translation>
     </message>
     <message>
         <location filename="../source/dialogs/alternateendingdialog.cpp" line="58"/>
@@ -279,7 +279,7 @@
     <message>
         <location filename="../source/dialogs/alternateendingdialog.cpp" line="119"/>
         <source>You must select at least one repeat number.</source>
-        <translation type="unfinished"></translation>
+        <translation>必须至少重复一次</translation>
     </message>
 </context>
 <context>
@@ -287,7 +287,7 @@
     <message>
         <location filename="../source/dialogs/artificialharmonicdialog.ui" line="17"/>
         <source>Artificial Harmonic</source>
-        <translation type="unfinished"></translation>
+        <translation>人工泛音</translation>
     </message>
     <message>
         <location filename="../source/dialogs/artificialharmonicdialog.ui" line="28"/>
@@ -297,7 +297,7 @@
     <message>
         <location filename="../source/dialogs/artificialharmonicdialog.ui" line="35"/>
         <source>Octave:</source>
-        <translation type="unfinished"></translation>
+        <translation>八度：</translation>
     </message>
     <message>
         <location filename="../source/dialogs/artificialharmonicdialog.ui" line="44"/>
@@ -317,37 +317,37 @@
     <message>
         <location filename="../source/dialogs/artificialharmonicdialog.ui" line="98"/>
         <source>C</source>
-        <translation type="unfinished"></translation>
+        <translation>C</translation>
     </message>
     <message>
         <location filename="../source/dialogs/artificialharmonicdialog.ui" line="124"/>
         <source>D</source>
-        <translation type="unfinished"></translation>
+        <translation>D</translation>
     </message>
     <message>
         <location filename="../source/dialogs/artificialharmonicdialog.ui" line="150"/>
         <source>E</source>
-        <translation type="unfinished"></translation>
+        <translation>E</translation>
     </message>
     <message>
         <location filename="../source/dialogs/artificialharmonicdialog.ui" line="176"/>
         <source>F</source>
-        <translation type="unfinished"></translation>
+        <translation>F</translation>
     </message>
     <message>
         <location filename="../source/dialogs/artificialharmonicdialog.ui" line="202"/>
         <source>G</source>
-        <translation type="unfinished"></translation>
+        <translation>G</translation>
     </message>
     <message>
         <location filename="../source/dialogs/artificialharmonicdialog.ui" line="228"/>
         <source>A</source>
-        <translation type="unfinished"></translation>
+        <translation>A</translation>
     </message>
     <message>
         <location filename="../source/dialogs/artificialharmonicdialog.ui" line="254"/>
         <source>B</source>
-        <translation type="unfinished"></translation>
+        <translation>B</translation>
     </message>
 </context>
 <context>
@@ -355,42 +355,42 @@
     <message>
         <location filename="../source/dialogs/barlinedialog.ui" line="17"/>
         <source>Music Bar</source>
-        <translation type="unfinished"></translation>
+        <translation>音乐小节</translation>
     </message>
     <message>
         <location filename="../source/dialogs/barlinedialog.ui" line="31"/>
         <source>Type:</source>
-        <translation type="unfinished"></translation>
+        <translation>类型：</translation>
     </message>
     <message>
         <location filename="../source/dialogs/barlinedialog.ui" line="41"/>
         <source>Play:</source>
-        <translation type="unfinished"></translation>
+        <translation>演奏：</translation>
     </message>
     <message>
         <location filename="../source/dialogs/barlinedialog.cpp" line="35"/>
         <source>Single</source>
-        <translation type="unfinished"></translation>
+        <translation>单音</translation>
     </message>
     <message>
         <location filename="../source/dialogs/barlinedialog.cpp" line="36"/>
         <source>Double</source>
-        <translation type="unfinished"></translation>
+        <translation>双音</translation>
     </message>
     <message>
         <location filename="../source/dialogs/barlinedialog.cpp" line="37"/>
         <source>Free Time</source>
-        <translation type="unfinished"></translation>
+        <translation>自由时值</translation>
     </message>
     <message>
         <location filename="../source/dialogs/barlinedialog.cpp" line="40"/>
         <source>Repeat Start</source>
-        <translation type="unfinished"></translation>
+        <translation>重复开始</translation>
     </message>
     <message>
         <location filename="../source/dialogs/barlinedialog.cpp" line="45"/>
         <source>Repeat End</source>
-        <translation type="unfinished"></translation>
+        <translation>重复结束</translation>
     </message>
     <message>
         <location filename="../source/dialogs/barlinedialog.cpp" line="46"/>
@@ -404,12 +404,12 @@
         <location filename="../source/dialogs/benddialog.ui" line="17"/>
         <location filename="../source/dialogs/benddialog.cpp" line="34"/>
         <source>Bend</source>
-        <translation type="unfinished"></translation>
+        <translation>推弦</translation>
     </message>
     <message>
         <location filename="../source/dialogs/benddialog.ui" line="31"/>
         <source>Bend Type:</source>
-        <translation type="unfinished"></translation>
+        <translation>推弦类型：</translation>
     </message>
     <message>
         <location filename="../source/dialogs/benddialog.ui" line="41"/>
