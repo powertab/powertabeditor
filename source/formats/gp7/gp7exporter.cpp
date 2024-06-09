@@ -22,6 +22,7 @@
 #include "document.h"
 
 #include <memory>
+#include <zlib.h>
 #include <minizip/zip.h>
 #ifdef _WIN32
 #include <minizip/iowin32.h>
@@ -76,9 +77,10 @@ struct ZipFileEntry
 {
     ZipFileEntry(zipFile file, const char *filename) : myFile(file)
     {
-        if (zipOpenNewFileInZip64(myFile, filename, nullptr, nullptr, 0,
+        // Note: using the 2_64 signature for improved compatibility with minizip-ng (bug #478)
+        if (zipOpenNewFileInZip2_64(myFile, filename, nullptr, nullptr, 0,
                                   nullptr, 0, nullptr, Z_DEFLATED,
-                                  Z_DEFAULT_COMPRESSION, 1) != ZIP_OK)
+                                  Z_DEFAULT_COMPRESSION, 0, 1) != ZIP_OK)
         {
             throw FileFormatException("Failed to create file entry.");
         }
