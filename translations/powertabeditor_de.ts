@@ -38,7 +38,7 @@
     <message>
         <location filename="../source/actions/chorddiagram.cpp" line="24"/>
         <source>Add Chord Diagram</source>
-        <translation type="unfinished"></translation>
+        <translation>Akkord-Diagramm hinzufügen</translation>
     </message>
 </context>
 <context>
@@ -46,7 +46,7 @@
     <message>
         <location filename="../source/actions/addchordtext.cpp" line="24"/>
         <source>Add Chord Text</source>
-        <translation type="unfinished"></translation>
+        <translation>Akkord-Text hinzufügen</translation>
     </message>
 </context>
 <context>
