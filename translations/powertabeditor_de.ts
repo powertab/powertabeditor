@@ -70,7 +70,7 @@
     <message>
         <location filename="../source/actions/addinstrument.cpp" line="23"/>
         <source>Add Instrument</source>
-        <translation type="unfinished"></translation>
+        <translation>Instrument hinzufügen</translation>
     </message>
 </context>
 <context>
@@ -115,7 +115,7 @@
     <message>
         <location filename="../source/actions/addnoteproperty.cpp" line="23"/>
         <source>Set %1</source>
-        <translation type="unfinished"></translation>
+        <translation>%1 festlegen</translation>
     </message>
 </context>
 <context>
@@ -139,7 +139,7 @@
     <message>
         <location filename="../source/actions/addpositionproperty.cpp" line="23"/>
         <source>Set %1</source>
-        <translation type="unfinished"></translation>
+        <translation>%1 festlegen</translation>
     </message>
 </context>
 <context>
@@ -171,7 +171,7 @@
     <message>
         <location filename="../source/actions/addsystem.cpp" line="23"/>
         <source>Add System</source>
-        <translation type="unfinished"></translation>
+        <translation>System festlegen</translation>
     </message>
 </context>
 <context>
