@@ -115,7 +115,7 @@
     <message>
         <location filename="../source/actions/addnoteproperty.cpp" line="23"/>
         <source>Set %1</source>
-        <translation type="unfinished"></translation>
+        <translation>设置为%1</translation>
     </message>
 </context>
 <context>
@@ -139,7 +139,7 @@
     <message>
         <location filename="../source/actions/addpositionproperty.cpp" line="23"/>
         <source>Set %1</source>
-        <translation type="unfinished"></translation>
+        <translation>设置为%1</translation>
     </message>
 </context>
 <context>
@@ -264,17 +264,17 @@
     <message>
         <location filename="../source/dialogs/alternateendingdialog.cpp" line="58"/>
         <source>D.C.</source>
-        <translation type="unfinished"></translation>
+        <translation>D.C.</translation>
     </message>
     <message>
         <location filename="../source/dialogs/alternateendingdialog.cpp" line="61"/>
         <source>D.S.</source>
-        <translation type="unfinished"></translation>
+        <translation>D.S.</translation>
     </message>
     <message>
         <location filename="../source/dialogs/alternateendingdialog.cpp" line="64"/>
         <source>D.S.S.</source>
-        <translation type="unfinished"></translation>
+        <translation>D.S.S.</translation>
     </message>
     <message>
         <location filename="../source/dialogs/alternateendingdialog.cpp" line="119"/>
@@ -292,7 +292,7 @@
     <message>
         <location filename="../source/dialogs/artificialharmonicdialog.ui" line="28"/>
         <source>Pitch:</source>
-        <translation type="unfinished"></translation>
+        <translation>音高：</translation>
     </message>
     <message>
         <location filename="../source/dialogs/artificialharmonicdialog.ui" line="35"/>
@@ -302,17 +302,17 @@
     <message>
         <location filename="../source/dialogs/artificialharmonicdialog.ui" line="44"/>
         <source>Loco</source>
-        <translation type="unfinished"></translation>
+        <translation>Loco</translation>
     </message>
     <message>
         <location filename="../source/dialogs/artificialharmonicdialog.ui" line="51"/>
         <source>8va</source>
-        <translation type="unfinished"></translation>
+        <translation>8va</translation>
     </message>
     <message>
         <location filename="../source/dialogs/artificialharmonicdialog.ui" line="58"/>
         <source>15ma</source>
-        <translation type="unfinished"></translation>
+        <translation>15ma</translation>
     </message>
     <message>
         <location filename="../source/dialogs/artificialharmonicdialog.ui" line="98"/>
@@ -395,7 +395,7 @@
     <message>
         <location filename="../source/dialogs/barlinedialog.cpp" line="46"/>
         <source>Double Bar Fine</source>
-        <translation type="unfinished"></translation>
+        <translation>终止线</translation>
     </message>
 </context>
 <context>
@@ -414,92 +414,92 @@
     <message>
         <location filename="../source/dialogs/benddialog.ui" line="41"/>
         <source>Bent Pitch:</source>
-        <translation type="unfinished"></translation>
+        <translation>推弦音高：</translation>
     </message>
     <message>
         <location filename="../source/dialogs/benddialog.ui" line="51"/>
         <source>Release Pitch:</source>
-        <translation type="unfinished"></translation>
+        <translation>释放音高：</translation>
     </message>
     <message>
         <location filename="../source/dialogs/benddialog.ui" line="61"/>
         <source>Bend Duration:</source>
-        <translation type="unfinished"></translation>
+        <translation>推弦时值：</translation>
     </message>
     <message>
         <location filename="../source/dialogs/benddialog.ui" line="73"/>
         <source>Default</source>
-        <translation type="unfinished"></translation>
+        <translation>默认</translation>
     </message>
     <message>
         <location filename="../source/dialogs/benddialog.ui" line="85"/>
         <source>Current note duration + next</source>
-        <translation type="unfinished"></translation>
+        <translation>当前+下一音符时值</translation>
     </message>
     <message>
         <location filename="../source/dialogs/benddialog.ui" line="95"/>
         <source>notes</source>
-        <translation type="unfinished"></translation>
+        <translation>音符</translation>
     </message>
     <message>
         <location filename="../source/dialogs/benddialog.ui" line="106"/>
         <source>Vertical Starting Point:</source>
-        <translation type="unfinished"></translation>
+        <translation>垂直起点：</translation>
     </message>
     <message>
         <location filename="../source/dialogs/benddialog.ui" line="116"/>
         <source>Vertical Ending Point:</source>
-        <translation type="unfinished"></translation>
+        <translation>垂直终点：</translation>
     </message>
     <message>
         <location filename="../source/dialogs/benddialog.cpp" line="34"/>
         <source>Bend and Release</source>
-        <translation type="unfinished"></translation>
+        <translation>推弦并释放</translation>
     </message>
     <message>
         <location filename="../source/dialogs/benddialog.cpp" line="34"/>
         <source>Bend and Hold</source>
-        <translation type="unfinished"></translation>
+        <translation>推弦并保持</translation>
     </message>
     <message>
         <location filename="../source/dialogs/benddialog.cpp" line="35"/>
         <source>Pre-Bend</source>
-        <translation type="unfinished"></translation>
+        <translation>预推弦</translation>
     </message>
     <message>
         <location filename="../source/dialogs/benddialog.cpp" line="35"/>
         <source>Pre-Bend and Release</source>
-        <translation type="unfinished"></translation>
+        <translation>预推弦并释放</translation>
     </message>
     <message>
         <location filename="../source/dialogs/benddialog.cpp" line="35"/>
         <source>Pre-Bend and Hold</source>
-        <translation type="unfinished"></translation>
+        <translation>预推弦并保持</translation>
     </message>
     <message>
         <location filename="../source/dialogs/benddialog.cpp" line="36"/>
         <source>Gradual Release</source>
-        <translation type="unfinished"></translation>
+        <translation>逐渐释放</translation>
     </message>
     <message>
         <location filename="../source/dialogs/benddialog.cpp" line="36"/>
         <source>Immediate Release</source>
-        <translation type="unfinished"></translation>
+        <translation>立即释放</translation>
     </message>
     <message>
         <location filename="../source/dialogs/benddialog.cpp" line="110"/>
         <source>Low (Tablature Staff Line)</source>
-        <translation type="unfinished"></translation>
+        <translation>低</translation>
     </message>
     <message>
         <location filename="../source/dialogs/benddialog.cpp" line="111"/>
         <source>Middle</source>
-        <translation type="unfinished"></translation>
+        <translation>中</translation>
     </message>
     <message>
         <location filename="../source/dialogs/benddialog.cpp" line="112"/>
         <source>High</source>
-        <translation type="unfinished"></translation>
+        <translation>高</translation>
     </message>
 </context>
 <context>
@@ -507,38 +507,38 @@
     <message>
         <location filename="../source/dialogs/bulkconverterdialog.ui" line="14"/>
         <source>Bulk Converter</source>
-        <translation type="unfinished"></translation>
+        <translation>批量转换</translation>
     </message>
     <message>
         <location filename="../source/dialogs/bulkconverterdialog.ui" line="37"/>
         <source>Source Directory:</source>
-        <translation type="unfinished"></translation>
+        <translation>源文件夹：</translation>
     </message>
     <message>
         <location filename="../source/dialogs/bulkconverterdialog.ui" line="65"/>
         <source>Destination Directory:</source>
-        <translation type="unfinished"></translation>
+        <translation>目标文件夹：</translation>
     </message>
     <message>
         <location filename="../source/dialogs/bulkconverterdialog.ui" line="93"/>
         <source>Convert To:</source>
-        <translation type="unfinished"></translation>
+        <translation>转换为：</translation>
     </message>
     <message>
         <location filename="../source/dialogs/bulkconverterdialog.ui" line="56"/>
         <location filename="../source/dialogs/bulkconverterdialog.ui" line="84"/>
         <source>...</source>
-        <translation type="unfinished"></translation>
+        <translation>...</translation>
     </message>
     <message>
         <location filename="../source/dialogs/bulkconverterdialog.cpp" line="172"/>
         <source>Convert</source>
-        <translation type="unfinished"></translation>
+        <translation>转换</translation>
     </message>
     <message>
         <location filename="../source/dialogs/bulkconverterdialog.cpp" line="190"/>
         <source>Directory To Convert</source>
-        <translation type="unfinished"></translation>
+        <translation>待转换目录</translation>
     </message>
 </context>
 <context>
@@ -546,12 +546,12 @@
     <message>
         <location filename="../source/actions/changepositionspacing.cpp" line="32"/>
         <source>Decrease Position Spacing</source>
-        <translation type="unfinished"></translation>
+        <translation>减少间隔</translation>
     </message>
     <message>
         <location filename="../source/actions/changepositionspacing.cpp" line="36"/>
         <source>Increase Position Spacing</source>
-        <translation type="unfinished"></translation>
+        <translation>增大间隔</translation>
     </message>
 </context>
 <context>
@@ -559,32 +559,32 @@
     <message>
         <location filename="../source/dialogs/chorddiagramdialog.ui" line="9"/>
         <source>Chord Diagram</source>
-        <translation type="unfinished"></translation>
+        <translation>和弦图示</translation>
     </message>
     <message>
         <location filename="../source/dialogs/chorddiagramdialog.ui" line="23"/>
         <source>Chord Name:</source>
-        <translation type="unfinished"></translation>
+        <translation>和弦名称：</translation>
     </message>
     <message>
         <location filename="../source/dialogs/chorddiagramdialog.ui" line="33"/>
         <source>Top Fret:</source>
-        <translation type="unfinished"></translation>
+        <translation>顶部的品数：</translation>
     </message>
     <message>
         <location filename="../source/dialogs/chorddiagramdialog.ui" line="43"/>
         <source>Number of Strings:</source>
-        <translation type="unfinished"></translation>
+        <translation>弦的数量：</translation>
     </message>
     <message>
         <location filename="../source/dialogs/chorddiagramdialog.ui" line="53"/>
         <source>Diagram:</source>
-        <translation type="unfinished"></translation>
+        <translation>图示：</translation>
     </message>
     <message>
         <location filename="../source/dialogs/chorddiagramdialog.cpp" line="48"/>
         <source>Click to edit chord name.</source>
-        <translation type="unfinished"></translation>
+        <translation>点击编辑和弦名称</translation>
     </message>
 </context>
 <context>
@@ -592,99 +592,99 @@
     <message>
         <location filename="../source/dialogs/chordnamedialog.ui" line="17"/>
         <source>Chord Name</source>
-        <translation type="unfinished"></translation>
+        <translation>和弦名称</translation>
     </message>
     <message>
         <location filename="../source/dialogs/chordnamedialog.ui" line="36"/>
         <source>Preview:</source>
-        <translation type="unfinished"></translation>
+        <translation>预览：</translation>
     </message>
     <message>
         <location filename="../source/dialogs/chordnamedialog.ui" line="53"/>
         <source>Key:</source>
-        <translation type="unfinished"></translation>
+        <translation>根音：</translation>
     </message>
     <message>
         <location filename="../source/dialogs/chordnamedialog.ui" line="65"/>
         <source>No Chord</source>
-        <translation type="unfinished"></translation>
+        <translation>N.C.</translation>
     </message>
     <message>
         <location filename="../source/dialogs/chordnamedialog.ui" line="95"/>
         <location filename="../source/dialogs/chordnamedialog.ui" line="702"/>
         <source>C</source>
-        <translation type="unfinished"></translation>
+        <translation>C</translation>
     </message>
     <message>
         <location filename="../source/dialogs/chordnamedialog.ui" line="115"/>
         <location filename="../source/dialogs/chordnamedialog.ui" line="722"/>
         <source>D</source>
-        <translation type="unfinished"></translation>
+        <translation>D</translation>
     </message>
     <message>
         <location filename="../source/dialogs/chordnamedialog.ui" line="135"/>
         <location filename="../source/dialogs/chordnamedialog.ui" line="742"/>
         <source>E</source>
-        <translation type="unfinished"></translation>
+        <translation>E</translation>
     </message>
     <message>
         <location filename="../source/dialogs/chordnamedialog.ui" line="155"/>
         <location filename="../source/dialogs/chordnamedialog.ui" line="762"/>
         <source>F</source>
-        <translation type="unfinished"></translation>
+        <translation>F</translation>
     </message>
     <message>
         <location filename="../source/dialogs/chordnamedialog.ui" line="175"/>
         <location filename="../source/dialogs/chordnamedialog.ui" line="782"/>
         <source>G</source>
-        <translation type="unfinished"></translation>
+        <translation>G</translation>
     </message>
     <message>
         <location filename="../source/dialogs/chordnamedialog.ui" line="195"/>
         <location filename="../source/dialogs/chordnamedialog.ui" line="802"/>
         <source>A</source>
-        <translation type="unfinished"></translation>
+        <translation>A</translation>
     </message>
     <message>
         <location filename="../source/dialogs/chordnamedialog.ui" line="215"/>
         <location filename="../source/dialogs/chordnamedialog.ui" line="822"/>
         <source>B</source>
-        <translation type="unfinished"></translation>
+        <translation>B</translation>
     </message>
     <message>
         <location filename="../source/dialogs/chordnamedialog.ui" line="300"/>
         <source>Brackets</source>
-        <translation type="unfinished"></translation>
+        <translation>括号</translation>
     </message>
     <message>
         <location filename="../source/dialogs/chordnamedialog.ui" line="309"/>
         <source>Formula:</source>
-        <translation type="unfinished"></translation>
+        <translation>类型：</translation>
     </message>
     <message>
         <location filename="../source/dialogs/chordnamedialog.ui" line="316"/>
         <source>Additions:</source>
-        <translation type="unfinished"></translation>
+        <translation>附加音：</translation>
     </message>
     <message>
         <location filename="../source/dialogs/chordnamedialog.ui" line="323"/>
         <source>Extensions:</source>
-        <translation type="unfinished"></translation>
+        <translation>拓展：</translation>
     </message>
     <message>
         <location filename="../source/dialogs/chordnamedialog.ui" line="330"/>
         <source>Alterations:</source>
-        <translation type="unfinished"></translation>
+        <translation>变和弦：</translation>
     </message>
     <message>
         <location filename="../source/dialogs/chordnamedialog.ui" line="337"/>
         <source>Bass Note:</source>
-        <translation type="unfinished"></translation>
+        <translation>低音：</translation>
     </message>
     <message>
         <location filename="../source/dialogs/chordnamedialog.ui" line="911"/>
         <source>Chords in Score:</source>
-        <translation type="unfinished"></translation>
+        <translation>乐谱内和弦：</translation>
     </message>
 </context>
 <context>
@@ -692,22 +692,22 @@
     <message>
         <location filename="../source/dialogs/crashdialog.ui" line="23"/>
         <source>Error</source>
-        <translation type="unfinished"></translation>
+        <translation>错误</translation>
     </message>
     <message>
         <location filename="../source/dialogs/crashdialog.ui" line="37"/>
         <source>Oops! Something went wrong.</source>
-        <translation type="unfinished"></translation>
+        <translation>Oops! Something went wrong.</translation>
     </message>
     <message>
         <location filename="../source/dialogs/crashdialog.ui" line="74"/>
         <source>Report Bug...</source>
-        <translation type="unfinished"></translation>
+        <translation>报告问题...</translation>
     </message>
     <message>
         <location filename="../source/dialogs/crashdialog.ui" line="84"/>
         <source>Close</source>
-        <translation type="unfinished"></translation>
+        <translation>关闭</translation>
     </message>
 </context>
 <context>
@@ -715,37 +715,37 @@
     <message>
         <location filename="../source/dialogs/directiondialog.ui" line="17"/>
         <source>Musical Direction</source>
-        <translation type="unfinished"></translation>
+        <translation>反复记号</translation>
     </message>
     <message>
         <location filename="../source/dialogs/directiondialog.ui" line="28"/>
         <source>Symbol:</source>
-        <translation type="unfinished"></translation>
+        <translation>标记：</translation>
     </message>
     <message>
         <location filename="../source/dialogs/directiondialog.ui" line="38"/>
         <source>Active Symbol:</source>
-        <translation type="unfinished"></translation>
+        <translation>开始标记：</translation>
     </message>
     <message>
         <location filename="../source/dialogs/directiondialog.ui" line="48"/>
         <source>Repeat Number:</source>
-        <translation type="unfinished"></translation>
+        <translation>重复次数：</translation>
     </message>
     <message>
         <location filename="../source/dialogs/directiondialog.ui" line="58"/>
         <source>Direction:</source>
-        <translation type="unfinished"></translation>
+        <translation>反复记号：</translation>
     </message>
     <message>
         <location filename="../source/dialogs/directiondialog.ui" line="86"/>
         <source>Add</source>
-        <translation type="unfinished"></translation>
+        <translation>添加</translation>
     </message>
     <message>
         <location filename="../source/dialogs/directiondialog.ui" line="93"/>
         <source>Remove</source>
-        <translation type="unfinished"></translation>
+        <translation>删除</translation>
     </message>
 </context>
 <context>
@@ -753,17 +753,17 @@
     <message>
         <location filename="../source/dialogs/dynamicdialog.ui" line="17"/>
         <source>Dynamic</source>
-        <translation type="unfinished"></translation>
+        <translation>力度</translation>
     </message>
     <message>
         <location filename="../source/dialogs/dynamicdialog.ui" line="40"/>
         <source>Volume Level:</source>
-        <translation type="unfinished"></translation>
+        <translation>音量大小：</translation>
     </message>
     <message>
         <location filename="../source/dialogs/dynamicdialog.ui" line="67"/>
         <source>Off</source>
-        <translation type="unfinished"></translation>
+        <translation>关闭</translation>
     </message>
 </context>
 <context>
@@ -771,7 +771,7 @@
     <message>
         <location filename="../source/actions/editbarline.cpp" line="22"/>
         <source>Edit Barline Type</source>
-        <translation type="unfinished"></translation>
+        <translation>编辑小节线类型</translation>
     </message>
 </context>
 <context>
@@ -779,7 +779,7 @@
     <message>
         <location filename="../source/actions/editdynamic.cpp" line="25"/>
         <source>Edit Dynamic</source>
-        <translation type="unfinished"></translation>
+        <translation>编辑力度</translation>
     </message>
 </context>
 <context>
@@ -787,7 +787,7 @@
     <message>
         <location filename="../source/actions/editfileinformation.cpp" line="24"/>
         <source>Edit File Information</source>
-        <translation type="unfinished"></translation>
+        <translation>编辑文件信息</translation>
     </message>
 </context>
 <context>
@@ -795,7 +795,7 @@
     <message>
         <location filename="../source/actions/editinstrument.cpp" line="24"/>
         <source>Edit Instrument</source>
-        <translation type="unfinished"></translation>
+        <translation>编辑乐器</translation>
     </message>
 </context>
 <context>
@@ -803,7 +803,7 @@
     <message>
         <location filename="../source/actions/editkeysignature.cpp" line="25"/>
         <source>Edit Key Signature</source>
-        <translation type="unfinished"></translation>
+        <translation>编辑调号</translation>
     </message>
 </context>
 <context>
@@ -811,12 +811,12 @@
     <message>
         <location filename="../source/actions/editnoteduration.cpp" line="23"/>
         <source>Edit Rest Duration</source>
-        <translation type="unfinished"></translation>
+        <translation>编辑休止符时值</translation>
     </message>
     <message>
         <location filename="../source/actions/editnoteduration.cpp" line="24"/>
         <source>Edit Note Duration</source>
-        <translation type="unfinished"></translation>
+        <translation>编辑音符时值</translation>
     </message>
 </context>
 <context>
@@ -824,7 +824,7 @@
     <message>
         <location filename="../source/actions/editplayer.cpp" line="23"/>
         <source>Edit Player</source>
-        <translation type="unfinished"></translation>
+        <translation>编辑演奏者</translation>
     </message>
 </context>
 <context>
@@ -832,7 +832,7 @@
     <message>
         <location filename="../source/actions/editrehearsalsign.cpp" line="48"/>
         <source>Edit Rehearsal Sign</source>
-        <translation type="unfinished"></translation>
+        <translation>编辑排练注释</translation>
     </message>
 </context>
 <context>
@@ -840,7 +840,7 @@
     <message>
         <location filename="../source/actions/editstaff.cpp" line="24"/>
         <source>Edit Staff</source>
-        <translation type="unfinished"></translation>
+        <translation>编辑乐谱</translation>
     </message>
 </context>
 <context>
@@ -848,7 +848,7 @@
     <message>
         <location filename="../source/actions/edittabnumber.cpp" line="21"/>
         <source>Edit Tab Number</source>
-        <translation type="unfinished"></translation>
+        <translation>更改编号</translation>
     </message>
 </context>
 <context>
@@ -856,7 +856,7 @@
     <message>
         <location filename="../source/actions/edittimesignature.cpp" line="25"/>
         <source>Edit Time Signature</source>
-        <translation type="unfinished"></translation>
+        <translation>编辑拍子</translation>
     </message>
 </context>
 <context>
@@ -864,7 +864,7 @@
     <message>
         <location filename="../source/actions/editviewfilters.cpp" line="24"/>
         <source>Edit View Filters</source>
-        <translation type="unfinished"></translation>
+        <translation>编辑筛选器</translation>
     </message>
 </context>
 <context>
@@ -872,367 +872,367 @@
     <message>
         <location filename="../source/dialogs/fileinformationdialog.ui" line="17"/>
         <source>File Information</source>
-        <translation type="unfinished"></translation>
+        <translation>文件信息</translation>
     </message>
     <message>
         <location filename="../source/dialogs/fileinformationdialog.ui" line="30"/>
         <source>Song Information</source>
-        <translation type="unfinished"></translation>
+        <translation>曲目信息</translation>
     </message>
     <message>
         <location filename="../source/dialogs/fileinformationdialog.ui" line="51"/>
         <source>Classification:</source>
-        <translation type="unfinished"></translation>
+        <translation>分类：</translation>
     </message>
     <message>
         <location filename="../source/dialogs/fileinformationdialog.ui" line="63"/>
         <source>Song</source>
-        <translation type="unfinished"></translation>
+        <translation>乐曲</translation>
     </message>
     <message>
         <location filename="../source/dialogs/fileinformationdialog.ui" line="73"/>
         <source>Lesson</source>
-        <translation type="unfinished"></translation>
+        <translation>课程</translation>
     </message>
     <message>
         <location filename="../source/dialogs/fileinformationdialog.ui" line="113"/>
         <location filename="../source/dialogs/fileinformationdialog.ui" line="478"/>
         <source>Title:</source>
-        <translation type="unfinished"></translation>
+        <translation>标题：</translation>
     </message>
     <message>
         <location filename="../source/dialogs/fileinformationdialog.ui" line="123"/>
         <location filename="../source/dialogs/fileinformationdialog.ui" line="488"/>
         <source>Subtitle:</source>
-        <translation type="unfinished"></translation>
+        <translation>副标题：</translation>
     </message>
     <message>
         <location filename="../source/dialogs/fileinformationdialog.ui" line="133"/>
         <source>Artist:</source>
-        <translation type="unfinished"></translation>
+        <translation>艺人：</translation>
     </message>
     <message>
         <location filename="../source/dialogs/fileinformationdialog.ui" line="152"/>
         <source>Release Information</source>
-        <translation type="unfinished"></translation>
+        <translation>发行信息</translation>
     </message>
     <message>
         <location filename="../source/dialogs/fileinformationdialog.ui" line="164"/>
         <source>Release Type:</source>
-        <translation type="unfinished"></translation>
+        <translation>发行类型：</translation>
     </message>
     <message>
         <location filename="../source/dialogs/fileinformationdialog.ui" line="178"/>
         <source>Public Release (Audio)</source>
-        <translation type="unfinished"></translation>
+        <translation>公开发行（音频）</translation>
     </message>
     <message>
         <location filename="../source/dialogs/fileinformationdialog.ui" line="183"/>
         <source>Public Release (Video)</source>
-        <translation type="unfinished"></translation>
+        <translation>公开发行（视频）</translation>
     </message>
     <message>
         <location filename="../source/dialogs/fileinformationdialog.ui" line="188"/>
         <source>Bootleg</source>
-        <translation type="unfinished"></translation>
+        <translation>Bootleg</translation>
     </message>
     <message>
         <location filename="../source/dialogs/fileinformationdialog.ui" line="193"/>
         <source>Not Released</source>
-        <translation type="unfinished"></translation>
+        <translation>未发行</translation>
     </message>
     <message>
         <location filename="../source/dialogs/fileinformationdialog.ui" line="223"/>
         <source>Album Title:</source>
-        <translation type="unfinished"></translation>
+        <translation>专辑名：</translation>
     </message>
     <message>
         <location filename="../source/dialogs/fileinformationdialog.ui" line="233"/>
         <source>Album Type:</source>
-        <translation type="unfinished"></translation>
+        <translation>专辑类型：</translation>
     </message>
     <message>
         <location filename="../source/dialogs/fileinformationdialog.ui" line="241"/>
         <source>Single</source>
-        <translation type="unfinished"></translation>
+        <translation>单曲</translation>
     </message>
     <message>
         <location filename="../source/dialogs/fileinformationdialog.ui" line="246"/>
         <source>EP</source>
-        <translation type="unfinished"></translation>
+        <translation>EP</translation>
     </message>
     <message>
         <location filename="../source/dialogs/fileinformationdialog.ui" line="251"/>
         <source>Album</source>
-        <translation type="unfinished"></translation>
+        <translation>专辑</translation>
     </message>
     <message>
         <location filename="../source/dialogs/fileinformationdialog.ui" line="256"/>
         <source>Double Album</source>
-        <translation type="unfinished"></translation>
+        <translation>双面专辑</translation>
     </message>
     <message>
         <location filename="../source/dialogs/fileinformationdialog.ui" line="261"/>
         <source>Triple Album</source>
-        <translation type="unfinished"></translation>
+        <translation>三面专辑</translation>
     </message>
     <message>
         <location filename="../source/dialogs/fileinformationdialog.ui" line="266"/>
         <source>Boxset</source>
-        <translation type="unfinished"></translation>
+        <translation>套装</translation>
     </message>
     <message>
         <location filename="../source/dialogs/fileinformationdialog.ui" line="274"/>
         <source>Year:</source>
-        <translation type="unfinished"></translation>
+        <translation>年：</translation>
     </message>
     <message>
         <location filename="../source/dialogs/fileinformationdialog.ui" line="281"/>
         <location filename="../source/dialogs/fileinformationdialog.ui" line="322"/>
         <source>Live Recording:</source>
-        <translation type="unfinished"></translation>
+        <translation>Live录像：</translation>
     </message>
     <message>
         <location filename="../source/dialogs/fileinformationdialog.ui" line="312"/>
         <source>Video Title:</source>
-        <translation type="unfinished"></translation>
+        <translation>视频名：</translation>
     </message>
     <message>
         <location filename="../source/dialogs/fileinformationdialog.ui" line="349"/>
         <source>Bootleg Title:</source>
-        <translation type="unfinished"></translation>
+        <translation>曲名：</translation>
     </message>
     <message>
         <location filename="../source/dialogs/fileinformationdialog.ui" line="359"/>
         <source>Bootleg Date:</source>
-        <translation type="unfinished"></translation>
+        <translation>日期：</translation>
     </message>
     <message>
         <location filename="../source/dialogs/fileinformationdialog.ui" line="382"/>
         <location filename="../source/dialogs/fileinformationdialog.ui" line="654"/>
         <source>Author Information</source>
-        <translation type="unfinished"></translation>
+        <translation>作者信息</translation>
     </message>
     <message>
         <location filename="../source/dialogs/fileinformationdialog.ui" line="400"/>
         <source>Traditional (Author Unknown):</source>
-        <translation type="unfinished"></translation>
+        <translation>传统歌曲（佚名）：</translation>
     </message>
     <message>
         <location filename="../source/dialogs/fileinformationdialog.ui" line="410"/>
         <source>Music By:</source>
-        <translation type="unfinished"></translation>
+        <translation>作曲：</translation>
     </message>
     <message>
         <location filename="../source/dialogs/fileinformationdialog.ui" line="420"/>
         <source>Words By:</source>
-        <translation type="unfinished"></translation>
+        <translation>作词：</translation>
     </message>
     <message>
         <location filename="../source/dialogs/fileinformationdialog.ui" line="430"/>
         <source>Arranged By:</source>
-        <translation type="unfinished"></translation>
+        <translation>编曲：</translation>
     </message>
     <message>
         <location filename="../source/dialogs/fileinformationdialog.ui" line="440"/>
         <source>Transcribed By:</source>
-        <translation type="unfinished"></translation>
+        <translation>扒谱：</translation>
     </message>
     <message>
         <location filename="../source/dialogs/fileinformationdialog.ui" line="450"/>
         <location filename="../source/dialogs/fileinformationdialog.ui" line="679"/>
         <source>Copyright:</source>
-        <translation type="unfinished"></translation>
+        <translation>版权：</translation>
     </message>
     <message>
         <location filename="../source/dialogs/fileinformationdialog.ui" line="498"/>
         <source>Style:</source>
-        <translation type="unfinished"></translation>
+        <translation>风格：</translation>
     </message>
     <message>
         <location filename="../source/dialogs/fileinformationdialog.ui" line="506"/>
         <source>Alternative</source>
-        <translation type="unfinished"></translation>
+        <translation>另类</translation>
     </message>
     <message>
         <location filename="../source/dialogs/fileinformationdialog.ui" line="511"/>
         <source>Bluegrass</source>
-        <translation type="unfinished"></translation>
+        <translation>蓝草</translation>
     </message>
     <message>
         <location filename="../source/dialogs/fileinformationdialog.ui" line="516"/>
         <source>Blues</source>
-        <translation type="unfinished"></translation>
+        <translation>布鲁斯</translation>
     </message>
     <message>
         <location filename="../source/dialogs/fileinformationdialog.ui" line="521"/>
         <source>Country</source>
-        <translation type="unfinished"></translation>
+        <translation>乡村</translation>
     </message>
     <message>
         <location filename="../source/dialogs/fileinformationdialog.ui" line="526"/>
         <source>Fingerpick</source>
-        <translation type="unfinished"></translation>
+        <translation>指弹</translation>
     </message>
     <message>
         <location filename="../source/dialogs/fileinformationdialog.ui" line="531"/>
         <source>Flamenco</source>
-        <translation type="unfinished"></translation>
+        <translation>Flamenco</translation>
     </message>
     <message>
         <location filename="../source/dialogs/fileinformationdialog.ui" line="536"/>
         <source>Folk</source>
-        <translation type="unfinished"></translation>
+        <translation>民谣</translation>
     </message>
     <message>
         <location filename="../source/dialogs/fileinformationdialog.ui" line="541"/>
         <source>Funk</source>
-        <translation type="unfinished"></translation>
+        <translation>Funk</translation>
     </message>
     <message>
         <location filename="../source/dialogs/fileinformationdialog.ui" line="546"/>
         <source>Fusion</source>
-        <translation type="unfinished"></translation>
+        <translation>Fusion</translation>
     </message>
     <message>
         <location filename="../source/dialogs/fileinformationdialog.ui" line="551"/>
         <source>General</source>
-        <translation type="unfinished"></translation>
+        <translation>一般</translation>
     </message>
     <message>
         <location filename="../source/dialogs/fileinformationdialog.ui" line="556"/>
         <source>Jazz</source>
-        <translation type="unfinished"></translation>
+        <translation>爵士</translation>
     </message>
     <message>
         <location filename="../source/dialogs/fileinformationdialog.ui" line="561"/>
         <source>Metal/Shred</source>
-        <translation type="unfinished"></translation>
+        <translation>金属</translation>
     </message>
     <message>
         <location filename="../source/dialogs/fileinformationdialog.ui" line="566"/>
         <source>Other</source>
-        <translation type="unfinished"></translation>
+        <translation>其他</translation>
     </message>
     <message>
         <location filename="../source/dialogs/fileinformationdialog.ui" line="571"/>
         <source>Pop</source>
-        <translation type="unfinished"></translation>
+        <translation>流行</translation>
     </message>
     <message>
         <location filename="../source/dialogs/fileinformationdialog.ui" line="576"/>
         <source>Progressive Rock</source>
-        <translation type="unfinished"></translation>
+        <translation>前卫</translation>
     </message>
     <message>
         <location filename="../source/dialogs/fileinformationdialog.ui" line="581"/>
         <source>Punk</source>
-        <translation type="unfinished"></translation>
+        <translation>朋克</translation>
     </message>
     <message>
         <location filename="../source/dialogs/fileinformationdialog.ui" line="586"/>
         <source>Reggae</source>
-        <translation type="unfinished"></translation>
+        <translation>Reggae</translation>
     </message>
     <message>
         <location filename="../source/dialogs/fileinformationdialog.ui" line="591"/>
         <source>Rock</source>
-        <translation type="unfinished"></translation>
+        <translation>摇滚</translation>
     </message>
     <message>
         <location filename="../source/dialogs/fileinformationdialog.ui" line="596"/>
         <source>Swing</source>
-        <translation type="unfinished"></translation>
+        <translation>Swing</translation>
     </message>
     <message>
         <location filename="../source/dialogs/fileinformationdialog.ui" line="604"/>
         <source>Level</source>
-        <translation type="unfinished"></translation>
+        <translation>难度</translation>
     </message>
     <message>
         <location filename="../source/dialogs/fileinformationdialog.ui" line="613"/>
         <source>Beginner</source>
-        <translation type="unfinished"></translation>
+        <translation>初学者</translation>
     </message>
     <message>
         <location filename="../source/dialogs/fileinformationdialog.ui" line="623"/>
         <source>Intermediate</source>
-        <translation type="unfinished"></translation>
+        <translation>中级</translation>
     </message>
     <message>
         <location filename="../source/dialogs/fileinformationdialog.ui" line="633"/>
         <source>Advanced</source>
-        <translation type="unfinished"></translation>
+        <translation>高级</translation>
     </message>
     <message>
         <location filename="../source/dialogs/fileinformationdialog.ui" line="669"/>
         <source>Author:</source>
-        <translation type="unfinished"></translation>
+        <translation>作者：</translation>
     </message>
     <message>
         <location filename="../source/dialogs/fileinformationdialog.ui" line="694"/>
         <source>Performance Notes</source>
-        <translation type="unfinished"></translation>
+        <translation>脚注</translation>
     </message>
     <message>
         <location filename="../source/dialogs/fileinformationdialog.ui" line="718"/>
         <source>Notes:</source>
-        <translation type="unfinished"></translation>
+        <translation>注释：</translation>
     </message>
     <message>
         <location filename="../source/dialogs/fileinformationdialog.ui" line="734"/>
         <source>Lyrics</source>
-        <translation type="unfinished"></translation>
+        <translation>歌词</translation>
     </message>
     <message>
         <location filename="../source/dialogs/fileinformationdialog.ui" line="758"/>
         <source>Lyrics:</source>
-        <translation type="unfinished"></translation>
+        <translation>歌词：</translation>
     </message>
     <message>
         <location filename="../source/dialogs/fileinformationdialog.ui" line="774"/>
         <source>Properties</source>
-        <translation type="unfinished"></translation>
+        <translation>属性</translation>
     </message>
     <message>
         <location filename="../source/dialogs/fileinformationdialog.ui" line="798"/>
         <source>Name:</source>
-        <translation type="unfinished"></translation>
+        <translation>名称：</translation>
     </message>
     <message>
         <location filename="../source/dialogs/fileinformationdialog.ui" line="812"/>
         <source>Location:</source>
-        <translation type="unfinished"></translation>
+        <translation>位置：</translation>
     </message>
     <message>
         <location filename="../source/dialogs/fileinformationdialog.ui" line="826"/>
         <source>Size:</source>
-        <translation type="unfinished"></translation>
+        <translation>大小：</translation>
     </message>
     <message>
         <location filename="../source/dialogs/fileinformationdialog.ui" line="840"/>
         <source>Created:</source>
-        <translation type="unfinished"></translation>
+        <translation>创建日期：</translation>
     </message>
     <message>
         <location filename="../source/dialogs/fileinformationdialog.ui" line="854"/>
         <source>Modified:</source>
-        <translation type="unfinished"></translation>
+        <translation>修改日期：</translation>
     </message>
     <message>
         <location filename="../source/dialogs/fileinformationdialog.ui" line="868"/>
         <source>Accessed:</source>
-        <translation type="unfinished"></translation>
+        <translation>最后访问：</translation>
     </message>
     <message>
         <location filename="../source/dialogs/fileinformationdialog.cpp" line="165"/>
         <source>Untitled</source>
-        <translation type="unfinished"></translation>
+        <translation>未命名</translation>
     </message>
     <message>
         <location filename="../source/dialogs/fileinformationdialog.cpp" line="177"/>
         <source>%1 bytes</source>
-        <translation type="unfinished"></translation>
+        <translation>%1 bytes</translation>
     </message>
 </context>
 <context>
@@ -1240,47 +1240,47 @@
     <message>
         <location filename="../source/dialogs/filterrulewidget.ui" line="14"/>
         <source>Form</source>
-        <translation type="unfinished"></translation>
+        <translation>形式</translation>
     </message>
     <message>
         <location filename="../source/dialogs/filterrulewidget.ui" line="42"/>
         <source>Player Name</source>
-        <translation type="unfinished"></translation>
+        <translation>演奏者名称</translation>
     </message>
     <message>
         <location filename="../source/dialogs/filterrulewidget.ui" line="47"/>
         <source>Number of Strings</source>
-        <translation type="unfinished"></translation>
+        <translation>弦数量</translation>
     </message>
     <message>
         <location filename="../source/dialogs/filterrulewidget.ui" line="71"/>
         <source>matches</source>
-        <translation type="unfinished"></translation>
+        <translation>匹配项</translation>
     </message>
     <message>
         <location filename="../source/dialogs/filterrulewidget.ui" line="98"/>
         <source>&lt;</source>
-        <translation type="unfinished"></translation>
+        <translation>&lt;</translation>
     </message>
     <message>
         <location filename="../source/dialogs/filterrulewidget.ui" line="103"/>
         <source>&lt;=</source>
-        <translation type="unfinished"></translation>
+        <translation>&lt;=</translation>
     </message>
     <message>
         <location filename="../source/dialogs/filterrulewidget.ui" line="108"/>
         <source>=</source>
-        <translation type="unfinished"></translation>
+        <translation>=</translation>
     </message>
     <message>
         <location filename="../source/dialogs/filterrulewidget.ui" line="113"/>
         <source>&gt;=</source>
-        <translation type="unfinished"></translation>
+        <translation>&gt;=</translation>
     </message>
     <message>
         <location filename="../source/dialogs/filterrulewidget.ui" line="118"/>
         <source>&gt;</source>
-        <translation type="unfinished"></translation>
+        <translation>&gt;</translation>
     </message>
 </context>
 <context>
@@ -1288,12 +1288,12 @@
     <message>
         <location filename="../source/dialogs/gotobarlinedialog.ui" line="17"/>
         <source>Go To Barline</source>
-        <translation type="unfinished"></translation>
+        <translation>跳转到小节</translation>
     </message>
     <message>
         <location filename="../source/dialogs/gotobarlinedialog.ui" line="28"/>
         <source>Barline:</source>
-        <translation type="unfinished"></translation>
+        <translation>小节数：</translation>
     </message>
 </context>
 <context>
@@ -1301,12 +1301,12 @@
     <message>
         <location filename="../source/dialogs/gotorehearsalsigndialog.ui" line="17"/>
         <source>Go To Rehearsal Sign</source>
-        <translation type="unfinished"></translation>
+        <translation>跳转到排练标记</translation>
     </message>
     <message>
         <location filename="../source/dialogs/gotorehearsalsigndialog.ui" line="28"/>
         <source>Rehearsal Sign:</source>
-        <translation type="unfinished"></translation>
+        <translation>排练标记：</translation>
     </message>
 </context>
 <context>
@@ -1314,18 +1314,19 @@
     <message>
         <location filename="../source/dialogs/infodialog.ui" line="14"/>
         <source>Application Info</source>
-        <translation type="unfinished"></translation>
+        <translation>应用信息</translation>
     </message>
     <message>
         <location filename="../source/dialogs/infodialog.ui" line="39"/>
         <source>&amp;Copy to Clipboard</source>
-        <translation type="unfinished"></translation>
+        <translation>&amp;复制到剪贴板</translation>
     </message>
     <message>
         <location filename="../source/dialogs/infodialog.cpp" line="47"/>
         <source>You can grab development binaries here:
   https://github.com/powertab/powertabeditor/actions</source>
-        <translation type="unfinished"></translation>
+        <translation>你可以从此处获取程序源文件:
+  https://github.com/powertab/powertabeditor/actions</translation>
     </message>
 </context>
 <context>
@@ -1333,7 +1334,7 @@
     <message>
         <location filename="../source/actions/insertnotes.cpp" line="27"/>
         <source>Insert Notes</source>
-        <translation type="unfinished"></translation>
+        <translation>插入音符</translation>
     </message>
 </context>
 <context>
@@ -1341,27 +1342,27 @@
     <message>
         <location filename="../source/widgets/instruments/instrumentpanelitem.ui" line="26"/>
         <source>Form</source>
-        <translation type="unfinished"></translation>
+        <translation>类型</translation>
     </message>
     <message>
         <location filename="../source/widgets/instruments/instrumentpanelitem.ui" line="50"/>
         <source>1.</source>
-        <translation type="unfinished"></translation>
+        <translation>1.</translation>
     </message>
     <message>
         <location filename="../source/widgets/instruments/instrumentpanelitem.ui" line="57"/>
         <source>Click to change instrument name.</source>
-        <translation type="unfinished"></translation>
+        <translation>点击修改乐器名称</translation>
     </message>
     <message>
         <location filename="../source/widgets/instruments/instrumentpanelitem.ui" line="60"/>
         <source>Instrument</source>
-        <translation type="unfinished"></translation>
+        <translation>乐器</translation>
     </message>
     <message>
         <location filename="../source/widgets/instruments/instrumentpanelitem.ui" line="117"/>
         <source>Remove Instrument</source>
-        <translation type="unfinished"></translation>
+        <translation>删除</translation>
     </message>
 </context>
 <context>
@@ -1369,17 +1370,17 @@
     <message>
         <location filename="../source/dialogs/irregulargroupingdialog.ui" line="17"/>
         <source>Irregular Grouping</source>
-        <translation type="unfinished"></translation>
+        <translation>连线</translation>
     </message>
     <message>
         <location filename="../source/dialogs/irregulargroupingdialog.ui" line="28"/>
         <source>Notes Played:</source>
-        <translation type="unfinished"></translation>
+        <translation>弹出的音符：</translation>
     </message>
     <message>
         <location filename="../source/dialogs/irregulargroupingdialog.ui" line="38"/>
         <source>Notes Played Over:</source>
-        <translation type="unfinished"></translation>
+        <translation>延音的音符：</translation>
     </message>
 </context>
 <context>
@@ -1387,32 +1388,32 @@
     <message>
         <location filename="../source/dialogs/keysignaturedialog.ui" line="17"/>
         <source>Key Signature</source>
-        <translation type="unfinished"></translation>
+        <translation>调号</translation>
     </message>
     <message>
         <location filename="../source/dialogs/keysignaturedialog.ui" line="31"/>
         <source>Visible:</source>
-        <translation type="unfinished"></translation>
+        <translation>可见：</translation>
     </message>
     <message>
         <location filename="../source/dialogs/keysignaturedialog.ui" line="41"/>
         <source>Key Type:</source>
-        <translation type="unfinished"></translation>
+        <translation>调式：</translation>
     </message>
     <message>
         <location filename="../source/dialogs/keysignaturedialog.ui" line="50"/>
         <source>Major</source>
-        <translation type="unfinished"></translation>
+        <translation>大调（Maj)</translation>
     </message>
     <message>
         <location filename="../source/dialogs/keysignaturedialog.ui" line="57"/>
         <source>Minor</source>
-        <translation type="unfinished"></translation>
+        <translation>小调（Minor）</translation>
     </message>
     <message>
         <location filename="../source/dialogs/keysignaturedialog.ui" line="66"/>
         <source>Key:</source>
-        <translation type="unfinished"></translation>
+        <translation>调：</translation>
     </message>
 </context>
 <context>
@@ -1420,47 +1421,47 @@
     <message>
         <location filename="../source/dialogs/keyboardsettingsdialog.ui" line="23"/>
         <source>Edit Keyboard Shortcuts</source>
-        <translation type="unfinished"></translation>
+        <translation>编辑快捷键</translation>
     </message>
     <message>
         <location filename="../source/dialogs/keyboardsettingsdialog.ui" line="46"/>
         <source>Shortcut:</source>
-        <translation type="unfinished"></translation>
+        <translation>快捷键：</translation>
     </message>
     <message>
         <location filename="../source/dialogs/keyboardsettingsdialog.ui" line="56"/>
         <source>Reset</source>
-        <translation type="unfinished"></translation>
+        <translation>重置</translation>
     </message>
     <message>
         <location filename="../source/dialogs/keyboardsettingsdialog.ui" line="63"/>
         <source>Default</source>
-        <translation type="unfinished"></translation>
+        <translation>默认</translation>
     </message>
     <message>
         <location filename="../source/dialogs/keyboardsettingsdialog.cpp" line="66"/>
         <source>Command</source>
-        <translation type="unfinished"></translation>
+        <translation>命令</translation>
     </message>
     <message>
         <location filename="../source/dialogs/keyboardsettingsdialog.cpp" line="66"/>
         <source>Label</source>
-        <translation type="unfinished"></translation>
+        <translation>标签</translation>
     </message>
     <message>
         <location filename="../source/dialogs/keyboardsettingsdialog.cpp" line="66"/>
         <source>Shortcut</source>
-        <translation type="unfinished"></translation>
+        <translation>快捷键</translation>
     </message>
     <message>
         <location filename="../source/dialogs/keyboardsettingsdialog.cpp" line="189"/>
         <source>The shortcut %1 is already in use.</source>
-        <translation type="unfinished"></translation>
+        <translation>%1 已经被占用。</translation>
     </message>
     <message>
         <location filename="../source/dialogs/keyboardsettingsdialog.cpp" line="191"/>
         <source>Do you want to use this shortcut and remove the shortcut of the &lt;b&gt;%1&lt;/b&gt; command?</source>
-        <translation type="unfinished"></translation>
+        <translation>你想保留此快捷键，并删除&lt;b&gt;%1&lt;/b&gt;的命令吗？</translation>
     </message>
 </context>
 <context>
@@ -1468,87 +1469,87 @@
     <message>
         <location filename="../source/dialogs/lefthandfingeringdialog.ui" line="17"/>
         <source>Left Hand Fingering</source>
-        <translation type="unfinished"></translation>
+        <translation>左手指法</translation>
     </message>
     <message>
         <location filename="../source/dialogs/lefthandfingeringdialog.ui" line="31"/>
         <source>Finger:</source>
-        <translation type="unfinished"></translation>
+        <translation>指法：</translation>
     </message>
     <message>
         <location filename="../source/dialogs/lefthandfingeringdialog.ui" line="41"/>
         <source>Position relative to note head:</source>
-        <translation type="unfinished"></translation>
+        <translation>相对符头的位置：</translation>
     </message>
     <message>
         <location filename="../source/dialogs/lefthandfingeringdialog.cpp" line="31"/>
         <source>None (string empty)</source>
-        <translation type="unfinished"></translation>
+        <translation>无（空弦）</translation>
     </message>
     <message>
         <location filename="../source/dialogs/lefthandfingeringdialog.cpp" line="31"/>
         <source>Index finger</source>
-        <translation type="unfinished"></translation>
+        <translation>食指</translation>
     </message>
     <message>
         <location filename="../source/dialogs/lefthandfingeringdialog.cpp" line="31"/>
         <source>Middle finger</source>
-        <translation type="unfinished"></translation>
+        <translation>中指</translation>
     </message>
     <message>
         <location filename="../source/dialogs/lefthandfingeringdialog.cpp" line="32"/>
         <source>Ring finger</source>
-        <translation type="unfinished"></translation>
+        <translation>无名指</translation>
     </message>
     <message>
         <location filename="../source/dialogs/lefthandfingeringdialog.cpp" line="32"/>
         <source>Little finger</source>
-        <translation type="unfinished"></translation>
+        <translation>小指</translation>
     </message>
     <message>
         <location filename="../source/dialogs/lefthandfingeringdialog.cpp" line="32"/>
         <source>Thumb</source>
-        <translation type="unfinished"></translation>
+        <translation>拇指</translation>
     </message>
     <message>
         <location filename="../source/dialogs/lefthandfingeringdialog.cpp" line="36"/>
         <source>Left</source>
-        <translation type="unfinished"></translation>
+        <translation>左</translation>
     </message>
     <message>
         <location filename="../source/dialogs/lefthandfingeringdialog.cpp" line="36"/>
         <source>Above and left</source>
-        <translation type="unfinished"></translation>
+        <translation>左上</translation>
     </message>
     <message>
         <location filename="../source/dialogs/lefthandfingeringdialog.cpp" line="36"/>
         <source>Above, centered</source>
-        <translation type="unfinished"></translation>
+        <translation>上</translation>
     </message>
     <message>
         <location filename="../source/dialogs/lefthandfingeringdialog.cpp" line="37"/>
         <source>Above and right</source>
-        <translation type="unfinished"></translation>
+        <translation>右上</translation>
     </message>
     <message>
         <location filename="../source/dialogs/lefthandfingeringdialog.cpp" line="37"/>
         <source>Right</source>
-        <translation type="unfinished"></translation>
+        <translation>右</translation>
     </message>
     <message>
         <location filename="../source/dialogs/lefthandfingeringdialog.cpp" line="37"/>
         <source>Below and right</source>
-        <translation type="unfinished"></translation>
+        <translation>右下</translation>
     </message>
     <message>
         <location filename="../source/dialogs/lefthandfingeringdialog.cpp" line="38"/>
         <source>Below, centered</source>
-        <translation type="unfinished"></translation>
+        <translation>下</translation>
     </message>
     <message>
         <location filename="../source/dialogs/lefthandfingeringdialog.cpp" line="38"/>
         <source>Below and left</source>
-        <translation type="unfinished"></translation>
+        <translation>左下</translation>
     </message>
 </context>
 <context>
@@ -1556,22 +1557,22 @@
     <message>
         <location filename="../source/audio/midiplayer.cpp" line="94"/>
         <source>Error initializing MIDI output device.</source>
-        <translation type="unfinished"></translation>
+        <translation>初始化MIDI输出设备出错。</translation>
     </message>
     <message>
         <location filename="../source/audio/midiplayer.cpp" line="97"/>
         <source>MIDI interface: &apos;%1&apos;</source>
-        <translation type="unfinished"></translation>
+        <translation>MIDI接口：%1</translation>
     </message>
     <message>
         <location filename="../source/audio/midiplayer.cpp" line="99"/>
         <source>MIDI port: &apos;%1&apos;</source>
-        <translation type="unfinished"></translation>
+        <translation>MIDI 端口：%1</translation>
     </message>
     <message>
         <location filename="../source/audio/midiplayer.cpp" line="105"/>
         <source>The MIDI device may not be accessible. The following commands can be run to allow access:</source>
-        <translation type="unfinished"></translation>
+        <translation>MIDI设备不可访问。运行以下命令来授权：</translation>
     </message>
 </context>
 <context>
@@ -1579,47 +1580,47 @@
     <message>
         <location filename="../source/widgets/mixer/mixeritem.ui" line="26"/>
         <source>Form</source>
-        <translation type="unfinished"></translation>
+        <translation>格式</translation>
     </message>
     <message>
         <location filename="../source/widgets/mixer/mixeritem.ui" line="29"/>
         <source>Click to change player name.</source>
-        <translation type="unfinished"></translation>
+        <translation>点击以更改演奏者名称。</translation>
     </message>
     <message>
         <location filename="../source/widgets/mixer/mixeritem.ui" line="53"/>
         <source>1.</source>
-        <translation type="unfinished"></translation>
+        <translation>1.</translation>
     </message>
     <message>
         <location filename="../source/widgets/mixer/mixeritem.ui" line="72"/>
         <source>Player Name</source>
-        <translation type="unfinished"></translation>
+        <translation>演奏者名称</translation>
     </message>
     <message>
         <location filename="../source/widgets/mixer/mixeritem.ui" line="107"/>
         <source>Drag to adjust volume.</source>
-        <translation type="unfinished"></translation>
+        <translation>拖动以调节音量。</translation>
     </message>
     <message>
         <location filename="../source/widgets/mixer/mixeritem.ui" line="129"/>
         <source>Drag to adjust panning.</source>
-        <translation type="unfinished"></translation>
+        <translation>拖动以调节pan。</translation>
     </message>
     <message>
         <location filename="../source/widgets/mixer/mixeritem.ui" line="148"/>
         <source>Click to adjust tuning.</source>
-        <translation type="unfinished"></translation>
+        <translation>点击以调节tune。</translation>
     </message>
     <message>
         <location filename="../source/widgets/mixer/mixeritem.ui" line="151"/>
         <source>Tuning</source>
-        <translation type="unfinished"></translation>
+        <translation>调音</translation>
     </message>
     <message>
         <location filename="../source/widgets/mixer/mixeritem.ui" line="176"/>
         <source>Remove Player</source>
-        <translation type="unfinished"></translation>
+        <translation>删除演奏者</translation>
     </message>
 </context>
 <context>
@@ -1627,12 +1628,12 @@
     <message>
         <location filename="../source/dialogs/multibarrestdialog.ui" line="17"/>
         <source>Multi-Bar Rest</source>
-        <translation type="unfinished"></translation>
+        <translation>多小节休止符</translation>
     </message>
     <message>
         <location filename="../source/dialogs/multibarrestdialog.ui" line="31"/>
         <source>Number of Bars:</source>
-        <translation type="unfinished"></translation>
+        <translation>小节数：</translation>
     </message>
 </context>
 <context>
@@ -1640,97 +1641,97 @@
     <message>
         <location filename="../source/widgets/toolbox/notepage.cpp" line="34"/>
         <source>Notes</source>
-        <translation type="unfinished"></translation>
+        <translation>音符</translation>
     </message>
     <message>
         <location filename="../source/widgets/toolbox/notepage.cpp" line="47"/>
         <source>Whole Note</source>
-        <translation type="unfinished"></translation>
+        <translation>全音符</translation>
     </message>
     <message>
         <location filename="../source/widgets/toolbox/notepage.cpp" line="52"/>
         <source>Half Note</source>
-        <translation type="unfinished"></translation>
+        <translation>二分音符</translation>
     </message>
     <message>
         <location filename="../source/widgets/toolbox/notepage.cpp" line="57"/>
         <source>Quarter Note</source>
-        <translation type="unfinished"></translation>
+        <translation>四分音符</translation>
     </message>
     <message>
         <location filename="../source/widgets/toolbox/notepage.cpp" line="62"/>
         <source>8th Note</source>
-        <translation type="unfinished"></translation>
+        <translation>八分音符</translation>
     </message>
     <message>
         <location filename="../source/widgets/toolbox/notepage.cpp" line="67"/>
         <source>16th Note</source>
-        <translation type="unfinished"></translation>
+        <translation>十六分音符</translation>
     </message>
     <message>
         <location filename="../source/widgets/toolbox/notepage.cpp" line="72"/>
         <source>32nd Note</source>
-        <translation type="unfinished"></translation>
+        <translation>三十二分音符</translation>
     </message>
     <message>
         <location filename="../source/widgets/toolbox/notepage.cpp" line="77"/>
         <source>64th Note</source>
-        <translation type="unfinished"></translation>
+        <translation>六十四分音符</translation>
     </message>
     <message>
         <location filename="../source/widgets/toolbox/notepage.cpp" line="100"/>
         <source>Rests</source>
-        <translation type="unfinished"></translation>
+        <translation>休止符</translation>
     </message>
     <message>
         <location filename="../source/widgets/toolbox/notepage.cpp" line="113"/>
         <source>Whole Rest</source>
-        <translation type="unfinished"></translation>
+        <translation>全休符</translation>
     </message>
     <message>
         <location filename="../source/widgets/toolbox/notepage.cpp" line="118"/>
         <source>Half Rest</source>
-        <translation type="unfinished"></translation>
+        <translation>二分休止符</translation>
     </message>
     <message>
         <location filename="../source/widgets/toolbox/notepage.cpp" line="123"/>
         <source>Quarter Rest</source>
-        <translation type="unfinished"></translation>
+        <translation>四分休止符</translation>
     </message>
     <message>
         <location filename="../source/widgets/toolbox/notepage.cpp" line="128"/>
         <source>8th Rest</source>
-        <translation type="unfinished"></translation>
+        <translation>八分休止符</translation>
     </message>
     <message>
         <location filename="../source/widgets/toolbox/notepage.cpp" line="133"/>
         <source>16th Rest</source>
-        <translation type="unfinished"></translation>
+        <translation>十六分休止符</translation>
     </message>
     <message>
         <location filename="../source/widgets/toolbox/notepage.cpp" line="138"/>
         <source>32nd Rest</source>
-        <translation type="unfinished"></translation>
+        <translation>三十二分休止符</translation>
     </message>
     <message>
         <location filename="../source/widgets/toolbox/notepage.cpp" line="143"/>
         <source>64th Rest</source>
-        <translation type="unfinished"></translation>
+        <translation>六十四分休止符</translation>
     </message>
     <message>
         <location filename="../source/widgets/toolbox/notepage.cpp" line="166"/>
         <source>Rhythmic Devices</source>
-        <translation type="unfinished"></translation>
+        <translation>节奏符号</translation>
     </message>
     <message>
         <location filename="../source/widgets/toolbox/notepage.cpp" line="170"/>
         <source>Dotted Note</source>
-        <translation type="unfinished"></translation>
+        <translation>附点音符</translation>
     </message>
     <message>
         <location filename="../source/widgets/toolbox/notepage.cpp" line="176"/>
         <source>Double Dotted Note</source>
-        <translation type="unfinished"></translation>
+        <translation>双附点音符</translation>
     </message>
     <message>
         <location filename="../source/widgets/toolbox/notepage.cpp" line="181"/>
