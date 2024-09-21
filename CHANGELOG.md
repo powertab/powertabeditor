@@ -20,6 +20,7 @@ Thanks to the following contributors who worked on this release:
 ### Changed
 - Chord diagrams now display the fret number of the top fret instead of the next fret after it (#408)
 - Updated the minimum required version of `RtMidi` to 4.0
+- Updated the minimum required version of `boost` to 1.74
 
 ### Fixed
 - Fixed a bug that caused some preferences such as custom shortcuts to not persist on macOS. Note that all other preferences (such as MIDI settings) are reset by this fix and will need to be manually changed to the desired values (#447).

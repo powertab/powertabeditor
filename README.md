@@ -66,7 +66,7 @@ Power Tab Editor 2.0 - A powerful cross platform guitar tablature viewer and edi
 
 ### Dependencies:
 * [CMake](http://www.cmake.org/) >= 3.12
-* [Boost](http://www.boost.org/) >= 1.65
+* [Boost](http://www.boost.org/) >= 1.74
   * algorithm
   * date_time
   * endian
