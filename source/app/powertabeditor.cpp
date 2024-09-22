@@ -125,6 +125,7 @@
 
 #include <formats/fileformatmanager.h>
 
+#include <QActionGroup>
 #include <QCoreApplication>
 #include <QDebug>
 #include <QDesktopServices>
@@ -138,6 +139,7 @@
 #include <QPrinter>
 #include <QPrintDialog>
 #include <QPrintPreviewDialog>
+#include <QRegularExpression>
 #include <QScrollArea>
 #include <QTabBar>
 #include <QUrl>
@@ -457,11 +459,12 @@ bool PowerTabEditor::saveFileAs(int doc_index)
         if (info.suffix().isEmpty())
         {
             const QString file_filter = dialog.selectedNameFilter();
-            QRegExp regex("\\*.(\\w+)");
-            if (regex.indexIn(file_filter, 0) < 0)
+            QRegularExpression regex("\\*.(\\w+)");
+            QRegularExpressionMatch match = regex.match(file_filter);
+            if (!match.hasMatch())
                 return false;
 
-            const QString extension = regex.cap(1);
+            const QString extension = match.captured(1);
             path += ".";
             path += extension;
         }
@@ -2207,14 +2210,6 @@ void PowerTabEditor::updateWindowTitle()
     setWindowTitle(name);
 }
 
-/// C++20 deprecated bitwise operations between different enum types, which
-/// QKeySequence relies on.
-inline constexpr int
-operator|(Qt::Modifier m, Qt::Key k)
-{
-    return static_cast<int>(m) | static_cast<int>(k);
-}
-
 void PowerTabEditor::createCommands()
 {
     // File-related commands.
@@ -3596,7 +3591,7 @@ void PowerTabEditor::createTabArea()
     QVBoxLayout *layout = new QVBoxLayout(myPlaybackArea);
     layout->addWidget(myTabWidget);
     layout->addWidget(myPlaybackWidget, 0, Qt::AlignHCenter);
-    layout->setMargin(0);
+    layout->setContentsMargins(0, 0, 0, 0);
     layout->setSpacing(0);
 
     enableEditing(false);
@@ -3759,11 +3754,7 @@ void PowerTabEditor::setupNewTab()
     // Each tab is 200px wide, so we want to shorten the name if it's wider
     // than 140px.
     bool chopped = false;
-#if (QT_VERSION >= QT_VERSION_CHECK(5,11,0))
     while (fm.horizontalAdvance(title) > 140)
-#else
-    while (fm.width(title) > 140)
-#endif
     {
         title.chop(1);
         chopped = true;

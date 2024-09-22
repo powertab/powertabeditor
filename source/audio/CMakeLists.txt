@@ -43,7 +43,7 @@ pte_library(
     DEPENDS
         PUBLIC
             ptescore
-            Qt5::Core
+            Qt::Core
         PRIVATE
             rtmidi::rtmidi
             ${platform_deps}

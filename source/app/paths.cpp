@@ -42,14 +42,14 @@ path getConfigDir()
 path getUserDataDir()
 {
     return fromQString(
-        QStandardPaths::writableLocation(QStandardPaths::DataLocation));
+        QStandardPaths::writableLocation(QStandardPaths::AppDataLocation));
 }
 
 std::vector<path> getDataDirs()
 {
     std::vector<path> paths;
     for (const QString &p :
-         QStandardPaths::standardLocations(QStandardPaths::DataLocation))
+         QStandardPaths::standardLocations(QStandardPaths::AppDataLocation))
     {
         paths.push_back(fromQString(p));
     }
@@ -67,8 +67,7 @@ getTranslationDirs()
         p /= "translations";
 
     // Also check in the Qt translations folder.
-    paths.push_back(
-        fromQString(QLibraryInfo::location(QLibraryInfo::TranslationsPath)));
+    paths.push_back(fromQString(QLibraryInfo::path(QLibraryInfo::TranslationsPath)));
 
     return paths;
 }

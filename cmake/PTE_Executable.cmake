@@ -10,7 +10,7 @@ function( pte_executable )
 
     set( generated_files )
     if ( PTE_EXE_RESOURCES )
-        qt5_add_resources( generated_files ${PTE_EXE_RESOURCES} )
+        qt_add_resources( generated_files ${PTE_EXE_RESOURCES} )
     endif ()
 
     if ( PTE_EXE_CONSOLE )

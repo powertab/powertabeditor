@@ -191,7 +191,7 @@ QGraphicsItem *BeamGroup::createStaccato(const NoteStem &stem,
                          ? stem.getX() - STEM_TO_NOTE_OFFSET
                          : stem.getX() + STEM_TO_NOTE_OFFSET;
 
-    auto dot = new SimpleTextItem(QChar(MusicFont::Dot), musicFont, 
+    auto dot = new SimpleTextItem(QChar(MusicSymbol::Dot), musicFont, 
                                     TextAlignment::Baseline,QPen(color));
     dot->setPos(x, y);
     return dot;
@@ -217,7 +217,7 @@ QGraphicsItem *BeamGroup::createFermata(const NoteStem &stem,
     }
 
     const QChar symbol = (stem.getStemType() == NoteStem::StemUp) ?
-                MusicFont::FermataUp : MusicFont::FermataDown;
+                MusicSymbol::FermataUp : MusicSymbol::FermataDown;
     auto fermata = new SimpleTextItem(symbol, musicFont, TextAlignment::Baseline,QPen(color));
     fermata->setPos(stem.getX(), y);
 
@@ -265,10 +265,10 @@ QGraphicsItem *BeamGroup::createAccent(const NoteStem &stem,
 
     QChar symbol;
     if (stem.hasMarcato())
-        symbol = MusicFont::Marcato;
+        symbol = MusicSymbol::Marcato;
     else if (stem.hasSforzando())
     {
-        symbol = MusicFont::Sforzando;
+        symbol = MusicSymbol::Sforzando;
         // The bottom of this symbol is aligned with the baseline, so shift
         // down a bit to align with the marcato symbol.
         y += 3;
@@ -289,7 +289,7 @@ BeamGroup::createNoteFlag(const NoteStem &stem, const QFont &musicFont,
 {
     Q_ASSERT(NoteStem::canHaveFlag(stem));
 
-    QChar symbol = 0;
+    QChar symbol;
 
     // Choose the flag symbol, depending on duration and stem direction.
     if (stem.getStemType() == NoteStem::StemUp)
@@ -297,46 +297,46 @@ BeamGroup::createNoteFlag(const NoteStem &stem, const QFont &musicFont,
         switch (stem.getDurationType())
         {
         case Position::EighthNote:
-            symbol = MusicFont::FlagUp1;
+            symbol = MusicSymbol::FlagUp1;
             break;
         case Position::SixteenthNote:
-            symbol = MusicFont::FlagUp2;
+            symbol = MusicSymbol::FlagUp2;
             break;
         case Position::ThirtySecondNote:
-            symbol = MusicFont::FlagUp3;
+            symbol = MusicSymbol::FlagUp3;
             break;
         case Position::SixtyFourthNote:
-            symbol = MusicFont::FlagUp4;
+            symbol = MusicSymbol::FlagUp4;
             break;
         default:
             break;
         }
 
         if (stem.isGraceNote())
-            symbol = MusicFont::FlagUp1;
+            symbol = MusicSymbol::FlagUp1;
     }
     else
     {
         switch (stem.getDurationType())
         {
         case Position::EighthNote:
-            symbol = MusicFont::FlagDown1;
+            symbol = MusicSymbol::FlagDown1;
             break;
         case Position::SixteenthNote:
-            symbol = MusicFont::FlagDown2;
+            symbol = MusicSymbol::FlagDown2;
             break;
         case Position::ThirtySecondNote:
-            symbol = MusicFont::FlagDown3;
+            symbol = MusicSymbol::FlagDown3;
             break;
         case Position::SixtyFourthNote:
-            symbol = MusicFont::FlagDown4;
+            symbol = MusicSymbol::FlagDown4;
             break;
         default:
             break;
         }
 
         if (stem.isGraceNote())
-            symbol = MusicFont::FlagDown1;
+            symbol = MusicSymbol::FlagDown1;
     }
 
     // Draw the symbol.
@@ -352,8 +352,8 @@ BeamGroup::createNoteFlag(const NoteStem &stem, const QFont &musicFont,
         group->addToGroup(flag);
 
         const QChar slash_symbol = stem.getStemType() == NoteStem::StemUp
-                                       ? MusicFont::GraceNoteSlashUp
-                                       : MusicFont::GraceNoteSlashDown;
+                                       ? MusicSymbol::GraceNoteSlashUp
+                                       : MusicSymbol::GraceNoteSlashDown;
 
         auto slash = new SimpleTextItem(slash_symbol, musicFont, 
 	        TextAlignment::Baseline, QPen(flagColor));

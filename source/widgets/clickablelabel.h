@@ -33,10 +33,10 @@ signals:
     void doubleClicked();
 
 protected:
-    virtual void enterEvent(QEvent *) override;
-    virtual void leaveEvent(QEvent *) override;
-    virtual void mouseReleaseEvent(QMouseEvent *) override;
-    virtual void mouseDoubleClickEvent(QMouseEvent *) override;
+    void enterEvent(QEnterEvent *) override;
+    void leaveEvent(QEvent *) override;
+    void mouseReleaseEvent(QMouseEvent *) override;
+    void mouseDoubleClickEvent(QMouseEvent *) override;
 };
 
 #endif

@@ -39,9 +39,6 @@ PreferencesDialog::PreferencesDialog(QWidget *parent,
 {
     ui->setupUi(this);
 
-    // Needed for findData() to work with QVariant's containing std::pair.
-    QMetaType::registerComparators<MidiApiAndPort>();
-
     connect(ui->buttonBox, &QDialogButtonBox::accepted, this, &QDialog::accept);
     connect(ui->buttonBox, &QDialogButtonBox::rejected, this, &QDialog::reject);
 

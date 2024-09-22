@@ -1,18 +1,20 @@
-find_package( Qt5Widgets REQUIRED )
-find_package( Qt5Network REQUIRED )
-find_package( Qt5PrintSupport REQUIRED )
-find_package( Qt5LinguistTools REQUIRED )
+find_package( Qt6 REQUIRED COMPONENTS
+	Widgets
+	Network
+	PrintSupport
+	LinguistTools
+)
 
-set( QT5_PLUGINS )
+set( QT_PLUGINS )
 if ( PLATFORM_WIN )
-	set( QT5_PLUGINS 
-        Qt5::QWindowsIntegrationPlugin
-        Qt5::QWindowsVistaStylePlugin
+	set( QT_PLUGINS 
+        Qt::QWindowsIntegrationPlugin
+        Qt::QWindowsVistaStylePlugin
     )
 endif ()
 
 # Find some standard paths to the Qt installation.
-get_target_property( _uic_path Qt5::uic IMPORTED_LOCATION )
+get_target_property( _uic_path Qt::lconvert IMPORTED_LOCATION )
 get_filename_component( PTE_QT_BIN_DIR ${_uic_path} DIRECTORY )
 get_filename_component( PTE_QT_ROOT_DIR ${PTE_QT_BIN_DIR} DIRECTORY )
 

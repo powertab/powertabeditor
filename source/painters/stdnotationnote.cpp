@@ -55,13 +55,13 @@ StdNotationNote::StdNotationNote(const Voice &voice, const Position &pos,
     switch (pos.getDurationType())
     {
     case Position::WholeNote:
-        myNoteHeadSymbol = MusicFont::WholeNote;
+        myNoteHeadSymbol = MusicSymbol::WholeNote;
         break;
     case Position::HalfNote:
-        myNoteHeadSymbol = MusicFont::HalfNote;
+        myNoteHeadSymbol = MusicSymbol::HalfNote;
         break;
     default:
-        myNoteHeadSymbol = MusicFont::QuarterNoteOrLess;
+        myNoteHeadSymbol = MusicSymbol::QuarterNoteOrLess;
         break;
     }
 
@@ -69,13 +69,13 @@ StdNotationNote::StdNotationNote(const Voice &voice, const Position &pos,
         note.hasArtificialHarmonic())
     {
         myNoteHeadSymbol = (pos.getDurationType() <= Position::HalfNote)
-                               ? MusicFont::HarmonicNoteHeadOpen
-                               : MusicFont::HarmonicNoteHeadFull;
+                               ? MusicSymbol::HarmonicNoteHeadOpen
+                               : MusicSymbol::HarmonicNoteHeadFull;
     }
     else if (note.hasProperty(Note::Muted))
-        myNoteHeadSymbol = MusicFont::MutedNoteHead;
+        myNoteHeadSymbol = MusicSymbol::MutedNoteHead;
     else if (pos.hasProperty(Position::Acciaccatura))
-        myNoteHeadSymbol = MusicFont::QuarterNoteOrLess;
+        myNoteHeadSymbol = MusicSymbol::QuarterNoteOrLess;
 
     computeAccidentalType(false);
 }
@@ -207,7 +207,7 @@ void StdNotationNote::getNotesInStaff(
 
                     const QFontMetricsF *fm =
                         stdNote.isGraceNote() ? &grace_fm : &default_fm;
-                    noteHeadWidth = fm->width(stdNote.getNoteHeadSymbol());
+                    noteHeadWidth = fm->horizontalAdvance(stdNote.getNoteHeadSymbol());
                 }
 
                 const double x = layout.getPositionX(pos.getPosition()) +
@@ -461,19 +461,19 @@ QString StdNotationNote::getAccidentalText() const
         // Do nothing.
         break;
     case StdNotationNote::Natural:
-        text = QChar(MusicFont::Natural);
+        text = MusicSymbol::Natural;
         break;
     case StdNotationNote::Sharp:
-        text = QChar(MusicFont::AccidentalSharp);
+        text = MusicSymbol::AccidentalSharp;
         break;
     case StdNotationNote::DoubleSharp:
-        text = QChar(MusicFont::AccidentalDoubleSharp);
+        text = MusicSymbol::AccidentalDoubleSharp;
         break;
     case StdNotationNote::Flat:
-        text = QChar(MusicFont::AccidentalFlat);
+        text = MusicSymbol::AccidentalFlat;
         break;
     case StdNotationNote::DoubleFlat:
-        text = QChar(MusicFont::AccidentalDoubleFlat);
+        text = MusicSymbol::AccidentalDoubleFlat;
         break;
     }
 

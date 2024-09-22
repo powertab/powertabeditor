@@ -46,16 +46,7 @@
 static void displayError(const std::string &reason)
 {
     std::string message = reason;
-#if BOOST_VERSION >= 106900
-    message += boost::stacktrace::to_string(
-        boost::stacktrace::stacktrace());
-#else
-    for (auto &&frame : boost::stacktrace::stacktrace())
-    {
-        message += boost::stacktrace::to_string(frame);
-        message += "\n";
-    }
-#endif
+    message += boost::stacktrace::to_string(boost::stacktrace::stacktrace());
 
     // If there is no QApplication instance, something went seriously wrong
     // during startup - just dump the error to the console.
@@ -147,12 +138,7 @@ loadTranslations(QApplication &app, QTranslator &qt_translator,
             ptb_translator.load(locale, QStringLiteral("powertabeditor"),
                                 QStringLiteral("_"), dir))
         {
-#if (QT_VERSION >= QT_VERSION_CHECK(5,15,0))
-            qDebug() << "Loaded application translations from"
-                     << ptb_translator.filePath();
-#else
-            qDebug() << "Loaded application translations";
-#endif
+            qDebug() << "Loaded application translations from" << ptb_translator.filePath();
             app.installTranslator(&ptb_translator);
         }
 
@@ -160,12 +146,7 @@ loadTranslations(QApplication &app, QTranslator &qt_translator,
             qt_translator.load(locale, QStringLiteral("qtbase"),
                                QStringLiteral("_"), dir))
         {
-#if (QT_VERSION >= QT_VERSION_CHECK(5,15,0))
-            qDebug() << "Loaded Qt base translations from"
-                     << qt_translator.filePath();
-#else
-            qDebug() << "Loaded Qt base translations";
-#endif
+            qDebug() << "Loaded Qt base translations from" << qt_translator.filePath();
             app.installTranslator(&qt_translator);
         }
     }

@@ -74,13 +74,7 @@ ChordNameDialog::ChordNameDialog(QWidget *parent,
     myTonicKeys->addButton(ui->tonicGButton, ChordName::G);
     myTonicKeys->addButton(ui->tonicAButton, ChordName::A);
     myTonicKeys->addButton(ui->tonicBButton, ChordName::B);
-    connect(myTonicKeys,
-#if (QT_VERSION >= QT_VERSION_CHECK(5,15,0))
-            &QButtonGroup::idClicked,
-#else
-            qOverload<int>(&QButtonGroup::buttonClicked),
-#endif
-            this, &ChordNameDialog::onTonicChanged);
+    connect(myTonicKeys, &QButtonGroup::idClicked, this, &ChordNameDialog::onTonicChanged);
 
     myBassKeys = new QButtonGroup(this);
     myBassKeys->addButton(ui->bassCButton, ChordName::C);
@@ -90,13 +84,7 @@ ChordNameDialog::ChordNameDialog(QWidget *parent,
     myBassKeys->addButton(ui->bassGButton, ChordName::G);
     myBassKeys->addButton(ui->bassAButton, ChordName::A);
     myBassKeys->addButton(ui->bassBButton, ChordName::B);
-    connect(myBassKeys,
-#if (QT_VERSION >= QT_VERSION_CHECK(5,15,0))
-            &QButtonGroup::idClicked,
-#else
-            qOverload<int>(&QButtonGroup::buttonClicked),
-#endif
-            this, &ChordNameDialog::updateState);
+    connect(myBassKeys, &QButtonGroup::idClicked, this, &ChordNameDialog::updateState);
 
     connect(ui->formulaListWidget,
             qOverload<int>(&QComboBox::currentIndexChanged), this,

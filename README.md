@@ -76,7 +76,7 @@ Power Tab Editor 2.0 - A powerful cross platform guitar tablature viewer and edi
   * rational
   * signals2
   * stacktrace
-* [Qt](http://qt-project.org/) >= 5.10 version or greater
+* [Qt](http://qt-project.org/) >= 6.2 version or greater
 * [nlohmann-json](https://github.com/nlohmann/json) >= 3.7.3
 * [RtMidi](https://www.music.mcgill.ca/~gary/rtmidi/) >= 4.0
 * [pugixml](https://pugixml.org/)
@@ -129,10 +129,10 @@ You'll have to update the variables for your specific paths to `$vcpkg_exe_path`
 #### OS X:
 * Install Xcode along with its Command Line Tools.
 * Install dependencies:
-  * `brew install boost cmake doctest minizip ninja nlohmann-json pugixml qt@5 pugixml rtmidi`
+  * `brew install boost cmake doctest minizip ninja nlohmann-json pugixml qt6 pugixml rtmidi`
 * Build:
   * `mkdir build && cd build`
-  * `cmake -G Ninja -DCMAKE_BUILD_TYPE=Debug -DCMAKE_PREFIX_PATH=/usr/local/opt/qt@5/lib/cmake ..`
+  * `cmake -G Ninja -DCMAKE_BUILD_TYPE=Debug -DCMAKE_PREFIX_PATH=/usr/local/opt/qt6/lib/cmake ..`
     * To generate an Xcode project, switch to `-G Xcode` and then open and build `build/powertabeditor.xcodeproj`
   * `ninja`
 * Run:

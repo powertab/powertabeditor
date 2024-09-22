@@ -127,5 +127,5 @@ pte_library(
     MOC_HEADERS ${moc_headers}
     DEPENDS
         ptescore
-        Qt5::Widgets
+        Qt::Widgets
 )
