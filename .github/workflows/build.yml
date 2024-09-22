@@ -81,18 +81,6 @@ jobs:
 
     runs-on: windows-2022
 
-    # Run both 32-bit and 64-bit builds.
-    strategy:
-      matrix:
-        arch: [x64, x86]
-        include:
-          - arch: x64
-            cmake_arch: x64
-            qt_arch: win64_msvc2019_64
-          - arch: x86
-            cmake_arch: Win32
-            qt_arch: win32_msvc2019
-
     steps:
     - uses: actions/checkout@v4
 
@@ -101,17 +89,17 @@ jobs:
       run: echo "::set-output name=VERSION_ID::$(git describe --tags --long --always)"
 
     - name: Install Dependencies
-      run: vcpkg install --triplet ${{ matrix.arch }}-windows boost-algorithm boost-date-time boost-endian boost-functional boost-iostreams boost-rational boost-signals2 boost-stacktrace doctest minizip nlohmann-json pugixml
+      run: vcpkg install --triplet x64-windows boost-algorithm boost-date-time boost-endian boost-functional boost-iostreams boost-rational boost-signals2 boost-stacktrace doctest minizip nlohmann-json pugixml
 
     # Building Qt via vcpkg would take a while ...
     - name: Install Qt
       uses: jurplel/install-qt-action@v4
       with:
-        arch: ${{ matrix.qt_arch }}
+        arch: win64_msvc2019_64
         version: 6.7.2
 
     - name: Generate Project
-      run: cmake -A ${{ matrix.cmake_arch }} -B ./build -DPTE_ENABLE_PCH=1 -DCMAKE_TOOLCHAIN_FILE="${env:VCPKG_INSTALLATION_ROOT}/scripts/buildsystems/vcpkg.cmake"
+      run: cmake -A x64 -B ./build -DPTE_ENABLE_PCH=1 -DCMAKE_TOOLCHAIN_FILE="${env:VCPKG_INSTALLATION_ROOT}/scripts/buildsystems/vcpkg.cmake"
     - name: Build
       run: cmake --build ./build --config Release
     - name: Test
@@ -121,11 +109,11 @@ jobs:
       run: |
         choco install innosetup -y -v
         iscc installer/windows/installer.iss
-        mv installer/windows/powertabeditor.exe installer/windows/powertabeditor-windows-${{ matrix.arch }}-${{ steps.version.outputs.VERSION_ID }}.exe
+        mv installer/windows/powertabeditor.exe installer/windows/powertabeditor-windows-${{ steps.version.outputs.VERSION_ID }}.exe
 
     - name: Upload Installer
       uses: actions/upload-artifact@v4
       with:
-        name: powertabeditor-windows-${{ matrix.arch }}-${{ steps.version.outputs.VERSION_ID }}.exe
-        path: installer/windows/powertabeditor-windows-${{ matrix.arch }}-${{ steps.version.outputs.VERSION_ID }}.exe
+        name: powertabeditor-windows-${{ steps.version.outputs.VERSION_ID }}.exe
+        path: installer/windows/powertabeditor-windows-${{ steps.version.outputs.VERSION_ID }}.exe
         if-no-files-found: error

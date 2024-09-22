@@ -19,6 +19,7 @@ Thanks to the following contributors who worked on this release:
 
 ### Changed
 - Chord diagrams now display the fret number of the top fret instead of the next fret after it (#408)
+- Removed the 32-bit Windows installers
 - Updated the minimum required version of `RtMidi` to 4.0
 - Updated the minimum required version of `boost` to 1.74
 - Updated the minimum required version of `Qt` to 6.2

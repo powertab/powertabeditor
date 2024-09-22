@@ -8,8 +8,8 @@ find_package( Qt6 REQUIRED COMPONENTS
 set( QT_PLUGINS )
 if ( PLATFORM_WIN )
 	set( QT_PLUGINS 
-        Qt::QWindowsIntegrationPlugin
-        Qt::QWindowsVistaStylePlugin
+        Qt6::QWindowsIntegrationPlugin
+        Qt6::QModernWindowsStylePlugin
     )
 endif ()
 
