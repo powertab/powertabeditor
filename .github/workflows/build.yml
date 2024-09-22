@@ -38,7 +38,7 @@ jobs:
 
     - name: Version number
       id: version
-      run: echo "::set-output name=VERSION_ID::$(git describe --tags --long --always)"
+      run: echo "VERSION_ID=$(git describe --tags --long --always)" >> $GITHUB_OUTPUT
 
     - name: Install Dependencies
       # Note: remove existing Github actions python to work around conflicts (https://github.com/actions/setup-python/issues/577)
@@ -86,7 +86,8 @@ jobs:
 
     - name: Version number
       id: version
-      run: echo "::set-output name=VERSION_ID::$(git describe --tags --long --always)"
+      run: echo "VERSION_ID=$(git describe --tags --long --always)" >> $GITHUB_OUTPUT
+      shell: bash
 
     - name: Install Dependencies
       run: vcpkg install --triplet x64-windows boost-algorithm boost-date-time boost-endian boost-functional boost-iostreams boost-rational boost-signals2 boost-stacktrace doctest minizip nlohmann-json pugixml
