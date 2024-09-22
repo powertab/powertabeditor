@@ -17,9 +17,7 @@ jobs:
     steps:
     - uses: actions/checkout@v4
     - name: Install Apt Dependencies
-      run: sudo apt update && sudo apt install ninja-build qtbase5-dev qttools5-dev libboost-dev libboost-date-time-dev libboost-iostreams-dev nlohmann-json3-dev libasound2-dev librtmidi-dev libminizip-dev doctest-dev
-    - name: Install Other Dependencies
-      run: vcpkg install pugixml
+      run: sudo apt update && sudo apt install ninja-build qt6-base-dev libglx-dev libgl1-mesa-dev qt6-tools-dev qt6-tools-dev-tools qt6-l10n-tools libboost-dev libboost-date-time-dev libboost-iostreams-dev nlohmann-json3-dev libasound2-dev librtmidi-dev libpugixml-dev libminizip-dev doctest-dev
     - name: Create Build Directory
       run: cmake -E make_directory ${{runner.workspace}}/build
     - name: Generate Project
@@ -110,7 +108,7 @@ jobs:
       uses: jurplel/install-qt-action@v4
       with:
         arch: ${{ matrix.qt_arch }}
-        version: 5.15.2
+        version: 6.7.2
 
     - name: Generate Project
       run: cmake -A ${{ matrix.cmake_arch }} -B ./build -DPTE_ENABLE_PCH=1 -DCMAKE_TOOLCHAIN_FILE="${env:VCPKG_INSTALLATION_ROOT}/scripts/buildsystems/vcpkg.cmake"
