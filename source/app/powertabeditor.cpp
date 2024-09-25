@@ -316,6 +316,7 @@ void PowerTabEditor::switchTab(int index)
         myInstrumentPanel->reset(doc.getScore());
         myPlaybackWidget->reset(doc);
         updateLocationLabel();
+        updateCommands();
     }
     else
     {
