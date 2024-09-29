@@ -47,9 +47,17 @@ jobs:
         rm /usr/local/bin/idle3*
         rm /usr/local/bin/pydoc3*
         rm /usr/local/bin/python3*
-        brew install --overwrite boost cmake doctest minizip ninja nlohmann-json pugixml qt6 pugixml rtmidi
+        brew install --overwrite boost cmake doctest minizip ninja nlohmann-json pugixml pugixml rtmidi
+
+    # Note: we avoid using the homebrew Qt since it breaks macdeployqt (https://github.com/Homebrew/brew/issues/15354)
+    - name: Install Qt
+      uses: jurplel/install-qt-action@v4
+      with:
+        arch: clang_64
+        version: 6.7.2
+
     - name: Generate Project
-      run: cmake -S ${GITHUB_WORKSPACE} -B ${{runner.workspace}}/build -G Ninja -DCMAKE_BUILD_TYPE=Release -DCMAKE_PREFIX_PATH=/usr/local/opt/qt6/lib/cmake
+      run: cmake -S ${GITHUB_WORKSPACE} -B ${{runner.workspace}}/build -G Ninja -DCMAKE_BUILD_TYPE=Release
     - name: Build
       run: cmake --build ${{runner.workspace}}/build
     - name: Test

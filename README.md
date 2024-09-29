@@ -131,6 +131,7 @@ You'll have to update the variables for your specific paths to `$vcpkg_exe_path`
 * Install Xcode along with its Command Line Tools.
 * Install dependencies:
   * `brew install boost cmake doctest minizip ninja nlohmann-json pugixml qt6 pugixml rtmidi`
+  * Note that the Qt package from homebrew [does not currently work for building the installer|https://github.com/Homebrew/brew/issues/15354]. Installing via https://github.com/miurahr/aqtinstall is an alternative.
 * Build:
   * `mkdir build && cd build`
   * `cmake -G Ninja -DCMAKE_BUILD_TYPE=Debug -DCMAKE_PREFIX_PATH=/usr/local/opt/qt6/lib/cmake ..`
