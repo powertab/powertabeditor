@@ -25,11 +25,23 @@ endif()
 # Run macdeployqt on the bundle at install time.
 install( CODE
     "execute_process(
-        COMMAND ${macdeployqt_path} \"\${CMAKE_INSTALL_PREFIX}/Power Tab Editor.app\"
+        COMMAND ${macdeployqt_path} \"\${CMAKE_INSTALL_PREFIX}/Power Tab Editor.app\" -verbose=2
         RESULT_VARIABLE retval
     )
     if ( NOT retval EQUAL 0 )
         message( FATAL_ERROR \"Failed to run macdeployqt\" )
+    endif ()
+    "
+)
+
+# Fix up the executable's rpath, which macdeployqt6 doesn't seem to do anymore...
+install( CODE
+    "execute_process(
+        COMMAND install_name_tool -add_rpath \"@executable_path/../Frameworks\" \"\${CMAKE_INSTALL_PREFIX}/Power Tab Editor.app/Contents/MacOS/Power Tab Editor\"
+        RESULT_VARIABLE retval
+    )
+    if ( NOT retval EQUAL 0 )
+        message( FATAL_ERROR \"Failed to run install_name_tool\" )
     endif ()
     "
 )
