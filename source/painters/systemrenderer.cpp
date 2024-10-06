@@ -142,11 +142,10 @@ QGraphicsItem *SystemRenderer::operator()(const System &system,
         const double clef_y = (staff.getClefType() == Staff::TrebleClef)
                                   ? layout->getStdNotationLine(4)
                                   : layout->getStdNotationLine(2);
-        auto clef = new SimpleTextItem(staff.getClefType() == Staff::TrebleClef
-                                           ? QChar(MusicFont::TrebleClef)
-                                           : QChar(MusicFont::BassClef),
-                                           clef_font, TextAlignment::Baseline,
-                                           QPen(myPalette.text().color()));
+        auto clef =
+            new SimpleTextItem(staff.getClefType() == Staff::TrebleClef ? MusicSymbol::TrebleClef
+                                                                        : MusicSymbol::BassClef,
+                               clef_font, TextAlignment::Baseline, QPen(myPalette.text().color()));
         auto group = new ClickableGroup(
             ScoreArea::tr("Double-click to change clef type."),
             myScoreArea->getClickEvent(), location, ScoreItem::Clef);
@@ -187,7 +186,7 @@ void SystemRenderer::drawTabClef(double x, const LayoutInfo &layout,
 
     QFont font = MusicFont::getFont(pixel_size);
 
-    auto clef = new SimpleTextItem(QChar(MusicFont::TabClef), font, TextAlignment::Baseline, QPen(myPalette.text().color()));
+    auto clef = new SimpleTextItem(MusicSymbol::TabClef, font, TextAlignment::Baseline, QPen(myPalette.text().color()));
 
     auto group = new ClickableGroup(
         ScoreArea::tr("Double-click to edit the number of strings."),
@@ -398,8 +397,8 @@ void SystemRenderer::drawArpeggio(const Position &position, double x,
 
     // Take a vibrato segment, spanning the distance from top to bottom note,
     // and then rotate it by 90 degrees.
-    const QChar arpeggioSymbol = MusicFont::Vibrato;
-    const double symbolWidth = myMusicFontMetrics.width(arpeggioSymbol);
+    const QChar arpeggioSymbol = MusicSymbol::Vibrato;
+    const double symbolWidth = myMusicFontMetrics.horizontalAdvance(arpeggioSymbol);
     const int numSymbols = height / symbolWidth;
 
     auto arpeggio = new SimpleTextItem(QString(numSymbols, arpeggioSymbol),
@@ -410,7 +409,7 @@ void SystemRenderer::drawArpeggio(const Position &position, double x,
 
     // Draw the end of the arpeggio.
     const QChar arpeggioEnd = position.hasProperty(Position::ArpeggioUp) ?
-                MusicFont::ArpeggioUp : MusicFont::ArpeggioDown;
+                MusicSymbol::ArpeggioUp : MusicSymbol::ArpeggioDown;
 
     auto endPoint = new SimpleTextItem(arpeggioEnd, myMusicNotationFont,
                                        TextAlignment::Top, QPen(myPalette.text().color()));
@@ -676,9 +675,9 @@ SystemRenderer::drawTempoMarkers(const ConstScoreLocation &location,
             image = QPixmap::fromImage(tmp);
 
             auto pixmap = new QGraphicsPixmapItem(image.scaled(
-                fm.width(imageSpacing), NOTE_HEIGHT,
+                fm.horizontalAdvance(imageSpacing), NOTE_HEIGHT,
                 Qt::IgnoreAspectRatio, Qt::SmoothTransformation));
-            pixmap->setX(fm.width(text));
+            pixmap->setX(fm.horizontalAdvance(text));
             centerSymbolVertically(*pixmap, height);
             group->addToGroup(pixmap);
 
@@ -690,9 +689,9 @@ SystemRenderer::drawTempoMarkers(const ConstScoreLocation &location,
                 // Add the second beat type image.
                 QPixmap image(getBeatTypeImage(tempo.getListessoBeatType()));
                 auto pixmap = new QGraphicsPixmapItem(image.scaled(
-                    fm.width(imageSpacing), NOTE_HEIGHT,
+                    fm.horizontalAdvance(imageSpacing), NOTE_HEIGHT,
                     Qt::IgnoreAspectRatio, Qt::SmoothTransformation));
-                pixmap->setX(fm.width(text));
+                pixmap->setX(fm.horizontalAdvance(text));
                 centerSymbolVertically(*pixmap, height);
                 group->addToGroup(pixmap);
 
@@ -709,9 +708,9 @@ SystemRenderer::drawTempoMarkers(const ConstScoreLocation &location,
                 const QString imageSpacing(12, ' ');
                 QPixmap image(getTripletFeelImage(tempo));
                 pixmap = new QGraphicsPixmapItem(image.scaled(
-                    fm.width(imageSpacing), 21,
+                    fm.horizontalAdvance(imageSpacing), 21,
                     Qt::IgnoreAspectRatio, Qt::SmoothTransformation));
-                pixmap->setX(fm.width(text));
+                pixmap->setX(fm.horizontalAdvance(text));
                 centerSymbolVertically(*pixmap, height);
                 group->addToGroup(pixmap);
 
@@ -1072,10 +1071,10 @@ void SystemRenderer::drawSymbolsBelowTabStaff(const LayoutInfo &layout)
         switch (symbolGroup.getSymbolType())
         {
         case SymbolGroup::PickStrokeUp:
-            renderedSymbol = createPickStroke(QChar(MusicFont::PickStrokeUp));
+            renderedSymbol = createPickStroke(MusicSymbol::PickStrokeUp);
             break;
         case SymbolGroup::PickStrokeDown:
-            renderedSymbol = createPickStroke(QChar(MusicFont::PickStrokeDown));
+            renderedSymbol = createPickStroke(MusicSymbol::PickStrokeDown);
             break;
         case SymbolGroup::Tap:
             renderedSymbol =
@@ -1198,11 +1197,11 @@ SystemRenderer::drawSymbolsAboveTabStaff(const ConstScoreLocation &location,
                 QStringLiteral("let ring"), QFont::StyleItalic, width, layout);
             break;
         case SymbolGroup::Vibrato:
-            renderedSymbol = drawContinuousFontSymbols(MusicFont::Vibrato,
+            renderedSymbol = drawContinuousFontSymbols(MusicSymbol::Vibrato,
                                                        width);
             break;
         case SymbolGroup::WideVibrato:
-            renderedSymbol = drawContinuousFontSymbols(MusicFont::WideVibrato,
+            renderedSymbol = drawContinuousFontSymbols(MusicSymbol::WideVibrato,
                                                        width);
             break;
         case SymbolGroup::PalmMuting:
@@ -1487,7 +1486,7 @@ QGraphicsItem *SystemRenderer::drawContinuousFontSymbols(QChar symbol,
 {
     QFont font = MusicFont::getFont(25);
 
-    const double symbolWidth = QFontMetricsF(font).width(symbol);
+    const double symbolWidth = QFontMetricsF(font).horizontalAdvance(symbol);
     const int numSymbols = width / symbolWidth;
     auto text = new SimpleTextItem(QString(numSymbols, symbol), font, TextAlignment::Baseline, QPen(myPalette.text().color()));
     text->setPos(0, 0.5 * LayoutInfo::TAB_SYMBOL_SPACING);
@@ -1507,9 +1506,8 @@ QGraphicsItem *SystemRenderer::createTremoloPicking(const LayoutInfo& layout)
 
     for (int i = 0; i < 3; i++)
     {
-        auto line =
-            new SimpleTextItem(QChar(MusicFont::TremoloPicking),
-                                       myMusicNotationFont, TextAlignment::Baseline ,QPen(myPalette.text().color()));
+        auto line = new SimpleTextItem(MusicSymbol::TremoloPicking, myMusicNotationFont,
+                                       TextAlignment::Baseline, QPen(myPalette.text().color()));
         centerHorizontally(*line, 0, layout.getPositionSpacing() * 1.25);
         line->setY(-7 + i * offset);
         group->addToGroup(line);
@@ -1522,8 +1520,8 @@ QGraphicsItem *SystemRenderer::createTrill(const LayoutInfo& layout)
 {
     QFont font(MusicFont::getFont(21));
 
-    auto text = new SimpleTextItem(QChar(MusicFont::Trill), font,
-                                   TextAlignment::Baseline, QPen(myPalette.text().color()));
+    auto text = new SimpleTextItem(MusicSymbol::Trill, font, TextAlignment::Baseline,
+                                   QPen(myPalette.text().color()));
     centerHorizontally(*text, 0, layout.getPositionSpacing());
     text->setY(0.5 * LayoutInfo::TAB_SYMBOL_SPACING);
 
@@ -1638,10 +1636,10 @@ SystemRenderer::drawStdNotation(const ConstScoreLocation &location,
         const QFontMetricsF *fm = note.isGraceNote() ? &grace_fm : &default_fm;
 
         const QChar note_head_char = note.getNoteHeadSymbol();
-        const double note_head_width = fm->width(note_head_char);
+        const double note_head_width = fm->horizontalAdvance(note_head_char);
 
         const QString accidental_text = note.getAccidentalText();
-        const double accidental_width = fm->width(accidental_text);
+        const double accidental_width = fm->horizontalAdvance(accidental_text);
 
         const double x = layout.getPositionX(note.getPosition()) +
                 0.5 * (layout.getPositionSpacing() - note_head_width) -
@@ -1656,18 +1654,18 @@ SystemRenderer::drawStdNotation(const ConstScoreLocation &location,
         if (note.isDotted() || note.isDoubleDotted())
         {
             group = new QGraphicsItemGroup();
-            const double dotX = fm->width(note_text) + 2;
+            const double dotX = fm->horizontalAdvance(note_text) + 2;
 
-            const QChar dot(MusicFont::Dot);
-            auto dotText =
-		    new SimpleTextItem(dot, *font, TextAlignment::Baseline ,QPen(myPalette.text().color()));
+            const QChar dot(MusicSymbol::Dot);
+            auto dotText = new SimpleTextItem(dot, *font, TextAlignment::Baseline,
+                                              QPen(myPalette.text().color()));
             dotText->setPos(dotX, 0);
             group->addToGroup(dotText);
 
             if (note.isDoubleDotted())
             {
-                auto dotText2 =
-		    new SimpleTextItem(dot, *font, TextAlignment::Baseline, QPen(myPalette.text().color()));
+                auto dotText2 = new SimpleTextItem(dot, *font, TextAlignment::Baseline,
+                                                   QPen(myPalette.text().color()));
                 dotText2->setPos(dotX + 4, 0);
                 group->addToGroup(dotText2);
             }
@@ -1872,7 +1870,7 @@ void SystemRenderer::drawIrregularGroups(const Voice &voice,
         font.setPixelSize(18);
 
         QFontMetricsF fm(font);
-        const double textWidth = fm.width(text);
+        const double textWidth = fm.horizontalAdvance(text);
         const double centreX = leftX + (rightX - (leftX + textWidth)) / 2.0;
 
         auto textItem = new SimpleTextItem(text, font, TextAlignment::Top, QPen(myPalette.text().color()));
@@ -1975,26 +1973,26 @@ SystemRenderer::drawRest(const Position &pos, double x,
     switch (pos.getDurationType())
     {
         case Position::WholeNote:
-            symbol = MusicFont::WholeRest;
+            symbol = MusicSymbol::WholeRest;
             y = layout.getStdNotationLine(2);
             break;
         case Position::HalfNote:
-            symbol = MusicFont::HalfRest;
+            symbol = MusicSymbol::HalfRest;
             break;
         case Position::QuarterNote:
-            symbol = MusicFont::QuarterRest;
+            symbol = MusicSymbol::QuarterRest;
             break;
         case Position::EighthNote:
-            symbol = MusicFont::EighthRest;
+            symbol = MusicSymbol::EighthRest;
             break;
         case Position::SixteenthNote:
-            symbol = MusicFont::SixteenthRest;
+            symbol = MusicSymbol::SixteenthRest;
             break;
         case Position::ThirtySecondNote:
-            symbol = MusicFont::ThirtySecondRest;
+            symbol = MusicSymbol::ThirtySecondRest;
             break;
         case Position::SixtyFourthNote:
-            symbol = MusicFont::SixtyFourthRest;
+            symbol = MusicSymbol::SixtyFourthRest;
             break;
     }
 
@@ -2004,7 +2002,7 @@ SystemRenderer::drawRest(const Position &pos, double x,
     group->addToGroup(text);
 
     // Draw dots if necessary.
-    const QChar dot = MusicFont::Dot;
+    const QChar dot = MusicSymbol::Dot;
     const double dotX = 0.4 * font.pixelSize();
     // Position just below second line of staff.
     const double dotY = layout.getStdNotationSpace(2);

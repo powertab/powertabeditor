@@ -53,9 +53,9 @@ KeySignaturePainter::paint(QPainter *painter,
 
     // Draw the appropriate accidentals.
     if (myKeySignature.usesSharps())
-        drawAccidentals(mySharpPositions, MusicFont::AccidentalSharp, painter);
+        drawAccidentals(mySharpPositions, MusicSymbol::AccidentalSharp, painter);
     else
-        drawAccidentals(myFlatPositions, MusicFont::AccidentalFlat, painter);
+        drawAccidentals(myFlatPositions, MusicSymbol::AccidentalFlat, painter);
 }
 
 void KeySignaturePainter::adjustHeightOffset(QVector<double> &lst)
@@ -72,7 +72,7 @@ void KeySignaturePainter::drawAccidentals(QVector<double> &positions,
 {
     // Display natural if a cancellation occurs.
     if (myKeySignature.isCancellation())
-        accidental = MusicFont::Natural;
+        accidental = MusicSymbol::Natural;
 
     for (int i = 0; i < myKeySignature.getNumAccidentals(true); ++i)
     {

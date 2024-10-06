@@ -76,7 +76,7 @@ Power Tab Editor 2.0 - A powerful cross platform guitar tablature viewer and edi
   * rational
   * signals2
   * stacktrace
-* [Qt](http://qt-project.org/) >= 5.10 version or greater
+* [Qt](http://qt-project.org/) >= 6.2 version or greater
 * [nlohmann-json](https://github.com/nlohmann/json) >= 3.7.3
 * [RtMidi](https://www.music.mcgill.ca/~gary/rtmidi/) >= 4.0
 * [pugixml](https://pugixml.org/)
@@ -90,7 +90,7 @@ Power Tab Editor 2.0 - A powerful cross platform guitar tablature viewer and edi
 #### Windows:
 * Install Git - see https://help.github.com/articles/set-up-git
 * Install [vcpkg](https://github.com/microsoft/vcpkg) and run `vcpkg install --triplet x64-windows boost-algorithm boost-date-time boost-endian boost-functional boost-iostreams boost-rational boost-signals2 boost-stacktrace doctest minizip nlohmann-json pugixml` to install dependencies.
-* Install Qt by running `vcpkg install --triplet x64-windows qt5-base qt5-tools` (this may take a while), or install a binary release from the Qt website or https://github.com/miurahr/aqtinstall.
+* Install Qt by running `vcpkg install --triplet x64-windows qtbase qttools` (this may take a while), or install a binary release from the Qt website or https://github.com/miurahr/aqtinstall.
 * Open the project folder in Visual Studio and build.
   * If running CMake manually, set `CMAKE_TOOLCHAIN_FILE` to `[vcpkg root]\scripts\buildsystems\vcpkg.cmake`
 
@@ -109,8 +109,9 @@ You'll have to update the variables for your specific paths to `$vcpkg_exe_path`
 * These instructions assume a recent Ubuntu/Debian-based system, but the package names should be similar for other package managers.
 * Install dependencies:
   * `sudo apt update`
-  * `sudo apt install cmake qtbase5-dev qttools5-dev libboost-dev libboost-date-time-dev libboost-iostreams-dev nlohmann-json3-dev libasound2-dev librtmidi-dev libpugixml-dev libminizip-dev doctest-dev`
-  * `sudo apt-get install timidity-daemon` - timidity is not required for building, but is a good sequencer for MIDI playback.
+  * `sudo apt install cmake qt6-base-dev qt6-tools-dev qt6-tools-dev-tools qt6-l10n-tools libboost-dev libboost-date-time-dev libboost-iostreams-dev nlohmann-json3-dev libasound2-dev librtmidi-dev libpugixml-dev libminizip-dev doctest-dev`
+    * You may also need to install `libglx-dev libgl1-mesa-dev` along with Qt6
+  * `sudo apt install timidity-daemon` - timidity is not required for building, but is a good sequencer for MIDI playback.
   * Optionally, use [Ninja](http://martine.github.io/ninja/) instead of `make` (`sudo apt install ninja-build`)
 * Build:
   * `mkdir build && cd build`
@@ -129,10 +130,11 @@ You'll have to update the variables for your specific paths to `$vcpkg_exe_path`
 #### OS X:
 * Install Xcode along with its Command Line Tools.
 * Install dependencies:
-  * `brew install boost cmake doctest minizip ninja nlohmann-json pugixml qt@5 pugixml rtmidi`
+  * `brew install boost cmake doctest minizip ninja nlohmann-json pugixml qt6 pugixml rtmidi`
+  * Note that the Qt package from homebrew [does not currently work for building the installer|https://github.com/Homebrew/brew/issues/15354]. Installing via https://github.com/miurahr/aqtinstall is an alternative.
 * Build:
   * `mkdir build && cd build`
-  * `cmake -G Ninja -DCMAKE_BUILD_TYPE=Debug -DCMAKE_PREFIX_PATH=/usr/local/opt/qt@5/lib/cmake ..`
+  * `cmake -G Ninja -DCMAKE_BUILD_TYPE=Debug -DCMAKE_PREFIX_PATH=/usr/local/opt/qt6/lib/cmake ..`
     * To generate an Xcode project, switch to `-G Xcode` and then open and build `build/powertabeditor.xcodeproj`
   * `ninja`
 * Run:

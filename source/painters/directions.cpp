@@ -65,22 +65,22 @@ SystemRenderer::drawDirections(const ConstScoreLocation &location,
             switch (symbol.getSymbolType())
             {
                 case DirectionSymbol::Coda:
-                    item = new SimpleTextItem(QChar(MusicFont::Coda),
+                    item = new SimpleTextItem(MusicSymbol::Coda,
                                               myMusicNotationFont,
                                               TextAlignment::Baseline, pen);
                     break;
                 case DirectionSymbol::DoubleCoda:
-                    item = new SimpleTextItem(QString(2, MusicFont::Coda),
+                    item = new SimpleTextItem(QString(2, MusicSymbol::Coda),
                                               myMusicNotationFont,
                                               TextAlignment::Baseline, pen);
                     break;
                 case DirectionSymbol::Segno:
-                    item = new SimpleTextItem(QChar(MusicFont::Segno),
+                    item = new SimpleTextItem(MusicSymbol::Segno,
                                               myMusicNotationFont,
                                               TextAlignment::Baseline, pen);
                     break;
                 case DirectionSymbol::SegnoSegno:
-                    item = new SimpleTextItem(QString(2, MusicFont::Segno),
+                    item = new SimpleTextItem(QString(2, MusicSymbol::Segno),
                                               myMusicNotationFont,
                                               TextAlignment::Baseline, pen);
                     break;

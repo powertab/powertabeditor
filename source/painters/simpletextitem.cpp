@@ -33,7 +33,7 @@ SimpleTextItem::SimpleTextItem(const QString &text, const QFont &font,
     switch (myAlignment)
     {
         case TextAlignment::Top:
-            myBoundingRect = QRectF(0, 0, fm.width(myText), fm.height());
+            myBoundingRect = QRectF(0, 0, fm.horizontalAdvance(myText), fm.height());
             break;
         case TextAlignment::Baseline:
             myBoundingRect = fm.boundingRect(text);

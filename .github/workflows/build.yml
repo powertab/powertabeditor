@@ -17,9 +17,7 @@ jobs:
     steps:
     - uses: actions/checkout@v4
     - name: Install Apt Dependencies
-      run: sudo apt update && sudo apt install ninja-build qtbase5-dev qttools5-dev libboost-dev libboost-date-time-dev libboost-iostreams-dev nlohmann-json3-dev libasound2-dev librtmidi-dev libminizip-dev doctest-dev
-    - name: Install Other Dependencies
-      run: vcpkg install pugixml
+      run: sudo apt update && sudo apt install ninja-build qt6-base-dev libglx-dev libgl1-mesa-dev qt6-tools-dev qt6-tools-dev-tools qt6-l10n-tools libboost-dev libboost-date-time-dev libboost-iostreams-dev nlohmann-json3-dev libasound2-dev librtmidi-dev libpugixml-dev libminizip-dev doctest-dev
     - name: Create Build Directory
       run: cmake -E make_directory ${{runner.workspace}}/build
     - name: Generate Project
@@ -40,7 +38,7 @@ jobs:
 
     - name: Version number
       id: version
-      run: echo "::set-output name=VERSION_ID::$(git describe --tags --long --always)"
+      run: echo "VERSION_ID=$(git describe --tags --long --always)" >> $GITHUB_OUTPUT
 
     - name: Install Dependencies
       # Note: remove existing Github actions python to work around conflicts (https://github.com/actions/setup-python/issues/577)
@@ -49,9 +47,17 @@ jobs:
         rm /usr/local/bin/idle3*
         rm /usr/local/bin/pydoc3*
         rm /usr/local/bin/python3*
-        brew install --overwrite boost cmake doctest minizip ninja nlohmann-json pugixml qt5 pugixml rtmidi
+        brew install --overwrite boost cmake doctest minizip ninja nlohmann-json pugixml pugixml rtmidi
+
+    # Note: we avoid using the homebrew Qt since it breaks macdeployqt (https://github.com/Homebrew/brew/issues/15354)
+    - name: Install Qt
+      uses: jurplel/install-qt-action@v4
+      with:
+        arch: clang_64
+        version: 6.7.2
+
     - name: Generate Project
-      run: cmake -S ${GITHUB_WORKSPACE} -B ${{runner.workspace}}/build -G Ninja -DCMAKE_BUILD_TYPE=Release -DCMAKE_PREFIX_PATH=/usr/local/opt/qt@5/lib/cmake
+      run: cmake -S ${GITHUB_WORKSPACE} -B ${{runner.workspace}}/build -G Ninja -DCMAKE_BUILD_TYPE=Release
     - name: Build
       run: cmake --build ${{runner.workspace}}/build
     - name: Test
@@ -83,37 +89,26 @@ jobs:
 
     runs-on: windows-2022
 
-    # Run both 32-bit and 64-bit builds.
-    strategy:
-      matrix:
-        arch: [x64, x86]
-        include:
-          - arch: x64
-            cmake_arch: x64
-            qt_arch: win64_msvc2019_64
-          - arch: x86
-            cmake_arch: Win32
-            qt_arch: win32_msvc2019
-
     steps:
     - uses: actions/checkout@v4
 
     - name: Version number
       id: version
-      run: echo "::set-output name=VERSION_ID::$(git describe --tags --long --always)"
+      run: echo "VERSION_ID=$(git describe --tags --long --always)" >> $GITHUB_OUTPUT
+      shell: bash
 
     - name: Install Dependencies
-      run: vcpkg install --triplet ${{ matrix.arch }}-windows boost-algorithm boost-date-time boost-endian boost-functional boost-iostreams boost-rational boost-signals2 boost-stacktrace doctest minizip nlohmann-json pugixml
+      run: vcpkg install --triplet x64-windows boost-algorithm boost-date-time boost-endian boost-functional boost-iostreams boost-rational boost-signals2 boost-stacktrace doctest minizip nlohmann-json pugixml
 
     # Building Qt via vcpkg would take a while ...
     - name: Install Qt
       uses: jurplel/install-qt-action@v4
       with:
-        arch: ${{ matrix.qt_arch }}
-        version: 5.15.2
+        arch: win64_msvc2019_64
+        version: 6.7.2
 
     - name: Generate Project
-      run: cmake -A ${{ matrix.cmake_arch }} -B ./build -DPTE_ENABLE_PCH=1 -DCMAKE_TOOLCHAIN_FILE="${env:VCPKG_INSTALLATION_ROOT}/scripts/buildsystems/vcpkg.cmake"
+      run: cmake -A x64 -B ./build -DPTE_ENABLE_PCH=1 -DCMAKE_TOOLCHAIN_FILE="${env:VCPKG_INSTALLATION_ROOT}/scripts/buildsystems/vcpkg.cmake"
     - name: Build
       run: cmake --build ./build --config Release
     - name: Test
@@ -123,11 +118,11 @@ jobs:
       run: |
         choco install innosetup -y -v
         iscc installer/windows/installer.iss
-        mv installer/windows/powertabeditor.exe installer/windows/powertabeditor-windows-${{ matrix.arch }}-${{ steps.version.outputs.VERSION_ID }}.exe
+        mv installer/windows/powertabeditor.exe installer/windows/powertabeditor-windows-${{ steps.version.outputs.VERSION_ID }}.exe
 
     - name: Upload Installer
       uses: actions/upload-artifact@v4
       with:
-        name: powertabeditor-windows-${{ matrix.arch }}-${{ steps.version.outputs.VERSION_ID }}.exe
-        path: installer/windows/powertabeditor-windows-${{ matrix.arch }}-${{ steps.version.outputs.VERSION_ID }}.exe
+        name: powertabeditor-windows-${{ steps.version.outputs.VERSION_ID }}.exe
+        path: installer/windows/powertabeditor-windows-${{ steps.version.outputs.VERSION_ID }}.exe
         if-no-files-found: error

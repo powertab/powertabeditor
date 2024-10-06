@@ -53,6 +53,6 @@ pte_library(
         ptepainters
         ptewidgets
         pteutil
-        Qt5::Widgets
-        Qt5::PrintSupport
+        Qt::Widgets
+        Qt::PrintSupport
 )

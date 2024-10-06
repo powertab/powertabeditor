@@ -25,7 +25,7 @@ ClickableLabel::ClickableLabel(QWidget *parent)
     setStyleSheet(QStringLiteral("QLabel { padding: 4px }"));
 }
 
-void ClickableLabel::enterEvent(QEvent *)
+void ClickableLabel::enterEvent(QEnterEvent *)
 {
     setFrameStyle(static_cast<int>(QFrame::StyledPanel) | static_cast<int>(QFrame::Raised));
     setCursor(Qt::PointingHandCursor);

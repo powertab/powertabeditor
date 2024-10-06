@@ -156,5 +156,5 @@ pte_library(
     FORMS ${forms}
     DEPENDS
         ptescore
-        Qt5::Widgets
+        Qt::Widgets
 )

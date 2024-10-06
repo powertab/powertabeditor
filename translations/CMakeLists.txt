@@ -29,10 +29,10 @@ set_source_files_properties( ${translation_files} PROPERTIES
 # Optionally, the translations can be updated with new source strings.
 option( PTE_UPDATE_TRANSLATIONS "Scan source files for new translatable strings." OFF )
 if ( PTE_UPDATE_TRANSLATIONS )
-    qt5_create_translation( qm_files ${CMAKE_SOURCE_DIR} ${translation_files} )
+    qt_create_translation( qm_files ${CMAKE_SOURCE_DIR} ${translation_files} )
     add_custom_target( create_translations DEPENDS ${qm_files} )
 else ()
-    qt5_add_translation( qm_files
+    qt_add_translation( qm_files
         ${translation_files}
         OPTIONS -silent
     )

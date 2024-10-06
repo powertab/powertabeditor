@@ -10,10 +10,10 @@ function( pte_library )
     set( generated_headers )
     set( moc_files )
     if ( PTE_LIB_FORMS )
-        qt5_wrap_ui( generated_headers ${PTE_LIB_FORMS} )
+        qt_wrap_ui( generated_headers ${PTE_LIB_FORMS} )
     endif ()
     if ( PTE_LIB_MOC_HEADERS )
-        qt5_wrap_cpp( moc_files ${PTE_LIB_MOC_HEADERS} )
+        qt_wrap_cpp( moc_files ${PTE_LIB_MOC_HEADERS} )
     endif ()
 
     add_library( ${PTE_LIB_NAME} STATIC

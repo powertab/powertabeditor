@@ -27,11 +27,11 @@ pte_executable(
     DEPENDS
         pteapp
         ptedialogs
-        Qt5::Network
-        Qt5::Widgets
+        Qt::Network
+        Qt::Widgets
         ${platform_deps}
     PLUGINS
-        ${QT5_PLUGINS}
+        ${QT_PLUGINS}
 )
 
 if ( PLATFORM_OSX )
