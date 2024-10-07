@@ -19,6 +19,7 @@
 
 #include <app/appinfo.h>
 #include <boost/algorithm/string/replace.hpp>
+#include <iostream>
 
 #import <Foundation/Foundation.h>
 
@@ -116,7 +117,14 @@ void SettingsTree::saveToPlist() const
     std::visit(serializer, myTree);
 }
 
-static SettingValue converToSettingValue(NSObject *obj)
+static inline std::string
+toStdString(NSString *str)
+{
+    return std::string([str UTF8String]);
+}
+
+static std::optional<SettingValue>
+convertToSettingValue(NSObject *obj)
 {
     if ([obj isKindOfClass:[NSArray class]])
     {
@@ -124,14 +132,17 @@ static SettingValue converToSettingValue(NSObject *obj)
         SettingList settings;
 
         for (NSObject *child in list)
-            settings.values.push_back(converToSettingValue(child));
+        {
+            if (auto child_setting = convertToSettingValue(child))
+                settings.values.push_back(child_setting.value());
+        }
 
         return settings;
     }
     else if ([obj isKindOfClass:[NSString class]])
     {
         auto str = (NSString *)obj;
-        return std::string([str UTF8String]);
+        return toStdString(str);
     }
     else if ([obj isKindOfClass:[NSNumber class]])
     {
@@ -144,7 +155,12 @@ static SettingValue converToSettingValue(NSObject *obj)
             return [num intValue];
     }
     else
-        throw std::runtime_error("Unknown object type.");
+    {
+        std::cerr << "Unexpected object type: " << toStdString([obj className]) << " with value "
+                  << toStdString([obj description]) << std::endl;
+
+        return std::nullopt;
+    }
 }
 
 void SettingsTree::loadFromPlist()
@@ -159,9 +175,12 @@ void SettingsTree::loadFromPlist()
     auto dict = [prefs persistentDomainForName:domain];
     for (NSString *key in [dict allKeys])
     {
-        std::string key_str([key UTF8String]);
+        std::string key_str = toStdString(key);
 
         NSObject *obj = [prefs objectForKey:key];
-        setImpl(key_str, converToSettingValue(obj));
+        if (auto setting = convertToSettingValue(obj))
+            setImpl(key_str, setting.value());
+        else
+            std::cerr << "Failed to convert setting for key " << key_str << std::endl;
     }
 }
