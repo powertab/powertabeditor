@@ -35,17 +35,17 @@ static const QString PTB_MIME_TYPE = "application/ptb";
 class ClipboardSelection
 {
 public:
-    ClipboardSelection() : myNumStrings(0)
-    {
-    }
+    ClipboardSelection() = default;
 
-    ClipboardSelection(int numStrings,
-                       const std::vector<const Position *> &positions,
+    ClipboardSelection(int num_strings, const std::vector<const Position *> &positions,
                        const std::vector<const IrregularGrouping *> &groups)
-        : myNumStrings(numStrings)
+        : myNumStrings(num_strings)
     {
+        myPositions.reserve(positions.size());
         for (const Position *pos : positions)
             myPositions.push_back(*pos);
+
+        myGroups.reserve(groups.size());
         for (const IrregularGrouping *group : groups)
             myGroups.push_back(*group);
     }
@@ -74,73 +74,67 @@ public:
     }
 
 private:
-    int myNumStrings;
+    int myNumStrings = 0;
     std::vector<Position> myPositions;
     std::vector<IrregularGrouping> myGroups;
 };
 
-void Clipboard::copySelection(const ScoreLocation &location)
+void
+Clipboard::copySelection(const ScoreLocation &location)
 {
-    const auto selectedPositions = location.getSelectedPositions();
-    const int numStrings = location.getStaff().getStringCount();
-    
-    if (selectedPositions.empty())
+    const std::vector<const Position *> selected_positions = location.getSelectedPositions();
+    if (selected_positions.empty())
         return;
 
+    const int num_strings = location.getStaff().getStringCount();
     
-    ClipboardSelection selection(numStrings, selectedPositions,
+    ClipboardSelection selection(num_strings, selected_positions,
                                  location.getSelectedIrregularGroupings());
 
-    // Serialize the notes to a string.
+    // Serialize the selected items to save to the clipboard.
     std::ostringstream ss;
     ScoreUtils::save(ss, "clipboard_selection", selection);
     const std::string data = ss.str();
 
     // Copy the data to the clipboard.
-    auto mimeData = new QMimeData();
-    mimeData->setData(
-        PTB_MIME_TYPE,
-        QByteArray(data.c_str(), static_cast<int>(data.length())));
+    auto mime_data = std::make_unique<QMimeData>();
+    mime_data->setData(PTB_MIME_TYPE,
+                      QByteArray(data.c_str(), static_cast<qsizetype>(data.length())));
 
     QClipboard *clipboard = QApplication::clipboard();
-    clipboard->setMimeData(mimeData);
+    // Ownership is transferred to the clipboard.
+    clipboard->setMimeData(mime_data.release());
 }
 
-void Clipboard::paste(QWidget *parent, UndoManager &undoManager,
-                      ScoreLocation &location)
+bool
+Clipboard::paste(UndoManager &undoManager, ScoreLocation &location, QString &error_msg)
 {
-    const int currentStaffSize = location.getStaff().getStringCount();
-
     // Load data from the clipboard and deserialize.
-    const QByteArray rawData =
-        QApplication::clipboard()->mimeData()->data(PTB_MIME_TYPE);
-    Q_ASSERT(!rawData.isEmpty());
+    const QByteArray raw_data = QApplication::clipboard()->mimeData()->data(PTB_MIME_TYPE);
+    Q_ASSERT(!raw_data.isEmpty());
 
-    std::istringstream inputData(std::string(rawData.data(), rawData.length()));
+    std::istringstream input_data(std::string(raw_data.data(), raw_data.length()));
 
     ClipboardSelection selection;
-    ScoreUtils::load(inputData, "clipboard_selection", selection);
+    ScoreUtils::load(input_data, "clipboard_selection", selection);
 
     // For safety, prevent pasting into a tuning with a different number of
     // strings.
-    if (currentStaffSize != selection.getNumStrings())
+    const int current_num_strings = location.getStaff().getStringCount();
+    if (current_num_strings != selection.getNumStrings())
     {
-        QMessageBox msg(parent);
-        msg.setText(QCoreApplication::translate(
-            "PowerTabEditor", "Cannot paste notes from a different tuning."));
-        msg.exec();
-        return;
+        error_msg = QCoreApplication::translate(
+            "PowerTabEditor", "Cannot paste notes from a different number of strings.");
+        return false;
     }
 
     undoManager.push(new InsertNotes(location, selection.getPositions(),
                                      selection.getIrregularGroupings()),
                      location.getSystemIndex());
+    return true;
 }
 
 bool Clipboard::hasData()
 {
-    return !QApplication::clipboard()
-                ->mimeData()
-                ->data(PTB_MIME_TYPE)
-                .isEmpty();
+    return !QApplication::clipboard()->mimeData()->data(PTB_MIME_TYPE).isEmpty();
 }

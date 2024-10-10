@@ -566,7 +566,15 @@ void PowerTabEditor::pasteNotes()
     if (getLocation().hasSelection())
         removeSelectedPositions();
 
-    Clipboard::paste(this, *myUndoManager, getLocation());
+    QString error_msg;
+    if (!Clipboard::paste(*myUndoManager, getLocation(), error_msg))
+    {
+        QMessageBox msg(this);
+        msg.setText(error_msg);
+        msg.exec();
+        return;
+    }
+
     myUndoManager->endMacro();
 }
 

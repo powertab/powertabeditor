@@ -18,7 +18,7 @@
 #ifndef APP_CLIPBOARD_H
 #define APP_CLIPBOARD_H
 
-class QWidget;
+class QString;
 class ScoreLocation;
 class UndoManager;
 
@@ -29,7 +29,7 @@ namespace Clipboard
 void copySelection(const ScoreLocation &location);
 
 /// Pastes notes from the clipboard at the current position.
-void paste(QWidget *parent, UndoManager &undoManager, ScoreLocation &location);
+bool paste(UndoManager &undoManager, ScoreLocation &location, QString &error_msg);
 
 /// Returns true if any data is on the clipboard.
 bool hasData();
