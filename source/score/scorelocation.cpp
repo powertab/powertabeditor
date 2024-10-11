@@ -243,13 +243,26 @@ Barline *ScoreLocation::getBarline()
                                       getPositionIndex());
 }
 
-std::vector<Barline *> ScoreLocation::getSelectedBarlines()
+std::vector<Barline *>
+ScoreLocation::getSelectedBarlines()
 {
-    std::vector<Barline *> bars;
+    // Avoid duplicate logic between const and non-const versions.
+    std::vector<const Barline *> barlines = ConstScoreLocation::getSelectedBarlines();
+    std::vector<Barline *> nc_barlines;
+    for (const Barline *barline : nc_barlines)
+        nc_barlines.push_back(const_cast<Barline *>(barline));
+
+    return nc_barlines;
+}
+
+std::vector<const Barline *>
+ConstScoreLocation::getSelectedBarlines() const
+{
+    std::vector<const Barline *> bars;
     const int min = std::min(myPositionIndex, mySelectionStart);
     const int max = std::max(myPositionIndex, mySelectionStart);
 
-    for (Barline &bar : getSystem().getBarlines())
+    for (const Barline &bar : getSystem().getBarlines())
     {
         const int position = bar.getPosition();
         if (position > 0 && position >= min && position <= max)

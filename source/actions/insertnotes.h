@@ -30,9 +30,8 @@ class InsertNotes : public QUndoCommand
     Q_DECLARE_TR_FUNCTIONS(InsertNotes)
 
 public:
-    InsertNotes(const ScoreLocation &location,
-                const std::vector<Position> &positions,
-                const std::vector<IrregularGrouping> &groups);
+    InsertNotes(const ScoreLocation &location, const std::vector<Position> &positions,
+                const std::vector<IrregularGrouping> &groups, const std::vector<Barline> &barlines);
 
     virtual void redo() override;
     virtual void undo() override;
@@ -41,6 +40,7 @@ private:
     ScoreLocation myLocation;
     std::vector<Position> myNewPositions;
     std::vector<IrregularGrouping> myNewGroups;
+    std::vector<Barline> myNewBarlines;
     int myShiftAmount;
 };
 

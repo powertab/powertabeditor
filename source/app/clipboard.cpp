@@ -19,16 +19,19 @@
 
 #include <actions/insertnotes.h>
 #include <actions/undomanager.h>
+#include <score/barline.h>
+#include <score/position.h>
+#include <score/scorelocation.h>
+#include <score/serialization.h>
+#include <score/staff.h>
+
+#include <sstream>
+
 #include <QApplication>
 #include <QClipboard>
 #include <QMessageBox>
 #include <QMimeData>
 #include <QString>
-#include <score/position.h>
-#include <score/scorelocation.h>
-#include <score/serialization.h>
-#include <score/staff.h>
-#include <sstream>
 
 static const QString PTB_MIME_TYPE = "application/ptb";
 
@@ -38,7 +41,8 @@ public:
     ClipboardSelection() = default;
 
     ClipboardSelection(int num_strings, const std::vector<const Position *> &positions,
-                       const std::vector<const IrregularGrouping *> &groups)
+                       const std::vector<const IrregularGrouping *> &groups,
+                       const std::vector<const Barline *> &barlines)
         : myNumStrings(num_strings)
     {
         myPositions.reserve(positions.size());
@@ -48,22 +52,19 @@ public:
         myGroups.reserve(groups.size());
         for (const IrregularGrouping *group : groups)
             myGroups.push_back(*group);
+
+        myBarlines.reserve(barlines.size());
+        for (const Barline *barline : barlines)
+            myBarlines.push_back(*barline);
     }
 
-    int getNumStrings() const
-    {
-        return myNumStrings;
-    }
+    int getNumStrings() const { return myNumStrings; }
 
-    const std::vector<Position> &getPositions() const
-    {
-        return myPositions;
-    }
+    const std::vector<Position> &getPositions() const { return myPositions; }
 
-    const std::vector<IrregularGrouping> &getIrregularGroupings() const
-    {
-        return myGroups;
-    }
+    const std::vector<IrregularGrouping> &getIrregularGroupings() const { return myGroups; }
+
+    const std::vector<Barline> &getBarlines() const { return myBarlines; }
 
     template <class Archive>
     void serialize(Archive &ar, const FileVersion /*version*/)
@@ -71,25 +72,28 @@ public:
         ar("num_strings", myNumStrings);
         ar("positions", myPositions);
         ar("irregular_groupings", myGroups);
+        ar("barlines", myBarlines);
     }
 
 private:
     int myNumStrings = 0;
     std::vector<Position> myPositions;
     std::vector<IrregularGrouping> myGroups;
+    std::vector<Barline> myBarlines;
 };
 
 void
 Clipboard::copySelection(const ScoreLocation &location)
 {
     const std::vector<const Position *> selected_positions = location.getSelectedPositions();
-    if (selected_positions.empty())
+    const std::vector<const Barline *> selected_barlines = location.getSelectedBarlines();
+    if (selected_positions.empty() && selected_barlines.empty())
         return;
 
     const int num_strings = location.getStaff().getStringCount();
-    
+
     ClipboardSelection selection(num_strings, selected_positions,
-                                 location.getSelectedIrregularGroupings());
+                                 location.getSelectedIrregularGroupings(), selected_barlines);
 
     // Serialize the selected items to save to the clipboard.
     std::ostringstream ss;
@@ -129,7 +133,7 @@ Clipboard::paste(UndoManager &undoManager, ScoreLocation &location, QString &err
     }
 
     undoManager.push(new InsertNotes(location, selection.getPositions(),
-                                     selection.getIrregularGroupings()),
+                                     selection.getIrregularGroupings(), selection.getBarlines()),
                      location.getSystemIndex());
     return true;
 }

@@ -48,6 +48,7 @@ public:
     const System &getSystem() const;
 
     const Barline *getBarline() const;
+    std::vector<const Barline *> getSelectedBarlines() const;
 
     int getStaffIndex() const;
     void setStaffIndex(int staff);
@@ -118,6 +119,7 @@ public:
 
     using ConstScoreLocation::getBarline;
     Barline *getBarline();
+    using ConstScoreLocation::getSelectedBarlines;
     std::vector<Barline *> getSelectedBarlines();
 
     using ConstScoreLocation::getStaff;

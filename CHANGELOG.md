@@ -13,6 +13,7 @@ Thanks to the following contributors who worked on this release:
 - Chord names can now use a custom label instead of the auto-generated chord name. This is primarily used for chords imported from Guitar Pro files (#442)
 - When attempting to insert a note at the end of a system, a space is now automatically inserted to allow the note to be added (#439)
 - Extended the view filter menu to support filtering by a specific player without requiring a filter to be explicitly created (#301)
+- Copying and pasting selections which include barlines is now supported (#416)
 - Translations
   - Added Turkish translation (#406)
   - Updated French translation (#406)
