@@ -17,6 +17,7 @@
 
 #include "fileformatmanager.h"
 
+#include <filesystem>
 #include <formats/gp7/gp7exporter.h>
 #include <formats/gp7/gp7importer.h>
 #include <formats/gpx/gpximporter.h>
@@ -112,11 +113,16 @@ void FileFormatManager::exportFile(const Score &score,
                                    const std::filesystem::path &filename,
                                    const FileFormat &format)
 {
+    // Write to a temporary file and then swap, to avoid data loss if e.g. the exporter crashes.
+    std::filesystem::path temp_file = std::filesystem::temp_directory_path() / filename.filename();
+    temp_file += ".new";
+
     for (auto &exporter : myExporters)
     {
         if (exporter->fileFormat() == format)
         {
-            exporter->save(filename, score);
+            exporter->save(temp_file, score);
+            std::filesystem::rename(temp_file, filename);
             return;
         }
     }
