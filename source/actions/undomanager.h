@@ -58,7 +58,8 @@ private:
 
     void onSystemChanged(int affectedSystem);
 
-    std::vector<std::unique_ptr<QUndoStack>> undoStacks;
+    /// QUndoGroup does not own the undo stacks, so we maintain a separate list with ownership.
+    std::vector<std::unique_ptr<QUndoStack>> myUndoStacks;
 };
 
 class SignalOnRedo : public QObject, public QUndoCommand

@@ -17,6 +17,8 @@
 
 #include "undomanager.h"
 
+#include <memory>
+
 UndoManager::UndoManager(QObject *parent) :
     QUndoGroup(parent)
 {
@@ -24,8 +26,8 @@ UndoManager::UndoManager(QObject *parent) :
 
 void UndoManager::addNewUndoStack()
 {
-    undoStacks.emplace_back(new QUndoStack);
-    addStack(undoStacks.back().get());
+    myUndoStacks.emplace_back(std::make_unique<QUndoStack>());
+    addStack(myUndoStacks.back().get());
 }
 
 void UndoManager::setActiveStackIndex(int index)
@@ -33,13 +35,13 @@ void UndoManager::setActiveStackIndex(int index)
     if (index == -1) // When there are no open documents, the index is -1.
         return;
 
-    setActiveStack(undoStacks.at(index).get());
+    setActiveStack(myUndoStacks.at(index).get());
 }
 
 void UndoManager::removeStack(int index)
 {
     // Stack is automatically removed from the QUndoGroup when it is deleted.
-    undoStacks.erase(undoStacks.begin() + index);
+    myUndoStacks.erase(myUndoStacks.begin() + index);
 }
 
 void UndoManager::push(QUndoCommand *cmd)
