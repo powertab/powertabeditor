@@ -75,7 +75,8 @@ Document &DocumentManager::addDefaultDocument(
     return doc;
 }
 
-Document &DocumentManager::getCurrentDocument()
+Document &
+DocumentManager::getCurrentDocument()
 {
     if (!myCurrentIndex)
         throw std::logic_error("No documents are currently open");
@@ -83,7 +84,14 @@ Document &DocumentManager::getCurrentDocument()
     return *myDocumentList.at(*myCurrentIndex);
 }
 
-Document &DocumentManager::getDocument(int i)
+Document &
+DocumentManager::getDocument(int i)
+{
+    return *myDocumentList.at(i);
+}
+
+const Document &
+DocumentManager::getDocument(int i) const
 {
     return *myDocumentList.at(i);
 }
@@ -120,14 +128,15 @@ int DocumentManager::getCurrentDocumentIndex() const
     return *myCurrentIndex;
 }
 
-size_t DocumentManager::getDocumentListSize() const 
+int
+DocumentManager::getNumDocuments() const
 {
-    return myDocumentList.size();
+    return static_cast<int>(myDocumentList.size());
 }
 
 int DocumentManager::findDocument(const Document::PathType &filepath)
 {
-    for (unsigned int i = 0; i < getDocumentListSize(); ++i)
+    for (int i = 0, n = getNumDocuments(); i < n; ++i)
     {
         Document& doc = getDocument(i);
         

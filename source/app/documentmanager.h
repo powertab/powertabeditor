@@ -73,15 +73,17 @@ public:
     Document &addDefaultDocument(const SettingsManager &settings_manager);
 
     Document &getCurrentDocument();
+
     Document &getDocument(int i);
+    const Document &getDocument(int i) const;
 
     void removeDocument(int index);
 
     bool hasOpenDocuments() const;
     void setCurrentDocumentIndex(int index);
-
     int getCurrentDocumentIndex() const;
-    size_t getDocumentListSize() const;
+
+    int getNumDocuments() const;
     
     /// Returns -1 if the file at filepath is not open, else it returns the index at which the already open file is at
     int findDocument(const Document::PathType &filepath);
