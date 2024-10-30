@@ -26,6 +26,7 @@
 #include <string>
 #include <vector>
 
+class AutoBackup;
 class Caret;
 class Command;
 class DocumentManager;
@@ -430,6 +431,7 @@ private:
     std::unique_ptr<DocumentManager> myDocumentManager;
     std::unique_ptr<FileFormatManager> myFileFormatManager;
     std::unique_ptr<UndoManager> myUndoManager;
+    std::unique_ptr<AutoBackup> myAutoBackup;
     std::unique_ptr<QThread> myMidiThread;
     MidiPlayer *myMidiPlayer = nullptr;
     std::unique_ptr<TuningDictionary> myTuningDictionary;

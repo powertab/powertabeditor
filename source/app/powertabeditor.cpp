@@ -74,6 +74,7 @@
 #include <actions/volumeswell.h>
 
 #include <app/appinfo.h>
+#include <app/autobackup.h>
 #include <app/caret.h>
 #include <app/clipboard.h>
 #include <app/command.h>
@@ -161,9 +162,9 @@ PowerTabEditor::PowerTabEditor()
     : QMainWindow(nullptr),
       mySettingsManager(std::make_unique<SettingsManager>()),
       myDocumentManager(std::make_unique<DocumentManager>()),
-      myFileFormatManager(
-          std::make_unique<FileFormatManager>(*mySettingsManager)),
+      myFileFormatManager(std::make_unique<FileFormatManager>(*mySettingsManager)),
       myUndoManager(std::make_unique<UndoManager>()),
+      myAutoBackup(std::make_unique<AutoBackup>(*myDocumentManager, *myUndoManager, this)),
       myTuningDictionary(std::make_unique<TuningDictionary>()),
       myIsPlaying(false),
       myRecentFiles(nullptr),

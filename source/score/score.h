@@ -35,8 +35,11 @@ class Score
 {
 public:
     Score();
-    Score(const Score &other) = delete;
-    Score &operator=(const Score &other) = delete;
+    explicit Score(const Score &other) = default;
+    Score &operator=(const Score &other) = default;
+    explicit Score(Score &&other) = default;
+    Score &operator=(Score &&other) = default;
+
     bool operator==(const Score &other) const;
 
     template <class Archive>

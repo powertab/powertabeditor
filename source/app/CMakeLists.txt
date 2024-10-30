@@ -2,6 +2,7 @@ project( pteapp )
 
 set( srcs
     appinfo.cpp
+    autobackup.cpp
     caret.cpp
     clipboard.cpp
     command.cpp
@@ -18,6 +19,7 @@ set( srcs
 
 set( headers
     appinfo.h
+    autobackup.h
     caret.h
     clipboard.h
     command.h

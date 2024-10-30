@@ -30,6 +30,9 @@ namespace Paths {
     /// be written to.
     path getUserDataDir();
 
+    /// Return a path to the directory where backup files are written.
+    path getBackupDir();
+
     /// Return a list of paths where persistent application data should be read
     /// from, ordered from highest to lowest priority.
     std::vector<path> getDataDirs();

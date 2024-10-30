@@ -45,6 +45,12 @@ path getUserDataDir()
         QStandardPaths::writableLocation(QStandardPaths::AppDataLocation));
 }
 
+path
+getBackupDir()
+{
+    return getUserDataDir() / "backup";
+}
+
 std::vector<path> getDataDirs()
 {
     std::vector<path> paths;
