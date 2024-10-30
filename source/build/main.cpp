@@ -43,10 +43,15 @@
 #include <windows.h>
 #endif
 
-static void displayError(const std::string &reason)
+static void
+displayError(const std::string &reason)
 {
     std::string message = reason;
     message += boost::stacktrace::to_string(boost::stacktrace::stacktrace());
+
+    // Let the user know where backup files were saved to.
+    message += "\nBackup folder: ";
+    message += Paths::getBackupDir().string();
 
     // If there is no QApplication instance, something went seriously wrong
     // during startup - just dump the error to the console.

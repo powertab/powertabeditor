@@ -2260,6 +2260,13 @@ void PowerTabEditor::createCommands()
     connect(myPrintPreviewCommand, &QAction::triggered, this,
             &PowerTabEditor::printPreview);
 
+    myOpenBackupCommand =
+        new Command(tr("Open Backup Folder..."), "File.OpenBackupFolder", QKeySequence(), this);
+    connect(myOpenBackupCommand, &QAction::triggered, [=]() {
+        QDesktopServices::openUrl(
+            QUrl::fromLocalFile(Paths::toQString(Paths::getBackupDir())));
+    });
+
     myBulkConverterCommand = new Command(tr("Bulk Converter..."),
                                         "File.BulkConverter",
                                         QKeySequence(), this);
@@ -3258,6 +3265,7 @@ void PowerTabEditor::createMenus()
     myFileMenu->addAction(myPrintPreviewCommand);
     myFileMenu->addSeparator();
     myRecentFilesMenu = myFileMenu->addMenu(tr("Recent Files"));
+    myFileMenu->addAction(myOpenBackupCommand);
     myFileMenu->addSeparator();
     myFileMenu->addAction(myBulkConverterCommand);
     myFileMenu->addSeparator();

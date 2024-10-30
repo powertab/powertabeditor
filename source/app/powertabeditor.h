@@ -464,6 +464,7 @@ private:
     Command *myPrintPreviewCommand;
     Command *myBulkConverterCommand;
     QMenu *myRecentFilesMenu;
+    Command *myOpenBackupCommand;
     Command *myEditShortcutsCommand;
     Command *myEditPreferencesCommand;
     Command *myExitCommand;
