@@ -19,6 +19,8 @@
 
 #include "documentmanager.h"
 #include "paths.h"
+#include "settings.h"
+#include "settingsmanager.h"
 
 #include <actions/undomanager.h>
 #include <formats/powertab/powertabexporter.h>
@@ -100,7 +102,7 @@ backupThread()
 }
 
 AutoBackup::AutoBackup(const DocumentManager &document_manager, const UndoManager &undo_manager,
-                       QObject *parent)
+                       SettingsManager &settings_manager, QObject *parent)
     : QObject(parent),
       myDocumentManager(document_manager),
       myUndoManager(undo_manager),
@@ -109,8 +111,9 @@ AutoBackup::AutoBackup(const DocumentManager &document_manager, const UndoManage
 {
     connect(myTimer.get(), &QTimer::timeout, this, &AutoBackup::startBackup);
 
-    static constexpr int interval_ms = 5000; // TODO - configure via preferences.
-    myTimer->start(interval_ms);
+    updateTimerSettings(settings_manager);
+    mySettingsListener =
+        settings_manager.subscribeToChanges([&]() { updateTimerSettings(settings_manager); });
 }
 
 AutoBackup::~AutoBackup()
@@ -123,6 +126,17 @@ AutoBackup::~AutoBackup()
     theCV.notify_one();
     
     myWorkerThread.join();
+}
+
+void
+AutoBackup::updateTimerSettings(const SettingsManager &settings_manager)
+{
+    auto settings = settings_manager.getReadHandle();
+
+    if (settings->get(Settings::BackupEnabled))
+        myTimer->start(1000 * settings->get(Settings::BackupInterval));
+    else
+        myTimer->stop();
 }
 
 void

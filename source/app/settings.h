@@ -47,6 +47,9 @@ namespace Settings
     extern const Setting<std::string> DefaultInstrumentName;
     extern const Setting<int> DefaultInstrumentPreset;
     extern const Setting<Tuning> DefaultTuning;
+
+    extern const Setting<bool> BackupEnabled;
+    extern const Setting<int> BackupInterval;
 }
 
 template <>

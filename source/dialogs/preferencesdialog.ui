@@ -3,7 +3,7 @@
  <class>PreferencesDialog</class>
  <widget class="QDialog" name="PreferencesDialog">
   <property name="windowModality">
-   <enum>Qt::ApplicationModal</enum>
+   <enum>Qt::WindowModality::ApplicationModal</enum>
   </property>
   <property name="geometry">
    <rect>
@@ -23,7 +23,7 @@
    <item>
     <widget class="QTabWidget" name="tabWidget">
      <property name="tabPosition">
-      <enum>QTabWidget::North</enum>
+      <enum>QTabWidget::TabPosition::North</enum>
      </property>
      <property name="currentIndex">
       <number>0</number>
@@ -42,7 +42,7 @@
           <item>
            <layout class="QFormLayout" name="formLayout">
             <property name="fieldGrowthPolicy">
-             <enum>QFormLayout::ExpandingFieldsGrow</enum>
+             <enum>QFormLayout::FieldGrowthPolicy::ExpandingFieldsGrow</enum>
             </property>
             <item row="0" column="0">
              <widget class="QLabel" name="midiOutputDeviceLabel">
@@ -83,7 +83,7 @@
             <item row="3" column="0">
              <widget class="QLabel" name="playNotesWhileEditing">
               <property name="text">
-               <string>Play Notes While Editing</string>
+               <string>Play Notes While Editing:</string>
               </property>
              </widget>
             </item>
@@ -104,7 +104,7 @@
           <item>
            <layout class="QFormLayout" name="formLayout_2">
             <property name="fieldGrowthPolicy">
-             <enum>QFormLayout::ExpandingFieldsGrow</enum>
+             <enum>QFormLayout::FieldGrowthPolicy::ExpandingFieldsGrow</enum>
             </property>
             <item row="0" column="0">
              <widget class="QLabel" name="metronomeEnabledLabel">
@@ -166,7 +166,7 @@
           <item>
            <layout class="QFormLayout" name="formLayout_4">
             <property name="fieldGrowthPolicy">
-             <enum>QFormLayout::ExpandingFieldsGrow</enum>
+             <enum>QFormLayout::FieldGrowthPolicy::ExpandingFieldsGrow</enum>
             </property>
             <item row="0" column="0">
              <widget class="QLabel" name="countInEnabledLabel">
@@ -180,7 +180,7 @@
                <string>Enabled:</string>
               </property>
               <property name="alignment">
-               <set>Qt::AlignRight|Qt::AlignTrailing|Qt::AlignVCenter</set>
+               <set>Qt::AlignmentFlag::AlignRight|Qt::AlignmentFlag::AlignTrailing|Qt::AlignmentFlag::AlignVCenter</set>
               </property>
              </widget>
             </item>
@@ -276,14 +276,47 @@
              </widget>
             </item>
             <item row="2" column="0">
-              <widget class="QLabel" name="systemSpacingLabel">
-                <property name="text">
-                  <string>System Spacing:</string>
-                </property>
-              </widget>
+             <widget class="QLabel" name="systemSpacingLabel">
+              <property name="text">
+               <string>System Spacing:</string>
+              </property>
+             </widget>
             </item>
             <item row="2" column="1">
-              <widget class="QSpinBox" name="systemSpacingSpinBox"/>
+             <widget class="QSpinBox" name="systemSpacingSpinBox"/>
+            </item>
+           </layout>
+          </item>
+         </layout>
+        </widget>
+       </item>
+       <item>
+        <widget class="QGroupBox" name="groupBox_5">
+         <property name="title">
+          <string>Backup</string>
+         </property>
+         <layout class="QVBoxLayout" name="verticalLayout_8">
+          <item>
+           <layout class="QFormLayout" name="formLayout_6">
+            <item row="0" column="0">
+             <widget class="QLabel" name="enableAutoBackupLabel">
+              <property name="text">
+               <string>Enable Auto Backup:</string>
+              </property>
+             </widget>
+            </item>
+            <item row="0" column="1">
+             <widget class="QCheckBox" name="enableAutoBackupCheckBox"/>
+            </item>
+            <item row="1" column="0">
+             <widget class="QLabel" name="backupIntervalLabel">
+              <property name="text">
+               <string>Backup Interval (seconds):</string>
+              </property>
+             </widget>
+            </item>
+            <item row="1" column="1">
+             <widget class="QSpinBox" name="backupIntervalSpinBox"/>
             </item>
            </layout>
           </item>
@@ -348,10 +381,10 @@
    <item>
     <widget class="QDialogButtonBox" name="buttonBox">
      <property name="orientation">
-      <enum>Qt::Horizontal</enum>
+      <enum>Qt::Orientation::Horizontal</enum>
      </property>
      <property name="standardButtons">
-      <set>QDialogButtonBox::Cancel|QDialogButtonBox::Ok</set>
+      <set>QDialogButtonBox::StandardButton::Cancel|QDialogButtonBox::StandardButton::Ok</set>
      </property>
     </widget>
    </item>

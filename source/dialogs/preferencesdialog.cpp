@@ -76,6 +76,8 @@ PreferencesDialog::PreferencesDialog(QWidget *parent,
 
     ui->systemSpacingSpinBox->setRange(0, 100);
 
+    ui->backupIntervalSpinBox->setRange(5, 1000);
+
     loadCurrentSettings();
 }
 
@@ -140,6 +142,9 @@ void PreferencesDialog::loadCurrentSettings()
     ui->defaultPresetComboBox->setCurrentIndex(
         settings->get(Settings::DefaultInstrumentPreset));
 
+    ui->enableAutoBackupCheckBox->setChecked(settings->get(Settings::BackupEnabled));
+    ui->backupIntervalSpinBox->setValue(settings->get(Settings::BackupInterval));
+
     ui->defaultTuningClickButton->setToolTip(tr("Click to adjust tuning."));
     myDefaultTuning = settings->get(Settings::DefaultTuning);
     ui->defaultTuningClickButton->setText(
@@ -195,6 +200,11 @@ void PreferencesDialog::accept()
 
     settings->set(Settings::SystemSpacing,
                   ui->systemSpacingSpinBox->value());
+
+    settings->set(Settings::BackupEnabled,
+                  ui->enableAutoBackupCheckBox->isChecked());
+    settings->set(Settings::BackupInterval,
+                  ui->backupIntervalSpinBox->value());
 
     settings->set(Settings::DefaultInstrumentName,
                   ui->defaultInstrumentNameLineEdit->text().toStdString());

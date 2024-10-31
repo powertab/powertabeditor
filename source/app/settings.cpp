@@ -50,7 +50,10 @@ const Setting<int> DefaultInstrumentPreset(
     "app/default_instrument_preset", Midi::MIDI_PRESET_ACOUSTIC_GUITAR_STEEL);
 
 const Setting<Tuning> DefaultTuning("app/default_tuning", Tuning());
-}
+
+const Setting<bool> BackupEnabled("app/backup_enabled", true);
+const Setting<int> BackupInterval("app/backup_interval", 30);
+} // namespace Settings
 
 Tuning SettingValueConverter<Tuning>::from(const SettingsTree::SettingValue &v)
 {

@@ -19,21 +19,25 @@
 #define APP_AUTOBACKUP_H
 
 #include <QObject>
-#include <memory>
-#include <thread>
+#include <boost/signals2/signal.hpp>
+#include <memory>
+#include <thread>
 
 class DocumentManager;
 class QTimer;
+class SettingsManager;
 class UndoManager;
 
 class AutoBackup : public QObject
 {
 public:
     AutoBackup(const DocumentManager &document_manager, const UndoManager &undo_manager,
+               SettingsManager &settings_manager,
                QObject *parent = nullptr);
     ~AutoBackup();
 
 private:
+    void updateTimerSettings(const SettingsManager &settings_manager);
     void startBackup();
     
     const DocumentManager &myDocumentManager;
@@ -41,6 +45,7 @@ private:
 
     std::unique_ptr<QTimer> myTimer;
     std::thread myWorkerThread;
+    boost::signals2::scoped_connection mySettingsListener;
 };
 
 #endif
