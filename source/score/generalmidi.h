@@ -18,6 +18,7 @@
 #ifndef SCORE_GENERALMIDI_H
 #define SCORE_GENERALMIDI_H
 
+#include <cassert>
 #include <cstdint>
 #include <string>
 #include <vector>
@@ -50,7 +51,9 @@ namespace Midi
     inline constexpr int PERCUSSION_CHANNEL = 9;
 
     /// Default pitch wheel value.
-    inline constexpr uint8_t DEFAULT_BEND = 64;
+    inline constexpr uint16_t DEFAULT_BEND = 0x2000;
+    /// Max pitch wheel value.
+    inline constexpr uint16_t MAX_BEND = 0x3fff;
     /// Default pan value.
     inline constexpr uint8_t DEFAULT_PAN = 64;
 
@@ -528,6 +531,25 @@ namespace Midi
         if (player_idx >= PERCUSSION_CHANNEL)
             player_idx++;
         return player_idx;
+    }
+
+    /// Split a 14-bit value into two 7-bit values. This is used for e.g. pitch wheel values.
+    inline void
+    splitIntoBytes(uint16_t value, uint8_t &lower_bits, uint8_t &upper_bits)
+    {
+        assert(value <= MAX_BEND);
+        lower_bits = static_cast<uint8_t>(value & 0x7f);
+        upper_bits = static_cast<uint8_t>((value >> 7) & 0x7f);
+    }
+
+    /// Inverse of splitIntoBytes(): combine two 7-bit values into a 14-bit value.
+    inline uint16_t
+    combineBytes(uint8_t lower_bits, uint8_t upper_bits)
+    {
+        uint16_t value = static_cast<uint8_t>(upper_bits & 0x7f);
+        value <<= 7;
+        value |= static_cast<uint16_t>(lower_bits & 0x7f);
+        return value;
     }
 }
 

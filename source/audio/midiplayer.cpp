@@ -189,7 +189,7 @@ MidiPlayer::playEvents(MidiFile &file, const SystemLocation &start_location,
     SystemLocation current_location = start_location;
     DurationType clock_drift(0);
 
-    std::array<uint8_t, Midi::NUM_MIDI_CHANNELS_PER_PORT> initial_pitch_wheel;
+    std::array<uint16_t, Midi::NUM_MIDI_CHANNELS_PER_PORT> initial_pitch_wheel;
     initial_pitch_wheel.fill(Midi::DEFAULT_BEND);
 
     for (const MidiEvent &event : events)

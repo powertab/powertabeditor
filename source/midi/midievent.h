@@ -60,7 +60,7 @@ public:
     bool isMetaMessage() const;
     bool isTempoChange() const;
     bool isPitchWheel() const;
-    uint8_t getPitchWheelValue() const;
+    uint16_t getPitchWheelValue() const;
     bool isVolumeChange() const;
     bool isTrackEnd() const;
     Midi::Tempo getTempo() const;
@@ -80,7 +80,8 @@ public:
     static MidiEvent programChange(int ticks, uint8_t channel, uint8_t preset);
     static MidiEvent modWheel(int ticks, uint8_t channel, uint8_t width);
     static MidiEvent holdPedal(int ticks, uint8_t channel, bool enabled);
-    static MidiEvent pitchWheel(int ticks, uint8_t channel, uint8_t amount);
+    /// Note the pitch wheel values can be up to 14 bits (0x3fff).
+    static MidiEvent pitchWheel(int ticks, uint8_t channel, uint16_t amount);
     static MidiEvent positionChange(int ticks, const SystemLocation &location);
     static std::vector<MidiEvent> pitchWheelRange(int ticks, uint8_t channel,
                                                   uint8_t semitones);

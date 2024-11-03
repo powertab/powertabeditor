@@ -53,7 +53,7 @@ public:
     bool setPatch(int channel, uint8_t patch);
     bool setVolume(int channel, uint8_t volume);
     bool setPan(int channel, uint8_t pan);
-    bool setPitchBend(int channel, uint8_t bend);
+    bool setPitchBend(int channel, uint16_t bend);
     bool playNote(int channel, uint8_t pitch, uint8_t velocity);
     bool stopNote(int channel, uint8_t pitch);
     bool setVibrato(int channel, uint8_t modulation);

@@ -17,6 +17,8 @@
   
 #include "midievent.h"
 
+#include <score/generalmidi.h>
+
 #include <cassert>
 
 enum Controller : uint8_t
@@ -69,10 +71,11 @@ bool MidiEvent::isPitchWheel() const
     return (getStatusByte() & theStatusByteMask) == StatusByte::PitchWheel;
 }
 
-uint8_t MidiEvent::getPitchWheelValue() const
+uint16_t
+MidiEvent::getPitchWheelValue() const
 {
     assert(isPitchWheel());
-    return myData[2];
+    return Midi::combineBytes(myData[1], myData[2]);
 }
 
 bool MidiEvent::isTrackEnd() const
@@ -162,11 +165,15 @@ MidiEvent MidiEvent::holdPedal(int ticks, uint8_t channel, bool enabled)
         SystemLocation());
 }
 
-MidiEvent MidiEvent::pitchWheel(int ticks, uint8_t channel, uint8_t amount)
+MidiEvent
+MidiEvent::pitchWheel(int ticks, uint8_t channel, uint16_t amount)
 {
+    assert(amount <= Midi::MAX_BEND);
+
+    uint8_t lower_bits, upper_bits;
+    Midi::splitIntoBytes(amount, lower_bits, upper_bits);
     return MidiEvent(
-        ticks,
-        { static_cast<uint8_t>(StatusByte::PitchWheel + channel), 0, amount },
+        ticks, { static_cast<uint8_t>(StatusByte::PitchWheel + channel), lower_bits, upper_bits },
         SystemLocation());
 }
 

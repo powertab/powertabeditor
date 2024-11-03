@@ -39,7 +39,7 @@ static constexpr int SLIDE_OUT_STEPS = 5;
 
 /// Pitch bend amount to bend a note by a quarter tone.
 static const boost::rational<int> BEND_QUARTER_TONE(
-    (Midi::MAX_MIDI_CHANNEL_EFFECT_LEVEL - DEFAULT_BEND), 2 * PITCH_BEND_RANGE);
+    (Midi::MAX_BEND - DEFAULT_BEND), 2 * PITCH_BEND_RANGE);
 
 static const int SLIDE_BELOW_BEND = boost::rational_cast<int>(
     DEFAULT_BEND - SLIDE_OUT_STEPS * 2 * BEND_QUARTER_TONE);
@@ -152,7 +152,7 @@ void MidiFile::load(const Score &score, const LoadOptions &options)
         initializeChannel(regular_tracks[i], Midi::getPlayerChannel(i));
 
     SystemLocation location(0, 0);
-    std::vector<uint8_t> active_bends;
+    std::vector<uint16_t> active_bends;
     int system_index = -1;
     int current_tick = 0;
     Midi::Tempo current_tempo = Midi::BEAT_DURATION_120_BPM;
@@ -500,31 +500,35 @@ static int getArpeggioOffset(int ppq, Midi::Tempo current_tempo)
 /// function.
 struct BendEventInfo
 {
-    BendEventInfo(int tick, uint8_t bend_amount)
+    BendEventInfo(int tick, uint16_t bend_amount)
         : myTick(tick), myBendAmount(bend_amount)
     {
     }
 
     int myTick;
-    uint8_t myBendAmount;
+    uint16_t myBendAmount;
 };
 
-static void generateGradualBend(std::vector<BendEventInfo> &bends,
-                                int start_tick, int duration, int start_bend,
-                                int release_bend)
+static void
+generateGradualBend(std::vector<BendEventInfo> &bends, int start_tick, int duration, int start_bend,
+                    int release_bend)
 {
-    const int num_events = std::abs(start_bend - release_bend);
-    if (!num_events)
+    const int total_bend = release_bend - start_bend;
+    if (total_bend == 0)
         return;
 
-    const int event_duration = duration / num_events;
+    // At most we generate one event per tick (or bend increment), but avoid generating thousands of
+    // events if the note duration / bend range is large.
+    const int max_bend_events = std::min(duration, 128);
+    const int num_events = std::min(std::abs(total_bend), max_bend_events);
+
+    const boost::rational<int> bend_step(total_bend, num_events);
+    const boost::rational<int> event_duration(duration, num_events);
+
     for (int i = 1; i <= num_events; ++i)
     {
-        const int tick = start_tick + i * event_duration;
-        if (start_bend < release_bend)
-            bends.push_back(BendEventInfo(tick, start_bend + i));
-        else
-            bends.push_back(BendEventInfo(tick, start_bend - i));
+        const int tick = start_tick + boost::rational_cast<int>(i * event_duration);
+        bends.push_back(BendEventInfo(tick, start_bend + boost::rational_cast<int>(i * bend_step)));
     }
 }
 
@@ -563,9 +567,9 @@ computeFollowingNotesDuration(const Voice &voice, int start_idx, int num_notes,
 }
 
 static void
-generateBends(std::vector<BendEventInfo> &bends, uint8_t &active_bend,
-              int start_tick, int note_duration, int ticks_per_beat,
-              const Voice &voice, const Position &pos, const Note &note)
+generateBends(std::vector<BendEventInfo> &bends, uint16_t &active_bend, int start_tick,
+              int note_duration, int ticks_per_beat, const Voice &voice, const Position &pos,
+              const Note &note)
 {
     const Bend &bend = note.getBend();
 
@@ -658,7 +662,7 @@ generateBends(std::vector<BendEventInfo> &bends, uint8_t &active_bend,
 }
 
 static void
-generateTremoloBar(std::vector<BendEventInfo> &bends, uint8_t &active_bend,
+generateTremoloBar(std::vector<BendEventInfo> &bends, uint16_t &active_bend,
                    int start_tick, int note_duration, int ticks_per_beat,
                    const Voice &voice, const Position &pos)
 {
@@ -846,7 +850,7 @@ generateVolumeSwell(const int start_tick, int duration,
 
 int
 MidiFile::addEventsForBar(std::vector<MidiEventList> &tracks,
-                          uint8_t &active_bend, int current_tick,
+                          uint16_t &active_bend, int current_tick,
                           Midi::Tempo current_tempo, const Score &score,
                           const System &system, int system_index,
                           const Staff &staff, int staff_index,

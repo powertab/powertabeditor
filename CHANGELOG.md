@@ -15,6 +15,7 @@ Thanks to the following contributors who worked on this release:
 - When attempting to insert a note at the end of a system, a space is now automatically inserted to allow the note to be added (#439)
 - Extended the view filter menu to support filtering by a specific player without requiring a filter to be explicitly created (#301)
 - Copying and pasting selections which include barlines is now supported (#416)
+- Improved the smoothness of MIDI pitch wheel events (bends, slides, etc), which now use the full 14-bit resolution instead of 7-bit
 - Translations
   - Added Turkish translation (#406)
   - Updated French translation (#406)

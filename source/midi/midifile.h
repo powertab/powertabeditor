@@ -85,7 +85,7 @@ private:
                               int bar_start, int bar_end);
 
     int addEventsForBar(std::vector<MidiEventList> &tracks,
-                        uint8_t &active_bend, int current_tick,
+                        uint16_t &active_bend, int current_tick,
                         Midi::Tempo current_tempo, const Score &score,
                         const System &system, int system_index,
                         const Staff &staff, int staff_index, const Voice &voice,

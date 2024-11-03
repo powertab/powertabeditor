@@ -224,12 +224,13 @@ bool MidiOutputDevice::setPan(int channel, uint8_t pan)
     return sendMidiMessage(ControlChange + channel, PanChange, pan);
 }
 
-bool MidiOutputDevice::setPitchBend (int channel, uint8_t bend)
+bool
+MidiOutputDevice::setPitchBend(int channel, uint16_t amount)
 {
-    if (bend > 127)
-        bend = 127;
+    uint8_t lower_bits, upper_bits;
+    Midi::splitIntoBytes(amount, lower_bits, upper_bits);
 
-    return sendMidiMessage(PitchWheel + channel, 0, bend);
+    return sendMidiMessage(PitchWheel + channel, lower_bits, upper_bits);
 }
 
 bool MidiOutputDevice::playNote(int channel, uint8_t pitch, uint8_t velocity)
