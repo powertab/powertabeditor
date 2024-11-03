@@ -5,8 +5,9 @@ All notable changes to this project will be documented in this file.
 
 Thanks to the following contributors who worked on this release:
 - @cameronwhite
-- @cbibejs
-- @conker312
+- @adam-eldredge
+- @Dj-Viking
+- @DontBelieveMe
 
 ### Added
 - Unsaved modified files can now be automatically backed at a regular interval, controlled via the Preferences dialog. The backup folder can be opened via the File menu (#392)
@@ -18,17 +19,22 @@ Thanks to the following contributors who worked on this release:
 - Improved the smoothness of MIDI pitch wheel events (bends, slides, etc), which now use the full 14-bit resolution instead of 7-bit
 - Translations
   - Added Turkish translation (#406)
-  - Updated French translation (#406)
+  - Added Chinese (Simplified) translation (#476, #477, #482)
+  - Updated French translation (#406, #440)
+  - Updated German translation (#473, #474, #481, #482)
+  - Updated Russian translation (#407, #409, #437, #438)
+  - Updated Spanish translation (#445)
 
 ### Changed
 - Chord diagrams now display the fret number of the top fret instead of the next fret after it (#408)
 - Removed the 32-bit Windows installers
+- A C++20 compiler is now required
 - Updated the minimum required version of `RtMidi` to 4.0
 - Updated the minimum required version of `boost` to 1.74
 - Updated the minimum required version of `Qt` to 6.2
 
 ### Fixed
-- Fixed a bug that caused some preferences such as custom shortcuts to not persist on macOS. Note that all other preferences (such as MIDI settings) are reset by this fix and will need to be manually changed to the desired values (#447).
+- Fixed a bug that caused some preferences such as custom shortcuts to not persist on macOS. Note that all other preferences (such as MIDI settings) are reset by this fix and will need to be manually changed to the desired values (#447)
 - Fixed a frequent crash when the preference to play inserted notes while editing is enabled
 - Fixed potential crashes when importing Guitar Pro files (#442, #444)
 - Fixed a bug where the scroll bar's range did not update when the visible height of the score shrank (#443)
