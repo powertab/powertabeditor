@@ -5,6 +5,19 @@ All notable changes to this project will be documented in this file.
 
 Thanks to the following contributors who worked on this release:
 - @cameronwhite
+
+### Added
+
+### Changed
+
+### Fixed
+
+## [2.0.20] - 2024-11-03
+
+This release drops the `alpha` tag and moves to a normal versioning scheme: future versions will bump the major / minor / patch versions depending on the scope of the changes.
+
+Thanks to the following contributors who worked on this release:
+- @cameronwhite
 - @adam-eldredge
 - @Dj-Viking
 - @DontBelieveMe
@@ -481,7 +494,8 @@ Thanks to the following contributors who worked on this release:
 ## [Alpha 1] - 2014-07-27
 * The first alpha release!
 
-[Unreleased]: https://github.com/powertab/powertabeditor/compare/2.0.0-alpha19...HEAD
+[Unreleased]: https://github.com/powertab/powertabeditor/compare/2.0.20...HEAD
+[2.0.20]: https://github.com/powertab/powertabeditor/releases/tag/2.0.20
 [Alpha 19]: https://github.com/powertab/powertabeditor/releases/tag/2.0.0-alpha19
 [Alpha 18]: https://github.com/powertab/powertabeditor/releases/tag/2.0.0-alpha18
 [Alpha 17]: https://github.com/powertab/powertabeditor/releases/tag/2.0.0-alpha17

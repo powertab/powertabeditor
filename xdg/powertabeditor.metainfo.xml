@@ -41,6 +41,49 @@
   </provides>
 
   <releases>
+    <release version="2.0.20" date="2024-11-03">
+      <url>https://github.com/powertab/powertabeditor/releases/tag/2.0.20</url>
+      <description>
+        <p>New Features / Improvements</p>
+        <ul>
+          <li>Unsaved modified files can now be automatically backed at a regular interval, controlled via the Preferences dialog. The backup folder can be opened via the File menu (#392)</li>
+          <li>The preferred MIDI output device is now tracked by name rather than by port number, which is more robust if e.g. a new device is plugged in</li>
+          <li>Chord names can now use a custom label instead of the auto-generated chord name. This is primarily used for chords imported from Guitar Pro files (#442)</li>
+          <li>When attempting to insert a note at the end of a system, a space is now automatically inserted to allow the note to be added (#439)</li>
+          <li>Extended the view filter menu to support filtering by a specific player without requiring a filter to be explicitly created (#301)</li>
+          <li>Copying and pasting selections which include barlines is now supported (#416)</li>
+          <li>Improved the smoothness of MIDI pitch wheel events (bends, slides, etc), which now use the full 14-bit resolution instead of 7-bit</li>
+          <li>Added Turkish translation (#406)</li>
+          <li>Added Chinese (Simplified) translation (#476, #477, #482)</li>
+          <li>Updated French translation (#406, #440)</li>
+          <li>Updated German translation (#473, #474, #481, #482)</li>
+          <li>Updated Russian translation (#407, #409, #437, #438)</li>
+          <li>Updated Spanish translation (#445)</li>
+        </ul>
+        <p>Changes</p>
+        <ul>
+          <li>Chord diagrams now display the fret number of the top fret instead of the next fret after it (#408)</li>
+          <li>Removed the 32-bit Windows installers</li>
+          <li>A C++20 compiler is now required</li>
+          <li>Updated the minimum required version of `RtMidi` to 4.0</li>
+          <li>Updated the minimum required version of `boost` to 1.74</li>
+          <li>Updated the minimum required version of `Qt` to 6.2</li>
+        </ul>
+        <p>Bug Fixes</p>
+        <ul>
+          <li>Fixed a bug that caused some preferences such as custom shortcuts to not persist on macOS. Note that all other preferences (such as MIDI settings) are reset by this fix and will need to be manually changed to the desired values (#447)</li>
+          <li>Fixed a frequent crash when the preference to play inserted notes while editing is enabled</li>
+          <li>Fixed potential crashes when importing Guitar Pro files (#442, #444)</li>
+          <li>Fixed a bug where the scroll bar's range did not update when the visible height of the score shrank (#443)</li>
+          <li>Fixed a bug where the caret was rendered when printing or displaying a print preview (#441)</li>
+          <li>Fixed issues where the top fret number of a chord diagram could be cut off in the chord name dialog (#408)</li>
+          <li>Fixed a crash when an alternate ending was located on the last position of a system (#449)</li>
+          <li>Fixed a crash during playback when a score contained a `Fine` symbol (#470)</li>
+          <li>Fixed build errors with `minizip-ng` (#478)</li>
+          <li>Fixed crashes due to menu items not being disabled correctly after switching tabs (#486)</li>
+        </ul>
+      </description>
+    </release>
     <release version="2.0.0-alpha19" date="2022-10-17">
       <url>https://github.com/powertab/powertabeditor/releases/tag/2.0.0-alpha19</url>
       <description>
