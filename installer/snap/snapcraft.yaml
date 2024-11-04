@@ -62,7 +62,7 @@ apps:
     common-id: powertabeditor.desktop
     command: usr/local/bin/powertabeditor
     extensions:
-      - kde-neon
+      - kde-neon-6
     plugs:
       - alsa # For rtmidi's ALSA backend
       - audio-playback
