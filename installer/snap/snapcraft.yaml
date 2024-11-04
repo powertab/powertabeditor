@@ -3,7 +3,7 @@
 # - sudo snap connect powertabeditor:jack1
 
 name: powertabeditor
-base: core20
+base: core24
 version: '2.0.20'
 adopt-info: powertabeditor
 
@@ -22,9 +22,8 @@ parts:
       - -DCMAKE_BUILD_TYPE=Release
       - -DBUILD_TESTING=OFF
       - -DPTE_BUILD_SNAP=ON
-      - -DCMAKE_FIND_ROOT_PATH="usr;/snap/kde-frameworks-5-qt-5-15-core20-sdk/current"
     build-snaps:
-      - kde-frameworks-5-qt-5-15-core20-sdk # For Qt and minizip
+      - kf6-core24-sdk # For Qt
     build-packages:
       - libasound2-dev
       - libboost-date-time-dev
@@ -35,8 +34,8 @@ parts:
       - librtmidi-dev
       - nlohmann-json3-dev
     stage-packages:
-      - libboost-date-time1.71.0
-      - libboost-iostreams1.71.0
+      - libboost-date-time1.74.0
+      - libboost-iostreams1.74.0
       - libasound2
       - libjack0
       - librtmidi4
