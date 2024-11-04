@@ -2189,13 +2189,7 @@ void PowerTabEditor::dropEvent(QDropEvent *event)
 
 QString PowerTabEditor::getApplicationName() const
 {
-    QString name = QString("%1 %2 Beta").arg(
-                AppInfo::APPLICATION_NAME,
-                AppInfo::APPLICATION_VERSION);
-
-    name += QString::fromStdString(Version::get());
-
-    return name;
+    return QString::fromStdString(AppInfo::makeApplicationName());
 }
 
 void PowerTabEditor::updateWindowTitle()
