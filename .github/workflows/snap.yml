@@ -24,7 +24,6 @@ jobs:
       id: build
       with:
         path: installer/snap
-        snapcraft-args: --enable-experimental-extensions # For kde-neon
 
     - uses: snapcore/action-publish@v1
       with:
