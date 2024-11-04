@@ -3,7 +3,7 @@
 # - sudo snap connect powertabeditor:jack1
 
 name: powertabeditor
-base: core24
+base: core22
 version: '2.0.20'
 adopt-info: powertabeditor
 
@@ -23,7 +23,7 @@ parts:
       - -DBUILD_TESTING=OFF
       - -DPTE_BUILD_SNAP=ON
     build-snaps:
-      - kf6-core24-sdk # For Qt
+      - kf6-core22-sdk # For Qt
     build-packages:
       - libasound2-dev
       - libboost-date-time-dev
