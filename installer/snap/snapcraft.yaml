@@ -38,7 +38,7 @@ parts:
       - libboost-iostreams1.74.0
       - libasound2
       - libjack0
-      - librtmidi4
+      - librtmidi6
       - libminizip1
       - libpugixml1v5
     override-prime: |
