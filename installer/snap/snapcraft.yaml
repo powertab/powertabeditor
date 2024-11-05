@@ -23,7 +23,7 @@ parts:
       - -DBUILD_TESTING=OFF
       - -DPTE_BUILD_SNAP=ON
     build-snaps:
-      - kf6-core22-sdk # For Qt
+      - kde-qt6-core22-sdk # For Qt
     build-packages:
       - libasound2-dev
       - libboost-date-time-dev
