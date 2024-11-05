@@ -12,8 +12,7 @@ confinement: strict
 
 parts:
   powertabeditor:
-    parse-info:
-      - /root/parts/powertabeditor/install/usr/local/share/metainfo/powertabeditor.metainfo.xml
+    parse-info: [usr/local/share/metainfo/powertabeditor.metainfo.xml]
     plugin: cmake
     source: https://github.com/powertab/powertabeditor.git
     source-tag: 2.0.20
