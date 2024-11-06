@@ -11,6 +11,7 @@ Thanks to the following contributors who worked on this release:
 ### Changed
 
 ### Fixed
+- Fixed AppStream validation issues in `xdg/powertabeditor.metainfo.xml`
 
 ## [2.0.20] - 2024-11-03
 

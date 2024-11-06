@@ -4,6 +4,7 @@
   
   <name>Power Tab Editor</name>
   <summary>View and edit guitar tablature</summary>
+  <developer>Power Tab Developers</developer>
   
   <metadata_license>FSFAP</metadata_license>
   <project_license>GPL-3.0-or-later</project_license>
@@ -126,13 +127,9 @@
         </ul>
         <p>Changes</p>
         <ul>
-          <li>Tuning dictionary changes (#367)
-          <ul>
-            <li>The tuning dictionary in the user prefs folder (`tunings.json`) now only stores custom tunings instead of the entire tuning dictionary</li>
-            <li>The user tuning dictionary is now combined with the default tuning dictionary when loaded, ensuring that updates to the default tunings take effey</li>
-            <li>Reordered the default tuning dictionary so that "Down 1/2 Step", "Down 1 Step" etc tunings are next to the standard tuning (#36y</li>
-          </ul>
-          </li>
+          <li>The tuning dictionary in the user prefs folder (`tunings.json`) now only stores custom tunings instead of the entire tuning dictionary (#367)</li>
+          <li>The user tuning dictionary is now combined with the default tuning dictionary when loaded, ensuring that updates to the default tunings take effect (#367)</li>
+          <li>Reordered the default tuning dictionary so that "Down 1/2 Step", "Down 1 Step" etc tunings are next to the standard tuning (#367)</li>
           <li>Several changes to the `.pt2` JSON format to make it easier for other applications to parse (#368). Note that older releases will likely be unable to open newly-saved `.pt2` files</li>
         </ul>
         <p>Bug Fixes</p>
@@ -148,28 +145,19 @@
       <description>
         <p>New Features / Improvements</p>
         <ul>
-          <li>Added support for chord diagrams
-            <ul>
-              <li>Chord diagrams are displayed at the top of the score</li>
-              <li>Diagrams can be imported from v1.7 files and Guitar Pro 6 / 7 files</li>
-              <li>The Chord Name dialog allows for quick selection from existing chord names in the score (chord text items, or chord diagrams)</li>
-              <li>Use the Add Chord Diagram option in the text menu to add a new diagram</li>
-              <li>Double-clicking a chord diagram will open a dialog to edit it, and selecting a chord diagram and pressing Delete will remove it</li>
-            </ul>
-          </li>
+          <li>Added support for chord diagrams</li>
+          <li>Chord diagrams are displayed at the top of the score</li>
+          <li>Diagrams can be imported from v1.7 files and Guitar Pro 6 / 7 files</li>
+          <li>The Chord Name dialog allows for quick selection from existing chord names in the score (chord text items, or chord diagrams)</li>
+          <li>Use the Add Chord Diagram option in the text menu to add a new diagram</li>
+          <li>Double-clicking a chord diagram will open a dialog to edit it, and selecting a chord diagram and pressing Delete will remove it</li>
           <li>Added MIDI playback support for bends that stretch over multiple notes</li>
-          <li>Improvements for adjusting the score's zoom (#315, #340, #50)
-            <ul>
-              <li>Added standard keyboard shortcuts for adjusting the zoom</li>
-              <li>The last zoom level is saved in the settings and used when opening new scores</li>
-            </ul>
-          </li>
+          <li>Improvements for adjusting the score's zoom (#315, #340, #50)</li>
+          <li>Added standard keyboard shortcuts for adjusting the zoom</li>
+          <li>The last zoom level is saved in the settings and used when opening new scores</li>
           <li>Added a button in the playback widget to toggle the count-in option</li>
-          <li>Translations<ul>
-              <li>Added Spanish translation (#348)</li>
-              <li>Added French translation (#355)</li>
-            </ul>
-          </li>
+          <li>Added Spanish translation (#348)</li>
+          <li>Added French translation (#355)</li>
         </ul>
         <p>Changes</p>
         <ul>
