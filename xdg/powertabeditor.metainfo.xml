@@ -4,7 +4,9 @@
   
   <name>Power Tab Editor</name>
   <summary>View and edit guitar tablature</summary>
-  <developer>Power Tab Developers</developer>
+  <developer id="com.github.powertab">
+    <name>Power Tab Developers</name>
+  </developer>
   
   <metadata_license>FSFAP</metadata_license>
   <project_license>GPL-3.0-or-later</project_license>
