@@ -249,7 +249,7 @@ ScoreLocation::getSelectedBarlines()
     // Avoid duplicate logic between const and non-const versions.
     std::vector<const Barline *> barlines = ConstScoreLocation::getSelectedBarlines();
     std::vector<Barline *> nc_barlines;
-    for (const Barline *barline : nc_barlines)
+    for (const Barline *barline : barlines)
         nc_barlines.push_back(const_cast<Barline *>(barline));
 
     return nc_barlines;

@@ -3874,6 +3874,8 @@ void PowerTabEditor::updateCommands()
         ScoreUtils::findByPosition(staff.getDynamics(), position);
     const bool positions_selected =
         location.hasSelection() && !location.getSelectedPositions().empty();
+    const bool barlines_selected =
+        location.hasSelection() && !location.getSelectedBarlines().empty();
 
     myRemoveCurrentSystemCommand->setEnabled(score.getSystems().size() > 1);
     myRemoveCurrentStaffCommand->setEnabled(system.getStaves().size() > 1);
@@ -3883,9 +3885,8 @@ void PowerTabEditor::updateCommands()
                                              Score::MIN_LINE_SPACING);
     myRemoveSpaceCommand->setEnabled(!pos && (position == 0 || !barline) &&
                                      !tempoMarker && !altEnding && !dynamic);
-    myRemoveItemCommand->setEnabled(
-        pos || positions_selected ||
-        canDeleteItem(getCaret().getSelectedItem()));
+    myRemoveItemCommand->setEnabled(pos || positions_selected || barline || barlines_selected ||
+                                    canDeleteItem(getCaret().getSelectedItem()));
     myRemovePositionCommand->setEnabled(pos || positions_selected);
 
     myChordNameCommand->setChecked(

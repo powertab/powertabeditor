@@ -9,9 +9,11 @@ Thanks to the following contributors who worked on this release:
 ### Added
 
 ### Changed
+- The barline under the cursor can now be deleted without requiring it to be selected first 
 
 ### Fixed
 - Fixed AppStream validation issues in `xdg/powertabeditor.metainfo.xml`
+- Fixed a bug which could prevent barlines from being deleted
 
 ## [2.0.20] - 2024-11-03
 
