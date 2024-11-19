@@ -92,18 +92,10 @@ TEST_CASE("Score/Staff/GetPositionsInRange")
     voice.insertPosition(pos7);
     voice.insertPosition(pos8);
 
-    REQUIRE(std::distance(
-                ScoreUtils::findInRange(voice.getPositions(), 9, 15).begin(),
-                ScoreUtils::findInRange(voice.getPositions(), 9, 15).end()) ==
-            0);
-    REQUIRE(std::distance(
-                ScoreUtils::findInRange(voice.getPositions(), 8, 10).begin(),
-                ScoreUtils::findInRange(voice.getPositions(), 8, 10).end()) ==
-            1);
-    REQUIRE(std::distance(
-                ScoreUtils::findInRange(voice.getPositions(), 4, 7).begin(),
-                ScoreUtils::findInRange(voice.getPositions(), 4, 7).end()) ==
-            3);
+    std::span<Position> positions = voice.getPositions();
+    REQUIRE(std::ranges::distance(ScoreUtils::findInRange(positions, 9, 15)) == 0);
+    REQUIRE(std::ranges::distance(ScoreUtils::findInRange(positions, 8, 10)) == 1);
+    REQUIRE(std::ranges::distance(ScoreUtils::findInRange(positions, 4, 7)) == 3);
 }
 
 TEST_CASE("Score/Staff/GetNextNote")
