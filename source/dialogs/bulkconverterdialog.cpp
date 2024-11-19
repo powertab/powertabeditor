@@ -58,7 +58,7 @@ convertFile(const std::filesystem::path &src, const std::filesystem::path &dst,
 
     try
     {
-        ffm->exportFile(score, dst, export_format);
+        ffm->exportFile(score, dst, Paths::getBackupDir(), export_format);
     }
     catch (const std::exception &)
     {

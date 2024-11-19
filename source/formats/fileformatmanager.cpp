@@ -109,12 +109,13 @@ std::string FileFormatManager::exportFileFilter() const
     return filter;
 }
 
-void FileFormatManager::exportFile(const Score &score,
-                                   const std::filesystem::path &filename,
-                                   const FileFormat &format)
+void
+FileFormatManager::exportFile(const Score &score, const std::filesystem::path &filename,
+                              const std::filesystem::path &backup_folder, const FileFormat &format)
 {
     // Write to a temporary file and then swap, to avoid data loss if e.g. the exporter crashes.
-    std::filesystem::path temp_file = std::filesystem::temp_directory_path() / filename.filename();
+    std::filesystem::create_directories(backup_folder);
+    std::filesystem::path temp_file = backup_folder / filename.filename();
     temp_file += ".new";
 
     for (auto &exporter : myExporters)
@@ -122,7 +123,13 @@ void FileFormatManager::exportFile(const Score &score,
         if (exporter->fileFormat() == format)
         {
             exporter->save(temp_file, score);
-            std::filesystem::rename(temp_file, filename);
+
+            // Note that filesystem::rename() doesn't work if the backup folder is on a different
+            // volume, so just copy.
+            std::filesystem::copy(temp_file, filename,
+                                  std::filesystem::copy_options::overwrite_existing);
+            std::filesystem::remove(temp_file);
+
             return;
         }
     }

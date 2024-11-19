@@ -53,7 +53,7 @@ public:
     /// Exports the given score to a file.
     /// @throws std::exception
     void exportFile(const Score &score, const std::filesystem::path &filename,
-                    const FileFormat &format);
+                    const std::filesystem::path &backup_folder, const FileFormat &format);
 
     // Checks to see if there is an importer for the designated extension
     bool extensionImportSupported(const std::string& extension) const;

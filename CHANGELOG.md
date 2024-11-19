@@ -13,7 +13,8 @@ Thanks to the following contributors who worked on this release:
 
 ### Fixed
 - Fixed AppStream validation issues in `xdg/powertabeditor.metainfo.xml`
-- Fixed a bug which could prevent barlines from being deleted
+- Fixed a bug which could prevent barlines from being deleted (#496)
+- Fixed errors with saving files in the Snap or Flatpak packages (#498)
 
 ## [2.0.20] - 2024-11-03
 

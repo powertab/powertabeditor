@@ -411,7 +411,7 @@ bool PowerTabEditor::saveFile(int doc_index, QString path)
 
     try
     {
-        myFileFormatManager->exportFile(doc.getScore(), path_str, *format);
+        myFileFormatManager->exportFile(doc.getScore(), path_str, Paths::getBackupDir(), *format);
     }
     catch (const std::exception &e)
     {
