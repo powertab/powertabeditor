@@ -6,7 +6,7 @@
    <rect>
     <x>0</x>
     <y>0</y>
-    <width>933</width>
+    <width>969</width>
     <height>38</height>
    </rect>
   </property>
@@ -15,7 +15,7 @@
   </property>
   <layout class="QHBoxLayout" name="horizontalLayout">
    <property name="sizeConstraint">
-    <enum>QLayout::SetMinimumSize</enum>
+    <enum>QLayout::SizeConstraint::SetMinimumSize</enum>
    </property>
    <property name="leftMargin">
     <number>9</number>
@@ -39,7 +39,7 @@
    <item>
     <widget class="Line" name="line">
      <property name="orientation">
-      <enum>Qt::Vertical</enum>
+      <enum>Qt::Orientation::Vertical</enum>
      </property>
     </widget>
    </item>
@@ -83,7 +83,7 @@
    <item>
     <widget class="Line" name="line2">
      <property name="orientation">
-      <enum>Qt::Vertical</enum>
+      <enum>Qt::Orientation::Vertical</enum>
      </property>
     </widget>
    </item>
@@ -96,8 +96,14 @@
    </item>
    <item>
     <widget class="QSpinBox" name="speedSpinner">
+     <property name="sizePolicy">
+      <sizepolicy hsizetype="Expanding" vsizetype="Fixed">
+       <horstretch>0</horstretch>
+       <verstretch>0</verstretch>
+      </sizepolicy>
+     </property>
      <property name="focusPolicy">
-      <enum>Qt::StrongFocus</enum>
+      <enum>Qt::FocusPolicy::StrongFocus</enum>
      </property>
      <property name="toolTip">
       <string>Adjusts the current playback speed.</string>
@@ -107,7 +113,7 @@
    <item>
     <widget class="Line" name="line_3">
      <property name="orientation">
-      <enum>Qt::Vertical</enum>
+      <enum>Qt::Orientation::Vertical</enum>
      </property>
     </widget>
    </item>
@@ -165,7 +171,7 @@
    <item>
     <widget class="Line" name="line_2">
      <property name="orientation">
-      <enum>Qt::Vertical</enum>
+      <enum>Qt::Orientation::Vertical</enum>
      </property>
     </widget>
    </item>
@@ -179,32 +185,26 @@
    <item>
     <widget class="QComboBox" name="zoomComboBox">
      <property name="sizePolicy">
-      <sizepolicy hsizetype="Fixed" vsizetype="Fixed">
+      <sizepolicy hsizetype="Expanding" vsizetype="Fixed">
        <horstretch>0</horstretch>
        <verstretch>0</verstretch>
       </sizepolicy>
-     </property>
-     <property name="maximumSize">
-      <size>
-       <width>75</width>
-       <height>16777215</height>
-      </size>
      </property>
      <property name="editable">
       <bool>true</bool>
      </property>
      <property name="currentIndex">
-      <number>6</number>
+      <number>-1</number>
      </property>
      <property name="sizeAdjustPolicy">
-      <enum>QComboBox::AdjustToContentsOnFirstShow</enum>
+      <enum>QComboBox::SizeAdjustPolicy::AdjustToContentsOnFirstShow</enum>
      </property>
     </widget>
    </item>
    <item>
     <widget class="Line" name="line1">
      <property name="orientation">
-      <enum>Qt::Vertical</enum>
+      <enum>Qt::Orientation::Vertical</enum>
      </property>
     </widget>
    </item>
