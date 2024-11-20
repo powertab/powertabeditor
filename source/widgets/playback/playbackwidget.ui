@@ -197,7 +197,10 @@
       <number>-1</number>
      </property>
      <property name="sizeAdjustPolicy">
-      <enum>QComboBox::SizeAdjustPolicy::AdjustToContentsOnFirstShow</enum>
+      <enum>QComboBox::SizeAdjustPolicy::AdjustToMinimumContentsLengthWithIcon</enum>
+     </property>
+     <property name="minimumContentsLength">
+      <number>3</number>
      </property>
     </widget>
    </item>
