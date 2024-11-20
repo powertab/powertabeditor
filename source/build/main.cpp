@@ -101,6 +101,10 @@ class Application : public QApplication
 public:
     Application(int &argc, char **argv) : QApplication(argc, argv)
     {
+        // On Windows, avoid the Qt windows11 theme for now since it has various layout issues (#495, #497)
+#ifdef Q_OS_WIN
+        setStyle("windowsvista");
+#endif
     }
 
 protected:
