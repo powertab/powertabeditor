@@ -54,7 +54,7 @@ jobs:
       uses: jurplel/install-qt-action@v4
       with:
         arch: clang_64
-        version: 6.7.2
+        version: 6.7.3
 
     - name: Generate Project
       run: cmake -S ${GITHUB_WORKSPACE} -B ${{runner.workspace}}/build -G Ninja -DCMAKE_BUILD_TYPE=Release
