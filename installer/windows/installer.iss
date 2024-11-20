@@ -67,7 +67,7 @@ end;
 
 function InitializeSetup: Boolean;
 begin
-  Dependency_AddVC2015To2019;
+  Dependency_AddVC2015To2022;
   Result := True;
 end;
 
