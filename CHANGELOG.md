@@ -9,6 +9,15 @@ Thanks to the following contributors who worked on this release:
 ### Added
 
 ### Changed
+
+### Fixed
+
+## [2.0.21] - 2024-11-20
+
+Thanks to the following contributors who worked on this release:
+- @cameronwhite
+
+### Changed
 - The barline under the cursor can now be deleted without requiring it to be selected first 
 
 ### Fixed
@@ -501,6 +510,7 @@ Thanks to the following contributors who worked on this release:
 * The first alpha release!
 
 [Unreleased]: https://github.com/powertab/powertabeditor/compare/2.0.20...HEAD
+[2.0.21]: https://github.com/powertab/powertabeditor/releases/tag/2.0.21
 [2.0.20]: https://github.com/powertab/powertabeditor/releases/tag/2.0.20
 [Alpha 19]: https://github.com/powertab/powertabeditor/releases/tag/2.0.0-alpha19
 [Alpha 18]: https://github.com/powertab/powertabeditor/releases/tag/2.0.0-alpha18

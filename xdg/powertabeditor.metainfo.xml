@@ -44,6 +44,23 @@
   </provides>
 
   <releases>
+    <release version="2.0.21" date="2024-11-20">
+      <url>https://github.com/powertab/powertabeditor/releases/tag/2.0.21</url>
+      <description>
+        <p>Changes</p>
+        <ul>
+          <li>The barline under the cursor can now be deleted without requiring it to be selected first</li>
+        </ul>
+        <p>Bug Fixes</p>
+        <ul>
+          <li>Fixed AppStream validation issues in `xdg/powertabeditor.metainfo.xml`</li>
+          <li>Updated the MSVC redistributable for the Windows installer to be compatible with Visual Studio 2022</li>
+          <li>Fixed a bug which could prevent barlines from being deleted (#496)</li>
+          <li>Fixed errors with saving files in the Snap or Flatpak packages (#498)</li>
+          <li>Fixed sizing issues in the playback widget on Windows (#495, #497)</li>
+        </ul>
+      </description>
+    </release>
     <release version="2.0.20" date="2024-11-03">
       <url>https://github.com/powertab/powertabeditor/releases/tag/2.0.20</url>
       <description>

@@ -27,7 +27,7 @@ namespace AppInfo
     const char *TRANSLATIONS_URL =
         "https://hosted.weblate.org/engage/powertabeditor";
     const char *APPLICATION_NAME = "Power Tab Editor";
-    const char *APPLICATION_VERSION = "2.0.20";
+    const char *APPLICATION_VERSION = "2.0.21";
 
 #if defined(Q_OS_WIN)
     const char *ORGANIZATION_NAME = "Power Tab";
