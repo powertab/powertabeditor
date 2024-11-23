@@ -99,7 +99,7 @@
     <message>
         <location filename="../source/actions/addmultibarrest.cpp" line="23"/>
         <source>Add Multi-Bar Rest</source>
-        <translation type="unfinished"></translation>
+        <translation>Añadir reposabrazos múltiple</translation>
     </message>
 </context>
 <context>
