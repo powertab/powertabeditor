@@ -1,4 +1,6 @@
+# NOTE: this must be synchronized with source/build/osx/Info.plist.in for the macOS app bundle.
 set( languages
+    de
     en_CA
     es
     fr
@@ -6,6 +8,7 @@ set( languages
     ja
     ru
     tr
+    zh_Hans
 )
 
 # Generate the list of translation files.
