@@ -134,7 +134,7 @@ You'll have to update the variables for your specific paths to `$vcpkg_exe_path`
   * Note that the Qt package from homebrew [does not currently work for building the installer|https://github.com/Homebrew/brew/issues/15354]. Installing via https://github.com/miurahr/aqtinstall is an alternative.
 * Build with ninja or Xcode:
   * `mkdir build && cd build`
-  *  Ninja
+  * Ninja
     * `cmake -G Ninja -DCMAKE_BUILD_TYPE=Debug -DCMAKE_PREFIX_PATH=/usr/local/opt/qt6/lib/cmake ..`
     * `ninja`
   * Xcode
