@@ -132,11 +132,14 @@ You'll have to update the variables for your specific paths to `$vcpkg_exe_path`
 * Install dependencies:
   * `brew install boost cmake doctest minizip ninja nlohmann-json pugixml qt6 pugixml rtmidi`
   * Note that the Qt package from homebrew [does not currently work for building the installer|https://github.com/Homebrew/brew/issues/15354]. Installing via https://github.com/miurahr/aqtinstall is an alternative.
-* Build:
+* Build with ninja or Xcode:
   * `mkdir build && cd build`
-  * `cmake -G Ninja -DCMAKE_BUILD_TYPE=Debug -DCMAKE_PREFIX_PATH=/usr/local/opt/qt6/lib/cmake ..`
-    * To generate an Xcode project, switch to `-G Xcode` and then open and build `build/powertabeditor.xcodeproj`
-  * `ninja`
+  * Ninja
+    * `cmake -G Ninja -DCMAKE_BUILD_TYPE=Debug -DCMAKE_PREFIX_PATH=/usr/local/opt/qt6/lib/cmake ..`
+    * `ninja`
+  * Xcode
+    * `cmake -G Xcode -DCMAKE_PREFIX_PATH=/usr/local/opt/qt6/lib/cmake ..`
+    * With Xcode open and build `build/powertabeditor.xcodeproj`
 * Run:
   * `open ./bin/Power\ Tab\ Editor.app`
   * `./bin/pte_tests` to run the unit tests.
