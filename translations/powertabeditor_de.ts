@@ -1222,17 +1222,17 @@
     <message>
         <location filename="../source/dialogs/fileinformationdialog.ui" line="868"/>
         <source>Accessed:</source>
-        <translation type="unfinished"></translation>
+        <translation>Zugegriffen:</translation>
     </message>
     <message>
         <location filename="../source/dialogs/fileinformationdialog.cpp" line="165"/>
         <source>Untitled</source>
-        <translation type="unfinished"></translation>
+        <translation>Ohne Titel</translation>
     </message>
     <message>
         <location filename="../source/dialogs/fileinformationdialog.cpp" line="177"/>
         <source>%1 bytes</source>
-        <translation type="unfinished"></translation>
+        <translation>%1 Bytes</translation>
     </message>
 </context>
 <context>
@@ -1245,7 +1245,7 @@
     <message>
         <location filename="../source/dialogs/filterrulewidget.ui" line="42"/>
         <source>Player Name</source>
-        <translation type="unfinished"></translation>
+        <translation>Spielername</translation>
     </message>
     <message>
         <location filename="../source/dialogs/filterrulewidget.ui" line="47"/>
@@ -1255,32 +1255,32 @@
     <message>
         <location filename="../source/dialogs/filterrulewidget.ui" line="71"/>
         <source>matches</source>
-        <translation type="unfinished"></translation>
+        <translation>Treffer</translation>
     </message>
     <message>
         <location filename="../source/dialogs/filterrulewidget.ui" line="98"/>
         <source>&lt;</source>
-        <translation type="unfinished"></translation>
+        <translation>&lt;</translation>
     </message>
     <message>
         <location filename="../source/dialogs/filterrulewidget.ui" line="103"/>
         <source>&lt;=</source>
-        <translation type="unfinished"></translation>
+        <translation>&lt;=</translation>
     </message>
     <message>
         <location filename="../source/dialogs/filterrulewidget.ui" line="108"/>
         <source>=</source>
-        <translation type="unfinished"></translation>
+        <translation>=</translation>
     </message>
     <message>
         <location filename="../source/dialogs/filterrulewidget.ui" line="113"/>
         <source>&gt;=</source>
-        <translation type="unfinished"></translation>
+        <translation>&gt;=</translation>
     </message>
     <message>
         <location filename="../source/dialogs/filterrulewidget.ui" line="118"/>
         <source>&gt;</source>
-        <translation type="unfinished"></translation>
+        <translation>&gt;</translation>
     </message>
 </context>
 <context>
@@ -1314,12 +1314,12 @@
     <message>
         <location filename="../source/dialogs/infodialog.ui" line="14"/>
         <source>Application Info</source>
-        <translation type="unfinished"></translation>
+        <translation>Informationen zur Anwendung</translation>
     </message>
     <message>
         <location filename="../source/dialogs/infodialog.ui" line="39"/>
         <source>&amp;Copy to Clipboard</source>
-        <translation type="unfinished"></translation>
+        <translation>In die Zwischenablage &amp;kopieren</translation>
     </message>
     <message>
         <location filename="../source/dialogs/infodialog.cpp" line="47"/>
@@ -1346,22 +1346,22 @@
     <message>
         <location filename="../source/widgets/instruments/instrumentpanelitem.ui" line="50"/>
         <source>1.</source>
-        <translation type="unfinished"></translation>
+        <translation>1.</translation>
     </message>
     <message>
         <location filename="../source/widgets/instruments/instrumentpanelitem.ui" line="57"/>
         <source>Click to change instrument name.</source>
-        <translation type="unfinished"></translation>
+        <translation>Zum Ändern des Instrumentennamens anklicken.</translation>
     </message>
     <message>
         <location filename="../source/widgets/instruments/instrumentpanelitem.ui" line="60"/>
         <source>Instrument</source>
-        <translation type="unfinished"></translation>
+        <translation>Instrument</translation>
     </message>
     <message>
         <location filename="../source/widgets/instruments/instrumentpanelitem.ui" line="117"/>
         <source>Remove Instrument</source>
-        <translation type="unfinished"></translation>
+        <translation>Instrument entfernen</translation>
     </message>
 </context>
 <context>
@@ -1374,7 +1374,7 @@
     <message>
         <location filename="../source/dialogs/irregulargroupingdialog.ui" line="28"/>
         <source>Notes Played:</source>
-        <translation type="unfinished"></translation>
+        <translation>Gespielte Noten:</translation>
     </message>
     <message>
         <location filename="../source/dialogs/irregulargroupingdialog.ui" line="38"/>
@@ -1392,7 +1392,7 @@
     <message>
         <location filename="../source/dialogs/keysignaturedialog.ui" line="31"/>
         <source>Visible:</source>
-        <translation type="unfinished"></translation>
+        <translation>Sichtbar:</translation>
     </message>
     <message>
         <location filename="../source/dialogs/keysignaturedialog.ui" line="41"/>
@@ -1430,17 +1430,17 @@
     <message>
         <location filename="../source/dialogs/keyboardsettingsdialog.ui" line="56"/>
         <source>Reset</source>
-        <translation type="unfinished"></translation>
+        <translation>Zurücksetzen</translation>
     </message>
     <message>
         <location filename="../source/dialogs/keyboardsettingsdialog.ui" line="63"/>
         <source>Default</source>
-        <translation type="unfinished"></translation>
+        <translation>Standard</translation>
     </message>
     <message>
         <location filename="../source/dialogs/keyboardsettingsdialog.cpp" line="66"/>
         <source>Command</source>
-        <translation type="unfinished"></translation>
+        <translation>Befehl</translation>
     </message>
     <message>
         <location filename="../source/dialogs/keyboardsettingsdialog.cpp" line="66"/>
@@ -1473,7 +1473,7 @@
     <message>
         <location filename="../source/dialogs/lefthandfingeringdialog.ui" line="31"/>
         <source>Finger:</source>
-        <translation type="unfinished"></translation>
+        <translation>Finger:</translation>
     </message>
     <message>
         <location filename="../source/dialogs/lefthandfingeringdialog.ui" line="41"/>
@@ -1488,67 +1488,67 @@
     <message>
         <location filename="../source/dialogs/lefthandfingeringdialog.cpp" line="31"/>
         <source>Index finger</source>
-        <translation type="unfinished"></translation>
+        <translation>Zeigefinger</translation>
     </message>
     <message>
         <location filename="../source/dialogs/lefthandfingeringdialog.cpp" line="31"/>
         <source>Middle finger</source>
-        <translation type="unfinished"></translation>
+        <translation>Mittelfinger</translation>
     </message>
     <message>
         <location filename="../source/dialogs/lefthandfingeringdialog.cpp" line="32"/>
         <source>Ring finger</source>
-        <translation type="unfinished"></translation>
+        <translation>Ringfinger</translation>
     </message>
     <message>
         <location filename="../source/dialogs/lefthandfingeringdialog.cpp" line="32"/>
         <source>Little finger</source>
-        <translation type="unfinished"></translation>
+        <translation>Kleiner Finger</translation>
     </message>
     <message>
         <location filename="../source/dialogs/lefthandfingeringdialog.cpp" line="32"/>
         <source>Thumb</source>
-        <translation type="unfinished"></translation>
+        <translation>Daumen</translation>
     </message>
     <message>
         <location filename="../source/dialogs/lefthandfingeringdialog.cpp" line="36"/>
         <source>Left</source>
-        <translation type="unfinished"></translation>
+        <translation>Links</translation>
     </message>
     <message>
         <location filename="../source/dialogs/lefthandfingeringdialog.cpp" line="36"/>
         <source>Above and left</source>
-        <translation type="unfinished"></translation>
+        <translation>Oben und links</translation>
     </message>
     <message>
         <location filename="../source/dialogs/lefthandfingeringdialog.cpp" line="36"/>
         <source>Above, centered</source>
-        <translation type="unfinished"></translation>
+        <translation>Oben, zentriert</translation>
     </message>
     <message>
         <location filename="../source/dialogs/lefthandfingeringdialog.cpp" line="37"/>
         <source>Above and right</source>
-        <translation type="unfinished"></translation>
+        <translation>Oben und rechts</translation>
     </message>
     <message>
         <location filename="../source/dialogs/lefthandfingeringdialog.cpp" line="37"/>
         <source>Right</source>
-        <translation type="unfinished"></translation>
+        <translation>Rechts</translation>
     </message>
     <message>
         <location filename="../source/dialogs/lefthandfingeringdialog.cpp" line="37"/>
         <source>Below and right</source>
-        <translation type="unfinished"></translation>
+        <translation>Unten und rechts</translation>
     </message>
     <message>
         <location filename="../source/dialogs/lefthandfingeringdialog.cpp" line="38"/>
         <source>Below, centered</source>
-        <translation type="unfinished"></translation>
+        <translation>Unten, zentriert</translation>
     </message>
     <message>
         <location filename="../source/dialogs/lefthandfingeringdialog.cpp" line="38"/>
         <source>Below and left</source>
-        <translation type="unfinished"></translation>
+        <translation>Unten und links</translation>
     </message>
 </context>
 <context>
@@ -1556,17 +1556,17 @@
     <message>
         <location filename="../source/audio/midiplayer.cpp" line="94"/>
         <source>Error initializing MIDI output device.</source>
-        <translation type="unfinished"></translation>
+        <translation>Fehler beim Initialisieren des MIDI-Ausgabegeräts.</translation>
     </message>
     <message>
         <location filename="../source/audio/midiplayer.cpp" line="97"/>
         <source>MIDI interface: &apos;%1&apos;</source>
-        <translation type="unfinished"></translation>
+        <translation>MIDI-Schnittstelle: ‚%1‘</translation>
     </message>
     <message>
         <location filename="../source/audio/midiplayer.cpp" line="99"/>
         <source>MIDI port: &apos;%1&apos;</source>
-        <translation type="unfinished"></translation>
+        <translation>MIDI-Port: ‚%1‘</translation>
     </message>
     <message>
         <location filename="../source/audio/midiplayer.cpp" line="105"/>
@@ -1584,22 +1584,22 @@
     <message>
         <location filename="../source/widgets/mixer/mixeritem.ui" line="29"/>
         <source>Click to change player name.</source>
-        <translation type="unfinished"></translation>
+        <translation>Zum Ändern des Spielernamens anklicken.</translation>
     </message>
     <message>
         <location filename="../source/widgets/mixer/mixeritem.ui" line="53"/>
         <source>1.</source>
-        <translation type="unfinished"></translation>
+        <translation>1.</translation>
     </message>
     <message>
         <location filename="../source/widgets/mixer/mixeritem.ui" line="72"/>
         <source>Player Name</source>
-        <translation type="unfinished"></translation>
+        <translation>Spielername</translation>
     </message>
     <message>
         <location filename="../source/widgets/mixer/mixeritem.ui" line="107"/>
         <source>Drag to adjust volume.</source>
-        <translation type="unfinished"></translation>
+        <translation>Ziehen zum Anpassen der Lautstärke.</translation>
     </message>
     <message>
         <location filename="../source/widgets/mixer/mixeritem.ui" line="129"/>
@@ -1619,7 +1619,7 @@
     <message>
         <location filename="../source/widgets/mixer/mixeritem.ui" line="176"/>
         <source>Remove Player</source>
-        <translation type="unfinished"></translation>
+        <translation>Spieler entfernen</translation>
     </message>
 </context>
 <context>
@@ -1640,42 +1640,42 @@
     <message>
         <location filename="../source/widgets/toolbox/notepage.cpp" line="34"/>
         <source>Notes</source>
-        <translation type="unfinished"></translation>
+        <translation>Noten</translation>
     </message>
     <message>
         <location filename="../source/widgets/toolbox/notepage.cpp" line="47"/>
         <source>Whole Note</source>
-        <translation type="unfinished"></translation>
+        <translation>Ganznote</translation>
     </message>
     <message>
         <location filename="../source/widgets/toolbox/notepage.cpp" line="52"/>
         <source>Half Note</source>
-        <translation type="unfinished"></translation>
+        <translation>Halbnote</translation>
     </message>
     <message>
         <location filename="../source/widgets/toolbox/notepage.cpp" line="57"/>
         <source>Quarter Note</source>
-        <translation type="unfinished"></translation>
+        <translation>Viertelnote</translation>
     </message>
     <message>
         <location filename="../source/widgets/toolbox/notepage.cpp" line="62"/>
         <source>8th Note</source>
-        <translation type="unfinished"></translation>
+        <translation>Achtelnote</translation>
     </message>
     <message>
         <location filename="../source/widgets/toolbox/notepage.cpp" line="67"/>
         <source>16th Note</source>
-        <translation type="unfinished"></translation>
+        <translation>Sechzehntelnote</translation>
     </message>
     <message>
         <location filename="../source/widgets/toolbox/notepage.cpp" line="72"/>
         <source>32nd Note</source>
-        <translation type="unfinished"></translation>
+        <translation>Zweiunddreißigstelnote</translation>
     </message>
     <message>
         <location filename="../source/widgets/toolbox/notepage.cpp" line="77"/>
         <source>64th Note</source>
-        <translation type="unfinished"></translation>
+        <translation>Vierundsechzigstelnote</translation>
     </message>
     <message>
         <location filename="../source/widgets/toolbox/notepage.cpp" line="100"/>
