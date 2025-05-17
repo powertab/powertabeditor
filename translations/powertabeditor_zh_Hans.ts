@@ -2681,37 +2681,37 @@
     <message>
         <location filename="../source/app/powertabeditor.cpp" line="2906"/>
         <source>Tremolo Picking</source>
-        <translation type="unfinished"></translation>
+        <translation>拨片颤音（震音）</translation>
     </message>
     <message>
         <location filename="../source/app/powertabeditor.cpp" line="2910"/>
         <source>Arpeggio Up</source>
-        <translation type="unfinished"></translation>
+        <translation>向上琶音</translation>
     </message>
     <message>
         <location filename="../source/app/powertabeditor.cpp" line="2915"/>
         <source>Arpeggio Down</source>
-        <translation type="unfinished"></translation>
+        <translation>向下琶音</translation>
     </message>
     <message>
         <location filename="../source/app/powertabeditor.cpp" line="2920"/>
         <source>Tap</source>
-        <translation type="unfinished"></translation>
+        <translation>点弦</translation>
     </message>
     <message>
         <location filename="../source/app/powertabeditor.cpp" line="2924"/>
         <source>Trill...</source>
-        <translation type="unfinished"></translation>
+        <translation>颤音</translation>
     </message>
     <message>
         <location filename="../source/app/powertabeditor.cpp" line="2930"/>
         <source>Pickstroke Up</source>
-        <translation type="unfinished"></translation>
+        <translation>拨片上拨</translation>
     </message>
     <message>
         <location filename="../source/app/powertabeditor.cpp" line="2935"/>
         <source>Pickstroke Down</source>
-        <translation type="unfinished"></translation>
+        <translation>拨片下拨</translation>
     </message>
     <message>
         <location filename="../source/app/powertabeditor.cpp" line="2941"/>
@@ -2746,12 +2746,12 @@
     <message>
         <location filename="../source/app/powertabeditor.cpp" line="2973"/>
         <source>Add Player</source>
-        <translation type="unfinished">Add Player</translation>
+        <translation>添加演奏者</translation>
     </message>
     <message>
         <location filename="../source/app/powertabeditor.cpp" line="2978"/>
         <source>Add Instrument</source>
-        <translation type="unfinished">Add Instrument</translation>
+        <translation>添加乐器</translation>
     </message>
     <message>
         <location filename="../source/app/powertabeditor.cpp" line="2982"/>
