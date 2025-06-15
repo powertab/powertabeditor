@@ -1,6 +1,7 @@
 # NOTE: this must be synchronized with source/build/osx/Info.plist.in for the macOS app bundle.
 set( languages
     de
+    en
     en_CA
     es
     fr

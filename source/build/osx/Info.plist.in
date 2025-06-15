@@ -125,6 +125,7 @@
         <key>CFBundleLocalizations</key>
         <array>
             <string>de</string>
+            <string>en</string>
             <string>en_CA</string>
             <string>es</string>
             <string>fr</string>

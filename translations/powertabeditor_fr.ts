@@ -547,12 +547,12 @@
         <translation type="vanished">Dossier source</translation>
     </message>
     <message>
-        <location filename="../source/dialogs/bulkconverterdialog.cpp" line="172"/>
+        <location filename="../source/dialogs/bulkconverterdialog.cpp" line="170"/>
         <source>Convert</source>
         <translation>Convertir</translation>
     </message>
     <message>
-        <location filename="../source/dialogs/bulkconverterdialog.cpp" line="190"/>
+        <location filename="../source/dialogs/bulkconverterdialog.cpp" line="188"/>
         <source>Directory To Convert</source>
         <translation>Dossier à convertir</translation>
     </message>
@@ -598,7 +598,7 @@
         <translation>Diagramme :</translation>
     </message>
     <message>
-        <location filename="../source/dialogs/chorddiagramdialog.cpp" line="48"/>
+        <location filename="../source/dialogs/chorddiagramdialog.cpp" line="47"/>
         <source>Click to edit chord name.</source>
         <translation>Cliquez pour éditer le nom de l&apos;accord.</translation>
     </message>
@@ -626,79 +626,84 @@
         <translation>Aucun accord</translation>
     </message>
     <message>
-        <location filename="../source/dialogs/chordnamedialog.ui" line="95"/>
-        <location filename="../source/dialogs/chordnamedialog.ui" line="702"/>
+        <location filename="../source/dialogs/chordnamedialog.ui" line="94"/>
+        <location filename="../source/dialogs/chordnamedialog.ui" line="694"/>
         <source>C</source>
         <translation>Do</translation>
     </message>
     <message>
-        <location filename="../source/dialogs/chordnamedialog.ui" line="115"/>
-        <location filename="../source/dialogs/chordnamedialog.ui" line="722"/>
+        <location filename="../source/dialogs/chordnamedialog.ui" line="113"/>
+        <location filename="../source/dialogs/chordnamedialog.ui" line="713"/>
         <source>D</source>
         <translation>Ré</translation>
     </message>
     <message>
-        <location filename="../source/dialogs/chordnamedialog.ui" line="135"/>
-        <location filename="../source/dialogs/chordnamedialog.ui" line="742"/>
+        <location filename="../source/dialogs/chordnamedialog.ui" line="132"/>
+        <location filename="../source/dialogs/chordnamedialog.ui" line="732"/>
         <source>E</source>
         <translation>Mi</translation>
     </message>
     <message>
-        <location filename="../source/dialogs/chordnamedialog.ui" line="155"/>
-        <location filename="../source/dialogs/chordnamedialog.ui" line="762"/>
+        <location filename="../source/dialogs/chordnamedialog.ui" line="151"/>
+        <location filename="../source/dialogs/chordnamedialog.ui" line="751"/>
         <source>F</source>
         <translation>Fa</translation>
     </message>
     <message>
-        <location filename="../source/dialogs/chordnamedialog.ui" line="175"/>
-        <location filename="../source/dialogs/chordnamedialog.ui" line="782"/>
+        <location filename="../source/dialogs/chordnamedialog.ui" line="170"/>
+        <location filename="../source/dialogs/chordnamedialog.ui" line="770"/>
         <source>G</source>
         <translation>Sol</translation>
     </message>
     <message>
-        <location filename="../source/dialogs/chordnamedialog.ui" line="195"/>
-        <location filename="../source/dialogs/chordnamedialog.ui" line="802"/>
+        <location filename="../source/dialogs/chordnamedialog.ui" line="189"/>
+        <location filename="../source/dialogs/chordnamedialog.ui" line="789"/>
         <source>A</source>
         <translation>La</translation>
     </message>
     <message>
-        <location filename="../source/dialogs/chordnamedialog.ui" line="215"/>
-        <location filename="../source/dialogs/chordnamedialog.ui" line="822"/>
+        <location filename="../source/dialogs/chordnamedialog.ui" line="208"/>
+        <location filename="../source/dialogs/chordnamedialog.ui" line="808"/>
         <source>B</source>
         <translation>Si</translation>
     </message>
     <message>
-        <location filename="../source/dialogs/chordnamedialog.ui" line="300"/>
+        <location filename="../source/dialogs/chordnamedialog.ui" line="293"/>
         <source>Brackets</source>
         <translation>Accolades</translation>
     </message>
     <message>
-        <location filename="../source/dialogs/chordnamedialog.ui" line="309"/>
+        <location filename="../source/dialogs/chordnamedialog.ui" line="302"/>
         <source>Formula:</source>
         <translation>Formule :</translation>
     </message>
     <message>
-        <location filename="../source/dialogs/chordnamedialog.ui" line="316"/>
+        <location filename="../source/dialogs/chordnamedialog.ui" line="309"/>
         <source>Additions:</source>
         <translation>Ajouts :</translation>
     </message>
     <message>
-        <location filename="../source/dialogs/chordnamedialog.ui" line="323"/>
+        <location filename="../source/dialogs/chordnamedialog.ui" line="316"/>
         <source>Extensions:</source>
         <translation>Extensions :</translation>
     </message>
     <message>
-        <location filename="../source/dialogs/chordnamedialog.ui" line="330"/>
+        <location filename="../source/dialogs/chordnamedialog.ui" line="323"/>
         <source>Alterations:</source>
         <translation>Altérations :</translation>
     </message>
     <message>
-        <location filename="../source/dialogs/chordnamedialog.ui" line="337"/>
+        <location filename="../source/dialogs/chordnamedialog.ui" line="330"/>
         <source>Bass Note:</source>
         <translation>Note basse :</translation>
     </message>
     <message>
-        <location filename="../source/dialogs/chordnamedialog.ui" line="911"/>
+        <location filename="../source/dialogs/chordnamedialog.ui" line="892"/>
+        <source>Custom Label</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../source/dialogs/chordnamedialog.ui" line="907"/>
         <source>Chords in Score:</source>
         <translation>Accords de la partition :</translation>
     </message>
@@ -1863,12 +1868,12 @@
         <translation>Vitesse :</translation>
     </message>
     <message>
-        <location filename="../source/widgets/playback/playbackwidget.ui" line="103"/>
+        <location filename="../source/widgets/playback/playbackwidget.ui" line="109"/>
         <source>Adjusts the current playback speed.</source>
         <translation>Ajuste la vitesse de lecture courante.</translation>
     </message>
     <message>
-        <location filename="../source/widgets/playback/playbackwidget.ui" line="175"/>
+        <location filename="../source/widgets/playback/playbackwidget.ui" line="181"/>
         <source>Zoom:</source>
         <translation>Zoom :</translation>
     </message>
@@ -1925,7 +1930,7 @@
         <translation type="vanished">300%</translation>
     </message>
     <message>
-        <location filename="../source/widgets/playback/playbackwidget.ui" line="220"/>
+        <location filename="../source/widgets/playback/playbackwidget.ui" line="223"/>
         <source>System: 1, Staff: 1, Position: 1, String: 1</source>
         <translation>Système : 1, Portée : 1, Position : 1, Corde : 1</translation>
     </message>
@@ -2002,872 +2007,876 @@
 <context>
     <name>PowerTabEditor</name>
     <message>
-        <location filename="../source/app/clipboard.cpp" line="129"/>
         <source>Cannot paste notes from a different tuning.</source>
-        <translation>Impossible de coller des notes depuis une autre tonalité.</translation>
+        <translation type="vanished">Impossible de coller des notes depuis une autre tonalité.</translation>
     </message>
     <message>
-        <location filename="../source/app/powertabeditor.cpp" line="175"/>
+        <location filename="../source/app/powertabeditor.cpp" line="179"/>
         <source>Toolbox</source>
         <translation>Boîte à outils</translation>
     </message>
     <message>
-        <location filename="../source/app/powertabeditor.cpp" line="248"/>
+        <location filename="../source/app/powertabeditor.cpp" line="252"/>
         <source>Open</source>
         <translation>Ouvrir</translation>
     </message>
     <message>
-        <location filename="../source/app/powertabeditor.cpp" line="278"/>
-        <location filename="../source/app/powertabeditor.cpp" line="303"/>
+        <location filename="../source/app/powertabeditor.cpp" line="282"/>
+        <location filename="../source/app/powertabeditor.cpp" line="307"/>
         <source>Error Opening File</source>
         <translation>Erreur lors de l&apos;ouverture du fichier</translation>
     </message>
     <message>
-        <location filename="../source/app/powertabeditor.cpp" line="279"/>
-        <location filename="../source/app/powertabeditor.cpp" line="400"/>
+        <location filename="../source/app/powertabeditor.cpp" line="283"/>
+        <location filename="../source/app/powertabeditor.cpp" line="405"/>
         <source>Unsupported file type.</source>
         <translation>Type de fichier non pris en charge.</translation>
     </message>
     <message>
-        <location filename="../source/app/powertabeditor.cpp" line="304"/>
+        <location filename="../source/app/powertabeditor.cpp" line="308"/>
         <source>Error opening file: %1</source>
         <translation>Erreur lors de l&apos;ouverture du fichier : %1</translation>
     </message>
     <message>
-        <location filename="../source/app/powertabeditor.cpp" line="337"/>
+        <location filename="../source/app/powertabeditor.cpp" line="342"/>
         <source>Close Document</source>
         <translation>Fermer le document</translation>
     </message>
     <message>
-        <location filename="../source/app/powertabeditor.cpp" line="338"/>
+        <location filename="../source/app/powertabeditor.cpp" line="343"/>
         <source>The document has been modified.</source>
         <translation>Le document a été modifié.</translation>
     </message>
     <message>
-        <location filename="../source/app/powertabeditor.cpp" line="339"/>
+        <location filename="../source/app/powertabeditor.cpp" line="344"/>
         <source>Do you want to save your changes?</source>
         <translation>Souhaitez-vous enregistrer les modifications ?</translation>
     </message>
     <message>
-        <location filename="../source/app/powertabeditor.cpp" line="399"/>
-        <location filename="../source/app/powertabeditor.cpp" line="414"/>
+        <location filename="../source/app/powertabeditor.cpp" line="404"/>
+        <location filename="../source/app/powertabeditor.cpp" line="419"/>
         <source>Error Saving File</source>
         <translation>Erreur lors de l&apos;enregistrement du fichier</translation>
     </message>
     <message>
-        <location filename="../source/app/powertabeditor.cpp" line="415"/>
+        <location filename="../source/app/powertabeditor.cpp" line="420"/>
         <source>Error saving file: %1</source>
         <translation>Erreur lors de l&apos;enregistrement du fichier : %1</translation>
     </message>
     <message>
-        <location filename="../source/app/powertabeditor.cpp" line="446"/>
+        <location filename="../source/app/powertabeditor.cpp" line="451"/>
         <source>Save As</source>
         <translation>Enregistrer sous</translation>
     </message>
     <message>
-        <location filename="../source/app/powertabeditor.cpp" line="538"/>
+        <location filename="../source/app/powertabeditor.cpp" line="544"/>
         <source>Cut Notes</source>
         <translation>Couper les notes</translation>
     </message>
     <message>
-        <location filename="../source/app/powertabeditor.cpp" line="554"/>
+        <location filename="../source/app/powertabeditor.cpp" line="560"/>
         <source>The clipboard does not contain any notes.</source>
         <translation>Le presse-papiers ne contient aucune note.</translation>
     </message>
     <message>
-        <location filename="../source/app/powertabeditor.cpp" line="559"/>
+        <location filename="../source/app/powertabeditor.cpp" line="565"/>
         <source>Paste Notes</source>
         <translation>Coller les notes</translation>
     </message>
     <message>
-        <location filename="../source/app/powertabeditor.cpp" line="604"/>
+        <location filename="../source/app/powertabeditor.cpp" line="618"/>
         <source>Midi Error</source>
         <translation>Erreur MIDI</translation>
     </message>
     <message>
-        <location filename="../source/app/powertabeditor.cpp" line="626"/>
+        <location filename="../source/app/powertabeditor.cpp" line="640"/>
         <source>Pause</source>
         <translation>Pause</translation>
     </message>
     <message>
-        <location filename="../source/app/powertabeditor.cpp" line="662"/>
-        <location filename="../source/app/powertabeditor.cpp" line="2303"/>
+        <location filename="../source/app/powertabeditor.cpp" line="676"/>
+        <location filename="../source/app/powertabeditor.cpp" line="2382"/>
         <source>Play</source>
         <translation>Lecture</translation>
     </message>
     <message>
-        <location filename="../source/app/powertabeditor.cpp" line="885"/>
-        <location filename="../source/app/powertabeditor.cpp" line="2466"/>
+        <location filename="../source/app/powertabeditor.cpp" line="899"/>
+        <location filename="../source/app/powertabeditor.cpp" line="2545"/>
         <source>Remove Position</source>
         <translation>Supprimer la position</translation>
     </message>
     <message>
-        <location filename="../source/app/powertabeditor.cpp" line="973"/>
+        <location filename="../source/app/powertabeditor.cpp" line="987"/>
         <source>Edit Chord Text</source>
         <translation>Modifier le texte de l&apos;accord</translation>
     </message>
     <message>
-        <location filename="../source/app/powertabeditor.cpp" line="1010"/>
+        <location filename="../source/app/powertabeditor.cpp" line="1024"/>
         <source>Edit Text Item</source>
         <translation>Modifier l&apos;élément de texte</translation>
     </message>
     <message>
-        <location filename="../source/app/powertabeditor.cpp" line="1058"/>
+        <location filename="../source/app/powertabeditor.cpp" line="1072"/>
         <source>Edit Chord Diagram</source>
         <translation>Éditer le diagramme d&apos;accord</translation>
     </message>
     <message>
-        <location filename="../source/app/powertabeditor.cpp" line="1156"/>
+        <location filename="../source/app/powertabeditor.cpp" line="1170"/>
         <source>Edit Note Duration</source>
         <translation>Modifier la durée de la note</translation>
     </message>
     <message>
-        <location filename="../source/app/powertabeditor.cpp" line="1386"/>
+        <location filename="../source/app/powertabeditor.cpp" line="1400"/>
         <source>Cannot add a multi-bar rest to a non-empty measure.</source>
         <translation>Impossible d&apos;ajouter un silence multi-mesures à une mesure non vide.</translation>
     </message>
     <message>
-        <location filename="../source/app/powertabeditor.cpp" line="1399"/>
+        <location filename="../source/app/powertabeditor.cpp" line="1413"/>
         <source>Edit Multi-Bar Rest</source>
         <translation>Modifier le silence multi-mesures</translation>
     </message>
     <message>
-        <location filename="../source/app/powertabeditor.cpp" line="1476"/>
+        <location filename="../source/app/powertabeditor.cpp" line="1490"/>
         <source>Edit Tempo Marker</source>
         <translation>Modifier le marqueur de tempo</translation>
     </message>
     <message>
-        <location filename="../source/app/powertabeditor.cpp" line="1515"/>
+        <location filename="../source/app/powertabeditor.cpp" line="1529"/>
         <source>Edit Alteration of Pace</source>
         <translation>Éditer la variation du tempo</translation>
     </message>
     <message>
-        <location filename="../source/app/powertabeditor.cpp" line="1562"/>
+        <location filename="../source/app/powertabeditor.cpp" line="1576"/>
         <source>Edit Musical Direction</source>
         <translation>Modifier la direction musicale</translation>
     </message>
     <message>
-        <location filename="../source/app/powertabeditor.cpp" line="1600"/>
+        <location filename="../source/app/powertabeditor.cpp" line="1614"/>
         <source>Edit Repeat Ending</source>
         <translation>Modifier la boucle de fin</translation>
     </message>
     <message>
-        <location filename="../source/app/powertabeditor.cpp" line="1704"/>
+        <location filename="../source/app/powertabeditor.cpp" line="1718"/>
         <source>Edit Volume Swell</source>
         <translation>Éditer la variation de volume</translation>
     </message>
     <message>
-        <location filename="../source/app/powertabeditor.cpp" line="1741"/>
+        <location filename="../source/app/powertabeditor.cpp" line="1755"/>
         <source>Edit Tremolo Bar</source>
         <translation>Modifier la mesure de trémolo</translation>
     </message>
     <message>
-        <location filename="../source/app/powertabeditor.cpp" line="1841"/>
+        <location filename="../source/app/powertabeditor.cpp" line="1855"/>
         <source>Edit Bend</source>
         <translation>Modifier le bend</translation>
     </message>
     <message>
-        <location filename="../source/app/powertabeditor.cpp" line="1965"/>
+        <location filename="../source/app/powertabeditor.cpp" line="1979"/>
         <source>Edit Player Change</source>
         <translation>Modifier le changement de musicien</translation>
     </message>
     <message>
-        <location filename="../source/app/powertabeditor.cpp" line="2192"/>
+        <location filename="../source/app/powertabeditor.cpp" line="2264"/>
         <source>Untitled</source>
         <translation>Sans titre</translation>
     </message>
     <message>
-        <location filename="../source/app/powertabeditor.cpp" line="2205"/>
+        <location filename="../source/app/powertabeditor.cpp" line="2277"/>
         <source>&amp;New</source>
         <translation>Nouveau</translation>
     </message>
     <message>
-        <location filename="../source/app/powertabeditor.cpp" line="2210"/>
+        <location filename="../source/app/powertabeditor.cpp" line="2282"/>
         <source>&amp;Open...</source>
         <translation>Ouvrir…</translation>
     </message>
     <message>
-        <location filename="../source/app/powertabeditor.cpp" line="2215"/>
+        <location filename="../source/app/powertabeditor.cpp" line="2287"/>
         <source>&amp;Close Tab</source>
         <translation>Fermer l&apos;onglet</translation>
     </message>
     <message>
-        <location filename="../source/app/powertabeditor.cpp" line="2220"/>
+        <location filename="../source/app/powertabeditor.cpp" line="2292"/>
         <source>Save</source>
         <translation>Enregistrer</translation>
     </message>
     <message>
-        <location filename="../source/app/powertabeditor.cpp" line="2226"/>
+        <location filename="../source/app/powertabeditor.cpp" line="2298"/>
         <source>Save As...</source>
         <translation>Enregistrer sous…</translation>
     </message>
     <message>
-        <location filename="../source/app/powertabeditor.cpp" line="2232"/>
+        <location filename="../source/app/powertabeditor.cpp" line="2304"/>
         <source>Print...</source>
         <translation>Imprimer…</translation>
     </message>
     <message>
-        <location filename="../source/app/powertabeditor.cpp" line="2238"/>
+        <location filename="../source/app/powertabeditor.cpp" line="2310"/>
         <source>Print Preview...</source>
         <translation>Aperçu avant impression…</translation>
     </message>
     <message>
-        <location filename="../source/app/powertabeditor.cpp" line="2242"/>
+        <location filename="../source/app/powertabeditor.cpp" line="2315"/>
+        <source>Open Backup Folder...</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../source/app/powertabeditor.cpp" line="2321"/>
         <source>Bulk Converter...</source>
         <translation>Convertisseur en masse...</translation>
     </message>
     <message>
-        <location filename="../source/app/powertabeditor.cpp" line="2248"/>
+        <location filename="../source/app/powertabeditor.cpp" line="2327"/>
         <source>Customize Shortcuts...</source>
         <translation>Personnaliser les raccourcis…</translation>
     </message>
     <message>
-        <location filename="../source/app/powertabeditor.cpp" line="2254"/>
+        <location filename="../source/app/powertabeditor.cpp" line="2333"/>
         <source>&amp;Preferences...</source>
         <translation>Préférences…</translation>
     </message>
     <message>
-        <location filename="../source/app/powertabeditor.cpp" line="2260"/>
+        <location filename="../source/app/powertabeditor.cpp" line="2339"/>
         <source>&amp;Quit</source>
         <translation>Quitter</translation>
     </message>
     <message>
-        <location filename="../source/app/powertabeditor.cpp" line="2265"/>
+        <location filename="../source/app/powertabeditor.cpp" line="2344"/>
         <source>&amp;Undo</source>
         <translation>Annuler</translation>
     </message>
     <message>
-        <location filename="../source/app/powertabeditor.cpp" line="2268"/>
+        <location filename="../source/app/powertabeditor.cpp" line="2347"/>
         <source>&amp;Redo</source>
         <translation>Rétablir</translation>
     </message>
     <message>
-        <location filename="../source/app/powertabeditor.cpp" line="2272"/>
+        <location filename="../source/app/powertabeditor.cpp" line="2351"/>
         <source>Cut</source>
         <translation>Couper</translation>
     </message>
     <message>
-        <location filename="../source/app/powertabeditor.cpp" line="2276"/>
+        <location filename="../source/app/powertabeditor.cpp" line="2355"/>
         <source>Copy</source>
         <translation>Copier</translation>
     </message>
     <message>
-        <location filename="../source/app/powertabeditor.cpp" line="2281"/>
+        <location filename="../source/app/powertabeditor.cpp" line="2360"/>
         <source>Paste</source>
         <translation>Coller</translation>
     </message>
     <message>
-        <location filename="../source/app/powertabeditor.cpp" line="2285"/>
+        <location filename="../source/app/powertabeditor.cpp" line="2364"/>
         <source>Polish Score</source>
         <translation>Embellir la partition</translation>
     </message>
     <message>
-        <location filename="../source/app/powertabeditor.cpp" line="2290"/>
+        <location filename="../source/app/powertabeditor.cpp" line="2369"/>
         <source>Polish System</source>
         <translation>Système d&apos;embellissement</translation>
     </message>
     <message>
-        <location filename="../source/app/powertabeditor.cpp" line="2297"/>
+        <location filename="../source/app/powertabeditor.cpp" line="2376"/>
         <source>File Information...</source>
         <translation>Informations sur le fichier…</translation>
     </message>
     <message>
-        <location filename="../source/app/powertabeditor.cpp" line="2315"/>
+        <location filename="../source/app/powertabeditor.cpp" line="2394"/>
         <source>Play From Start Of Measure</source>
         <translation>Jouer depuis le début de la mesure</translation>
     </message>
     <message>
-        <location filename="../source/app/powertabeditor.cpp" line="2322"/>
+        <location filename="../source/app/powertabeditor.cpp" line="2401"/>
         <source>Stop</source>
         <translation>Arrêter</translation>
     </message>
     <message>
-        <location filename="../source/app/powertabeditor.cpp" line="2326"/>
+        <location filename="../source/app/powertabeditor.cpp" line="2405"/>
         <source>Rewind</source>
         <translation>Rembobiner</translation>
     </message>
     <message>
-        <location filename="../source/app/powertabeditor.cpp" line="2331"/>
+        <location filename="../source/app/powertabeditor.cpp" line="2410"/>
         <source>Metronome</source>
         <translation>Métronome</translation>
     </message>
     <message>
-        <location filename="../source/app/powertabeditor.cpp" line="2337"/>
+        <location filename="../source/app/powertabeditor.cpp" line="2416"/>
         <source>Count-In</source>
         <translation>Compte à rebours</translation>
     </message>
     <message>
-        <location filename="../source/app/powertabeditor.cpp" line="2345"/>
+        <location filename="../source/app/powertabeditor.cpp" line="2424"/>
         <source>First Section</source>
         <translation>Première section</translation>
     </message>
     <message>
-        <location filename="../source/app/powertabeditor.cpp" line="2351"/>
+        <location filename="../source/app/powertabeditor.cpp" line="2430"/>
         <source>Next Section</source>
         <translation>Section suivante</translation>
     </message>
     <message>
-        <location filename="../source/app/powertabeditor.cpp" line="2357"/>
+        <location filename="../source/app/powertabeditor.cpp" line="2436"/>
         <source>Previous Section</source>
         <translation>Section précédente</translation>
     </message>
     <message>
-        <location filename="../source/app/powertabeditor.cpp" line="2363"/>
+        <location filename="../source/app/powertabeditor.cpp" line="2442"/>
         <source>Last Section</source>
         <translation>Dernière section</translation>
     </message>
     <message>
-        <location filename="../source/app/powertabeditor.cpp" line="2369"/>
+        <location filename="../source/app/powertabeditor.cpp" line="2448"/>
         <source>Insert Space</source>
         <translation>Insérer un espace</translation>
     </message>
     <message>
-        <location filename="../source/app/powertabeditor.cpp" line="2375"/>
+        <location filename="../source/app/powertabeditor.cpp" line="2454"/>
         <source>Remove Space</source>
         <translation>Supprimer l&apos;espace</translation>
     </message>
     <message>
-        <location filename="../source/app/powertabeditor.cpp" line="2391"/>
+        <location filename="../source/app/powertabeditor.cpp" line="2470"/>
         <source>Move to &amp;Start</source>
         <translation>Aller au début</translation>
     </message>
     <message>
-        <location filename="../source/app/powertabeditor.cpp" line="2397"/>
+        <location filename="../source/app/powertabeditor.cpp" line="2476"/>
         <source>&amp;Next Position</source>
         <translation>Position suivante</translation>
     </message>
     <message>
-        <location filename="../source/app/powertabeditor.cpp" line="2403"/>
+        <location filename="../source/app/powertabeditor.cpp" line="2482"/>
         <source>&amp;Previous Position</source>
         <translation>Position précédente</translation>
     </message>
     <message>
-        <location filename="../source/app/powertabeditor.cpp" line="2409"/>
+        <location filename="../source/app/powertabeditor.cpp" line="2488"/>
         <source>Next String</source>
         <translation>Corde suivante</translation>
     </message>
     <message>
-        <location filename="../source/app/powertabeditor.cpp" line="2415"/>
+        <location filename="../source/app/powertabeditor.cpp" line="2494"/>
         <source>Previous String</source>
         <translation>Corde précédente</translation>
     </message>
     <message>
-        <location filename="../source/app/powertabeditor.cpp" line="2421"/>
+        <location filename="../source/app/powertabeditor.cpp" line="2500"/>
         <source>Move to &amp;End</source>
         <translation>Aller à la fin</translation>
     </message>
     <message>
-        <location filename="../source/app/powertabeditor.cpp" line="2427"/>
+        <location filename="../source/app/powertabeditor.cpp" line="2506"/>
         <source>Next Staff</source>
         <translation>Portée suivante</translation>
     </message>
     <message>
-        <location filename="../source/app/powertabeditor.cpp" line="2433"/>
+        <location filename="../source/app/powertabeditor.cpp" line="2512"/>
         <source>Previous Staff</source>
         <translation>Portée précédente</translation>
     </message>
     <message>
-        <location filename="../source/app/powertabeditor.cpp" line="2438"/>
+        <location filename="../source/app/powertabeditor.cpp" line="2517"/>
         <source>Next Bar</source>
         <translation>Barre suivante</translation>
     </message>
     <message>
-        <location filename="../source/app/powertabeditor.cpp" line="2444"/>
+        <location filename="../source/app/powertabeditor.cpp" line="2523"/>
         <source>Previous Bar</source>
         <translation>Barre précédente</translation>
     </message>
     <message>
-        <location filename="../source/app/powertabeditor.cpp" line="2460"/>
+        <location filename="../source/app/powertabeditor.cpp" line="2539"/>
         <source>Remove Selected Item</source>
         <translation>Supprimer l&apos;élément sélectionné</translation>
     </message>
     <message>
-        <location filename="../source/app/powertabeditor.cpp" line="2471"/>
+        <location filename="../source/app/powertabeditor.cpp" line="2550"/>
         <source>Go To Barline...</source>
         <translation>Aller à la barre de mesure…</translation>
     </message>
     <message>
-        <location filename="../source/app/powertabeditor.cpp" line="2477"/>
+        <location filename="../source/app/powertabeditor.cpp" line="2556"/>
         <source>Go To Rehearsal Sign...</source>
         <translation>Aller au signe de répétition…</translation>
     </message>
     <message>
-        <location filename="../source/app/powertabeditor.cpp" line="2484"/>
+        <location filename="../source/app/powertabeditor.cpp" line="2563"/>
         <source>Chord Name...</source>
         <translation>Nom de l&apos;accord…</translation>
     </message>
     <message>
-        <location filename="../source/app/powertabeditor.cpp" line="2490"/>
+        <location filename="../source/app/powertabeditor.cpp" line="2569"/>
         <source>Text...</source>
         <translation>Texte…</translation>
     </message>
     <message>
-        <location filename="../source/app/powertabeditor.cpp" line="2498"/>
+        <location filename="../source/app/powertabeditor.cpp" line="2577"/>
         <source>Add Chord Diagram...</source>
         <translation>Ajouter un diagramme d&apos;accord...</translation>
     </message>
     <message>
-        <location filename="../source/app/powertabeditor.cpp" line="2503"/>
+        <location filename="../source/app/powertabeditor.cpp" line="2582"/>
         <source>Insert System At End</source>
         <translation>Insérer un système à la fin</translation>
     </message>
     <message>
-        <location filename="../source/app/powertabeditor.cpp" line="2509"/>
+        <location filename="../source/app/powertabeditor.cpp" line="2588"/>
         <source>Insert System Before</source>
         <translation>Insérer un système avant</translation>
     </message>
     <message>
-        <location filename="../source/app/powertabeditor.cpp" line="2516"/>
+        <location filename="../source/app/powertabeditor.cpp" line="2595"/>
         <source>Insert System After</source>
         <translation>Insérer un système après</translation>
     </message>
     <message>
-        <location filename="../source/app/powertabeditor.cpp" line="2523"/>
+        <location filename="../source/app/powertabeditor.cpp" line="2602"/>
         <source>Remove Current System</source>
         <translation>Supprimer le système courant</translation>
     </message>
     <message>
-        <location filename="../source/app/powertabeditor.cpp" line="2531"/>
+        <location filename="../source/app/powertabeditor.cpp" line="2610"/>
         <source>Insert Staff Before</source>
         <translation>Insérer une portée avant</translation>
     </message>
     <message>
-        <location filename="../source/app/powertabeditor.cpp" line="2537"/>
+        <location filename="../source/app/powertabeditor.cpp" line="2616"/>
         <source>Insert Staff After</source>
         <translation>Insérer une portée après</translation>
     </message>
     <message>
-        <location filename="../source/app/powertabeditor.cpp" line="2543"/>
+        <location filename="../source/app/powertabeditor.cpp" line="2622"/>
         <source>Remove Current Staff</source>
         <translation>Supprimer la portée courante</translation>
     </message>
     <message>
-        <location filename="../source/app/powertabeditor.cpp" line="2548"/>
+        <location filename="../source/app/powertabeditor.cpp" line="2627"/>
         <source>Increase</source>
         <translation>Augmenter</translation>
     </message>
     <message>
-        <location filename="../source/app/powertabeditor.cpp" line="2555"/>
+        <location filename="../source/app/powertabeditor.cpp" line="2634"/>
         <source>Decrease</source>
         <translation>Diminuer</translation>
     </message>
     <message>
-        <location filename="../source/app/powertabeditor.cpp" line="2564"/>
-        <location filename="../source/app/powertabeditor.cpp" line="2707"/>
+        <location filename="../source/app/powertabeditor.cpp" line="2643"/>
+        <location filename="../source/app/powertabeditor.cpp" line="2786"/>
         <source>Whole</source>
         <translation>Ronde</translation>
     </message>
     <message>
-        <location filename="../source/app/powertabeditor.cpp" line="2567"/>
-        <location filename="../source/app/powertabeditor.cpp" line="2709"/>
+        <location filename="../source/app/powertabeditor.cpp" line="2646"/>
+        <location filename="../source/app/powertabeditor.cpp" line="2788"/>
         <source>Half</source>
         <translation>Blanche</translation>
     </message>
     <message>
-        <location filename="../source/app/powertabeditor.cpp" line="2570"/>
-        <location filename="../source/app/powertabeditor.cpp" line="2711"/>
+        <location filename="../source/app/powertabeditor.cpp" line="2649"/>
+        <location filename="../source/app/powertabeditor.cpp" line="2790"/>
         <source>Quarter</source>
         <translation>Noire</translation>
     </message>
     <message>
-        <location filename="../source/app/powertabeditor.cpp" line="2573"/>
-        <location filename="../source/app/powertabeditor.cpp" line="2713"/>
+        <location filename="../source/app/powertabeditor.cpp" line="2652"/>
+        <location filename="../source/app/powertabeditor.cpp" line="2792"/>
         <source>8th</source>
         <translation>Croche</translation>
     </message>
     <message>
-        <location filename="../source/app/powertabeditor.cpp" line="2576"/>
-        <location filename="../source/app/powertabeditor.cpp" line="2715"/>
+        <location filename="../source/app/powertabeditor.cpp" line="2655"/>
+        <location filename="../source/app/powertabeditor.cpp" line="2794"/>
         <source>16th</source>
         <translation>Double croche</translation>
     </message>
     <message>
-        <location filename="../source/app/powertabeditor.cpp" line="2579"/>
-        <location filename="../source/app/powertabeditor.cpp" line="2717"/>
+        <location filename="../source/app/powertabeditor.cpp" line="2658"/>
+        <location filename="../source/app/powertabeditor.cpp" line="2796"/>
         <source>32nd</source>
         <translation>Triple croche</translation>
     </message>
     <message>
-        <location filename="../source/app/powertabeditor.cpp" line="2583"/>
-        <location filename="../source/app/powertabeditor.cpp" line="2720"/>
+        <location filename="../source/app/powertabeditor.cpp" line="2662"/>
+        <location filename="../source/app/powertabeditor.cpp" line="2799"/>
         <source>64th</source>
         <translation>Quadruple croche</translation>
     </message>
     <message>
-        <location filename="../source/app/powertabeditor.cpp" line="2588"/>
+        <location filename="../source/app/powertabeditor.cpp" line="2667"/>
         <source>Increase Duration</source>
         <translation>Augmenter la durée</translation>
     </message>
     <message>
-        <location filename="../source/app/powertabeditor.cpp" line="2595"/>
+        <location filename="../source/app/powertabeditor.cpp" line="2674"/>
         <source>Decrease Duration</source>
         <translation>Diminuer la durée</translation>
     </message>
     <message>
-        <location filename="../source/app/powertabeditor.cpp" line="2602"/>
+        <location filename="../source/app/powertabeditor.cpp" line="2681"/>
         <source>Dotted</source>
         <translation>Pointée</translation>
     </message>
     <message>
-        <location filename="../source/app/powertabeditor.cpp" line="2606"/>
+        <location filename="../source/app/powertabeditor.cpp" line="2685"/>
         <source>Double Dotted</source>
         <translation>Pointée double</translation>
     </message>
     <message>
-        <location filename="../source/app/powertabeditor.cpp" line="2611"/>
+        <location filename="../source/app/powertabeditor.cpp" line="2690"/>
         <source>Add Dot</source>
         <translation>Ajouter un point</translation>
     </message>
     <message>
-        <location filename="../source/app/powertabeditor.cpp" line="2615"/>
+        <location filename="../source/app/powertabeditor.cpp" line="2694"/>
         <source>Remove Dot</source>
         <translation>Supprimer un point</translation>
     </message>
     <message>
-        <location filename="../source/app/powertabeditor.cpp" line="2619"/>
+        <location filename="../source/app/powertabeditor.cpp" line="2698"/>
         <source>Left Hand Fingering...</source>
         <translation>Doigté main gauche…</translation>
     </message>
     <message>
-        <location filename="../source/app/powertabeditor.cpp" line="2628"/>
+        <location filename="../source/app/powertabeditor.cpp" line="2707"/>
         <source>Shift String Up</source>
         <translation>Décaler sur la corde supérieure</translation>
     </message>
     <message>
-        <location filename="../source/app/powertabeditor.cpp" line="2634"/>
+        <location filename="../source/app/powertabeditor.cpp" line="2713"/>
         <source>Shift String Down</source>
         <translation>Décaler sur la corde inférieure</translation>
     </message>
     <message>
-        <location filename="../source/app/powertabeditor.cpp" line="2639"/>
-        <location filename="../source/app/powertabeditor.cpp" line="3933"/>
+        <location filename="../source/app/powertabeditor.cpp" line="2718"/>
+        <location filename="../source/app/powertabeditor.cpp" line="4010"/>
         <source>Tied</source>
         <translation>Liée</translation>
     </message>
     <message>
-        <location filename="../source/app/powertabeditor.cpp" line="2644"/>
+        <location filename="../source/app/powertabeditor.cpp" line="2723"/>
         <source>Muted</source>
         <translation>Muette</translation>
     </message>
     <message>
-        <location filename="../source/app/powertabeditor.cpp" line="2647"/>
+        <location filename="../source/app/powertabeditor.cpp" line="2726"/>
         <source>Ghost Note</source>
         <translation>Note fantôme</translation>
     </message>
     <message>
-        <location filename="../source/app/powertabeditor.cpp" line="2651"/>
+        <location filename="../source/app/powertabeditor.cpp" line="2730"/>
         <source>Fermata</source>
         <translation>Point d&apos;orgue</translation>
     </message>
     <message>
-        <location filename="../source/app/powertabeditor.cpp" line="2655"/>
+        <location filename="../source/app/powertabeditor.cpp" line="2734"/>
         <source>Let Ring</source>
         <translation>Laisser sonner</translation>
     </message>
     <message>
-        <location filename="../source/app/powertabeditor.cpp" line="2659"/>
+        <location filename="../source/app/powertabeditor.cpp" line="2738"/>
         <source>Grace Note</source>
         <translation>Appoggiature</translation>
     </message>
     <message>
-        <location filename="../source/app/powertabeditor.cpp" line="2664"/>
+        <location filename="../source/app/powertabeditor.cpp" line="2743"/>
         <source>Staccato</source>
         <translation>Staccato</translation>
     </message>
     <message>
-        <location filename="../source/app/powertabeditor.cpp" line="2668"/>
+        <location filename="../source/app/powertabeditor.cpp" line="2747"/>
         <source>Accent</source>
         <translation>Accent</translation>
     </message>
     <message>
-        <location filename="../source/app/powertabeditor.cpp" line="2672"/>
+        <location filename="../source/app/powertabeditor.cpp" line="2751"/>
         <source>Heavy Accent</source>
         <translation>Accent fort</translation>
     </message>
     <message>
-        <location filename="../source/app/powertabeditor.cpp" line="2678"/>
+        <location filename="../source/app/powertabeditor.cpp" line="2757"/>
         <source>8va</source>
         <translation>8va</translation>
     </message>
     <message>
-        <location filename="../source/app/powertabeditor.cpp" line="2681"/>
+        <location filename="../source/app/powertabeditor.cpp" line="2760"/>
         <source>15ma</source>
         <translation>15ma</translation>
     </message>
     <message>
-        <location filename="../source/app/powertabeditor.cpp" line="2684"/>
+        <location filename="../source/app/powertabeditor.cpp" line="2763"/>
         <source>8vb</source>
         <translation>8vb</translation>
     </message>
     <message>
-        <location filename="../source/app/powertabeditor.cpp" line="2687"/>
+        <location filename="../source/app/powertabeditor.cpp" line="2766"/>
         <source>15mb</source>
         <translation>15mb</translation>
     </message>
     <message>
-        <location filename="../source/app/powertabeditor.cpp" line="2691"/>
+        <location filename="../source/app/powertabeditor.cpp" line="2770"/>
         <source>Triplet</source>
         <translation>Triolet</translation>
     </message>
     <message>
-        <location filename="../source/app/powertabeditor.cpp" line="2698"/>
+        <location filename="../source/app/powertabeditor.cpp" line="2777"/>
         <source>Irregular Grouping</source>
         <translation>Groupe irrégulier</translation>
     </message>
     <message>
-        <location filename="../source/app/powertabeditor.cpp" line="2724"/>
+        <location filename="../source/app/powertabeditor.cpp" line="2803"/>
         <source>Add Rest</source>
         <translation>Ajouter un silence</translation>
     </message>
     <message>
-        <location filename="../source/app/powertabeditor.cpp" line="2730"/>
+        <location filename="../source/app/powertabeditor.cpp" line="2809"/>
         <source>Multi-Bar Rest...</source>
         <translation>Silence multi-mesures…</translation>
     </message>
     <message>
-        <location filename="../source/app/powertabeditor.cpp" line="2738"/>
+        <location filename="../source/app/powertabeditor.cpp" line="2817"/>
         <source>Rehearsal Sign...</source>
         <translation>Signe de répétition…</translation>
     </message>
     <message>
-        <location filename="../source/app/powertabeditor.cpp" line="2745"/>
+        <location filename="../source/app/powertabeditor.cpp" line="2824"/>
         <source>Tempo Marker...</source>
         <translation>Marqueur de tempo…</translation>
     </message>
     <message>
-        <location filename="../source/app/powertabeditor.cpp" line="2752"/>
+        <location filename="../source/app/powertabeditor.cpp" line="2831"/>
         <source>Alteration of Pace...</source>
         <translation>Variation de nuance...</translation>
     </message>
     <message>
-        <location filename="../source/app/powertabeditor.cpp" line="2758"/>
+        <location filename="../source/app/powertabeditor.cpp" line="2837"/>
         <source>Edit Key Signature...</source>
         <translation>Modifier l&apos;armure...</translation>
     </message>
     <message>
-        <location filename="../source/app/powertabeditor.cpp" line="2765"/>
+        <location filename="../source/app/powertabeditor.cpp" line="2844"/>
         <source>Edit Time Signature...</source>
         <translation>Modifier la signature rythmique...</translation>
     </message>
     <message>
-        <location filename="../source/app/powertabeditor.cpp" line="2772"/>
+        <location filename="../source/app/powertabeditor.cpp" line="2851"/>
         <source>Insert Standard Barline</source>
         <translation>Insérer une barre de mesure standard</translation>
     </message>
     <message>
-        <location filename="../source/app/powertabeditor.cpp" line="2779"/>
+        <location filename="../source/app/powertabeditor.cpp" line="2858"/>
         <source>Barline...</source>
         <translation>Barre de mesure…</translation>
     </message>
     <message>
-        <location filename="../source/app/powertabeditor.cpp" line="2785"/>
+        <location filename="../source/app/powertabeditor.cpp" line="2864"/>
         <source>Musical Direction...</source>
         <translation>Direction musicale…</translation>
     </message>
     <message>
-        <location filename="../source/app/powertabeditor.cpp" line="2793"/>
+        <location filename="../source/app/powertabeditor.cpp" line="2872"/>
         <source>Repeat Ending...</source>
         <translation>Boucle de fin…</translation>
     </message>
     <message>
-        <location filename="../source/app/powertabeditor.cpp" line="2801"/>
+        <location filename="../source/app/powertabeditor.cpp" line="2880"/>
         <source>Dynamic...</source>
         <translation>Nuance…</translation>
     </message>
     <message>
-        <location filename="../source/app/powertabeditor.cpp" line="2808"/>
-        <location filename="../source/app/powertabeditor.cpp" line="2811"/>
-        <location filename="../source/app/powertabeditor.cpp" line="2814"/>
-        <location filename="../source/app/powertabeditor.cpp" line="2817"/>
-        <location filename="../source/app/powertabeditor.cpp" line="2820"/>
-        <location filename="../source/app/powertabeditor.cpp" line="2823"/>
-        <location filename="../source/app/powertabeditor.cpp" line="2826"/>
-        <location filename="../source/app/powertabeditor.cpp" line="2829"/>
+        <location filename="../source/app/powertabeditor.cpp" line="2887"/>
+        <location filename="../source/app/powertabeditor.cpp" line="2890"/>
+        <location filename="../source/app/powertabeditor.cpp" line="2893"/>
+        <location filename="../source/app/powertabeditor.cpp" line="2896"/>
+        <location filename="../source/app/powertabeditor.cpp" line="2899"/>
+        <location filename="../source/app/powertabeditor.cpp" line="2902"/>
+        <location filename="../source/app/powertabeditor.cpp" line="2905"/>
+        <location filename="../source/app/powertabeditor.cpp" line="2908"/>
         <source>Dynamics</source>
         <translation>Nuances</translation>
     </message>
     <message>
-        <location filename="../source/app/powertabeditor.cpp" line="2834"/>
+        <location filename="../source/app/powertabeditor.cpp" line="2913"/>
         <source>Volume Swell...</source>
         <translation>Variation de volume...</translation>
     </message>
     <message>
-        <location filename="../source/app/powertabeditor.cpp" line="2841"/>
+        <location filename="../source/app/powertabeditor.cpp" line="2920"/>
         <source>Hammer On/Pull Off</source>
         <translation>Hammer On/Pull Off</translation>
     </message>
     <message>
-        <location filename="../source/app/powertabeditor.cpp" line="2849"/>
+        <location filename="../source/app/powertabeditor.cpp" line="2928"/>
         <source>Hammer On From Nowhere</source>
         <translation>Hammer-on de nulle part</translation>
     </message>
     <message>
-        <location filename="../source/app/powertabeditor.cpp" line="2854"/>
+        <location filename="../source/app/powertabeditor.cpp" line="2933"/>
         <source>Pull Off To Nowhere</source>
         <translation>Pull-off de nulle part</translation>
     </message>
     <message>
-        <location filename="../source/app/powertabeditor.cpp" line="2858"/>
+        <location filename="../source/app/powertabeditor.cpp" line="2937"/>
         <source>Natural Harmonic</source>
         <translation>Harmonique naturel</translation>
     </message>
     <message>
-        <location filename="../source/app/powertabeditor.cpp" line="2863"/>
+        <location filename="../source/app/powertabeditor.cpp" line="2942"/>
         <source>Artificial Harmonic...</source>
         <translation>Harmonique artificiel…</translation>
     </message>
     <message>
-        <location filename="../source/app/powertabeditor.cpp" line="2870"/>
+        <location filename="../source/app/powertabeditor.cpp" line="2949"/>
         <source>Tapped Harmonic...</source>
         <translation>Harmonique tapé...</translation>
     </message>
     <message>
-        <location filename="../source/app/powertabeditor.cpp" line="2879"/>
+        <location filename="../source/app/powertabeditor.cpp" line="2958"/>
         <source>Bend...</source>
         <translation>Bend…</translation>
     </message>
     <message>
-        <location filename="../source/app/powertabeditor.cpp" line="2886"/>
+        <location filename="../source/app/powertabeditor.cpp" line="2965"/>
         <source>Tremolo Bar...</source>
         <translation>Mesure de trémolo…</translation>
     </message>
     <message>
-        <location filename="../source/app/powertabeditor.cpp" line="2892"/>
+        <location filename="../source/app/powertabeditor.cpp" line="2971"/>
         <source>Vibrato</source>
         <translation>Vibrato</translation>
     </message>
     <message>
-        <location filename="../source/app/powertabeditor.cpp" line="2897"/>
+        <location filename="../source/app/powertabeditor.cpp" line="2976"/>
         <source>Wide Vibrato</source>
         <translation>Vibrato large</translation>
     </message>
     <message>
-        <location filename="../source/app/powertabeditor.cpp" line="2902"/>
+        <location filename="../source/app/powertabeditor.cpp" line="2981"/>
         <source>Palm Mute</source>
         <translation>Palm mute</translation>
     </message>
     <message>
-        <location filename="../source/app/powertabeditor.cpp" line="2906"/>
+        <location filename="../source/app/powertabeditor.cpp" line="2985"/>
         <source>Tremolo Picking</source>
         <translation>Picking trémolo</translation>
     </message>
     <message>
-        <location filename="../source/app/powertabeditor.cpp" line="2910"/>
+        <location filename="../source/app/powertabeditor.cpp" line="2989"/>
         <source>Arpeggio Up</source>
         <translation>Arpège ascendant</translation>
     </message>
     <message>
-        <location filename="../source/app/powertabeditor.cpp" line="2915"/>
+        <location filename="../source/app/powertabeditor.cpp" line="2994"/>
         <source>Arpeggio Down</source>
         <translation>Arpège descendant</translation>
     </message>
     <message>
-        <location filename="../source/app/powertabeditor.cpp" line="2920"/>
+        <location filename="../source/app/powertabeditor.cpp" line="2999"/>
         <source>Tap</source>
         <translation>Taper</translation>
     </message>
     <message>
-        <location filename="../source/app/powertabeditor.cpp" line="2924"/>
+        <location filename="../source/app/powertabeditor.cpp" line="3003"/>
         <source>Trill...</source>
         <translation>Trille…</translation>
     </message>
     <message>
-        <location filename="../source/app/powertabeditor.cpp" line="2930"/>
+        <location filename="../source/app/powertabeditor.cpp" line="3009"/>
         <source>Pickstroke Up</source>
         <translation>Jouer vers le haut</translation>
     </message>
     <message>
-        <location filename="../source/app/powertabeditor.cpp" line="2935"/>
+        <location filename="../source/app/powertabeditor.cpp" line="3014"/>
         <source>Pickstroke Down</source>
         <translation>Jouer vers le bas</translation>
     </message>
     <message>
-        <location filename="../source/app/powertabeditor.cpp" line="2941"/>
+        <location filename="../source/app/powertabeditor.cpp" line="3020"/>
         <source>Slide Into From Above</source>
         <translation>Glissé d&apos;entrée par le haut</translation>
     </message>
     <message>
-        <location filename="../source/app/powertabeditor.cpp" line="2946"/>
+        <location filename="../source/app/powertabeditor.cpp" line="3025"/>
         <source>Slide Into From Below</source>
         <translation>Glissé d&apos;entrée par le bas</translation>
     </message>
     <message>
-        <location filename="../source/app/powertabeditor.cpp" line="2951"/>
+        <location filename="../source/app/powertabeditor.cpp" line="3030"/>
         <source>Shift Slide</source>
         <translation>Glissé</translation>
     </message>
     <message>
-        <location filename="../source/app/powertabeditor.cpp" line="2955"/>
+        <location filename="../source/app/powertabeditor.cpp" line="3034"/>
         <source>Legato Slide</source>
         <translation>Glissé avec liaison</translation>
     </message>
     <message>
-        <location filename="../source/app/powertabeditor.cpp" line="2961"/>
+        <location filename="../source/app/powertabeditor.cpp" line="3040"/>
         <source>Slide Out Of Downwards</source>
         <translation>Glissé de sortie vers le bas</translation>
     </message>
     <message>
-        <location filename="../source/app/powertabeditor.cpp" line="2966"/>
+        <location filename="../source/app/powertabeditor.cpp" line="3045"/>
         <source>Slide Out Of Upwards</source>
         <translation>Glissé de sortie vers le haut</translation>
     </message>
     <message>
-        <location filename="../source/app/powertabeditor.cpp" line="2973"/>
+        <location filename="../source/app/powertabeditor.cpp" line="3052"/>
         <source>Add Player</source>
         <translation>Ajouter un musicien</translation>
     </message>
     <message>
-        <location filename="../source/app/powertabeditor.cpp" line="2978"/>
+        <location filename="../source/app/powertabeditor.cpp" line="3057"/>
         <source>Add Instrument</source>
         <translation>Ajouter un instrument</translation>
     </message>
     <message>
-        <location filename="../source/app/powertabeditor.cpp" line="2982"/>
+        <location filename="../source/app/powertabeditor.cpp" line="3061"/>
         <source>Player Change...</source>
         <translation>Changement de musicien…</translation>
     </message>
     <message>
-        <location filename="../source/app/powertabeditor.cpp" line="2989"/>
+        <location filename="../source/app/powertabeditor.cpp" line="3068"/>
         <source>Tuning Dictionary...</source>
         <translation>Dictionnaire de tonalités…</translation>
     </message>
     <message>
-        <location filename="../source/app/powertabeditor.cpp" line="2996"/>
+        <location filename="../source/app/powertabeditor.cpp" line="3075"/>
         <source>Edit View Filters...</source>
         <translation>Éditer les filtres...</translation>
     </message>
     <message>
-        <location filename="../source/app/powertabeditor.cpp" line="3013"/>
+        <location filename="../source/app/powertabeditor.cpp" line="3092"/>
         <source>Next Tab</source>
         <translation>Tablature suivante</translation>
     </message>
     <message>
-        <location filename="../source/app/powertabeditor.cpp" line="3019"/>
+        <location filename="../source/app/powertabeditor.cpp" line="3098"/>
         <source>Previous Tab</source>
         <translation>Tablature précédente</translation>
     </message>
     <message>
-        <location filename="../source/app/powertabeditor.cpp" line="3033"/>
+        <location filename="../source/app/powertabeditor.cpp" line="3112"/>
         <source>Zoom In</source>
         <translation>Zoomer</translation>
     </message>
     <message>
-        <location filename="../source/app/powertabeditor.cpp" line="3038"/>
+        <location filename="../source/app/powertabeditor.cpp" line="3117"/>
         <source>Zoom Out</source>
         <translation>Dézoomer</translation>
     </message>
     <message>
-        <location filename="../source/app/powertabeditor.cpp" line="3044"/>
+        <location filename="../source/app/powertabeditor.cpp" line="3123"/>
         <source>Report Bug...</source>
         <translation>Signaler un problème…</translation>
     </message>
     <message>
-        <location filename="../source/app/powertabeditor.cpp" line="3050"/>
+        <location filename="../source/app/powertabeditor.cpp" line="3129"/>
         <source>Translate This Application...</source>
         <translation>Traduire cette application...</translation>
     </message>
     <message>
-        <location filename="../source/app/powertabeditor.cpp" line="3056"/>
+        <location filename="../source/app/powertabeditor.cpp" line="3135"/>
         <source>Application Info...</source>
         <translation>Informations sur l&apos;application...</translation>
     </message>
@@ -2876,145 +2885,150 @@
         <translation type="vanished">Informations sur l&apos;application</translation>
     </message>
     <message>
-        <location filename="../source/app/powertabeditor.cpp" line="3100"/>
+        <location filename="../source/app/powertabeditor.cpp" line="3179"/>
         <source>Mixer</source>
         <translation>Mélangeur</translation>
     </message>
     <message>
-        <location filename="../source/app/powertabeditor.cpp" line="3125"/>
+        <location filename="../source/app/powertabeditor.cpp" line="3204"/>
         <source>Instruments</source>
         <translation>Instruments</translation>
     </message>
     <message>
-        <location filename="../source/app/powertabeditor.cpp" line="3228"/>
+        <location filename="../source/app/powertabeditor.cpp" line="3307"/>
         <source>&amp;File</source>
         <translation>Fichier</translation>
     </message>
     <message>
-        <location filename="../source/app/powertabeditor.cpp" line="3239"/>
+        <location filename="../source/app/powertabeditor.cpp" line="3318"/>
         <source>Recent Files</source>
         <translation>Fichiers récents</translation>
     </message>
     <message>
-        <location filename="../source/app/powertabeditor.cpp" line="3249"/>
+        <location filename="../source/app/powertabeditor.cpp" line="3329"/>
         <source>&amp;Edit</source>
         <translation>Édition</translation>
     </message>
     <message>
-        <location filename="../source/app/powertabeditor.cpp" line="3265"/>
+        <location filename="../source/app/powertabeditor.cpp" line="3345"/>
         <source>Play&amp;back</source>
         <translation>Lecture</translation>
     </message>
     <message>
-        <location filename="../source/app/powertabeditor.cpp" line="3274"/>
+        <location filename="../source/app/powertabeditor.cpp" line="3354"/>
         <source>&amp;Position</source>
         <translation>Position</translation>
     </message>
     <message>
-        <location filename="../source/app/powertabeditor.cpp" line="3275"/>
-        <location filename="../source/app/powertabeditor.cpp" line="3311"/>
+        <location filename="../source/app/powertabeditor.cpp" line="3355"/>
+        <location filename="../source/app/powertabeditor.cpp" line="3391"/>
         <source>&amp;Section</source>
         <translation>Section</translation>
     </message>
     <message>
-        <location filename="../source/app/powertabeditor.cpp" line="3281"/>
+        <location filename="../source/app/powertabeditor.cpp" line="3361"/>
         <source>&amp;Staff</source>
         <translation>Portée</translation>
     </message>
     <message>
-        <location filename="../source/app/powertabeditor.cpp" line="3304"/>
+        <location filename="../source/app/powertabeditor.cpp" line="3384"/>
         <source>&amp;Text</source>
         <translation>Texte</translation>
     </message>
     <message>
-        <location filename="../source/app/powertabeditor.cpp" line="3321"/>
+        <location filename="../source/app/powertabeditor.cpp" line="3401"/>
         <source>&amp;Line Spacing</source>
         <translation>Interligne</translation>
     </message>
     <message>
-        <location filename="../source/app/powertabeditor.cpp" line="3326"/>
+        <location filename="../source/app/powertabeditor.cpp" line="3406"/>
         <source>&amp;Notes</source>
         <translation>Notes</translation>
     </message>
     <message>
-        <location filename="../source/app/powertabeditor.cpp" line="3360"/>
+        <location filename="../source/app/powertabeditor.cpp" line="3440"/>
         <source>Octave</source>
         <translation>Octave</translation>
     </message>
     <message>
-        <location filename="../source/app/powertabeditor.cpp" line="3370"/>
+        <location filename="../source/app/powertabeditor.cpp" line="3450"/>
         <source>Rests</source>
         <translation>Silences</translation>
     </message>
     <message>
-        <location filename="../source/app/powertabeditor.cpp" line="3383"/>
+        <location filename="../source/app/powertabeditor.cpp" line="3463"/>
         <source>&amp;Music Symbols</source>
         <translation>Symboles musicaux</translation>
     </message>
     <message>
-        <location filename="../source/app/powertabeditor.cpp" line="3397"/>
+        <location filename="../source/app/powertabeditor.cpp" line="3477"/>
         <source>&amp;Tab Symbols</source>
         <translation>Symboles de tablature</translation>
     </message>
     <message>
-        <location filename="../source/app/powertabeditor.cpp" line="3398"/>
+        <location filename="../source/app/powertabeditor.cpp" line="3478"/>
         <source>&amp;Hammer Ons/Pull Offs</source>
         <translation>Hammer Ons/Pull Offs</translation>
     </message>
     <message>
-        <location filename="../source/app/powertabeditor.cpp" line="3412"/>
+        <location filename="../source/app/powertabeditor.cpp" line="3492"/>
         <source>Slide Into</source>
         <translation>Glissé d&apos;entrée</translation>
     </message>
     <message>
-        <location filename="../source/app/powertabeditor.cpp" line="3419"/>
+        <location filename="../source/app/powertabeditor.cpp" line="3499"/>
         <source>Slide Out Of</source>
         <translation>Glissé de sortie</translation>
     </message>
     <message>
-        <location filename="../source/app/powertabeditor.cpp" line="3439"/>
+        <location filename="../source/app/powertabeditor.cpp" line="3519"/>
         <source>&amp;Player</source>
         <translation>Musicien</translation>
     </message>
     <message>
-        <location filename="../source/app/powertabeditor.cpp" line="3448"/>
+        <location filename="../source/app/powertabeditor.cpp" line="3528"/>
         <source>&amp;Window</source>
         <translation>Fenêtre</translation>
     </message>
     <message>
-        <location filename="../source/app/powertabeditor.cpp" line="3459"/>
+        <location filename="../source/app/powertabeditor.cpp" line="3539"/>
         <source>&amp;Help</source>
         <translation>Aide</translation>
     </message>
     <message>
-        <location filename="../source/app/powertabeditor.cpp" line="3939"/>
+        <location filename="../source/app/powertabeditor.cpp" line="4016"/>
         <source>Insert Tied Note</source>
         <translation>Insérer une note liée</translation>
     </message>
     <message>
-        <location filename="../source/app/powertabeditor.cpp" line="4034"/>
+        <location filename="../source/app/powertabeditor.cpp" line="4111"/>
         <source>Edit Barline</source>
         <translation>Modifier la barre de mesure</translation>
     </message>
     <message>
-        <location filename="../source/app/powertabeditor.cpp" line="4039"/>
+        <location filename="../source/app/powertabeditor.cpp" line="4116"/>
         <source>Insert Barline</source>
         <translation>Insérer une barre de mesure</translation>
     </message>
     <message>
-        <location filename="../source/app/powertabeditor.cpp" line="4045"/>
+        <location filename="../source/app/powertabeditor.cpp" line="4122"/>
         <source>Barline</source>
         <translation>Barre de mesure</translation>
     </message>
     <message>
-        <location filename="../source/build/main.cpp" line="201"/>
+        <location filename="../source/build/main.cpp" line="191"/>
         <source>A guitar tablature editor.</source>
         <translation>Un éditeur de tablatures de guitare.</translation>
     </message>
     <message>
-        <location filename="../source/build/main.cpp" line="207"/>
+        <location filename="../source/build/main.cpp" line="197"/>
         <source>The files to be opened</source>
         <translation>Les fichiers à ouvrir</translation>
+    </message>
+    <message>
+        <location filename="../source/app/clipboard.cpp" line="130"/>
+        <source>Cannot paste notes from a different number of strings.</source>
+        <translation type="unfinished"></translation>
     </message>
 </context>
 <context>
@@ -3050,9 +3064,13 @@
         <translation>Force du vibrato large :</translation>
     </message>
     <message>
-        <location filename="../source/dialogs/preferencesdialog.ui" line="86"/>
         <source>Play Notes While Editing</source>
-        <translation>Jouer les notes pendant l&apos;édition</translation>
+        <translation type="vanished">Jouer les notes pendant l&apos;édition</translation>
+    </message>
+    <message>
+        <location filename="../source/dialogs/preferencesdialog.ui" line="86"/>
+        <source>Play Notes While Editing:</source>
+        <translation type="unfinished"></translation>
     </message>
     <message>
         <location filename="../source/dialogs/preferencesdialog.ui" line="101"/>
@@ -3068,7 +3086,7 @@
     <message>
         <location filename="../source/dialogs/preferencesdialog.ui" line="122"/>
         <location filename="../source/dialogs/preferencesdialog.ui" line="193"/>
-        <location filename="../source/dialogs/preferencesdialog.ui" line="322"/>
+        <location filename="../source/dialogs/preferencesdialog.ui" line="355"/>
         <source>Preset:</source>
         <translation>Préréglage :</translation>
     </message>
@@ -3133,27 +3151,42 @@
         <translation>Espacement des systèmes :</translation>
     </message>
     <message>
-        <location filename="../source/dialogs/preferencesdialog.ui" line="297"/>
+        <location filename="../source/dialogs/preferencesdialog.ui" line="296"/>
+        <source>Backup</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../source/dialogs/preferencesdialog.ui" line="304"/>
+        <source>Enable Auto Backup:</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../source/dialogs/preferencesdialog.ui" line="314"/>
+        <source>Backup Interval (seconds):</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../source/dialogs/preferencesdialog.ui" line="330"/>
         <source>Default Instrument</source>
         <translation>Instrument par défaut</translation>
     </message>
     <message>
-        <location filename="../source/dialogs/preferencesdialog.ui" line="312"/>
+        <location filename="../source/dialogs/preferencesdialog.ui" line="345"/>
         <source>Name:</source>
         <translation>Nom :</translation>
     </message>
     <message>
-        <location filename="../source/dialogs/preferencesdialog.ui" line="332"/>
+        <location filename="../source/dialogs/preferencesdialog.ui" line="365"/>
         <source>Tuning:</source>
         <translation>Tonalité :</translation>
     </message>
     <message>
-        <location filename="../source/dialogs/preferencesdialog.ui" line="339"/>
+        <location filename="../source/dialogs/preferencesdialog.ui" line="372"/>
         <source>Tuning</source>
         <translation>Tonalité</translation>
     </message>
     <message>
-        <location filename="../source/dialogs/preferencesdialog.cpp" line="146"/>
+        <location filename="../source/dialogs/preferencesdialog.cpp" line="148"/>
         <source>Click to adjust tuning.</source>
         <translation>Cliquez pour ajuster la tonalité.</translation>
     </message>
@@ -3313,7 +3346,7 @@
         <translation>Supprimer la position</translation>
     </message>
     <message>
-        <location filename="../source/app/powertabeditor.cpp" line="1355"/>
+        <location filename="../source/app/powertabeditor.cpp" line="1369"/>
         <source>Remove Multi-Bar Rest</source>
         <translation>Supprimer le silence multi-mesures</translation>
     </message>
@@ -3426,67 +3459,67 @@
         <translation>Double-cliquez pour modifier les informations de la partition.</translation>
     </message>
     <message>
-        <location filename="../source/painters/systemrenderer.cpp" line="155"/>
+        <location filename="../source/painters/systemrenderer.cpp" line="150"/>
         <source>Double-click to change clef type.</source>
         <translation>Double-cliquez pour modifier le type de clé.</translation>
     </message>
     <message>
-        <location filename="../source/painters/systemrenderer.cpp" line="197"/>
+        <location filename="../source/painters/systemrenderer.cpp" line="192"/>
         <source>Double-click to edit the number of strings.</source>
         <translation>Double-cliquez pour modifier le nombre de cordes.</translation>
     </message>
     <message>
-        <location filename="../source/painters/systemrenderer.cpp" line="304"/>
+        <location filename="../source/painters/systemrenderer.cpp" line="298"/>
         <source>Double-click to edit rehearsal sign.</source>
         <translation>Double-cliquez pour modifier le signe de répétition.</translation>
     </message>
     <message>
-        <location filename="../source/painters/systemrenderer.cpp" line="507"/>
+        <location filename="../source/painters/systemrenderer.cpp" line="500"/>
         <source>Double-click to edit repeat endings.</source>
         <translation>Double-cliquez pour modifier les boucles de fin.</translation>
     </message>
     <message>
-        <location filename="../source/painters/systemrenderer.cpp" line="638"/>
+        <location filename="../source/painters/systemrenderer.cpp" line="634"/>
         <source>Double-click to edit tempo marker.</source>
         <translation>Double-cliquez pour modifier le marqueur de tempo.</translation>
     </message>
     <message>
-        <location filename="../source/painters/systemrenderer.cpp" line="745"/>
+        <location filename="../source/painters/systemrenderer.cpp" line="741"/>
         <source>Double-click to edit chord text.</source>
         <translation>Double-cliquez pour modifier le texte de l&apos;accord.</translation>
     </message>
     <message>
-        <location filename="../source/painters/systemrenderer.cpp" line="771"/>
+        <location filename="../source/painters/systemrenderer.cpp" line="767"/>
         <source>Double-click to edit text.</source>
         <translation>Double-cliquez pour modifier le texte.</translation>
     </message>
     <message>
-        <location filename="../source/painters/systemrenderer.cpp" line="941"/>
+        <location filename="../source/painters/systemrenderer.cpp" line="937"/>
         <source>Double-click to edit the active players.</source>
         <translation>Double-cliquez pour modifier les musiciens actifs.</translation>
     </message>
     <message>
-        <location filename="../source/painters/systemrenderer.cpp" line="1394"/>
+        <location filename="../source/painters/systemrenderer.cpp" line="1389"/>
         <source>Double-click to edit volume swell.</source>
         <translation>Double-cliquez pour éditer la variation de volume.</translation>
     </message>
     <message>
-        <location filename="../source/painters/systemrenderer.cpp" line="1414"/>
+        <location filename="../source/painters/systemrenderer.cpp" line="1409"/>
         <source>Double-click to edit tremolo bar.</source>
         <translation>Double-cliquez pour modifier la mesure de trémolo.</translation>
     </message>
     <message>
-        <location filename="../source/painters/systemrenderer.cpp" line="1589"/>
+        <location filename="../source/painters/systemrenderer.cpp" line="1583"/>
         <source>Double-click to edit dynamic.</source>
         <translation>Double-cliquez pour modifier la nuance.</translation>
     </message>
     <message>
-        <location filename="../source/painters/systemrenderer.cpp" line="1932"/>
+        <location filename="../source/painters/systemrenderer.cpp" line="1926"/>
         <source>Double-click to edit multi-bar rest.</source>
         <translation>Double-cliquez pour modifier le silence multi-mesures.</translation>
     </message>
     <message>
-        <location filename="../source/painters/systemrenderer.cpp" line="2185"/>
+        <location filename="../source/painters/systemrenderer.cpp" line="2178"/>
         <source>Double-click to edit bend.</source>
         <translation>Double-cliquez pour modifier le bend.</translation>
     </message>
