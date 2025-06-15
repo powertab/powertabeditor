@@ -1,12 +1,12 @@
 <?xml version="1.0" encoding="utf-8"?>
 <!DOCTYPE TS>
-<TS version="2.1" language="en_CA">
+<TS version="2.1" language="en_US">
 <context>
     <name>AddAlternateEnding</name>
     <message>
         <location filename="../source/actions/addalternateending.cpp" line="24"/>
         <source>Add Repeat Ending</source>
-        <translation>Add Repeat Ending</translation>
+        <translation type="unfinished"></translation>
     </message>
 </context>
 <context>
@@ -14,7 +14,7 @@
     <message>
         <location filename="../source/actions/addspecialnoteproperty.h" line="93"/>
         <source>Add Artificial Harmonic</source>
-        <translation>Add Artificial Harmonic</translation>
+        <translation type="unfinished"></translation>
     </message>
 </context>
 <context>
@@ -22,7 +22,7 @@
     <message>
         <location filename="../source/actions/addbarline.cpp" line="23"/>
         <source>Insert Barline</source>
-        <translation>Insert Barline</translation>
+        <translation type="unfinished"></translation>
     </message>
 </context>
 <context>
@@ -30,7 +30,7 @@
     <message>
         <location filename="../source/actions/addspecialnoteproperty.h" line="106"/>
         <source>Add Bend</source>
-        <translation>Add Bend</translation>
+        <translation type="unfinished"></translation>
     </message>
 </context>
 <context>
@@ -46,7 +46,7 @@
     <message>
         <location filename="../source/actions/addchordtext.cpp" line="24"/>
         <source>Add Chord Text</source>
-        <translation>Add Chord Text</translation>
+        <translation type="unfinished"></translation>
     </message>
 </context>
 <context>
@@ -54,7 +54,7 @@
     <message>
         <location filename="../source/actions/adddirection.cpp" line="24"/>
         <source>Add Musical Direction</source>
-        <translation>Add Musical Direction</translation>
+        <translation type="unfinished"></translation>
     </message>
 </context>
 <context>
@@ -62,7 +62,7 @@
     <message>
         <location filename="../source/actions/adddynamic.cpp" line="23"/>
         <source>Add Dynamic</source>
-        <translation>Add Dynamic</translation>
+        <translation type="unfinished"></translation>
     </message>
 </context>
 <context>
@@ -70,7 +70,7 @@
     <message>
         <location filename="../source/actions/addinstrument.cpp" line="23"/>
         <source>Add Instrument</source>
-        <translation>Add Instrument</translation>
+        <translation type="unfinished"></translation>
     </message>
 </context>
 <context>
@@ -78,12 +78,12 @@
     <message>
         <location filename="../source/actions/addirregulargrouping.cpp" line="27"/>
         <source>Add Triplet</source>
-        <translation>Add Triplet</translation>
+        <translation type="unfinished"></translation>
     </message>
     <message>
         <location filename="../source/actions/addirregulargrouping.cpp" line="29"/>
         <source>Add Irregular Grouping</source>
-        <translation>Add Irregular Grouping</translation>
+        <translation type="unfinished"></translation>
     </message>
 </context>
 <context>
@@ -91,7 +91,7 @@
     <message>
         <location filename="../source/actions/addspecialnoteproperty.h" line="120"/>
         <source>Add Left Hand Fingering</source>
-        <translation>Add Left Hand Fingering</translation>
+        <translation type="unfinished"></translation>
     </message>
 </context>
 <context>
@@ -99,7 +99,7 @@
     <message>
         <location filename="../source/actions/addmultibarrest.cpp" line="23"/>
         <source>Add Multi-Bar Rest</source>
-        <translation>Add Multi-Bar Rest</translation>
+        <translation type="unfinished"></translation>
     </message>
 </context>
 <context>
@@ -107,7 +107,7 @@
     <message>
         <location filename="../source/actions/addnote.cpp" line="24"/>
         <source>Add Note</source>
-        <translation>Add Note</translation>
+        <translation type="unfinished"></translation>
     </message>
 </context>
 <context>
@@ -115,7 +115,7 @@
     <message>
         <location filename="../source/actions/addnoteproperty.cpp" line="23"/>
         <source>Set %1</source>
-        <translation>Set %1</translation>
+        <translation type="unfinished"></translation>
     </message>
 </context>
 <context>
@@ -123,7 +123,7 @@
     <message>
         <location filename="../source/actions/addplayer.cpp" line="23"/>
         <source>Add Player</source>
-        <translation>Add Player</translation>
+        <translation type="unfinished"></translation>
     </message>
 </context>
 <context>
@@ -131,7 +131,7 @@
     <message>
         <location filename="../source/actions/editplayerchange.cpp" line="25"/>
         <source>Add Player Change</source>
-        <translation>Add Player Change</translation>
+        <translation type="unfinished"></translation>
     </message>
 </context>
 <context>
@@ -139,7 +139,7 @@
     <message>
         <location filename="../source/actions/addpositionproperty.cpp" line="23"/>
         <source>Set %1</source>
-        <translation>Set %1</translation>
+        <translation type="unfinished"></translation>
     </message>
 </context>
 <context>
@@ -147,7 +147,7 @@
     <message>
         <location filename="../source/actions/editrehearsalsign.cpp" line="25"/>
         <source>Add Rehearsal Sign</source>
-        <translation>Add Rehearsal Sign</translation>
+        <translation type="unfinished"></translation>
     </message>
 </context>
 <context>
@@ -155,7 +155,7 @@
     <message>
         <location filename="../source/actions/addrest.cpp" line="23"/>
         <source>Add Rest</source>
-        <translation>Add Rest</translation>
+        <translation type="unfinished"></translation>
     </message>
 </context>
 <context>
@@ -163,7 +163,7 @@
     <message>
         <location filename="../source/actions/addstaff.cpp" line="23"/>
         <source>Add Staff</source>
-        <translation>Add Staff</translation>
+        <translation type="unfinished"></translation>
     </message>
 </context>
 <context>
@@ -171,7 +171,7 @@
     <message>
         <location filename="../source/actions/addsystem.cpp" line="23"/>
         <source>Add System</source>
-        <translation>Add System</translation>
+        <translation type="unfinished"></translation>
     </message>
 </context>
 <context>
@@ -179,7 +179,7 @@
     <message>
         <location filename="../source/actions/addspecialnoteproperty.h" line="65"/>
         <source>Add Tapped Harmonic</source>
-        <translation>Add Tapped Harmonic</translation>
+        <translation type="unfinished"></translation>
     </message>
 </context>
 <context>
@@ -187,12 +187,12 @@
     <message>
         <location filename="../source/actions/edittempomarker.cpp" line="26"/>
         <source>Add Alteration of Pace</source>
-        <translation>Add Alteration of Pace</translation>
+        <translation type="unfinished"></translation>
     </message>
     <message>
         <location filename="../source/actions/edittempomarker.cpp" line="27"/>
         <source>Add Tempo Marker</source>
-        <translation>Add Tempo Marker</translation>
+        <translation type="unfinished"></translation>
     </message>
 </context>
 <context>
@@ -200,7 +200,7 @@
     <message>
         <location filename="../source/actions/edittextitem.cpp" line="24"/>
         <source>Add Text</source>
-        <translation>Add Text</translation>
+        <translation type="unfinished"></translation>
     </message>
 </context>
 <context>
@@ -208,7 +208,7 @@
     <message>
         <location filename="../source/actions/tremolobar.cpp" line="22"/>
         <source>Add Tremolo Bar</source>
-        <translation>Add Tremolo Bar</translation>
+        <translation type="unfinished"></translation>
     </message>
 </context>
 <context>
@@ -216,7 +216,7 @@
     <message>
         <location filename="../source/actions/addspecialnoteproperty.h" line="78"/>
         <source>Add Trill</source>
-        <translation>Add Trill</translation>
+        <translation type="unfinished"></translation>
     </message>
 </context>
 <context>
@@ -224,7 +224,7 @@
     <message>
         <location filename="../source/actions/volumeswell.cpp" line="22"/>
         <source>Add Volume Swell</source>
-        <translation>Add Volume Swell</translation>
+        <translation type="unfinished"></translation>
     </message>
 </context>
 <context>
@@ -515,6 +515,12 @@
         <translation type="unfinished"></translation>
     </message>
     <message>
+        <location filename="../source/dialogs/bulkconverterdialog.ui" line="56"/>
+        <location filename="../source/dialogs/bulkconverterdialog.ui" line="84"/>
+        <source>...</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
         <location filename="../source/dialogs/bulkconverterdialog.ui" line="65"/>
         <source>Destination Directory:</source>
         <translation type="unfinished"></translation>
@@ -522,12 +528,6 @@
     <message>
         <location filename="../source/dialogs/bulkconverterdialog.ui" line="93"/>
         <source>Convert To:</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <location filename="../source/dialogs/bulkconverterdialog.ui" line="56"/>
-        <location filename="../source/dialogs/bulkconverterdialog.ui" line="84"/>
-        <source>...</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
@@ -1938,6 +1938,11 @@
 <context>
     <name>PowerTabEditor</name>
     <message>
+        <location filename="../source/app/clipboard.cpp" line="130"/>
+        <source>Cannot paste notes from a different number of strings.</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
         <location filename="../source/app/powertabeditor.cpp" line="179"/>
         <source>Toolbox</source>
         <translation type="unfinished"></translation>
@@ -2553,7 +2558,7 @@
     <message>
         <location filename="../source/app/powertabeditor.cpp" line="2803"/>
         <source>Add Rest</source>
-        <translation type="unfinished">Add Rest</translation>
+        <translation type="unfinished"></translation>
     </message>
     <message>
         <location filename="../source/app/powertabeditor.cpp" line="2809"/>
@@ -2750,12 +2755,12 @@
     <message>
         <location filename="../source/app/powertabeditor.cpp" line="3052"/>
         <source>Add Player</source>
-        <translation type="unfinished">Add Player</translation>
+        <translation type="unfinished"></translation>
     </message>
     <message>
         <location filename="../source/app/powertabeditor.cpp" line="3057"/>
         <source>Add Instrument</source>
-        <translation type="unfinished">Add Instrument</translation>
+        <translation type="unfinished"></translation>
     </message>
     <message>
         <location filename="../source/app/powertabeditor.cpp" line="3061"/>
@@ -2931,7 +2936,7 @@
     <message>
         <location filename="../source/app/powertabeditor.cpp" line="4116"/>
         <source>Insert Barline</source>
-        <translation type="unfinished">Insert Barline</translation>
+        <translation type="unfinished"></translation>
     </message>
     <message>
         <location filename="../source/app/powertabeditor.cpp" line="4122"/>
@@ -2946,11 +2951,6 @@
     <message>
         <location filename="../source/build/main.cpp" line="197"/>
         <source>The files to be opened</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <location filename="../source/app/clipboard.cpp" line="130"/>
-        <source>Cannot paste notes from a different number of strings.</source>
         <translation type="unfinished"></translation>
     </message>
 </context>
@@ -3363,6 +3363,11 @@
         <translation type="unfinished"></translation>
     </message>
     <message>
+        <location filename="../source/painters/chorddiagrampainter.cpp" line="242"/>
+        <source>Double-click to edit chord diagram.</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
         <location filename="../source/painters/directions.cpp" line="54"/>
         <source>Double-click to edit musical direction.</source>
         <translation type="unfinished"></translation>
@@ -3447,11 +3452,6 @@
         <source>Click to edit time signature.</source>
         <translation type="unfinished"></translation>
     </message>
-    <message>
-        <location filename="../source/painters/chorddiagrampainter.cpp" line="242"/>
-        <source>Double-click to edit chord diagram.</source>
-        <translation type="unfinished"></translation>
-    </message>
 </context>
 <context>
     <name>ScorePage</name>
@@ -3463,7 +3463,7 @@
     <message>
         <location filename="../source/widgets/toolbox/scorepage.cpp" line="36"/>
         <source>Add Instrument</source>
-        <translation type="unfinished">Add Instrument</translation>
+        <translation type="unfinished"></translation>
     </message>
     <message>
         <location filename="../source/widgets/toolbox/scorepage.cpp" line="40"/>
@@ -3528,17 +3528,17 @@
     <message>
         <location filename="../source/widgets/toolbox/scorepage.cpp" line="117"/>
         <source>Add Rehearsal Sign</source>
-        <translation type="unfinished">Add Rehearsal Sign</translation>
+        <translation type="unfinished"></translation>
     </message>
     <message>
         <location filename="../source/widgets/toolbox/scorepage.cpp" line="121"/>
         <source>Add Musical Direction</source>
-        <translation type="unfinished">Add Musical Direction</translation>
+        <translation type="unfinished"></translation>
     </message>
     <message>
         <location filename="../source/widgets/toolbox/scorepage.cpp" line="125"/>
         <source>Add Tempo Marker</source>
-        <translation type="unfinished">Add Tempo Marker</translation>
+        <translation type="unfinished"></translation>
     </message>
     <message>
         <location filename="../source/widgets/toolbox/scorepage.cpp" line="129"/>
