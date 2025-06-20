@@ -6,7 +6,7 @@
     <message>
         <location filename="../source/actions/addalternateending.cpp" line="24"/>
         <source>Add Repeat Ending</source>
-        <translation>மீண்டும் மீண்டும் முடிவைச் சேர்க்கவும்</translation>
+        <translation>மறுநிகழும் முடிவைச் சேர்</translation>
     </message>
 </context>
 <context>
@@ -1380,7 +1380,7 @@
     <message>
         <location filename="../source/dialogs/irregulargroupingdialog.ui" line="38"/>
         <source>Notes Played Over:</source>
-        <translation>விளையாடிய குறிப்புகள்:</translation>
+        <translation>விளையாடிய குறிப்புகள் முடிந்தது:</translation>
     </message>
 </context>
 <context>
@@ -2096,7 +2096,7 @@
     <message>
         <location filename="../source/app/powertabeditor.cpp" line="1841"/>
         <source>Edit Bend</source>
-        <translation>வளைவு</translation>
+        <translation>வளைவு திருத்து</translation>
     </message>
     <message>
         <location filename="../source/app/powertabeditor.cpp" line="1965"/>
@@ -2736,7 +2736,7 @@
     <message>
         <location filename="../source/app/powertabeditor.cpp" line="2961"/>
         <source>Slide Out Of Downwards</source>
-        <translation>கீழ்நோக்கி வெளியேறவும்</translation>
+        <translation>கீழ்நோக்கி இல் வெளியேறவும்</translation>
     </message>
     <message>
         <location filename="../source/app/powertabeditor.cpp" line="2966"/>
@@ -3710,7 +3710,7 @@
     <message>
         <location filename="../source/widgets/toolbox/toolbox.ui" line="161"/>
         <source>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;&lt;br/&gt;&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</source>
-        <translation>&lt;html&gt; &lt;head/&gt; &lt;body&gt; &lt;bl&gt; &lt;br/&gt; &lt;/p&gt; &lt;/body&gt; &lt;/html&gt;</translation>
+        <translation>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;&lt;br/&gt;&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</translation>
     </message>
 </context>
 <context>
@@ -3845,7 +3845,7 @@
     <message>
         <location filename="../source/dialogs/tuningdialog.ui" line="120"/>
         <source>Capo:</source>
-        <translation>Capo:</translation>
+        <translation>காபோ:</translation>
     </message>
 </context>
 <context>
