@@ -1741,7 +1741,7 @@
     <message>
         <location filename="../source/widgets/toolbox/notepage.cpp" line="181"/>
         <source>Tie Note</source>
-        <translation type="unfinished"></translation>
+        <translation>连音符</translation>
     </message>
     <message>
         <location filename="../source/widgets/toolbox/notepage.cpp" line="186"/>
@@ -1751,7 +1751,7 @@
     <message>
         <location filename="../source/widgets/toolbox/notepage.cpp" line="191"/>
         <source>Fermata</source>
-        <translation type="unfinished"></translation>
+        <translation>延音记号</translation>
     </message>
     <message>
         <location filename="../source/widgets/toolbox/notepage.cpp" line="211"/>
@@ -1839,27 +1839,27 @@
     <message>
         <location filename="../source/widgets/playback/playbackwidget.ui" line="61"/>
         <source>1</source>
-        <translation type="unfinished"></translation>
+        <translation>1</translation>
     </message>
     <message>
         <location filename="../source/widgets/playback/playbackwidget.ui" line="71"/>
         <source>2</source>
-        <translation type="unfinished"></translation>
+        <translation>2</translation>
     </message>
     <message>
         <location filename="../source/widgets/playback/playbackwidget.ui" line="93"/>
         <source>Speed:</source>
-        <translation type="unfinished"></translation>
+        <translation>速度：</translation>
     </message>
     <message>
         <location filename="../source/widgets/playback/playbackwidget.ui" line="109"/>
         <source>Adjusts the current playback speed.</source>
-        <translation type="unfinished"></translation>
+        <translation>调整当前回放速度。</translation>
     </message>
     <message>
         <location filename="../source/widgets/playback/playbackwidget.ui" line="181"/>
         <source>Zoom:</source>
-        <translation type="unfinished"></translation>
+        <translation>缩放：</translation>
     </message>
     <message>
         <location filename="../source/widgets/playback/playbackwidget.ui" line="223"/>
