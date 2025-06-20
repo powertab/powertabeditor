@@ -12,6 +12,7 @@ Thanks to the following contributors who worked on this release:
 
 ### Fixed
 - Fixed issues with overriding the application's language on macOS via the system settings (#507)
+- Fixed an issue which could cause a secondary language to be used for translations rather than the primary system language (#527, #528)
 - Added missing German and Chinese (Simplified) translations which previously were not being packaged
 
 ## [2.0.21] - 2024-11-20
