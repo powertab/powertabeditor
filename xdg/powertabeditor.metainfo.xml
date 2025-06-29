@@ -44,6 +44,21 @@
   </provides>
 
   <releases>
+    <release version="2.0.22" date="2025-06-29">
+      <url>https://github.com/powertab/powertabeditor/releases/tag/2.0.22</url>
+      <description>
+        <p>Changes</p>
+        <ul>
+          <li>Updated translations</li>
+        </ul>
+        <p>Bug Fixes</p>
+        <ul>
+          <li>Fixed issues with overriding the application's language on macOS via the system settings (#507)</li>
+          <li>Fixed an issue which could cause a secondary language to be used for translations rather than the primary system language (#527, #528)</li>
+          <li>Added missing German and Chinese (Simplified) translations which previously were not being packaged</li>
+        </ul>
+      </description>
+    </release>
     <release version="2.0.21" date="2024-11-20">
       <url>https://github.com/powertab/powertabeditor/releases/tag/2.0.21</url>
       <description>

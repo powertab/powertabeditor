@@ -18,7 +18,7 @@ set( CMAKE_MODULE_PATH
     ${CMAKE_SOURCE_DIR}/cmake/third_party/modules
 )
 
-set( PTE_VERSION 2.0.21 )
+set( PTE_VERSION 2.0.22 )
 
 include( PTE_Platform )
 include( PTE_CompilerFlags )

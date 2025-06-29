@@ -11,6 +11,16 @@ Thanks to the following contributors who worked on this release:
 ### Changed
 
 ### Fixed
+
+## [2.0.22] - 2025-06-29
+
+Thanks to the following contributors who worked on this release:
+- @cameronwhite
+
+### Changed
+- Updated translations
+
+### Fixed
 - Fixed issues with overriding the application's language on macOS via the system settings (#507)
 - Fixed an issue which could cause a secondary language to be used for translations rather than the primary system language (#527, #528)
 - Added missing German and Chinese (Simplified) translations which previously were not being packaged
@@ -512,7 +522,8 @@ Thanks to the following contributors who worked on this release:
 ## [Alpha 1] - 2014-07-27
 * The first alpha release!
 
-[Unreleased]: https://github.com/powertab/powertabeditor/compare/2.0.20...HEAD
+[Unreleased]: https://github.com/powertab/powertabeditor/compare/2.0.22...HEAD
+[2.0.22]: https://github.com/powertab/powertabeditor/releases/tag/2.0.22
 [2.0.21]: https://github.com/powertab/powertabeditor/releases/tag/2.0.21
 [2.0.20]: https://github.com/powertab/powertabeditor/releases/tag/2.0.20
 [Alpha 19]: https://github.com/powertab/powertabeditor/releases/tag/2.0.0-alpha19
