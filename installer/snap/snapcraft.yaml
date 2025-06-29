@@ -33,6 +33,7 @@ parts:
       - librtmidi-dev
       - nlohmann-json3-dev
     stage-packages:
+      - cups
       - libboost-date-time1.74.0
       - libboost-iostreams1.74.0
       - libasound2
