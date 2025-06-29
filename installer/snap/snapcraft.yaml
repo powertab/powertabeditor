@@ -28,6 +28,7 @@ parts:
       - libboost-date-time-dev
       - libboost-dev
       - libboost-iostreams-dev
+      - libcups2-dev
       - libminizip-dev
       - libpugixml-dev
       - librtmidi-dev
