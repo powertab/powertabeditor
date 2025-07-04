@@ -684,7 +684,7 @@
     <message>
         <location filename="../source/dialogs/chordnamedialog.ui" line="892"/>
         <source>Custom Label</source>
-        <translation type="unfinished"></translation>
+        <translation>自定义标签</translation>
     </message>
     <message>
         <location filename="../source/dialogs/chordnamedialog.ui" line="907"/>
@@ -1746,7 +1746,7 @@
     <message>
         <location filename="../source/widgets/toolbox/notepage.cpp" line="186"/>
         <source>Group Note</source>
-        <translation type="unfinished"></translation>
+        <translation>组音符</translation>
     </message>
     <message>
         <location filename="../source/widgets/toolbox/notepage.cpp" line="191"/>
@@ -1756,7 +1756,7 @@
     <message>
         <location filename="../source/widgets/toolbox/notepage.cpp" line="211"/>
         <source>Slide &amp;&amp; Legato</source>
-        <translation type="unfinished"></translation>
+        <translation>滑奏 &amp;&amp; 击勾奏法</translation>
     </message>
     <message>
         <location filename="../source/widgets/toolbox/notepage.cpp" line="215"/>
