@@ -512,17 +512,17 @@
     <message>
         <location filename="../source/dialogs/bulkconverterdialog.ui" line="37"/>
         <source>Source Directory:</source>
-        <translation type="unfinished"></translation>
+        <translation>変換元ディレクトリ:</translation>
     </message>
     <message>
         <location filename="../source/dialogs/bulkconverterdialog.ui" line="65"/>
         <source>Destination Directory:</source>
-        <translation type="unfinished"></translation>
+        <translation>変換先ディレクトリ:</translation>
     </message>
     <message>
         <location filename="../source/dialogs/bulkconverterdialog.ui" line="93"/>
         <source>Convert To:</source>
-        <translation type="unfinished"></translation>
+        <translation>変換する種類:</translation>
     </message>
     <message>
         <source>E&amp;xit</source>
@@ -549,7 +549,7 @@
     <message>
         <location filename="../source/dialogs/bulkconverterdialog.cpp" line="170"/>
         <source>Convert</source>
-        <translation type="unfinished"></translation>
+        <translation>変換</translation>
     </message>
     <message>
         <location filename="../source/dialogs/bulkconverterdialog.cpp" line="188"/>
@@ -700,7 +700,7 @@
     <message>
         <location filename="../source/dialogs/chordnamedialog.ui" line="892"/>
         <source>Custom Label</source>
-        <translation type="unfinished"></translation>
+        <translation>カスタムラベル</translation>
     </message>
     <message>
         <location filename="../source/dialogs/chordnamedialog.ui" line="907"/>
@@ -1583,17 +1583,17 @@
     <message>
         <location filename="../source/audio/midiplayer.cpp" line="97"/>
         <source>MIDI interface: &apos;%1&apos;</source>
-        <translation type="unfinished"></translation>
+        <translation>MIDIインターフェイス: &apos;%1&apos;</translation>
     </message>
     <message>
         <location filename="../source/audio/midiplayer.cpp" line="99"/>
         <source>MIDI port: &apos;%1&apos;</source>
-        <translation type="unfinished"></translation>
+        <translation>MIDI ポート: &apos;%1&apos;</translation>
     </message>
     <message>
         <location filename="../source/audio/midiplayer.cpp" line="105"/>
         <source>The MIDI device may not be accessible. The following commands can be run to allow access:</source>
-        <translation type="unfinished"></translation>
+        <translation>MIDIデバイスにアクセスできない可能性があります。以下のコマンドを実行するとアクセスが許可されます。</translation>
     </message>
 </context>
 <context>
@@ -2166,7 +2166,7 @@
     <message>
         <location filename="../source/app/powertabeditor.cpp" line="2315"/>
         <source>Open Backup Folder...</source>
-        <translation type="unfinished"></translation>
+        <translation>バックアップフォルダを開く...</translation>
     </message>
     <message>
         <location filename="../source/app/powertabeditor.cpp" line="2321"/>
@@ -2251,7 +2251,7 @@
     <message>
         <location filename="../source/app/powertabeditor.cpp" line="2416"/>
         <source>Count-In</source>
-        <translation type="unfinished"></translation>
+        <translation>カウントイン</translation>
     </message>
     <message>
         <location filename="../source/app/powertabeditor.cpp" line="2424"/>
@@ -2972,7 +2972,7 @@
     <message>
         <location filename="../source/app/clipboard.cpp" line="130"/>
         <source>Cannot paste notes from a different number of strings.</source>
-        <translation type="unfinished"></translation>
+        <translation>異なる数の弦からの音符を貼り付けることはできません。</translation>
     </message>
 </context>
 <context>
@@ -3014,7 +3014,7 @@
     <message>
         <location filename="../source/dialogs/preferencesdialog.ui" line="86"/>
         <source>Play Notes While Editing:</source>
-        <translation type="unfinished"></translation>
+        <translation>編集中にノートを再生:</translation>
     </message>
     <message>
         <location filename="../source/dialogs/preferencesdialog.ui" line="101"/>
@@ -3097,17 +3097,17 @@
     <message>
         <location filename="../source/dialogs/preferencesdialog.ui" line="296"/>
         <source>Backup</source>
-        <translation type="unfinished"></translation>
+        <translation>バックアップ</translation>
     </message>
     <message>
         <location filename="../source/dialogs/preferencesdialog.ui" line="304"/>
         <source>Enable Auto Backup:</source>
-        <translation type="unfinished"></translation>
+        <translation>自動バックアップを許可:</translation>
     </message>
     <message>
         <location filename="../source/dialogs/preferencesdialog.ui" line="314"/>
         <source>Backup Interval (seconds):</source>
-        <translation type="unfinished"></translation>
+        <translation>バックアップ間隔(秒):</translation>
     </message>
     <message>
         <location filename="../source/dialogs/preferencesdialog.ui" line="330"/>
