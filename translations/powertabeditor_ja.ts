@@ -62,7 +62,7 @@
     <message>
         <location filename="../source/actions/adddynamic.cpp" line="23"/>
         <source>Add Dynamic</source>
-        <translation>ダイナミクスを追加</translation>
+        <translation>強弱記号を追加</translation>
     </message>
 </context>
 <context>
@@ -163,7 +163,7 @@
     <message>
         <location filename="../source/actions/addstaff.cpp" line="23"/>
         <source>Add Staff</source>
-        <translation>譜表を追加</translation>
+        <translation>五線譜を追加</translation>
     </message>
 </context>
 <context>
@@ -171,7 +171,7 @@
     <message>
         <location filename="../source/actions/addsystem.cpp" line="23"/>
         <source>Add System</source>
-        <translation>譜表を追加</translation>
+        <translation>組段を追加</translation>
     </message>
 </context>
 <context>
@@ -1850,7 +1850,7 @@
     <message>
         <location filename="../source/widgets/playback/playbackwidget.ui" line="49"/>
         <source>Voice:</source>
-        <translation>声部:</translation>
+        <translation>ボイス:</translation>
     </message>
     <message>
         <location filename="../source/widgets/playback/playbackwidget.ui" line="61"/>
@@ -1905,7 +1905,7 @@
     <message>
         <location filename="../source/widgets/playback/playbackwidget.cpp" line="142"/>
         <source>Click to toggle whether a count-in before playback is enabled%1.</source>
-        <translation type="unfinished"></translation>
+        <translation>クリックすると、再生前のカウントインを有効にするかどうかを切り替えます%1。</translation>
     </message>
 </context>
 <context>
@@ -3092,7 +3092,7 @@
     <message>
         <location filename="../source/dialogs/preferencesdialog.ui" line="281"/>
         <source>System Spacing:</source>
-        <translation type="unfinished"></translation>
+        <translation>組段間隔:</translation>
     </message>
     <message>
         <location filename="../source/dialogs/preferencesdialog.ui" line="296"/>
