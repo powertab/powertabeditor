@@ -7,6 +7,7 @@ set( languages
     fr
     it
     ja
+    nl
     ru
     tr
     zh_Hans
