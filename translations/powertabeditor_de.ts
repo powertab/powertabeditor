@@ -54,7 +54,7 @@
     <message>
         <location filename="../source/actions/adddirection.cpp" line="24"/>
         <source>Add Musical Direction</source>
-        <translation type="unfinished">Add Musical Direction</translation>
+        <translation>Musikrichtung hinzufügen</translation>
     </message>
 </context>
 <context>
@@ -62,7 +62,7 @@
     <message>
         <location filename="../source/actions/adddynamic.cpp" line="23"/>
         <source>Add Dynamic</source>
-        <translation type="unfinished"></translation>
+        <translation>Dynamik hinzufügen</translation>
     </message>
 </context>
 <context>
@@ -720,17 +720,17 @@
     <message>
         <location filename="../source/dialogs/directiondialog.ui" line="17"/>
         <source>Musical Direction</source>
-        <translation type="unfinished"></translation>
+        <translation>Musikrichtung</translation>
     </message>
     <message>
         <location filename="../source/dialogs/directiondialog.ui" line="28"/>
         <source>Symbol:</source>
-        <translation type="unfinished"></translation>
+        <translation>Symbol:</translation>
     </message>
     <message>
         <location filename="../source/dialogs/directiondialog.ui" line="38"/>
         <source>Active Symbol:</source>
-        <translation type="unfinished"></translation>
+        <translation>Aktives Symbol:</translation>
     </message>
     <message>
         <location filename="../source/dialogs/directiondialog.ui" line="48"/>
@@ -740,17 +740,17 @@
     <message>
         <location filename="../source/dialogs/directiondialog.ui" line="58"/>
         <source>Direction:</source>
-        <translation type="unfinished"></translation>
+        <translation>Richtung:</translation>
     </message>
     <message>
         <location filename="../source/dialogs/directiondialog.ui" line="86"/>
         <source>Add</source>
-        <translation type="unfinished"></translation>
+        <translation>Hinzufügen</translation>
     </message>
     <message>
         <location filename="../source/dialogs/directiondialog.ui" line="93"/>
         <source>Remove</source>
-        <translation type="unfinished"></translation>
+        <translation>Entfernen</translation>
     </message>
 </context>
 <context>
@@ -758,7 +758,7 @@
     <message>
         <location filename="../source/dialogs/dynamicdialog.ui" line="17"/>
         <source>Dynamic</source>
-        <translation type="unfinished"></translation>
+        <translation>Dynamik</translation>
     </message>
     <message>
         <location filename="../source/dialogs/dynamicdialog.ui" line="40"/>
@@ -768,7 +768,7 @@
     <message>
         <location filename="../source/dialogs/dynamicdialog.ui" line="67"/>
         <source>Off</source>
-        <translation type="unfinished"></translation>
+        <translation>Aus</translation>
     </message>
 </context>
 <context>
@@ -784,7 +784,7 @@
     <message>
         <location filename="../source/actions/editdynamic.cpp" line="25"/>
         <source>Edit Dynamic</source>
-        <translation type="unfinished"></translation>
+        <translation>Dynamik bearbeiten</translation>
     </message>
 </context>
 <context>
@@ -816,7 +816,7 @@
     <message>
         <location filename="../source/actions/editnoteduration.cpp" line="23"/>
         <source>Edit Rest Duration</source>
-        <translation type="unfinished"></translation>
+        <translation>Pausendauer bearbeiten</translation>
     </message>
     <message>
         <location filename="../source/actions/editnoteduration.cpp" line="24"/>
@@ -877,7 +877,7 @@
     <message>
         <location filename="../source/dialogs/fileinformationdialog.ui" line="17"/>
         <source>File Information</source>
-        <translation type="unfinished"></translation>
+        <translation>Dateiinformationen</translation>
     </message>
     <message>
         <location filename="../source/dialogs/fileinformationdialog.ui" line="30"/>
@@ -887,17 +887,17 @@
     <message>
         <location filename="../source/dialogs/fileinformationdialog.ui" line="51"/>
         <source>Classification:</source>
-        <translation type="unfinished"></translation>
+        <translation>Klassifizierung:</translation>
     </message>
     <message>
         <location filename="../source/dialogs/fileinformationdialog.ui" line="63"/>
         <source>Song</source>
-        <translation type="unfinished"></translation>
+        <translation>Lied</translation>
     </message>
     <message>
         <location filename="../source/dialogs/fileinformationdialog.ui" line="73"/>
         <source>Lesson</source>
-        <translation type="unfinished"></translation>
+        <translation>Lektion</translation>
     </message>
     <message>
         <location filename="../source/dialogs/fileinformationdialog.ui" line="113"/>
@@ -914,7 +914,7 @@
     <message>
         <location filename="../source/dialogs/fileinformationdialog.ui" line="133"/>
         <source>Artist:</source>
-        <translation type="unfinished"></translation>
+        <translation>Interpret:</translation>
     </message>
     <message>
         <location filename="../source/dialogs/fileinformationdialog.ui" line="152"/>
@@ -924,17 +924,17 @@
     <message>
         <location filename="../source/dialogs/fileinformationdialog.ui" line="164"/>
         <source>Release Type:</source>
-        <translation type="unfinished"></translation>
+        <translation>Veröffentlichungstyp:</translation>
     </message>
     <message>
         <location filename="../source/dialogs/fileinformationdialog.ui" line="178"/>
         <source>Public Release (Audio)</source>
-        <translation type="unfinished"></translation>
+        <translation>Öffentliche Veröffentlichung (Audio)</translation>
     </message>
     <message>
         <location filename="../source/dialogs/fileinformationdialog.ui" line="183"/>
         <source>Public Release (Video)</source>
-        <translation type="unfinished"></translation>
+        <translation>Öffentliche Veröffentlichung (Video)</translation>
     </message>
     <message>
         <location filename="../source/dialogs/fileinformationdialog.ui" line="188"/>
@@ -944,7 +944,7 @@
     <message>
         <location filename="../source/dialogs/fileinformationdialog.ui" line="193"/>
         <source>Not Released</source>
-        <translation type="unfinished"></translation>
+        <translation>Nicht veröffentlicht</translation>
     </message>
     <message>
         <location filename="../source/dialogs/fileinformationdialog.ui" line="223"/>
@@ -964,12 +964,12 @@
     <message>
         <location filename="../source/dialogs/fileinformationdialog.ui" line="246"/>
         <source>EP</source>
-        <translation type="unfinished"></translation>
+        <translation>EP</translation>
     </message>
     <message>
         <location filename="../source/dialogs/fileinformationdialog.ui" line="251"/>
         <source>Album</source>
-        <translation type="unfinished"></translation>
+        <translation>Album</translation>
     </message>
     <message>
         <location filename="../source/dialogs/fileinformationdialog.ui" line="256"/>
@@ -995,7 +995,7 @@
         <location filename="../source/dialogs/fileinformationdialog.ui" line="281"/>
         <location filename="../source/dialogs/fileinformationdialog.ui" line="322"/>
         <source>Live Recording:</source>
-        <translation type="unfinished"></translation>
+        <translation>Live-Aufnahme:</translation>
     </message>
     <message>
         <location filename="../source/dialogs/fileinformationdialog.ui" line="312"/>
@@ -1021,53 +1021,53 @@
     <message>
         <location filename="../source/dialogs/fileinformationdialog.ui" line="400"/>
         <source>Traditional (Author Unknown):</source>
-        <translation type="unfinished"></translation>
+        <translation>Traditionell (Autor unbekannt):</translation>
     </message>
     <message>
         <location filename="../source/dialogs/fileinformationdialog.ui" line="410"/>
         <source>Music By:</source>
-        <translation type="unfinished"></translation>
+        <translation>Musik von:</translation>
     </message>
     <message>
         <location filename="../source/dialogs/fileinformationdialog.ui" line="420"/>
         <source>Words By:</source>
-        <translation type="unfinished"></translation>
+        <translation>Worte von:</translation>
     </message>
     <message>
         <location filename="../source/dialogs/fileinformationdialog.ui" line="430"/>
         <source>Arranged By:</source>
-        <translation type="unfinished"></translation>
+        <translation>Arrangiert von:</translation>
     </message>
     <message>
         <location filename="../source/dialogs/fileinformationdialog.ui" line="440"/>
         <source>Transcribed By:</source>
-        <translation type="unfinished"></translation>
+        <translation>Transkribiert von:</translation>
     </message>
     <message>
         <location filename="../source/dialogs/fileinformationdialog.ui" line="450"/>
         <location filename="../source/dialogs/fileinformationdialog.ui" line="679"/>
         <source>Copyright:</source>
-        <translation type="unfinished"></translation>
+        <translation>Urheberrecht:</translation>
     </message>
     <message>
         <location filename="../source/dialogs/fileinformationdialog.ui" line="498"/>
         <source>Style:</source>
-        <translation type="unfinished"></translation>
+        <translation>Stil:</translation>
     </message>
     <message>
         <location filename="../source/dialogs/fileinformationdialog.ui" line="506"/>
         <source>Alternative</source>
-        <translation type="unfinished"></translation>
+        <translation>Alternative</translation>
     </message>
     <message>
         <location filename="../source/dialogs/fileinformationdialog.ui" line="511"/>
         <source>Bluegrass</source>
-        <translation type="unfinished"></translation>
+        <translation>Bluegrass</translation>
     </message>
     <message>
         <location filename="../source/dialogs/fileinformationdialog.ui" line="516"/>
         <source>Blues</source>
-        <translation type="unfinished"></translation>
+        <translation>Blues</translation>
     </message>
     <message>
         <location filename="../source/dialogs/fileinformationdialog.ui" line="521"/>
@@ -1142,7 +1142,7 @@
     <message>
         <location filename="../source/dialogs/fileinformationdialog.ui" line="591"/>
         <source>Rock</source>
-        <translation type="unfinished"></translation>
+        <translation>Rock</translation>
     </message>
     <message>
         <location filename="../source/dialogs/fileinformationdialog.ui" line="596"/>
@@ -1157,22 +1157,22 @@
     <message>
         <location filename="../source/dialogs/fileinformationdialog.ui" line="613"/>
         <source>Beginner</source>
-        <translation type="unfinished"></translation>
+        <translation>Anfänger</translation>
     </message>
     <message>
         <location filename="../source/dialogs/fileinformationdialog.ui" line="623"/>
         <source>Intermediate</source>
-        <translation>mittel</translation>
+        <translation>Fortgeschrittener Anfänger</translation>
     </message>
     <message>
         <location filename="../source/dialogs/fileinformationdialog.ui" line="633"/>
         <source>Advanced</source>
-        <translation>forgeschritten</translation>
+        <translation>Fortgeschritten</translation>
     </message>
     <message>
         <location filename="../source/dialogs/fileinformationdialog.ui" line="669"/>
         <source>Author:</source>
-        <translation type="unfinished"></translation>
+        <translation>Autor:</translation>
     </message>
     <message>
         <location filename="../source/dialogs/fileinformationdialog.ui" line="694"/>
@@ -1187,12 +1187,12 @@
     <message>
         <location filename="../source/dialogs/fileinformationdialog.ui" line="734"/>
         <source>Lyrics</source>
-        <translation type="unfinished"></translation>
+        <translation>Liedtexte</translation>
     </message>
     <message>
         <location filename="../source/dialogs/fileinformationdialog.ui" line="758"/>
         <source>Lyrics:</source>
-        <translation type="unfinished"></translation>
+        <translation>Liedtexte:</translation>
     </message>
     <message>
         <location filename="../source/dialogs/fileinformationdialog.ui" line="774"/>
@@ -1202,12 +1202,12 @@
     <message>
         <location filename="../source/dialogs/fileinformationdialog.ui" line="798"/>
         <source>Name:</source>
-        <translation type="unfinished"></translation>
+        <translation>Name:</translation>
     </message>
     <message>
         <location filename="../source/dialogs/fileinformationdialog.ui" line="812"/>
         <source>Location:</source>
-        <translation type="unfinished"></translation>
+        <translation>Ort:</translation>
     </message>
     <message>
         <location filename="../source/dialogs/fileinformationdialog.ui" line="826"/>
@@ -3328,7 +3328,7 @@
     <message>
         <location filename="../source/actions/edittextitem.cpp" line="41"/>
         <source>Remove Text</source>
-        <translation type="unfinished"></translation>
+        <translation>Text entfernen</translation>
     </message>
 </context>
 <context>
