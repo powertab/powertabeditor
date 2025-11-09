@@ -83,7 +83,7 @@
     <message>
         <location filename="../source/actions/addirregulargrouping.cpp" line="29"/>
         <source>Add Irregular Grouping</source>
-        <translation type="unfinished"></translation>
+        <translation>Irreguläre Gruppierung hinzufügen</translation>
     </message>
 </context>
 <context>
@@ -919,7 +919,7 @@
     <message>
         <location filename="../source/dialogs/fileinformationdialog.ui" line="152"/>
         <source>Release Information</source>
-        <translation type="unfinished"></translation>
+        <translation>Veröffentlichungsinformationen</translation>
     </message>
     <message>
         <location filename="../source/dialogs/fileinformationdialog.ui" line="164"/>
@@ -1197,7 +1197,7 @@
     <message>
         <location filename="../source/dialogs/fileinformationdialog.ui" line="774"/>
         <source>Properties</source>
-        <translation type="unfinished"></translation>
+        <translation>Eigenschaften</translation>
     </message>
     <message>
         <location filename="../source/dialogs/fileinformationdialog.ui" line="798"/>
