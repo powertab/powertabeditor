@@ -2023,7 +2023,7 @@ SystemRenderer::drawRest(const Position &pos, double x,
         }
     }
 
-    centerHorizontally(*group, x, x + layout.getPositionSpacing() * 1.25);
+    centerHorizontally(*group, x, x + layout.getPositionSpacing() * 1);
 
     group->setParentItem(myParentStaff);
 }
