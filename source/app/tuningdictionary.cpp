@@ -20,6 +20,7 @@
 #include <algorithm>
 #include <app/appinfo.h>
 #include <app/paths.h>
+#include <exception>
 #include <filesystem>
 #include <fstream>
 #include <iostream>
@@ -51,7 +52,16 @@ TuningDictionary::load()
         std::ifstream file(path);
 
         std::vector<Tuning> tunings;
-        ScoreUtils::load(file, "tunings", tunings);
+        try
+        {
+            ScoreUtils::load(file, "tunings", tunings);
+        }
+        catch (const std::exception &e)
+        {
+            std::cerr << "Failed to load tunings from file " << path << std::endl;
+            std::cerr << "Error: " << e.what() << std::endl;
+            continue;
+        }
 
         const bool writeable = (dir == user_data_dir);
         for (const Tuning &tuning: tunings)
