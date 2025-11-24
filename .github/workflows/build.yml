@@ -15,7 +15,7 @@ jobs:
     runs-on: ubuntu-22.04
 
     steps:
-    - uses: actions/checkout@v5
+    - uses: actions/checkout@v6
     - name: Install Apt Dependencies
       run: sudo apt update && sudo apt install ninja-build qt6-base-dev libglx-dev libgl1-mesa-dev qt6-tools-dev qt6-tools-dev-tools qt6-l10n-tools libboost-dev libboost-date-time-dev libboost-iostreams-dev nlohmann-json3-dev libasound2-dev librtmidi-dev libpugixml-dev libminizip-dev doctest-dev
     - name: Create Build Directory
@@ -34,7 +34,7 @@ jobs:
     runs-on: macos-13
 
     steps:
-    - uses: actions/checkout@v5
+    - uses: actions/checkout@v6
 
     - name: Version number
       id: version
@@ -90,7 +90,7 @@ jobs:
     runs-on: windows-2022
 
     steps:
-    - uses: actions/checkout@v5
+    - uses: actions/checkout@v6
 
     - name: Version number
       id: version
