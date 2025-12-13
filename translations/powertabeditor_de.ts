@@ -107,7 +107,7 @@
     <message>
         <location filename="../source/actions/addnote.cpp" line="24"/>
         <source>Add Note</source>
-        <translation type="unfinished"></translation>
+        <translation>Note hinzufügen</translation>
     </message>
 </context>
 <context>
@@ -232,12 +232,12 @@
     <message>
         <location filename="../source/actions/adjustlinespacing.cpp" line="23"/>
         <source>Increase Line Spacing</source>
-        <translation type="unfinished"></translation>
+        <translation>Linienabstand vergrößern</translation>
     </message>
     <message>
         <location filename="../source/actions/adjustlinespacing.cpp" line="24"/>
         <source>Decrease Line Spacing</source>
-        <translation type="unfinished"></translation>
+        <translation>Linienabstand verkleinern</translation>
     </message>
 </context>
 <context>
@@ -250,7 +250,7 @@
     <message>
         <location filename="../source/dialogs/alterationofpacedialog.ui" line="34"/>
         <source>Type:</source>
-        <translation type="unfinished"></translation>
+        <translation>Type:</translation>
     </message>
 </context>
 <context>
@@ -297,7 +297,7 @@
     <message>
         <location filename="../source/dialogs/artificialharmonicdialog.ui" line="35"/>
         <source>Octave:</source>
-        <translation type="unfinished"></translation>
+        <translation>Oktave:</translation>
     </message>
     <message>
         <location filename="../source/dialogs/artificialharmonicdialog.ui" line="44"/>
@@ -322,32 +322,32 @@
     <message>
         <location filename="../source/dialogs/artificialharmonicdialog.ui" line="124"/>
         <source>D</source>
-        <translation type="unfinished"></translation>
+        <translation>D</translation>
     </message>
     <message>
         <location filename="../source/dialogs/artificialharmonicdialog.ui" line="150"/>
         <source>E</source>
-        <translation type="unfinished"></translation>
+        <translation>E</translation>
     </message>
     <message>
         <location filename="../source/dialogs/artificialharmonicdialog.ui" line="176"/>
         <source>F</source>
-        <translation type="unfinished"></translation>
+        <translation>F</translation>
     </message>
     <message>
         <location filename="../source/dialogs/artificialharmonicdialog.ui" line="202"/>
         <source>G</source>
-        <translation type="unfinished"></translation>
+        <translation>G</translation>
     </message>
     <message>
         <location filename="../source/dialogs/artificialharmonicdialog.ui" line="228"/>
         <source>A</source>
-        <translation type="unfinished"></translation>
+        <translation>A</translation>
     </message>
     <message>
         <location filename="../source/dialogs/artificialharmonicdialog.ui" line="254"/>
         <source>B</source>
-        <translation type="unfinished"></translation>
+        <translation>B</translation>
     </message>
 </context>
 <context>
@@ -360,12 +360,12 @@
     <message>
         <location filename="../source/dialogs/barlinedialog.ui" line="31"/>
         <source>Type:</source>
-        <translation type="unfinished"></translation>
+        <translation>Type:</translation>
     </message>
     <message>
         <location filename="../source/dialogs/barlinedialog.ui" line="41"/>
         <source>Play:</source>
-        <translation type="unfinished"></translation>
+        <translation>Abspielen:</translation>
     </message>
     <message>
         <location filename="../source/dialogs/barlinedialog.cpp" line="35"/>
@@ -385,12 +385,12 @@
     <message>
         <location filename="../source/dialogs/barlinedialog.cpp" line="40"/>
         <source>Repeat Start</source>
-        <translation type="unfinished"></translation>
+        <translation>Start wiederholen</translation>
     </message>
     <message>
         <location filename="../source/dialogs/barlinedialog.cpp" line="45"/>
         <source>Repeat End</source>
-        <translation type="unfinished"></translation>
+        <translation>Ende wiederholen</translation>
     </message>
     <message>
         <location filename="../source/dialogs/barlinedialog.cpp" line="46"/>
@@ -444,12 +444,12 @@
     <message>
         <location filename="../source/dialogs/benddialog.ui" line="106"/>
         <source>Vertical Starting Point:</source>
-        <translation type="unfinished"></translation>
+        <translation>Vertikaler Startpunkt:</translation>
     </message>
     <message>
         <location filename="../source/dialogs/benddialog.ui" line="116"/>
         <source>Vertical Ending Point:</source>
-        <translation type="unfinished"></translation>
+        <translation>Vertikaler Endpunkt:</translation>
     </message>
     <message>
         <location filename="../source/dialogs/benddialog.cpp" line="34"/>
@@ -499,7 +499,7 @@
     <message>
         <location filename="../source/dialogs/benddialog.cpp" line="112"/>
         <source>High</source>
-        <translation type="unfinished"></translation>
+        <translation>Hoch</translation>
     </message>
 </context>
 <context>
@@ -512,12 +512,12 @@
     <message>
         <location filename="../source/dialogs/bulkconverterdialog.ui" line="37"/>
         <source>Source Directory:</source>
-        <translation type="unfinished"></translation>
+        <translation>Quellverzeichnis:</translation>
     </message>
     <message>
         <location filename="../source/dialogs/bulkconverterdialog.ui" line="65"/>
         <source>Destination Directory:</source>
-        <translation type="unfinished"></translation>
+        <translation>Zielverzeichnis:</translation>
     </message>
     <message>
         <location filename="../source/dialogs/bulkconverterdialog.ui" line="93"/>
@@ -528,12 +528,12 @@
         <location filename="../source/dialogs/bulkconverterdialog.ui" line="56"/>
         <location filename="../source/dialogs/bulkconverterdialog.ui" line="84"/>
         <source>...</source>
-        <translation type="unfinished"></translation>
+        <translation>...</translation>
     </message>
     <message>
         <location filename="../source/dialogs/bulkconverterdialog.cpp" line="170"/>
         <source>Convert</source>
-        <translation type="unfinished"></translation>
+        <translation>Konvertiere</translation>
     </message>
     <message>
         <location filename="../source/dialogs/bulkconverterdialog.cpp" line="188"/>
@@ -597,7 +597,7 @@
     <message>
         <location filename="../source/dialogs/chordnamedialog.ui" line="36"/>
         <source>Preview:</source>
-        <translation type="unfinished"></translation>
+        <translation>Vorschau:</translation>
     </message>
     <message>
         <location filename="../source/dialogs/chordnamedialog.ui" line="53"/>
@@ -613,48 +613,48 @@
         <location filename="../source/dialogs/chordnamedialog.ui" line="94"/>
         <location filename="../source/dialogs/chordnamedialog.ui" line="694"/>
         <source>C</source>
-        <translation type="unfinished"></translation>
+        <translation>C</translation>
     </message>
     <message>
         <location filename="../source/dialogs/chordnamedialog.ui" line="113"/>
         <location filename="../source/dialogs/chordnamedialog.ui" line="713"/>
         <source>D</source>
-        <translation type="unfinished"></translation>
+        <translation>D</translation>
     </message>
     <message>
         <location filename="../source/dialogs/chordnamedialog.ui" line="132"/>
         <location filename="../source/dialogs/chordnamedialog.ui" line="732"/>
         <source>E</source>
-        <translation type="unfinished"></translation>
+        <translation>E</translation>
     </message>
     <message>
         <location filename="../source/dialogs/chordnamedialog.ui" line="151"/>
         <location filename="../source/dialogs/chordnamedialog.ui" line="751"/>
         <source>F</source>
-        <translation type="unfinished"></translation>
+        <translation>F</translation>
     </message>
     <message>
         <location filename="../source/dialogs/chordnamedialog.ui" line="170"/>
         <location filename="../source/dialogs/chordnamedialog.ui" line="770"/>
         <source>G</source>
-        <translation type="unfinished"></translation>
+        <translation>G</translation>
     </message>
     <message>
         <location filename="../source/dialogs/chordnamedialog.ui" line="189"/>
         <location filename="../source/dialogs/chordnamedialog.ui" line="789"/>
         <source>A</source>
-        <translation type="unfinished"></translation>
+        <translation>A</translation>
     </message>
     <message>
         <location filename="../source/dialogs/chordnamedialog.ui" line="208"/>
         <location filename="../source/dialogs/chordnamedialog.ui" line="808"/>
         <source>B</source>
-        <translation type="unfinished"></translation>
+        <translation>B</translation>
     </message>
     <message>
         <location filename="../source/dialogs/chordnamedialog.ui" line="293"/>
         <source>Brackets</source>
-        <translation type="unfinished"></translation>
+        <translation>Klammern</translation>
     </message>
     <message>
         <location filename="../source/dialogs/chordnamedialog.ui" line="302"/>
@@ -679,7 +679,7 @@
     <message>
         <location filename="../source/dialogs/chordnamedialog.ui" line="330"/>
         <source>Bass Note:</source>
-        <translation type="unfinished"></translation>
+        <translation>Bass Note:</translation>
     </message>
     <message>
         <location filename="../source/dialogs/chordnamedialog.ui" line="892"/>
@@ -697,7 +697,7 @@
     <message>
         <location filename="../source/dialogs/crashdialog.ui" line="23"/>
         <source>Error</source>
-        <translation type="unfinished"></translation>
+        <translation>Fehler</translation>
     </message>
     <message>
         <location filename="../source/dialogs/crashdialog.ui" line="37"/>
@@ -712,7 +712,7 @@
     <message>
         <location filename="../source/dialogs/crashdialog.ui" line="84"/>
         <source>Close</source>
-        <translation type="unfinished"></translation>
+        <translation>Schließen</translation>
     </message>
 </context>
 <context>
@@ -735,7 +735,7 @@
     <message>
         <location filename="../source/dialogs/directiondialog.ui" line="48"/>
         <source>Repeat Number:</source>
-        <translation type="unfinished"></translation>
+        <translation>Anzahl Wiederholungen:</translation>
     </message>
     <message>
         <location filename="../source/dialogs/directiondialog.ui" line="58"/>
@@ -763,7 +763,7 @@
     <message>
         <location filename="../source/dialogs/dynamicdialog.ui" line="40"/>
         <source>Volume Level:</source>
-        <translation type="unfinished"></translation>
+        <translation>Lautstärke:</translation>
     </message>
     <message>
         <location filename="../source/dialogs/dynamicdialog.ui" line="67"/>
@@ -979,7 +979,7 @@
     <message>
         <location filename="../source/dialogs/fileinformationdialog.ui" line="261"/>
         <source>Triple Album</source>
-        <translation type="unfinished"></translation>
+        <translation>Dreifach Album</translation>
     </message>
     <message>
         <location filename="../source/dialogs/fileinformationdialog.ui" line="266"/>
@@ -1072,7 +1072,7 @@
     <message>
         <location filename="../source/dialogs/fileinformationdialog.ui" line="521"/>
         <source>Country</source>
-        <translation type="unfinished"></translation>
+        <translation>Country</translation>
     </message>
     <message>
         <location filename="../source/dialogs/fileinformationdialog.ui" line="526"/>
