@@ -2072,11 +2072,37 @@ bool PowerTabEditor::eventFilter(QObject *object, QEvent *event)
     if (myIsPlaying)
         return QMainWindow::eventFilter(object, event);
 
+    // Only handle key events.
+    QKeyEvent *keyEvent = dynamic_cast<QKeyEvent *>(event);
+    if (keyEvent == nullptr) {
+        return QMainWindow::eventFilter(object, event);
+    }
+
+    // Anly handle key presses that influence the score area, i.e. if the score area is
+    // the active widget
     ScoreArea *scorearea = getScoreArea();
-    if (scorearea && event->type() == QEvent::KeyPress)
+    if (!scorearea)
     {
-        QKeyEvent *keyEvent = static_cast<QKeyEvent *>(event);
-        if (keyEvent->key() >= Qt::Key_0 && keyEvent->key() <= Qt::Key_9)
+        return QMainWindow::eventFilter(object, event);
+    }
+
+
+    if (event->type() == QEvent::KeyRelease)
+    {
+        if (keyEvent->key() == Qt::Key_Shift || keyEvent->key() == Qt::Key_Alt)
+        {
+            // If either of these keys are released, the current selection cycle should end.
+            myIsCurrentlyDoingNoteSelectionWithKeyboard = false;
+        }
+    }
+    else if (event->type() == QEvent::KeyPress)
+    {
+        // Method call returns true if selection event was handled.
+        if (handleKeyboardNoteSelectionEvent(keyEvent))
+        {
+            return true;
+        }
+        else if (keyEvent->key() >= Qt::Key_0 && keyEvent->key() <= Qt::Key_9)
         {
             const int number = keyEvent->key() - Qt::Key_0;
             ScoreLocation &location = getLocation();
@@ -2134,6 +2160,36 @@ bool PowerTabEditor::eventFilter(QObject *object, QEvent *event)
     }
 
     return QMainWindow::eventFilter(object, event);
+}
+
+bool PowerTabEditor::handleKeyboardNoteSelectionEvent(QKeyEvent* keyEvent)
+{
+    // Keyboard selection should only be handled if all of 'Shift + Alt + an arrow key' are pressed,
+    // and only if the arrow key is left or right.
+    Qt::KeyboardModifiers selectionModifiers = Qt::ShiftModifier | Qt::AltModifier | Qt::KeypadModifier;
+
+    if (keyEvent->keyCombination().keyboardModifiers() != selectionModifiers
+        || (keyEvent->key() != Qt::Key_Left && keyEvent->key() != Qt::Key_Right)) {
+        return false;
+    }
+
+    ScoreLocation& location = getLocation();
+    int currentPosIndex = location.getPositionIndex();
+
+    // If this is the first selection event, we set the selection start, and signal selection of
+    // the current position before advancing the caret.
+    if (! myIsCurrentlyDoingNoteSelectionWithKeyboard) {
+        myIsCurrentlyDoingNoteSelectionWithKeyboard = true;
+        location.setSelectionStart(currentPosIndex);
+        getScoreArea()->getClickEvent().signal(ScoreItem::Staff, location, ScoreItemAction::Selected);
+    }
+
+    int direction = (keyEvent->key() == Qt::Key_Left) ? -1 : 1;
+    int newPosIndex = fmin(fmax(currentPosIndex + direction, 0),
+                           location.getSystem().getBarlines().back().getPosition() - 1);
+    location.setPositionIndex(newPosIndex);
+    getScoreArea()->getClickEvent().signal(ScoreItem::Staff, location, ScoreItemAction::Selected);
+    return true;
 }
 
 void PowerTabEditor::closeEvent(QCloseEvent *event)
