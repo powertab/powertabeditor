@@ -273,7 +273,9 @@ private slots:
     void info(void);
 
 protected:
-    /// Handle key presses for 0-9 when entering tab numbers.
+    /// Main event handler. Currently handles:
+    /// - key presses for 0-9 when entering tab numbers.
+    /// - key presses related to multi-selection of notes (see dedicated method ``handleKeyboardNoteSelectionEvent``).
     virtual bool eventFilter(QObject *object, QEvent *event) override;
 
     /// Performs some final actions before exiting.
@@ -420,6 +422,11 @@ private:
     /// Increases or decreases the line spacing by the given amount.
     void adjustLineSpacing(int amount);
 
+    /// Handles events related to the multiselection of consecutive notes. Returns true if a fitting event was found and handled.
+    bool handleKeyboardNoteSelectionEvent(QKeyEvent* keyEvent);
+    /// A boolean helper flag for the above method.
+    bool myIsCurrentlyDoingNoteSelectionWithKeyboard;
+    
     /// Returns the score area for the active document.
     ScoreArea *getScoreArea();
     /// Returns the caret for the active document.
