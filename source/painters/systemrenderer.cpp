@@ -43,6 +43,10 @@
 #include <algorithm>
 #include <ranges>
 
+static QGraphicsItem *
+drawArc(const LayoutInfo &layout, const int string, const int start_pos,
+        const int end_pos, const QColor &color);
+
 void SystemRenderer::centerHorizontally(QGraphicsItem &item, double xmin,
                                         double xmax)
 {
@@ -366,7 +370,17 @@ void SystemRenderer::drawTabNotes(const Staff &staff,
                 // Similar to myPalette.placeholderText(), but with alpha=64
                 // instead of 128 to be more faded.
                 if (note.hasProperty(Note::Tied))
+                {
                     color.setAlpha(64);
+
+                    const Position *prevPos =
+                        VoiceUtils::getPreviousPosition(voice, pos.getPosition());
+                    const int startPos = prevPos ? prevPos->getPosition() : -1;
+
+                    auto arc = drawArc(*layout, note.getString(), startPos,
+                                       pos.getPosition(), myPalette.text().color());
+                    arc->setParentItem(myParentStaff);
+                }
 
                 auto tabNote = new SimpleTextItem(
                     text, myPlainTextFont, TextAlignment::Top, QPen(color),
