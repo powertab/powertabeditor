@@ -29,7 +29,7 @@ jobs:
     - name: Test
       run: ${{runner.workspace}}/build/bin/pte_tests
 
-  build-osx:
+  build-macos-intel:
 
     runs-on: macos-15-intel
 
@@ -48,6 +48,56 @@ jobs:
         rm /usr/local/bin/pydoc3*
         rm /usr/local/bin/python3*
         brew install --overwrite boost cmake doctest minizip ninja nlohmann-json pugixml pugixml rtmidi
+
+    # Note: we avoid using the homebrew Qt since it breaks macdeployqt (https://github.com/Homebrew/brew/issues/15354)
+    - name: Install Qt
+      uses: jurplel/install-qt-action@v4
+      with:
+        arch: clang_64
+        version: 6.8.0
+
+    - name: Generate Project
+      run: cmake -S ${GITHUB_WORKSPACE} -B ${{runner.workspace}}/build -G Ninja -DCMAKE_BUILD_TYPE=Release
+    - name: Build
+      run: cmake --build ${{runner.workspace}}/build
+    - name: Test
+      run: ${{runner.workspace}}/build/bin/pte_tests
+
+    # Skip building the installer for PRs, since code signing / notarizing requires access to the repo's secrets.
+    - name: Add Certificates to Keychain
+      if: github.event_name != 'pull_request'
+      uses: apple-actions/import-codesign-certs@v7
+      with:
+        p12-file-base64: ${{ secrets.MAC_CERTS_BASE64 }}
+        p12-password: ${{ secrets.MAC_CERTS_PASSWORD }}
+
+    - name: Build Installer
+      if: github.event_name != 'pull_request'
+      env:
+        MAC_DEV_PASSWORD: ${{ secrets.MAC_DEV_PASSWORD }}
+      run: cmake --build ${{runner.workspace}}/build --target package
+
+    - name: Upload Installer
+      if: github.event_name != 'pull_request'
+      uses: actions/upload-artifact@v7
+      with:
+        name: powertabeditor-osx-intel-${{ steps.version.outputs.VERSION_ID }}.dmg
+        path: ${{runner.workspace}}/build/powertabeditor-osx.dmg
+        if-no-files-found: error
+
+  build-macos:
+
+    runs-on: macos-15
+
+    steps:
+    - uses: actions/checkout@v6
+
+    - name: Version number
+      id: version
+      run: echo "VERSION_ID=$(git describe --tags --long --always)" >> $GITHUB_OUTPUT
+
+    - name: Install Dependencies
+      run: brew install --overwrite boost cmake doctest minizip ninja nlohmann-json pugixml pugixml rtmidi
 
     # Note: we avoid using the homebrew Qt since it breaks macdeployqt (https://github.com/Homebrew/brew/issues/15354)
     - name: Install Qt
