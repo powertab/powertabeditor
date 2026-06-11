@@ -2076,9 +2076,12 @@ bool PowerTabEditor::eventFilter(QObject *object, QEvent *event)
     if (scorearea && event->type() == QEvent::KeyPress)
     {
         QKeyEvent *keyEvent = static_cast<QKeyEvent *>(event);
-        if (keyEvent->key() >= Qt::Key_0 && keyEvent->key() <= Qt::Key_9)
+        // x for a muted note
+        const bool isMutedKey = (keyEvent->key() == Qt::Key_X);
+        if ((keyEvent->key() >= Qt::Key_0 && keyEvent->key() <= Qt::Key_9) ||
+            isMutedKey)
         {
-            const int number = keyEvent->key() - Qt::Key_0;
+            const int number = isMutedKey ? 0 : (keyEvent->key() - Qt::Key_0);
             ScoreLocation &location = getLocation();
 
             // Add a space if the user is attempting to add a note at the end of
@@ -2093,42 +2096,75 @@ bool PowerTabEditor::eventFilter(QObject *object, QEvent *event)
             // unless it's the first position of the system.
             if (!location.getBarline() || location.getPositionIndex() == 0)
             {
-                // Update the existing note if possible.
-                if (location.getNote())
+                if (isMutedKey && !location.getNote())
                 {
-                    myUndoManager->push(new EditTabNumber(location, number),
-                                        location.getSystemIndex());
-                }
-                else
-                {
+                    // Directly insert a new muted note without requiring a
+                    // number to be entered first.
+                    Note mutedNote(location.getString(), 0);
+                    mutedNote.setProperty(Note::Muted);
                     myUndoManager->push(
-                                new AddNote(location,
-                                            Note(location.getString(), number),
-                                            myActiveDurationType),
-                                location.getSystemIndex());
+                        new AddNote(location, mutedNote, myActiveDurationType),
+                        location.getSystemIndex());
+                    return true;
                 }
 
-                if (mySettingsManager->getReadHandle()->get(
-                        Settings::PlayNotesWhileEditing))
+                if (!isMutedKey)
                 {
-                    const ScoreLocation &location = getLocation();
-                    // Generate the midi data and then transfer it to the midi
-                    // thread.
-                    MidiFile midi_data = MidiPlayer::generateSingleNote(
-                        location, *mySettingsManager);
-                    MidiPlaybackSettings initial_settings(100,
-                                                          location.getScore());
+                    // Update the existing note if possible.
+                    if (location.getNote())
+                    {
+                        const Note *note = location.getNote();
+                        if (note->hasProperty(Note::Muted))
+                        {
+                            // Remove the muted property and set the fret number
+                            // as a single undoable action.
+                            myUndoManager->beginMacro(tr("Edit Tab Number"));
+                            myUndoManager->push(
+                                new RemoveNoteProperty(location, Note::Muted,
+                                                       tr("Muted")),
+                                location.getSystemIndex());
+                            myUndoManager->push(
+                                new EditTabNumber(location, number),
+                                location.getSystemIndex());
+                            myUndoManager->endMacro();
+                        }
+                        else
+                        {
+                            myUndoManager->push(
+                                new EditTabNumber(location, number),
+                                location.getSystemIndex());
+                        }
+                    }
+                    else
+                    {
+                        myUndoManager->push(
+                                    new AddNote(location,
+                                                Note(location.getString(), number),
+                                                myActiveDurationType),
+                                    location.getSystemIndex());
+                    }
 
-                    QMetaObject::invokeMethod(
-                        myMidiPlayer,
-                        [=, this, midi_data = std::move(midi_data)]() mutable {
-                            myMidiPlayer->playSingleNote(midi_data, location,
-                                                         initial_settings);
-                        },
-                        Qt::QueuedConnection);
+                    if (mySettingsManager->getReadHandle()->get(
+                            Settings::PlayNotesWhileEditing))
+                    {
+                        // Generate the midi data and then transfer it to the midi
+                        // thread.
+                        MidiFile midi_data = MidiPlayer::generateSingleNote(
+                            location, *mySettingsManager);
+                        MidiPlaybackSettings initial_settings(100,
+                                                              location.getScore());
+
+                        QMetaObject::invokeMethod(
+                            myMidiPlayer,
+                            [=, this, midi_data = std::move(midi_data)]() mutable {
+                                myMidiPlayer->playSingleNote(midi_data, location,
+                                                             initial_settings);
+                            },
+                            Qt::QueuedConnection);
+                    }
+
+                    return true;
                 }
-
-                return true;
             }
         }
     }

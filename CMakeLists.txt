@@ -1,9 +1,29 @@
 cmake_minimum_required( VERSION 3.12 )
 
-# Target OS X 10.15 and above. This must be set before the first project() call.
-set( CMAKE_OSX_DEPLOYMENT_TARGET "10.15"
-     CACHE STRING "Minimum OS X deployment version"
-)
+
+
+# Target OS X 14.0 and above. This must be set before the first project() call.
+if(APPLE)
+    # Detect macOS version
+    execute_process(
+    COMMAND sw_vers -productVersion
+    OUTPUT_VARIABLE MACOS_VERSION
+    OUTPUT_STRIP_TRAILING_WHITESPACE
+    )
+    string(REGEX MATCH "^[0-9]+" MACOS_MAJOR "${MACOS_VERSION}")
+    message(STATUS "macOS major version: ${MACOS_MAJOR}")
+
+    if(MACOS_MAJOR VERSION_LESS 15.0)
+        set(CMAKE_OSX_DEPLOYMENT_TARGET 14.0)
+    else()
+        set(CMAKE_OSX_DEPLOYMENT_TARGET 15.0)
+    endif()
+endif()
+
+message(CMAKE_OSX_DEPLOYMENT_TARGET="${CMAKE_OSX_DEPLOYMENT_TARGET}")
+
+
+
 
 project( powertabeditor )
 include( CTest )
