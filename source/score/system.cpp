@@ -225,7 +225,17 @@ SystemUtils::getSurroundingBarlines(const System &system, int position)
         current_bar = system.getPreviousBarline(position);
 
     const Barline *next_bar = system.getNextBarline(position);
-    assert(next_bar);
+
+    // If playback lands exactly on (or past) the system's end barline -- which
+    // can happen via repeats/directions/alternate endings -- there is no
+    // strictly-later barline. Fall back to the end barline for both; callers
+    // treat the empty [current, next) range as no events and advance to the
+    // next system. Likewise guard current_bar in case position precedes all
+    // barlines.
+    if (!next_bar)
+        next_bar = &system.getBarlines().back();
+    if (!current_bar)
+        current_bar = &system.getBarlines().front();
 
     return { *current_bar, *next_bar };
 }
