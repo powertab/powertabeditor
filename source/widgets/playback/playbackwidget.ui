@@ -95,7 +95,7 @@
     </widget>
    </item>
    <item>
-    <widget class="QSpinBox" name="speedSpinner">
+    <widget class="QComboBox" name="speedComboBox">
      <property name="sizePolicy">
       <sizepolicy hsizetype="Expanding" vsizetype="Fixed">
        <horstretch>0</horstretch>
@@ -105,8 +105,14 @@
      <property name="focusPolicy">
       <enum>Qt::FocusPolicy::StrongFocus</enum>
      </property>
+     <property name="editable">
+      <bool>true</bool>
+     </property>
+     <property name="insertPolicy">
+      <enum>QComboBox::InsertPolicy::NoInsert</enum>
+     </property>
      <property name="toolTip">
-      <string>Adjusts the current playback speed.</string>
+      <string>Adjusts the current playback speed. Pick a preset, or type any value between 25% and 125%.</string>
      </property>
     </widget>
    </item>

@@ -60,11 +60,15 @@ signals:
 
 private:
     void setupZoomComboBox(double initial_zoom);
+    void setupSpeedComboBox();
+    /// Applies the speed currently shown in the speed combo box.
+    void updatePlaybackSpeed();
     void onSettingChanged(const std::string &setting);
 
     Ui::PlaybackWidget *ui;
     QButtonGroup *myVoices;
     int myPlayerFilterStart = 0;
+    int myPlaybackSpeed = 100;
 };
 
 #endif
