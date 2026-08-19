@@ -682,6 +682,19 @@ void PowerTabEditor::startStopPlayback(bool from_measure_start)
     }
 }
 
+void PowerTabEditor::seekPlaybackToLocation(const ConstScoreLocation &location)
+{
+    Caret &caret = getCaret();
+    caret.moveToLocation(location);
+    caret.setSelectedItem(ScoreItem::Staff);
+
+    const ScoreLocation &new_location = caret.getLocation();
+    // Called directly rather than queued, since the MIDI thread's event loop is
+    // blocked while playback is running.
+    myMidiPlayer->seekToLocation(SystemLocation(
+        new_location.getSystemIndex(), new_location.getPositionIndex()));
+}
+
 void PowerTabEditor::redrawSystem(int index)
 {
     getCaret().moveToValidPosition();
@@ -3687,8 +3700,14 @@ void PowerTabEditor::setupNewTab()
     connect(scorearea, &ScoreArea::itemClicked,
             [&](ScoreItem item, const ConstScoreLocation &location,
                 ScoreItemAction action) {
+                // While playing, clicking on the staff seeks playback to that
+                // location instead of editing the score.
                 if (getCaret().isInPlaybackMode())
+                {
+                    if (item == ScoreItem::Staff)
+                        seekPlaybackToLocation(location);
                     return;
+                }
 
                 myIsHandlingClick = true;
 

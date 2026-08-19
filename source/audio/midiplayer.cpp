@@ -169,20 +169,13 @@ mergeMidiEvents(MidiFile &file)
     return events;
 }
 
-bool
-MidiPlayer::playEvents(MidiFile &file, const SystemLocation &start_location,
+MidiPlayer::PlaybackResult
+MidiPlayer::playEvents(const MidiEventList &events, int ticks_per_beat,
+                       const SystemLocation &start_location,
                        const MidiPlaybackSettings &initial_settings,
                        bool allow_count_in, const Score *score)
 {
     setPlaybackSettings(initial_settings);
-
-    myIsPlaying = true;
-    Util::ScopeExit on_exit([&]() {
-        myIsPlaying = false;
-    });
-
-    MidiEventList events = mergeMidiEvents(file);
-    const int ticks_per_beat = file.getTicksPerBeat();
 
     bool started = false;
     Midi::Tempo beat_duration = Midi::BEAT_DURATION_120_BPM;
@@ -195,7 +188,11 @@ MidiPlayer::playEvents(MidiFile &file, const SystemLocation &start_location,
     for (const MidiEvent &event : events)
     {
         if (!myIsPlaying)
-            return false;
+            return PlaybackResult::Stopped;
+
+        // A seek was requested, so restart the loop from the new location.
+        if (mySeekRequested)
+            return PlaybackResult::Seek;
 
         if (event.isTempoChange())
             beat_duration = event.getTempo();
@@ -313,7 +310,7 @@ MidiPlayer::playEvents(MidiFile &file, const SystemLocation &start_location,
         clock_drift += actual_duration - sleep_duration;
     }
 
-    return true;
+    return PlaybackResult::Finished;
 }
 
 void
@@ -331,14 +328,59 @@ MidiPlayer::playScore(const ConstScoreLocation &start_score_location,
     MidiFile file;
     file.load(score, options);
 
-    const SystemLocation start_location(myStartLocation->getSystemIndex(),
-                                        myStartLocation->getPositionIndex());
+    // The events can only be merged once, since doing so converts the file's
+    // tracks to absolute ticks.
+    const MidiEventList events = mergeMidiEvents(file);
+    const int ticks_per_beat = file.getTicksPerBeat();
 
-    if (playEvents(file, start_location, initial_settings, true,
-                   &score))
+    SystemLocation start_location(myStartLocation->getSystemIndex(),
+                                  myStartLocation->getPositionIndex());
+
+    // Keep myIsPlaying set for the whole session so that stopPlayback() can't
+    // miss the window in between seeks.
+    mySeekRequested = false;
+    myIsPlaying = true;
+    Util::ScopeExit on_exit([&]() { myIsPlaying = false; });
+
+    // Restart the event loop whenever a seek is requested.
+    bool allow_count_in = true;
+    while (true)
     {
-        emit playbackFinished();
+        const PlaybackResult result =
+            playEvents(events, ticks_per_beat, start_location,
+                       initial_settings, allow_count_in, &score);
+
+        if (result != PlaybackResult::Seek)
+        {
+            if (result == PlaybackResult::Finished)
+                emit playbackFinished();
+            break;
+        }
+
+        {
+            std::lock_guard<std::mutex> lock(mySeekMutex);
+            start_location = mySeekLocation;
+            mySeekRequested = false;
+        }
+
+        // Silence anything that was sounding at the old location, and don't
+        // repeat the count-in when jumping around mid-playback.
+        myDevice->stopAllNotes();
+        allow_count_in = false;
     }
+}
+
+void
+MidiPlayer::seekToLocation(const SystemLocation &location)
+{
+    if (!myIsPlaying)
+        return;
+
+    // Set both under the lock so that a request can't be lost if it races with
+    // the playback thread consuming the previous one.
+    std::lock_guard<std::mutex> lock(mySeekMutex);
+    mySeekLocation = location;
+    mySeekRequested = true;
 }
 
 MidiFile
@@ -364,8 +406,13 @@ MidiPlayer::playSingleNote(MidiFile &file, const ConstScoreLocation &location,
     SystemLocation start_location(location.getSystemIndex(),
                                   location.getPositionIndex());
 
-    playEvents(file, start_location, initial_settings,
-               /* allow_count_in */ false, nullptr);
+    const MidiEventList events = mergeMidiEvents(file);
+
+    myIsPlaying = true;
+    Util::ScopeExit on_exit([&]() { myIsPlaying = false; });
+
+    playEvents(events, file.getTicksPerBeat(), start_location,
+               initial_settings, /* allow_count_in */ false, nullptr);
     myDevice->stopAllNotes();
 }
 
@@ -420,6 +467,9 @@ MidiPlayer::performCountIn(const Score &score, const SystemLocation &location,
 
 void MidiPlayer::stopPlayback()
 {
+    // Discard any pending seek so it can't restart the loop.
+    mySeekRequested = false;
+
     if (myIsPlaying)
     {
         myIsPlaying = false;

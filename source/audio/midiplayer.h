@@ -23,17 +23,19 @@
 #include <boost/signals2/connection.hpp>
 #include <midi/midievent.h>
 #include <midi/midifile.h>
+#include <mutex>
 #include <optional>
 #include <QObject>
 #include <score/generalmidi.h>
 #include <score/scorelocation.h>
+#include <score/systemlocation.h>
 #include <vector>
 
+class MidiEventList;
 class MidiFile;
 class MidiOutputDevice;
 class Score;
 class SettingsManager;
-class SystemLocation;
 
 /// Initial values for playback settings which can be updated live from the
 /// mixer, see liveChangePlayerSettings() and liveChangePlaybackSpeed().
@@ -66,6 +68,12 @@ public:
     }
 
     void stopPlayback();
+
+    /// Jumps playback to the given location without interrupting the playback
+    /// session. Has no effect if playback isn't running.
+    /// Thread-safe, and must be called directly rather than through the event
+    /// loop since the MIDI thread is busy while playback is running.
+    void seekToLocation(const SystemLocation &location);
 
     static MidiFile generateSingleNote(const ConstScoreLocation &location,
                                        const SettingsManager &settings);
@@ -102,14 +110,28 @@ private slots:
     void updateLiveSettings();
 
 private:
+    /// How a playEvents() run ended.
+    enum class PlaybackResult
+    {
+        /// Reached the end of the event list.
+        Finished,
+        /// Aborted via stopPlayback().
+        Stopped,
+        /// Interrupted by seekToLocation(); should be restarted from the
+        /// requested location.
+        Seek
+    };
+
     void setPlaybackSettings(const MidiPlaybackSettings &settings);
 
     void performCountIn(const Score &score,
                         const SystemLocation &location,
                         Midi::Tempo beat_duration);
-    bool playEvents(MidiFile &file, const SystemLocation &start_location,
-                    const MidiPlaybackSettings &initial_settings,
-                    bool allow_count_in = false, const Score *score = nullptr);
+    PlaybackResult playEvents(const MidiEventList &events, int ticks_per_beat,
+                              const SystemLocation &start_location,
+                              const MidiPlaybackSettings &initial_settings,
+                              bool allow_count_in = false,
+                              const Score *score = nullptr);
 
     const SettingsManager &mySettingsManager;
     boost::signals2::scoped_connection mySettingsListener;
@@ -123,6 +145,13 @@ private:
     std::atomic<int> myPlaybackSpeed = 100;
     /// Location where playback began.
     std::optional<ConstScoreLocation> myStartLocation;
+
+    /// Set when a seek has been requested; polled by the playback loop.
+    std::atomic<bool> mySeekRequested = false;
+    /// Guards mySeekLocation, which isn't trivially copyable.
+    std::mutex mySeekMutex;
+    /// Location requested by the most recent seekToLocation() call.
+    SystemLocation mySeekLocation;
 
     /// Max volume and pan for each channel.
     std::array<std::atomic<uint8_t>, Midi::NUM_MIDI_CHANNELS_PER_PORT> myChannelMaxVolumes;
