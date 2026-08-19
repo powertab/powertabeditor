@@ -29,6 +29,8 @@
 
 #include <QAction>
 #include <QButtonGroup>
+#include <QComboBox>
+#include <QLineEdit>
 
 static QString getShortcutHint(const QAction &action)
 {
@@ -58,8 +60,11 @@ percentToString(double zoom)
 class PercentageValidator : public QValidator
 {
 public:
-    PercentageValidator(QObject *parent)
-        : QValidator(parent), myNumberValidator(1, 500, 2)
+    PercentageValidator(QObject *parent, int min_percent, int max_percent)
+        : QValidator(parent),
+          myNumberValidator(1, 500, 2),
+          myMinPercent(min_percent),
+          myMaxPercent(max_percent)
     {
     }
 
@@ -73,13 +78,21 @@ public:
         QLocale locale;
         double percent = locale.toDouble(number);
         parent()->setProperty("acceptableInput",
-                              (percent >= ViewOptions::MIN_ZOOM && percent <= ViewOptions::MAX_ZOOM));
+                              (percent >= myMinPercent && percent <= myMaxPercent));
         return state;
     }
 
 private:
     QDoubleValidator myNumberValidator;
+    int myMinPercent;
+    int myMaxPercent;
 };
+
+/// Playback speeds (percent) offered in the speed dropdown. Any other value in
+/// the [MIN_SPEED, MAX_SPEED] range can still be typed in directly.
+static constexpr int SPEED_PRESETS[] = { 25, 50, 75, 100 };
+static constexpr int MIN_SPEED = 25;
+static constexpr int MAX_SPEED = 125;
 
 PlaybackWidget::PlaybackWidget(const QAction &play_pause_command,
                                const QAction &rewind_command,
@@ -99,10 +112,7 @@ PlaybackWidget::PlaybackWidget(const QAction &play_pause_command,
     Q_ASSERT(myVoices->buttons().length() == Staff::NUM_VOICES);
     ui->voice1Button->setChecked(true);
 
-    ui->speedSpinner->setMinimum(50);
-    ui->speedSpinner->setMaximum(125);
-    ui->speedSpinner->setSuffix(QStringLiteral("%"));
-    ui->speedSpinner->setValue(100);
+    setupSpeedComboBox();
 
     ui->rewindToStartButton->setIcon(
         style()->standardIcon(QStyle::SP_MediaSkipBackward));
@@ -144,8 +154,6 @@ PlaybackWidget::PlaybackWidget(const QAction &play_pause_command,
     });
 
     connect(myVoices, &QButtonGroup::idClicked, this, &PlaybackWidget::activeVoiceChanged);
-    connect(ui->speedSpinner, qOverload<int>(&QSpinBox::valueChanged), this,
-            &PlaybackWidget::playbackSpeedChanged);
     connect(ui->filterComboBox, qOverload<int>(&QComboBox::currentIndexChanged), this,
             [&](int index)
             {
@@ -214,7 +222,7 @@ void PlaybackWidget::reset(const Document &doc)
 
 int PlaybackWidget::getPlaybackSpeed() const
 {
-    return ui->speedSpinner->value();
+    return myPlaybackSpeed;
 }
 
 void PlaybackWidget::setPlaybackMode(bool isPlaying)
@@ -237,6 +245,64 @@ void PlaybackWidget::updateLocationLabel(const std::string &location)
 }
 
 void
+PlaybackWidget::setupSpeedComboBox()
+{
+    for (int speed : SPEED_PRESETS)
+        ui->speedComboBox->addItem(percentToString(speed));
+
+    ui->speedComboBox->setCurrentText(percentToString(myPlaybackSpeed));
+
+    // Display a different style for invalid speed values.
+    ui->speedComboBox->setStyleSheet(
+        QStringLiteral("QComboBox[acceptableInput=false] { color: red; }"));
+
+    ui->speedComboBox->setValidator(
+        new PercentageValidator(ui->speedComboBox, MIN_SPEED, MAX_SPEED));
+
+    // Only refresh the styling as the user types. Unlike the zoom box, the
+    // speed is applied when the value is committed rather than on every
+    // keystroke, so that playback doesn't lurch through the intermediate
+    // values of e.g. "125".
+    connect(ui->speedComboBox, &QComboBox::currentTextChanged, this,
+            [this]()
+            {
+                ui->speedComboBox->style()->unpolish(ui->speedComboBox);
+                ui->speedComboBox->style()->polish(ui->speedComboBox);
+            });
+
+    // Committed by picking a preset, or by pressing enter / leaving the box
+    // after typing a custom value.
+    connect(ui->speedComboBox, &QComboBox::activated, this,
+            &PlaybackWidget::updatePlaybackSpeed);
+    connect(ui->speedComboBox->lineEdit(), &QLineEdit::editingFinished, this,
+            &PlaybackWidget::updatePlaybackSpeed);
+}
+
+void
+PlaybackWidget::updatePlaybackSpeed()
+{
+    QLocale locale;
+    const int speed = std::clamp(
+        locale.toInt(extractPercent(ui->speedComboBox->currentText(), locale)),
+        MIN_SPEED, MAX_SPEED);
+
+    // Normalize the displayed text, e.g. "63" -> "63%", or an out-of-range
+    // value to the clamped one.
+    const QString text = percentToString(speed);
+    if (ui->speedComboBox->currentText() != text)
+    {
+        QSignalBlocker blocker(ui->speedComboBox);
+        ui->speedComboBox->setCurrentText(text);
+    }
+
+    if (speed == myPlaybackSpeed)
+        return;
+
+    myPlaybackSpeed = speed;
+    emit playbackSpeedChanged(speed);
+}
+
+void
 PlaybackWidget::setupZoomComboBox(double initial_zoom)
 {
     // Add zoom options
@@ -249,7 +315,8 @@ PlaybackWidget::setupZoomComboBox(double initial_zoom)
     ui->zoomComboBox->setStyleSheet(
         QStringLiteral("QComboBox[acceptableInput=false] { color: red; }"));
 
-    ui->zoomComboBox->setValidator(new PercentageValidator(ui->zoomComboBox));
+    ui->zoomComboBox->setValidator(new PercentageValidator(
+        ui->zoomComboBox, ViewOptions::MIN_ZOOM, ViewOptions::MAX_ZOOM));
 
     connect(ui->zoomComboBox, &QComboBox::currentTextChanged,
             [this](const QString &text) {
