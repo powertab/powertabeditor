@@ -29,6 +29,7 @@
 class AutoBackup;
 class Caret;
 class Command;
+class ConstScoreLocation;
 class DocumentManager;
 class FileFormatManager;
 class Instrument;
@@ -300,6 +301,10 @@ private:
 
     /// Set up the MIDI thread.
     void createMidiThread();
+
+    /// Moves the caret to the given location and jumps playback there, without
+    /// interrupting playback.
+    void seekPlaybackToLocation(const ConstScoreLocation &location);
 
     /// Load any custom keyboard shortcuts.
     void loadKeyboardShortcuts();
