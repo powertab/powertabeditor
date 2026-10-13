@@ -8,6 +8,7 @@ Thanks to the following contributors who worked on this release:
 - @sbonaime
 
 ### Added
+- Added an optional playback cursor on all visible tablature staves (disabled by default).
 - Added preference for whether the outline around each system is drawn (#550)
 - Ties are now drawn in the tab staff in addition to the standard notation (#561, #515)
 - Pressing 'x' can now create a muted note without requiring a number to be inserted first (#557, #448)

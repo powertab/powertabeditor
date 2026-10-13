@@ -86,6 +86,8 @@ private:
     void loadSystemSpacing(const SettingsManager &settings_manager, bool redraw = true);
     void loadDrawSystemOutline(const SettingsManager &settings_manager, bool redraw = true);
 
+    void loadPlaybackCursorOnAllStaves(const SettingsManager &settings_manager);
+
     Scene myScene;
     const Document *myDocument;
     QGraphicsItem *myScoreInfoBlock;
@@ -93,6 +95,7 @@ private:
     double myHeaderSize = 0;
     double mySystemSpacing = 0;
     bool myDrawSystemOutline = true;
+    bool myPlaybackCursorOnAllStaves = false;
     QList<QGraphicsItem *> myRenderedSystems;
     CaretPainter *myCaretPainter;
     /// The color palette from the parent widget.

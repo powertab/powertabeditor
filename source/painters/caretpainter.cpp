@@ -34,10 +34,12 @@ const double CaretPainter::PEN_WIDTH = 0.75;
 const double CaretPainter::CARET_NOTE_SPACING = 6;
 
 CaretPainter::CaretPainter(const Caret &caret, const ViewOptions &view_options,
-                           const QPalette &palette)
+                           const QPalette &palette,
+                           bool playbackCursorOnAllStaves)
     : myCaret(caret),
       myViewOptions(view_options),
       myPalette(palette),
+      myPlaybackCursorOnAllStaves(playbackCursorOnAllStaves),
       myCaretConnection(
           caret.subscribeToChanges([this]() { onLocationChanged(); }))
 {
@@ -75,7 +77,10 @@ void CaretPainter::paint(QPainter *painter, const QStyleOptionGraphicsItem *,
     // the selected note.
     if (myCaret.isInPlaybackMode())
     {
-        painter->drawLine(x, y1, x, y2);
+        if (myPlaybackCursorOnAllStaves)
+            painter->drawLines(myPlaybackLines);
+        else
+            painter->drawLine(x, y1, x, y2);
         return;
     }
 
@@ -126,8 +131,12 @@ QRectF CaretPainter::boundingRect() const
 {
     if (myLayout)
     {
-        return QRectF(0, -CARET_NOTE_SPACING, LayoutInfo::STAFF_WIDTH,
-                      myLayout->getTabStaffHeight() + 2 * CARET_NOTE_SPACING);
+        QRectF rect(0, -CARET_NOTE_SPACING, LayoutInfo::STAFF_WIDTH,
+                    myLayout->getTabStaffHeight() + 2 * CARET_NOTE_SPACING);
+        for (const QLineF &line : myPlaybackLines)
+            rect = rect.united(QRectF(line.p1(), line.p2()).normalized().adjusted(
+                -PEN_WIDTH, -PEN_WIDTH, PEN_WIDTH, PEN_WIDTH));
+        return rect;
     }
     else
         return QRectF();
@@ -146,6 +155,15 @@ void CaretPainter::setSystemRect(int index, const QRectF &rect)
 QRectF CaretPainter::getCurrentSystemRect() const
 {
     return mySystemRects.at(myCaret.getLocation().getSystemIndex());
+}
+
+void CaretPainter::setPlaybackCursorOnAllStaves(bool enabled)
+{
+    if (myPlaybackCursorOnAllStaves == enabled)
+        return;
+
+    myPlaybackCursorOnAllStaves = enabled;
+    onLocationChanged();
 }
 
 void CaretPainter::updatePosition()
@@ -170,7 +188,10 @@ void CaretPainter::onLocationChanged()
     if (system.getStaves().empty())
         return;
 
+    const QRectF oldRect = sceneBoundingRect();
+    prepareGeometryChange();
     myLayout = std::make_unique<LayoutInfo>(location);
+    myPlaybackLines.clear();
 
     const ViewFilter *filter = myViewOptions.getFilter(location.getScore());
 
@@ -187,11 +208,33 @@ void CaretPainter::onLocationChanged()
         }
     }
 
-    const QRectF oldRect = sceneBoundingRect();
-    setPos(0, mySystemRects.at(location.getSystemIndex()).top() + offset +
-           myLayout->getSystemSymbolSpacing() + myLayout->getStaffHeight() -
-           myLayout->getTabStaffBelowSpacing() - myLayout->STAFF_BORDER_SPACING -
-           myLayout->getTabStaffHeight());
+    const double tabTop = offset + myLayout->getSystemSymbolSpacing() +
+                          myLayout->getTopTabLine();
+    if (myCaret.isInPlaybackMode() && myPlaybackCursorOnAllStaves)
+    {
+        // Match SystemRenderer's compact layout of the visible staves. Each
+        // staff has its own height (including symbols and string count).
+        double staffTop = myLayout->getSystemSymbolSpacing();
+        const double left = myLayout->getPositionX(location.getPositionIndex());
+        const double x = LayoutInfo::centerItem(
+            left, left + myLayout->getPositionSpacing(), 1);
+        for (int i = 0; i < static_cast<int>(system.getStaves().size()); ++i)
+        {
+            if (filter && !filter->accept(location.getScore(),
+                                          location.getSystemIndex(), i))
+                continue;
+
+            ScoreLocation staffLocation(location);
+            staffLocation.setStaffIndex(i);
+            const LayoutInfo layout(staffLocation);
+            myPlaybackLines.append(QLineF(
+                x, staffTop + layout.getTopTabLine() - tabTop,
+                x, staffTop + layout.getBottomTabLine() - tabTop));
+            staffTop += layout.getStaffHeight();
+        }
+    }
+
+    setPos(0, mySystemRects.at(location.getSystemIndex()).top() + tabTop);
     update(boundingRect());
     // Ensure that a redraw always occurs at the old location.
     scene()->update(oldRect);
