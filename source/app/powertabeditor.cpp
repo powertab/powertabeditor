@@ -224,7 +224,10 @@ PowerTabEditor::PowerTabEditor()
         QString::fromStdString(settings->get(Settings::PreviousDirectory));
 
     // Restore the state of any dock widgets.
-    restoreState(settings->get(Settings::WindowState));
+    if (restoreState(settings->get(Settings::WindowState)))
+    {
+        myToolboxWidthInitialized = true;
+    }
 
     setCentralWidget(myPlaybackArea);
     setMinimumSize(800, 600);
