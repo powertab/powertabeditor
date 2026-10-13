@@ -45,6 +45,7 @@ namespace Settings
     extern const Setting<bool> DrawSystemOutline;
     extern const Setting<int> SystemSpacing;
     extern const Setting<int> ToolboxIconsPerRow;
+    extern const Setting<int> ToolboxWidthPercentage;
 
     extern const Setting<std::string> DefaultInstrumentName;
     extern const Setting<int> DefaultInstrumentPreset;

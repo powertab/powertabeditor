@@ -35,6 +35,7 @@ class ToolBox : public QWidget
 
 public:
     static constexpr int DEFAULT_ICONS_PER_ROW = 8;
+    static constexpr int DEFAULT_WIDTH_PERCENTAGE = 25;
 
     explicit ToolBox(Command *keySignatureCommand,
                      Command *timeSignatureCommand,

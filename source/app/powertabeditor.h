@@ -286,6 +286,7 @@ protected:
     virtual void dropEvent(QDropEvent *event) override;
 
     virtual void showEvent(QShowEvent *event) override;
+    virtual void resizeEvent(QResizeEvent *event) override;
 
 private:
     /// Returns the application name & version (e.g. 'Power Tab Editor 2.0').
