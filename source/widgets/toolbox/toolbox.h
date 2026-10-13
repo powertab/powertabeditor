@@ -19,8 +19,10 @@
 #define TOOLBOX_H
 
 #include <QWidget>
+#include <vector>
 
 class Command;
+class QScrollArea;
 class QToolButton;
 
 namespace Ui {
@@ -32,6 +34,8 @@ class ToolBox : public QWidget
     Q_OBJECT
 
 public:
+    static constexpr int DEFAULT_ICONS_PER_ROW = 8;
+
     explicit ToolBox(Command *keySignatureCommand,
                      Command *timeSignatureCommand,
                      Command *standardBarlineCommand,
@@ -95,14 +99,33 @@ public:
                      Command *arpeggioDownCommand,
                      Command *textCommand,
                      Command *directionCommand,
-                     QWidget *parent = nullptr);
-    ~ToolBox();
+                     QWidget *parent = nullptr,
+                     int iconsPerRow = DEFAULT_ICONS_PER_ROW);
+    ~ToolBox() override;
+
+    int getIconsPerRow() const;
+    void setIconsPerRow(int count);
+
+    QSize sizeHint() const override;
+    QSize minimumSizeHint() const override;
+
+protected:
+    void resizeEvent(QResizeEvent *event) override;
+    void showEvent(QShowEvent *event) override;
+    bool eventFilter(QObject *watched, QEvent *event) override;
 
 private:
     void updateButtonStatusFromAction(QToolButton *button, Command *command);
     void initButton(QToolButton *button, Command *command);
+    void reorganizeGrid();
+    void updateButtonSizes(bool force = false);
 
     Ui::ToolBox *ui;
+    int myIconsPerRow;
+    QScrollArea *myScrollArea;
+    std::vector<QToolButton *> myButtons;
+    int myLastWidth;
+    int myLastHeight;
 };
 
 #endif // TOOLBOX_H

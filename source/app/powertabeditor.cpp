@@ -138,6 +138,7 @@
 #include <QMessageBox>
 #include <QMimeData>
 #include <QPrinter>
+#include <QTimer>
 #include <QPrintDialog>
 #include <QPrintPreviewDialog>
 #include <QRegularExpression>
@@ -177,6 +178,7 @@ PowerTabEditor::PowerTabEditor()
       myInstrumentDockWidget(nullptr),
       myToolBox(nullptr),
       myToolBoxDockWidget(new QDockWidget(tr("Toolbox"), this)),
+      myToolboxWidthInitialized(false),
       myPlaybackWidget(nullptr),
       myPlaybackArea(nullptr)
 {
@@ -2172,6 +2174,23 @@ bool PowerTabEditor::eventFilter(QObject *object, QEvent *event)
     return QMainWindow::eventFilter(object, event);
 }
 
+void PowerTabEditor::showEvent(QShowEvent *event)
+{
+    QMainWindow::showEvent(event);
+
+    if (!myToolboxWidthInitialized)
+    {
+        myToolboxWidthInitialized = true;
+        QTimer::singleShot(0, this, [this]() {
+            int targetWidth = static_cast<int>(width() * 0.25);
+            if (targetWidth > 0 && myToolBoxDockWidget)
+            {
+                resizeDocks({myToolBoxDockWidget}, {targetWidth}, Qt::Horizontal);
+            }
+        });
+    }
+}
+
 void PowerTabEditor::closeEvent(QCloseEvent *event)
 {
     while (myTabWidget->currentIndex() != -1)
@@ -3528,6 +3547,9 @@ void PowerTabEditor::createToolBox()
     myToolBoxDockWidget->setFeatures(QDockWidget::DockWidgetClosable);
     myToolBoxDockWidget->setObjectName("Toolbox");
 
+    auto settings = mySettingsManager->getReadHandle();
+    int iconsPerRow = settings->get(Settings::ToolboxIconsPerRow);
+
     myToolBox = new ToolBox(myKeySignatureCommand,
                             myTimeSignatureCommand,
                             myStandardBarlineCommand,
@@ -3591,10 +3613,18 @@ void PowerTabEditor::createToolBox()
                             myArpeggioDownCommand,
                             myTextCommand,
                             myDirectionCommand,
-                            myToolBoxDockWidget);
+                            myToolBoxDockWidget,
+                            iconsPerRow);
 
     myToolBoxDockWidget->setWidget(myToolBox);
     addDockWidget(Qt::LeftDockWidgetArea, myToolBoxDockWidget);
+
+    mySettingsManager->subscribeToChanges([this]() {
+        if (!myToolBox)
+            return;
+        auto s = mySettingsManager->getReadHandle();
+        myToolBox->setIconsPerRow(s->get(Settings::ToolboxIconsPerRow));
+    });
 }
 
 void PowerTabEditor::createTabArea()
