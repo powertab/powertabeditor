@@ -51,8 +51,7 @@ void SystemRenderer::centerHorizontally(QGraphicsItem &item, double xmin,
                                         double xmax)
 {
     double itemWidth = item.boundingRect().width();
-    double centredX =
-        xmin + ((xmax - (xmin + itemWidth)) / 2) - item.boundingRect().x();
+    double centredX = xmin + ((xmax - (xmin + itemWidth)) / 2) - item.boundingRect().x();
     item.setX(centredX);
 }
 
@@ -2016,7 +2015,8 @@ SystemRenderer::drawRest(const Position &pos, double x,
             break;
     }
 
-    auto text = new SimpleTextItem(symbol, font, TextAlignment::Baseline,QPen(myPalette.text().color()));
+    auto text =
+        new SimpleTextItem(symbol, font, TextAlignment::Baseline, QPen(myPalette.text().color()));
     centerHorizontally(*text, x, x + layout.getPositionSpacing());
     text->setY(y);
 
@@ -2031,15 +2031,15 @@ SystemRenderer::drawRest(const Position &pos, double x,
         // Position just below second line of staff.
         const double dotY = layout.getStdNotationSpace(2);
 
-        auto dotText = new SimpleTextItem(dot, font, TextAlignment::Baseline,
-                                          QPen(myPalette.text().color()));
+        auto dotText =
+            new SimpleTextItem(dot, font, TextAlignment::Baseline, QPen(myPalette.text().color()));
         dotText->setPos(dotX, dotY);
         group->addToGroup(dotText);
 
         if (pos.hasProperty(Position::DoubleDotted))
         {
-            auto dotText2 =
-            new SimpleTextItem(dot, font, TextAlignment::Baseline, QPen(myPalette.text().color()));
+            auto dotText2 = new SimpleTextItem(dot, font, TextAlignment::Baseline,
+                                               QPen(myPalette.text().color()));
             dotText2->setPos(dotX + 4, dotY);
             group->addToGroup(dotText2);
         }
