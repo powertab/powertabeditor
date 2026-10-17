@@ -21,6 +21,8 @@
 #include <boost/signals2/signal.hpp>
 #include <memory>
 #include <QGraphicsItem>
+#include <QLineF>
+#include <QVector>
 
 class Caret;
 struct LayoutInfo;
@@ -30,7 +32,7 @@ class CaretPainter : public QGraphicsItem
 {
 public:
     CaretPainter(const Caret &caret, const ViewOptions &view_options,
-                 const QPalette &palette);
+                 const QPalette &palette, bool playbackCursorOnAllStaves = false);
 
     virtual void paint(QPainter *painter, const QStyleOptionGraphicsItem *,
                        QWidget *) override;
@@ -42,6 +44,7 @@ public:
     QRectF getCurrentSystemRect() const;
 
     void updatePosition();
+    void setPlaybackCursorOnAllStaves(bool enabled);
 
     typedef boost::signals2::signal<void ()> LocationChangedSlot;
     /// Register a listener for when the caret painter is updated.
@@ -57,6 +60,8 @@ private:
     const QPalette &myPalette;
     std::unique_ptr<LayoutInfo> myLayout;
     std::vector<QRectF> mySystemRects;
+    bool myPlaybackCursorOnAllStaves;
+    QVector<QLineF> myPlaybackLines;
     boost::signals2::scoped_connection myCaretConnection;
     LocationChangedSlot onMyLocationChanged;
 

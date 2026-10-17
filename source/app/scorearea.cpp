@@ -66,12 +66,14 @@ ScoreArea::ScoreArea(SettingsManager &settings_manager, QWidget *parent)
     loadTheme(settings_manager, /* redraw */ false);
     loadSystemSpacing(settings_manager, false);
     loadDrawSystemOutline(settings_manager, false);
+    loadPlaybackCursorOnAllStaves(settings_manager);
     mySettingsListener = settings_manager.subscribeToChanges(
         [&]()
         {
             loadTheme(settings_manager);
             loadSystemSpacing(settings_manager);
             loadDrawSystemOutline(settings_manager);
+            loadPlaybackCursorOnAllStaves(settings_manager);
         });
 
     // Connect the click event handler to our public signals.
@@ -93,7 +95,8 @@ void ScoreArea::renderDocument(const Document &document)
     auto start = std::chrono::high_resolution_clock::now();
 
     myCaretPainter = new CaretPainter(
-        document.getCaret(), document.getViewOptions(), *myActivePalette);
+        document.getCaret(), document.getViewOptions(), *myActivePalette,
+        myPlaybackCursorOnAllStaves);
     myCaretPainter->subscribeToMovement([this]() {
         adjustScroll();
     });
@@ -387,4 +390,14 @@ ScoreArea::loadDrawSystemOutline(const SettingsManager &settings_manager, bool r
 bool ScoreArea::getDrawSystemOutline() const
 {
     return myDrawSystemOutline;
+}
+
+void ScoreArea::loadPlaybackCursorOnAllStaves(
+    const SettingsManager &settings_manager)
+{
+    const bool enabled = settings_manager.getReadHandle()->get(
+        Settings::PlaybackCursorOnAllStaves);
+    myPlaybackCursorOnAllStaves = enabled;
+    if (myCaretPainter)
+        myCaretPainter->setPlaybackCursorOnAllStaves(enabled);
 }

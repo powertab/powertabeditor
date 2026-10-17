@@ -43,6 +43,7 @@ namespace Settings
     extern const Setting<ScoreTheme> Theme;
     extern const Setting<bool> OpenFilesInNewWindow;
     extern const Setting<bool> DrawSystemOutline;
+    extern const Setting<bool> PlaybackCursorOnAllStaves;
     extern const Setting<int> SystemSpacing;
 
     extern const Setting<std::string> DefaultInstrumentName;

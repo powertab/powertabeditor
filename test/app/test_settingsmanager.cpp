@@ -17,7 +17,9 @@
   
 #include <doctest/doctest.h>
 
+#include <app/settings.h>
 #include <app/settingsmanager.h>
+#include <sstream>
 
 TEST_CASE("App/SettingsManager")
 {
@@ -38,4 +40,29 @@ TEST_CASE("App/SettingsManager")
     }
 
     REQUIRE(count == 1);
+}
+
+TEST_CASE("App/SettingsManager/PlaybackCursorOnAllStaves")
+{
+    SettingsManager manager;
+    REQUIRE_FALSE(manager.getReadHandle()->get(
+        Settings::PlaybackCursorOnAllStaves));
+
+    // Check that both opt-in and opting back out survive serialization.
+    for (bool enabled : {true, false})
+    {
+        {
+            auto settings = manager.getWriteHandle();
+            settings->set(Settings::PlaybackCursorOnAllStaves, enabled);
+        }
+        std::stringstream json;
+        manager.getReadHandle()->saveToJSON(json);
+        SettingsManager restored;
+        {
+            auto settings = restored.getWriteHandle();
+            settings->loadFromJSON(json);
+        }
+        REQUIRE(restored.getReadHandle()->get(
+                    Settings::PlaybackCursorOnAllStaves) == enabled);
+    }
 }

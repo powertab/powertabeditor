@@ -108,6 +108,9 @@ void PreferencesDialog::loadCurrentSettings()
     ui->playNotesWhileEditingCheckBox->setChecked(
         settings->get(Settings::PlayNotesWhileEditing));
 
+    ui->playbackCursorOnAllStavesCheckBox->setChecked(
+        settings->get(Settings::PlaybackCursorOnAllStaves));
+
     ui->metronomeEnabledCheckBox->setChecked(
         settings->get(Settings::MetronomeEnabled));
 
@@ -174,6 +177,9 @@ void PreferencesDialog::accept()
 
     settings->set(Settings::PlayNotesWhileEditing,
                   ui->playNotesWhileEditingCheckBox->isChecked());
+
+    settings->set(Settings::PlaybackCursorOnAllStaves,
+                  ui->playbackCursorOnAllStavesCheckBox->isChecked());
 
     settings->set(Settings::MetronomeEnabled,
                   ui->metronomeEnabledCheckBox->isChecked());

@@ -41,6 +41,9 @@ const Setting<bool> OpenFilesInNewWindow("app/open_files_in_new_window",
 
 const Setting<bool> DrawSystemOutline("app/draw_system_outline", true);
 
+const Setting<bool> PlaybackCursorOnAllStaves(
+    "app/playback_cursor_on_all_staves", false);
+
 const Setting<int> SystemSpacing("app/system_spacing", 50);
 
 const Setting<ScoreTheme> Theme("app/score_theme", ScoreTheme::SystemDefault);
