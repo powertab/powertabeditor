@@ -19,6 +19,7 @@
 
 #include <app/paths.h>
 #include <score/generalmidi.h>
+#include <widgets/toolbox/toolbox.h>
 #include <sstream>
 
 static const std::string theLightName("light");
@@ -42,6 +43,12 @@ const Setting<bool> OpenFilesInNewWindow("app/open_files_in_new_window",
 const Setting<bool> DrawSystemOutline("app/draw_system_outline", true);
 
 const Setting<int> SystemSpacing("app/system_spacing", 50);
+
+const Setting<int> ToolboxIconsPerRow("app/toolbox_icons_per_row",
+                                      ToolBox::DEFAULT_ICONS_PER_ROW);
+
+const Setting<int> ToolboxWidthPercentage("app/toolbox_width_percentage",
+                                       ToolBox::DEFAULT_WIDTH_PERCENTAGE);
 
 const Setting<ScoreTheme> Theme("app/score_theme", ScoreTheme::SystemDefault);
 

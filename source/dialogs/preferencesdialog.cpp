@@ -78,6 +78,11 @@ PreferencesDialog::PreferencesDialog(QWidget *parent,
 
     ui->backupIntervalSpinBox->setRange(5, 1000);
 
+    connect(ui->toolboxIconsPerRowSlider, &QSlider::valueChanged, this,
+            [this](int value) {
+                ui->toolboxIconsPerRowValueLabel->setText(QString::number(value));
+            });
+
     loadCurrentSettings();
 }
 
@@ -139,6 +144,10 @@ void PreferencesDialog::loadCurrentSettings()
 
     ui->systemSpacingSpinBox->setValue(
       settings->get(Settings::SystemSpacing));
+
+    int iconsPerRow = settings->get(Settings::ToolboxIconsPerRow);
+    ui->toolboxIconsPerRowSlider->setValue(iconsPerRow);
+    ui->toolboxIconsPerRowValueLabel->setText(QString::number(iconsPerRow));
 
     ui->defaultInstrumentNameLineEdit->setText(
         QString::fromStdString(settings->get(Settings::DefaultInstrumentName)));
@@ -206,6 +215,9 @@ void PreferencesDialog::accept()
 
     settings->set(Settings::SystemSpacing,
                   ui->systemSpacingSpinBox->value());
+
+    settings->set(Settings::ToolboxIconsPerRow,
+                  ui->toolboxIconsPerRowSlider->value());
 
     settings->set(Settings::BackupEnabled,
                   ui->enableAutoBackupCheckBox->isChecked());

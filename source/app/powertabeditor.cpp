@@ -138,6 +138,7 @@
 #include <QMessageBox>
 #include <QMimeData>
 #include <QPrinter>
+#include <QTimer>
 #include <QPrintDialog>
 #include <QPrintPreviewDialog>
 #include <QRegularExpression>
@@ -177,6 +178,7 @@ PowerTabEditor::PowerTabEditor()
       myInstrumentDockWidget(nullptr),
       myToolBox(nullptr),
       myToolBoxDockWidget(new QDockWidget(tr("Toolbox"), this)),
+      myToolboxWidthInitialized(false),
       myPlaybackWidget(nullptr),
       myPlaybackArea(nullptr)
 {
@@ -221,7 +223,9 @@ PowerTabEditor::PowerTabEditor()
     myPreviousDirectory =
         QString::fromStdString(settings->get(Settings::PreviousDirectory));
 
-    // Restore the state of any dock widgets.
+    // Restore the state of any dock widgets (visibility, positions…).
+    // Toolbox width is always re-applied via ToolboxWidthPercentage in
+    // resizeEvent so we do not gate myToolboxWidthInitialized here.
     restoreState(settings->get(Settings::WindowState));
 
     setCentralWidget(myPlaybackArea);
@@ -2182,7 +2186,50 @@ bool PowerTabEditor::eventFilter(QObject *object, QEvent *event)
         }
     }
 
+    // Detect when the user resizes the toolbox dock and save the new width
+    // as a percentage so it can be restored on next launch.
+    if (object == myToolBoxDockWidget && event->type() == QEvent::Resize &&
+        myToolboxWidthInitialized && width() > 0 && myToolBoxDockWidget)
+    {
+        int dockWidth = myToolBoxDockWidget->width();
+        if (dockWidth > 0)
+        {
+            int pct = static_cast<int>(std::round(dockWidth * 100.0 / width()));
+            pct = std::max(5, std::min(pct, 90));
+            auto settings = mySettingsManager->getWriteHandle();
+            settings->set(Settings::ToolboxWidthPercentage, pct);
+        }
+    }
+
     return QMainWindow::eventFilter(object, event);
+}
+
+void PowerTabEditor::resizeEvent(QResizeEvent *event)
+{
+    QMainWindow::resizeEvent(event);
+
+    // Apply the saved toolbox-width percentage the first time the window
+    // reaches its maximised size.  We use resizeEvent + isMaximized() instead
+    // of a QTimer::singleShot in showEvent because on macOS the native window
+    // resize is asynchronous: by the time a singleShot(0) fires the window
+    // is often still at its 800-px minimum width, giving a wrong 25%-of-800
+    // result.  Here width() is always the correct final size.
+    if (!myToolboxWidthInitialized && isVisible() && width() > minimumWidth())
+    {
+        myToolboxWidthInitialized = true;
+        auto s = mySettingsManager->getReadHandle();
+        int pct = s->get(Settings::ToolboxWidthPercentage);
+        int targetWidth = static_cast<int>(width() * pct / 100.0);
+        if (targetWidth > 0 && myToolBoxDockWidget)
+        {
+            resizeDocks({myToolBoxDockWidget}, {targetWidth}, Qt::Horizontal);
+        }
+    }
+}
+
+void PowerTabEditor::showEvent(QShowEvent *event)
+{
+    QMainWindow::showEvent(event);
 }
 
 void PowerTabEditor::closeEvent(QCloseEvent *event)
@@ -3541,6 +3588,9 @@ void PowerTabEditor::createToolBox()
     myToolBoxDockWidget->setFeatures(QDockWidget::DockWidgetClosable);
     myToolBoxDockWidget->setObjectName("Toolbox");
 
+    auto settings = mySettingsManager->getReadHandle();
+    int iconsPerRow = settings->get(Settings::ToolboxIconsPerRow);
+
     myToolBox = new ToolBox(myKeySignatureCommand,
                             myTimeSignatureCommand,
                             myStandardBarlineCommand,
@@ -3604,10 +3654,19 @@ void PowerTabEditor::createToolBox()
                             myArpeggioDownCommand,
                             myTextCommand,
                             myDirectionCommand,
-                            myToolBoxDockWidget);
+                            myToolBoxDockWidget,
+                            iconsPerRow);
 
     myToolBoxDockWidget->setWidget(myToolBox);
     addDockWidget(Qt::LeftDockWidgetArea, myToolBoxDockWidget);
+    myToolBoxDockWidget->installEventFilter(this);
+
+    mySettingsManager->subscribeToChanges([this]() {
+        if (!myToolBox)
+            return;
+        auto s = mySettingsManager->getReadHandle();
+        myToolBox->setIconsPerRow(s->get(Settings::ToolboxIconsPerRow));
+    });
 }
 
 void PowerTabEditor::createTabArea()
