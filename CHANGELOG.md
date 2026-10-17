@@ -17,6 +17,7 @@ Thanks to the following contributors who worked on this release:
 ### Changed
 
 ### Fixed
+- Fixed rest symbol alignment with the tab numbers (#540, #577)
 
 ## [2.0.22] - 2025-06-29
 
