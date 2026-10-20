@@ -682,6 +682,19 @@ void PowerTabEditor::startStopPlayback(bool from_measure_start)
     }
 }
 
+void PowerTabEditor::seekPlaybackToLocation(const ConstScoreLocation &location)
+{
+    Caret &caret = getCaret();
+    caret.moveToLocation(location);
+    caret.setSelectedItem(ScoreItem::Staff);
+
+    const ScoreLocation &new_location = caret.getLocation();
+    // Called directly rather than queued, since the MIDI thread's event loop is
+    // blocked while playback is running.
+    myMidiPlayer->seekToLocation(SystemLocation(
+        new_location.getSystemIndex(), new_location.getPositionIndex()));
+}
+
 void PowerTabEditor::redrawSystem(int index)
 {
     getCaret().moveToValidPosition();
@@ -2364,7 +2377,7 @@ void PowerTabEditor::createCommands()
     connect(myPlayPauseCommand, &QAction::triggered, this,
             &PowerTabEditor::startStopPlayback);
 
-#ifdef Q_OS_MAC
+#ifdef Q_OS_MACOS
     // Command-Space is used by Spotlight.
     QKeySequence play_start_seq = Qt::META | Qt::Key_Space;
 #else
@@ -2437,7 +2450,7 @@ void PowerTabEditor::createCommands()
             &PowerTabEditor::shiftBackward);
 
     // Position-related actions.
-#ifdef Q_OS_MAC
+#ifdef Q_OS_MACOS
     // Use Command-Left instead of Control-Left, which is used for changing
     // desktops.
     QKeySequence move_start_seq = Qt::CTRL | Qt::Key_Left;
@@ -2505,7 +2518,7 @@ void PowerTabEditor::createCommands()
     connect(myPrevBarCommand, &QAction::triggered, this,
             &PowerTabEditor::moveCaretToPrevBar);
 
-#ifdef Q_OS_MAC
+#ifdef Q_OS_MACOS
     // On macOS we need to use the "backspace" key so that you can just press
     // Delete rather than Fn+Delete.
     QKeySequence delete_seq = Qt::Key_Backspace;
@@ -3059,7 +3072,7 @@ void PowerTabEditor::createCommands()
 
     // Window Menu commands.
 
-#ifdef Q_OS_MAC
+#ifdef Q_OS_MACOS
     // NextChild is Command-{ on OS X, so use the more conventional Control-Tab
     // to match Safari, Finder, etc.
     QKeySequence next_tab_seq = Qt::META | Qt::Key_Tab;
@@ -3083,7 +3096,7 @@ void PowerTabEditor::createCommands()
 
     // QKeySequence::ZoomIn requires Ctrl+Shift+= rather than the usual Ctrl+=
     // The default works fine on macOS, though.
-#ifndef Q_OS_MAC
+#ifndef Q_OS_MACOS
     QKeySequence zoom_in_seq = Qt::CTRL | Qt::Key_Equal;
 #else
     QKeySequence zoom_in_seq = QKeySequence::ZoomIn;
@@ -3687,8 +3700,14 @@ void PowerTabEditor::setupNewTab()
     connect(scorearea, &ScoreArea::itemClicked,
             [&](ScoreItem item, const ConstScoreLocation &location,
                 ScoreItemAction action) {
+                // While playing, clicking on the staff seeks playback to that
+                // location instead of editing the score.
                 if (getCaret().isInPlaybackMode())
+                {
+                    if (item == ScoreItem::Staff)
+                        seekPlaybackToLocation(location);
                     return;
+                }
 
                 myIsHandlingClick = true;
 

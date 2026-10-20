@@ -700,7 +700,7 @@
     <message>
         <location filename="../source/dialogs/chordnamedialog.ui" line="892"/>
         <source>Custom Label</source>
-        <translation type="unfinished"></translation>
+        <translation>Label personnalisé</translation>
     </message>
     <message>
         <location filename="../source/dialogs/chordnamedialog.ui" line="907"/>
@@ -2218,7 +2218,7 @@
     <message>
         <location filename="../source/app/powertabeditor.cpp" line="2315"/>
         <source>Open Backup Folder...</source>
-        <translation type="unfinished"></translation>
+        <translation>Ouvrir l&apos;emplacement des sauvegardes...</translation>
     </message>
     <message>
         <location filename="../source/app/powertabeditor.cpp" line="2321"/>
@@ -3028,7 +3028,7 @@
     <message>
         <location filename="../source/app/clipboard.cpp" line="130"/>
         <source>Cannot paste notes from a different number of strings.</source>
-        <translation type="unfinished"></translation>
+        <translation>Impossible de coller les notes depuis un nombre de cordes différent.</translation>
     </message>
 </context>
 <context>
@@ -3070,7 +3070,7 @@
     <message>
         <location filename="../source/dialogs/preferencesdialog.ui" line="86"/>
         <source>Play Notes While Editing:</source>
-        <translation type="unfinished"></translation>
+        <translation>Jouer les notes lors de l&apos;édition&#xa0;:</translation>
     </message>
     <message>
         <location filename="../source/dialogs/preferencesdialog.ui" line="101"/>
@@ -3153,17 +3153,17 @@
     <message>
         <location filename="../source/dialogs/preferencesdialog.ui" line="296"/>
         <source>Backup</source>
-        <translation type="unfinished"></translation>
+        <translation>Sauvegarde</translation>
     </message>
     <message>
         <location filename="../source/dialogs/preferencesdialog.ui" line="304"/>
         <source>Enable Auto Backup:</source>
-        <translation type="unfinished"></translation>
+        <translation>Activer la sauvegarde automatique&#xa0;:</translation>
     </message>
     <message>
         <location filename="../source/dialogs/preferencesdialog.ui" line="314"/>
         <source>Backup Interval (seconds):</source>
-        <translation type="unfinished"></translation>
+        <translation>Fréquence des sauvegardes (secondes)&#xa0;:</translation>
     </message>
     <message>
         <location filename="../source/dialogs/preferencesdialog.ui" line="330"/>

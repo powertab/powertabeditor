@@ -51,7 +51,7 @@ void SystemRenderer::centerHorizontally(QGraphicsItem &item, double xmin,
                                         double xmax)
 {
     double itemWidth = item.boundingRect().width();
-    double centredX = xmin + ((xmax - (xmin + itemWidth)) / 2);
+    double centredX = xmin + ((xmax - (xmin + itemWidth)) / 2) - item.boundingRect().x();
     item.setX(centredX);
 }
 
@@ -1527,7 +1527,7 @@ QGraphicsItem *SystemRenderer::createTremoloPicking(const LayoutInfo& layout)
     {
         auto line = new SimpleTextItem(MusicSymbol::TremoloPicking, myMusicNotationFont,
                                        TextAlignment::Baseline, QPen(myPalette.text().color()));
-        centerHorizontally(*line, 0, layout.getPositionSpacing() * 1.25);
+        centerHorizontally(*line, 0, layout.getPositionSpacing());
         line->setY(-7 + i * offset);
         group->addToGroup(line);
     }
@@ -2015,36 +2015,41 @@ SystemRenderer::drawRest(const Position &pos, double x,
             break;
     }
 
-    auto group = new QGraphicsItemGroup();
-    auto text = new SimpleTextItem(symbol, font, TextAlignment::Baseline, QPen(myPalette.text().color()));
-    text->setPos(0, y);
-    group->addToGroup(text);
-
-    // Draw dots if necessary.
-    const QChar dot = MusicSymbol::Dot;
-    const double dotX = 0.4 * font.pixelSize();
-    // Position just below second line of staff.
-    const double dotY = layout.getStdNotationSpace(2);
+    auto text =
+        new SimpleTextItem(symbol, font, TextAlignment::Baseline, QPen(myPalette.text().color()));
+    centerHorizontally(*text, x, x + layout.getPositionSpacing());
+    text->setY(y);
 
     if (pos.hasProperty(Position::Dotted) ||
         pos.hasProperty(Position::DoubleDotted))
     {
-        auto dotText = new SimpleTextItem(dot, font, TextAlignment::Baseline, QPen(myPalette.text().color()));
+        auto group = new QGraphicsItemGroup();
+        group->addToGroup(text);
+
+        const QChar dot = MusicSymbol::Dot;
+        const double dotX = text->pos().x() + text->boundingRect().right() + 2;
+        // Position just below second line of staff.
+        const double dotY = layout.getStdNotationSpace(2);
+
+        auto dotText =
+            new SimpleTextItem(dot, font, TextAlignment::Baseline, QPen(myPalette.text().color()));
         dotText->setPos(dotX, dotY);
         group->addToGroup(dotText);
 
         if (pos.hasProperty(Position::DoubleDotted))
         {
-            auto dotText2 =
-		    new SimpleTextItem(dot, font, TextAlignment::Baseline, QPen(myPalette.text().color()));
+            auto dotText2 = new SimpleTextItem(dot, font, TextAlignment::Baseline,
+                                               QPen(myPalette.text().color()));
             dotText2->setPos(dotX + 4, dotY);
             group->addToGroup(dotText2);
         }
+
+        group->setParentItem(myParentStaff);
     }
-
-    centerHorizontally(*group, x, x + layout.getPositionSpacing() * 1.25);
-
-    group->setParentItem(myParentStaff);
+    else
+    {
+        text->setParentItem(myParentStaff);
+    }
 }
 
 void SystemRenderer::drawLedgerLines(

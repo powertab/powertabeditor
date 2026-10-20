@@ -6,15 +6,18 @@ All notable changes to this project will be documented in this file.
 Thanks to the following contributors who worked on this release:
 - @cameronwhite
 - @sbonaime
+- @benjamimo1
 
 ### Added
 - Added preference for whether the outline around each system is drawn (#550)
 - Ties are now drawn in the tab staff in addition to the standard notation (#561, #515)
 - Pressing 'x' can now create a muted note without requiring a number to be inserted first (#557, #448)
+- During playback, clicking on the score will seek to that location (#571, #573)
 
 ### Changed
 
 ### Fixed
+- Fixed rest symbol alignment with the tab numbers (#540, #577)
 
 ## [2.0.22] - 2025-06-29
 
