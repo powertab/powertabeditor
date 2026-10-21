@@ -34,7 +34,6 @@
 #include <score/generalmidi.h>
 
 namespace rt { namespace midi { class RtMidiOut; } }
-using RtMidiOut = rt::midi::RtMidiOut;
 
 class MidiOutputDevice
 {
@@ -95,8 +94,8 @@ public:
 private:
     bool sendMidiMessage(unsigned char a, unsigned char b, unsigned char c);
 
-    std::vector<std::unique_ptr<RtMidiOut>> myMidiOuts;
-    RtMidiOut *myMidiOut;
+    std::vector<std::unique_ptr<rt::midi::RtMidiOut>> myMidiOuts;
+    rt::midi::RtMidiOut *myMidiOut;
     /// Maximum volume for each channel (as set in the mixer).
     std::array<uint8_t, Midi::NUM_MIDI_CHANNELS_PER_PORT> myMaxVolumes;
     /// Volume of last active dynamic for each channel.
