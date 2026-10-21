@@ -19,6 +19,7 @@
 
 #include <RtMidi.h>
 #include <exception>
+#include <iostream>
 #include <score/dynamic.h>
 #include <score/generalmidi.h>
 #include <cassert>
@@ -53,7 +54,7 @@ MidiOutputDevice::MidiOutputDevice() : myMidiOut(nullptr)
     {
         try
         {
-            myMidiOuts.emplace_back(std::make_unique<RtMidiOut>(api));
+            myMidiOuts.emplace_back(std::make_unique<rt::midi::RtMidiOut>(api));
         }
         catch (RtMidiError &e)
         {
@@ -127,7 +128,7 @@ MidiOutputDevice::initialize(const std::string_view &preferred_api,
 
     for (auto &&midi_out : myMidiOuts)
     {
-        if (RtMidi::getApiName(midi_out->getCurrentApi()) != preferred_api)
+        if (rt::midi::RtMidiOut::getApiName(midi_out->getCurrentApi()) != preferred_api)
             continue;
 
         for (unsigned int i = 0, n = midi_out->getPortCount(); i < n; ++i)
@@ -172,7 +173,7 @@ size_t MidiOutputDevice::getApiCount()
 std::string
 MidiOutputDevice::getApiName(size_t api)
 {
-    return RtMidi::getApiName(myMidiOuts[api]->getCurrentApi());
+    return rt::midi::RtMidiOut::getApiName(myMidiOuts[api]->getCurrentApi());
 }
 
 unsigned int MidiOutputDevice::getPortCount(size_t api)

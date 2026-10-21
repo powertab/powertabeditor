@@ -31,8 +31,8 @@ TEST_CASE("Audio/MidiOutputDevice/Basic")
     // Ensure we aren't using the dummy API that is used when RtMidi was
     // compiled without support for the appropriate platform-specific API. If
     // this is the case, MIDI output won't do anything.
-    std::vector<RtMidi::Api> apis;
-    RtMidi::getCompiledApi(apis);
-    for (RtMidi::Api api : apis)
-        REQUIRE(api != RtMidi::RTMIDI_DUMMY);
+    std::vector<rt::midi::RtMidi::Api> apis;
+    rt::midi::RtMidi::getCompiledApi(apis);
+    for (rt::midi::RtMidi::Api api : apis)
+        REQUIRE(api != rt::midi::RtMidi::RTMIDI_DUMMY);
 }
