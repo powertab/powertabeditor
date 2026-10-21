@@ -33,7 +33,8 @@
 #include <vector>
 #include <score/generalmidi.h>
 
-class RtMidiOut;
+namespace rt { namespace midi { class RtMidiOut; } }
+using RtMidiOut = rt::midi::RtMidiOut;
 
 class MidiOutputDevice
 {
