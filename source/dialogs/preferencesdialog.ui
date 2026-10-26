@@ -316,6 +316,40 @@
             <item row="3" column="1">
              <widget class="QCheckBox" name="drawSystemOutlineCheckBox"/>
             </item>
+            <item row="4" column="0">
+             <widget class="QLabel" name="toolboxIconSizeLabel">
+              <property name="text">
+               <string>Toolbox Icon Size:</string>
+              </property>
+             </widget>
+            </item>
+            <item row="4" column="1">
+             <widget class="QComboBox" name="toolboxIconSizeComboBox">
+              <item>
+               <property name="text">
+                <string>Small</string>
+               </property>
+              </item>
+              <item>
+               <property name="text">
+                <string>Medium</string>
+               </property>
+              </item>
+              <item>
+               <property name="text">
+                <string>Large</string>
+               </property>
+              </item>
+              <item>
+               <property name="text">
+                <string>Extra Large</string>
+               </property>
+              </item>
+              <property name="currentIndex">
+               <number>1</number>
+              </property>
+             </widget>
+            </item>
            </layout>
           </item>
          </layout>

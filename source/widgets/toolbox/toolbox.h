@@ -19,8 +19,10 @@
 #define TOOLBOX_H
 
 #include <QWidget>
+#include <vector>
 
 class Command;
+class QScrollArea;
 class QToolButton;
 
 namespace Ui {
@@ -32,6 +34,13 @@ class ToolBox : public QWidget
     Q_OBJECT
 
 public:
+    static constexpr int SMALL_ICON_SIZE = 0;
+    static constexpr int MEDIUM_ICON_SIZE = 1;
+    static constexpr int LARGE_ICON_SIZE = 2;
+    static constexpr int EXTRA_LARGE_ICON_SIZE = 3;
+    static constexpr int DEFAULT_ICON_SIZE = MEDIUM_ICON_SIZE;
+    static constexpr int DEFAULT_ICONS_PER_ROW = 8;
+
     explicit ToolBox(Command *keySignatureCommand,
                      Command *timeSignatureCommand,
                      Command *standardBarlineCommand,
@@ -95,14 +104,34 @@ public:
                      Command *arpeggioDownCommand,
                      Command *textCommand,
                      Command *directionCommand,
-                     QWidget *parent = nullptr);
-    ~ToolBox();
+                     QWidget *parent = nullptr,
+                     int iconSize = DEFAULT_ICON_SIZE);
+    ~ToolBox() override;
+
+    void setIconSize(int size);
+
+    QSize sizeHint() const override;
+    QSize minimumSizeHint() const override;
+
+protected:
+    void resizeEvent(QResizeEvent *event) override;
+    void showEvent(QShowEvent *event) override;
+    bool eventFilter(QObject *watched, QEvent *event) override;
 
 private:
     void updateButtonStatusFromAction(QToolButton *button, Command *command);
     void initButton(QToolButton *button, Command *command);
+    void reorganizeGrid();
+    void updateButtonSizes(bool force = false);
+    int buttonEdgeSize() const;
 
     Ui::ToolBox *ui;
+    int myIconsPerRow;
+    int myIconSize;
+    QScrollArea *myScrollArea;
+    std::vector<QToolButton *> myButtons;
+    int myLastWidth;
+    int myLastHeight;
 };
 
 #endif // TOOLBOX_H

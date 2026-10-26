@@ -177,7 +177,7 @@ void SettingsTree::loadFromPlist()
     {
         std::string key_str = toStdString(key);
 
-        NSObject *obj = [prefs objectForKey:key];
+        NSObject *obj = [dict objectForKey:key];
         if (auto setting = convertToSettingValue(obj))
             setImpl(key_str, setting.value());
         else

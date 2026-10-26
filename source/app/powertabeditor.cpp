@@ -138,6 +138,7 @@
 #include <QMessageBox>
 #include <QMimeData>
 #include <QPrinter>
+#include <QTimer>
 #include <QPrintDialog>
 #include <QPrintPreviewDialog>
 #include <QRegularExpression>
@@ -221,10 +222,15 @@ PowerTabEditor::PowerTabEditor()
     myPreviousDirectory =
         QString::fromStdString(settings->get(Settings::PreviousDirectory));
 
-    // Restore the state of any dock widgets.
+    // Restore the state of any dock widgets (visibility, positions…).
     restoreState(settings->get(Settings::WindowState));
 
     setCentralWidget(myPlaybackArea);
+
+    // Explicitly draw the separator between dock widgets and the central
+    // area, since the native one can be invisible (e.g. on macOS).
+    setStyleSheet("QMainWindow::separator { background: palette(mid); "
+                  "width: 1px; height: 1px; }");
     setMinimumSize(800, 600);
     setWindowState(Qt::WindowMaximized);
     setWindowTitle(getApplicationName());
@@ -506,7 +512,13 @@ void PowerTabEditor::editKeyboardShortcuts()
 void PowerTabEditor::editPreferences()
 {
     PreferencesDialog dialog(this, *mySettingsManager, *myTuningDictionary);
-    dialog.exec();
+    const int savedIconSize =
+        mySettingsManager->getReadHandle()->get(Settings::ToolboxIconSize);
+    connect(&dialog, &PreferencesDialog::toolboxIconSizePreviewChanged,
+            myToolBox, &ToolBox::setIconSize);
+
+    if (dialog.exec() != QDialog::Accepted && myToolBox)
+        myToolBox->setIconSize(savedIconSize);
 }
 
 void PowerTabEditor::printDocument()
@@ -2185,6 +2197,29 @@ bool PowerTabEditor::eventFilter(QObject *object, QEvent *event)
     return QMainWindow::eventFilter(object, event);
 }
 
+void PowerTabEditor::resizeToolBoxToWindow()
+{
+    if (!myToolBoxDockWidget || width() <= 0)
+        return;
+
+    const int targetWidth = width() * 15 / 100;
+    resizeDocks({myToolBoxDockWidget}, {targetWidth}, Qt::Horizontal);
+}
+
+void PowerTabEditor::resizeEvent(QResizeEvent *event)
+{
+    QMainWindow::resizeEvent(event);
+
+    if (isVisible())
+        resizeToolBoxToWindow();
+}
+
+void PowerTabEditor::showEvent(QShowEvent *event)
+{
+    QMainWindow::showEvent(event);
+    resizeToolBoxToWindow();
+}
+
 void PowerTabEditor::closeEvent(QCloseEvent *event)
 {
     while (myTabWidget->currentIndex() != -1)
@@ -3541,6 +3576,9 @@ void PowerTabEditor::createToolBox()
     myToolBoxDockWidget->setFeatures(QDockWidget::DockWidgetClosable);
     myToolBoxDockWidget->setObjectName("Toolbox");
 
+    auto settings = mySettingsManager->getReadHandle();
+    int iconSize = settings->get(Settings::ToolboxIconSize);
+
     myToolBox = new ToolBox(myKeySignatureCommand,
                             myTimeSignatureCommand,
                             myStandardBarlineCommand,
@@ -3604,10 +3642,18 @@ void PowerTabEditor::createToolBox()
                             myArpeggioDownCommand,
                             myTextCommand,
                             myDirectionCommand,
-                            myToolBoxDockWidget);
+                            myToolBoxDockWidget,
+                            iconSize);
 
     myToolBoxDockWidget->setWidget(myToolBox);
     addDockWidget(Qt::LeftDockWidgetArea, myToolBoxDockWidget);
+
+    mySettingsManager->subscribeToChanges([this]() {
+        if (!myToolBox)
+            return;
+        auto s = mySettingsManager->getReadHandle();
+        myToolBox->setIconSize(s->get(Settings::ToolboxIconSize));
+    });
 }
 
 void PowerTabEditor::createTabArea()

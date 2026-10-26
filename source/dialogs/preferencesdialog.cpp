@@ -79,6 +79,9 @@ PreferencesDialog::PreferencesDialog(QWidget *parent,
     ui->backupIntervalSpinBox->setRange(5, 1000);
 
     loadCurrentSettings();
+
+    connect(ui->toolboxIconSizeComboBox, &QComboBox::currentIndexChanged,
+            this, &PreferencesDialog::toolboxIconSizePreviewChanged);
 }
 
 PreferencesDialog::~PreferencesDialog()
@@ -139,6 +142,13 @@ void PreferencesDialog::loadCurrentSettings()
 
     ui->systemSpacingSpinBox->setValue(
       settings->get(Settings::SystemSpacing));
+
+    const int toolboxIconSize = settings->get(Settings::ToolboxIconSize);
+    ui->toolboxIconSizeComboBox->setCurrentIndex(
+        toolboxIconSize >= 0 &&
+                toolboxIconSize < ui->toolboxIconSizeComboBox->count()
+            ? toolboxIconSize
+            : 1);
 
     ui->defaultInstrumentNameLineEdit->setText(
         QString::fromStdString(settings->get(Settings::DefaultInstrumentName)));
@@ -206,6 +216,9 @@ void PreferencesDialog::accept()
 
     settings->set(Settings::SystemSpacing,
                   ui->systemSpacingSpinBox->value());
+
+    settings->set(Settings::ToolboxIconSize,
+                  ui->toolboxIconSizeComboBox->currentIndex());
 
     settings->set(Settings::BackupEnabled,
                   ui->enableAutoBackupCheckBox->isChecked());

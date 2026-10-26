@@ -39,6 +39,9 @@ public:
                                const TuningDictionary &dictionary);
     ~PreferencesDialog();
 
+signals:
+    void toolboxIconSizePreviewChanged(int size);
+
 private slots:
     virtual void accept() override;
     void editTuning();

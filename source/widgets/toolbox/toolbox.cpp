@@ -21,7 +21,17 @@
 #include <app/command.h>
 
 #include <QAction>
+#include <QEvent>
+#include <QGridLayout>
+#include <QResizeEvent>
+#include <QScrollArea>
+#include <QScrollBar>
+#include <QShowEvent>
+#include <QStyle>
 #include <QToolButton>
+#include <QVBoxLayout>
+
+#include <algorithm>
 
 ToolBox::ToolBox(Command *keySignatureCommand,
                  Command *timeSignatureCommand,
@@ -86,11 +96,103 @@ ToolBox::ToolBox(Command *keySignatureCommand,
                  Command *arpeggioDownCommand,
                  Command *textCommand,
                  Command *directionCommand,
-                 QWidget *parent) :
+                 QWidget *parent,
+                 int iconSize) :
     QWidget(parent),
-    ui(new Ui::ToolBox)
+    ui(new Ui::ToolBox),
+    myIconsPerRow(DEFAULT_ICONS_PER_ROW),
+    myIconSize(iconSize >= SMALL_ICON_SIZE && iconSize <= LARGE_ICON_SIZE
+                   ? iconSize
+                   : DEFAULT_ICON_SIZE),
+    myScrollArea(nullptr),
+    myLastWidth(-1),
+    myLastHeight(-1)
 {
     ui->setupUi(this);
+
+    setMinimumSize(0, 0);
+    ui->gridLayoutWidget->setMinimumSize(0, 0);
+
+    myButtons = {
+        // Row 0
+        ui->keySignatureButton,
+        ui->timeSignatureButton,
+        ui->standardBarlineButton,
+        ui->repeatEndingButton,
+        ui->octave8vaButton,
+        ui->octave15maButton,
+        ui->octave8vbButton,
+        ui->octave15mbButton,
+
+        // Row 1
+        ui->wholeNoteButton,
+        ui->halfNoteButton,
+        ui->quarterNoteButton,
+        ui->eighthNoteButton,
+        ui->sixteenthNoteButton,
+        ui->thirtySecondNoteButton,
+        ui->sixtyFourthNoteButton,
+        ui->addRestButton,
+
+        // Row 2
+        ui->dottedButton,
+        ui->doubleDottedButton,
+        ui->tripletButton,
+        ui->irregularGroupingButton,
+        ui->tieButton,
+        ui->fermataButton,
+        ui->tempoMarkerButton,
+        ui->multibarRestButton,
+
+        // Row 3
+        ui->dynamicPPPButton,
+        ui->dynamicPPButton,
+        ui->dynamicPButton,
+        ui->dynamicMPButton,
+        ui->dynamicMFButton,
+        ui->dynamicFButton,
+        ui->dynamicFFButton,
+        ui->dynamicFFFButton,
+
+        // Row 4
+        ui->mutedButton,
+        ui->ghostNoteButton,
+        ui->marcatoButton,
+        ui->sforzandoButton,
+        ui->staccatoButton,
+        ui->letRingButton,
+        ui->palmMuteButton,
+        ui->tapButton,
+
+        // Row 5
+        ui->naturalHarmonicButton,
+        ui->artificialHarmonicButton,
+        ui->tappedHarmonicButton,
+        ui->bendButton,
+        ui->tremoloBarButton,
+        ui->vibratoButton,
+        ui->wideVibratoButton,
+        ui->graceNoteButton,
+
+        // Row 6
+        ui->leftHandFingeringButton,
+        ui->hammerPullButton,
+        ui->trillButton,
+        ui->legatoSlideButton,
+        ui->shiftSlideButton,
+        ui->slideIntoFromAboveButton,
+        ui->slideIntoFromBelowButton,
+        ui->slideOutOfDownwardsButton,
+
+        // Row 7
+        ui->slideOutOfUpwardsButton,
+        ui->pickStrokeUpButton,
+        ui->pickStrokeDownButton,
+        ui->arpeggioUpButton,
+        ui->arpeggioDownButton,
+        ui->textButton,
+        ui->directionButton
+    };
 
     ui->keySignatureButton->setDefaultAction(keySignatureCommand);
     ui->timeSignatureButton->setDefaultAction(timeSignatureCommand);
@@ -162,9 +264,147 @@ ToolBox::ToolBox(Command *keySignatureCommand,
     ui->arpeggioDownButton->setDefaultAction(arpeggioDownCommand);
     ui->textButton->setDefaultAction(textCommand);
     ui->directionButton->setDefaultAction(directionCommand);
+
+    myScrollArea = new QScrollArea(this);
+    myScrollArea->setFrameShape(QFrame::NoFrame);
+    myScrollArea->setWidgetResizable(true);
+    myScrollArea->setHorizontalScrollBarPolicy(Qt::ScrollBarAlwaysOff);
+    myScrollArea->setVerticalScrollBarPolicy(Qt::ScrollBarAsNeeded);
+    myScrollArea->setWidget(ui->gridLayoutWidget);
+
+    QVBoxLayout *mainLayout = new QVBoxLayout(this);
+    mainLayout->setContentsMargins(0, 0, 0, 0);
+    mainLayout->setSpacing(0);
+    mainLayout->addWidget(myScrollArea);
+
+    myScrollArea->viewport()->installEventFilter(this);
+
+    reorganizeGrid();
+    updateButtonSizes(true);
 }
 
 ToolBox::~ToolBox()
 {
     delete ui;
+}
+
+int ToolBox::buttonEdgeSize() const
+{
+    return 32 + myIconSize * 8;
+}
+
+void ToolBox::setIconSize(int size)
+{
+    if (size < SMALL_ICON_SIZE || size > EXTRA_LARGE_ICON_SIZE)
+        size = DEFAULT_ICON_SIZE;
+
+    if (myIconSize == size)
+        return;
+
+    myIconSize = size;
+    updateButtonSizes(true);
+    updateGeometry();
+}
+
+QSize ToolBox::sizeHint() const
+{
+    const int buttonSize = buttonEdgeSize();
+    return QSize(buttonSize * DEFAULT_ICONS_PER_ROW, buttonSize * 2);
+}
+
+QSize ToolBox::minimumSizeHint() const
+{
+    const int buttonSize = buttonEdgeSize();
+    return QSize(buttonSize, buttonSize * 2);
+}
+
+void ToolBox::resizeEvent(QResizeEvent *event)
+{
+    QWidget::resizeEvent(event);
+    updateButtonSizes();
+}
+
+void ToolBox::showEvent(QShowEvent *event)
+{
+    QWidget::showEvent(event);
+    updateButtonSizes();
+}
+
+bool ToolBox::eventFilter(QObject *watched, QEvent *event)
+{
+    if (myScrollArea && watched == myScrollArea->viewport() && event->type() == QEvent::Resize) {
+        updateButtonSizes();
+    }
+    return QWidget::eventFilter(watched, event);
+}
+
+void ToolBox::reorganizeGrid()
+{
+    delete ui->gridLayoutWidget->layout();
+
+    QGridLayout *grid = new QGridLayout(ui->gridLayoutWidget);
+    grid->setContentsMargins(0, 0, 0, 0);
+    grid->setSpacing(0);
+    grid->setAlignment(Qt::AlignTop | Qt::AlignLeft);
+
+    for (size_t i = 0; i < myButtons.size(); ++i) {
+        int row = static_cast<int>(i) / myIconsPerRow;
+        int col = static_cast<int>(i) % myIconsPerRow;
+        grid->addWidget(myButtons[i], row, col);
+    }
+
+    ui->gridLayout = grid;
+}
+
+void ToolBox::updateButtonSizes(bool force)
+{
+    int w = myScrollArea ? myScrollArea->viewport()->width() : width();
+    int h = myScrollArea ? myScrollArea->viewport()->height() : height();
+    if (w <= 0)
+        w = 272;
+    if (h <= 0)
+        h = 500;
+
+    if (!force && w == myLastWidth && h == myLastHeight) {
+        return;
+    }
+
+    const int buttonSize = buttonEdgeSize();
+    auto columnsForWidth = [buttonSize](int width) {
+        return std::max(1, width / buttonSize);
+    };
+    const int columnsWithoutScrollBar = columnsForWidth(w);
+    const int rowsWithoutScrollBar =
+        (static_cast<int>(myButtons.size()) + columnsWithoutScrollBar - 1) /
+        columnsWithoutScrollBar;
+    const bool needsScrollBar = rowsWithoutScrollBar * buttonSize > h;
+
+    if (myScrollArea) {
+        myScrollArea->setVerticalScrollBarPolicy(
+            needsScrollBar ? Qt::ScrollBarAlwaysOn : Qt::ScrollBarAlwaysOff);
+        w = myScrollArea->viewport()->width();
+        h = myScrollArea->viewport()->height();
+    }
+
+    const int iconsPerRow = columnsForWidth(w);
+    if (myIconsPerRow != iconsPerRow) {
+        myIconsPerRow = iconsPerRow;
+        reorganizeGrid();
+    }
+
+    myLastWidth = w;
+    myLastHeight = h;
+
+    const int cellWidth = w / myIconsPerRow;
+    const int extraWidth = w % myIconsPerRow;
+    for (size_t i = 0; i < myButtons.size(); ++i) {
+        QToolButton *btn = myButtons[i];
+        if (btn) {
+            const int col = static_cast<int>(i) % myIconsPerRow;
+            const int buttonWidth = cellWidth + (col < extraWidth ? 1 : 0);
+            const int iconSize = std::min(buttonSize - 8, buttonWidth - 8);
+            btn->setFixedSize(buttonWidth, buttonSize);
+            btn->setIconSize(QSize(iconSize, iconSize));
+        }
+    }
 }
