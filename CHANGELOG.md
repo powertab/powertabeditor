@@ -9,10 +9,14 @@ Thanks to the following contributors who worked on this release:
 
 ### Added
 - Added preference for whether the outline around each system is drawn (#550)
+- Added a small, medium, large, or extra-large toolbox icon size preference
 - Ties are now drawn in the tab staff in addition to the standard notation (#561, #515)
 - Pressing 'x' can now create a muted note without requiring a number to be inserted first (#557, #448)
 
 ### Changed
+- Updated the minimum required version of CMake to 3.24 for RtMidi 6 support
+- Updated the minimum required version of `RtMidi` to 6.0.0
+- The toolbox now uses 15% of the window width, with icon columns adapting to fill each row
 
 ### Fixed
 

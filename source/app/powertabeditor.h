@@ -289,6 +289,8 @@ protected:
     virtual void resizeEvent(QResizeEvent *event) override;
 
 private:
+    void resizeToolBoxToWindow();
+
     /// Returns the application name & version (e.g. 'Power Tab Editor 2.0').
     QString getApplicationName() const;
     /// Updates the window title with the file path of the active document.
@@ -454,7 +456,6 @@ private:
     QDockWidget *myInstrumentDockWidget;
     ToolBox *myToolBox;
     QDockWidget *myToolBoxDockWidget;
-    bool myToolboxWidthInitialized;
     PlaybackWidget *myPlaybackWidget;
     QWidget *myPlaybackArea;
 

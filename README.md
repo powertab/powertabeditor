@@ -65,7 +65,7 @@ Power Tab Editor 2.0 - A powerful cross platform guitar tablature viewer and edi
 * See below for instructions on how to compile and run the project:
 
 ### Dependencies:
-* [CMake](http://www.cmake.org/) >= 3.12
+* [CMake](http://www.cmake.org/) >= 3.24
 * [Boost](http://www.boost.org/) >= 1.74
   * algorithm
   * date_time
@@ -78,7 +78,7 @@ Power Tab Editor 2.0 - A powerful cross platform guitar tablature viewer and edi
   * stacktrace
 * [Qt](http://qt-project.org/) >= 6.2 version or greater
 * [nlohmann-json](https://github.com/nlohmann/json) >= 3.7.3
-* [RtMidi](https://www.music.mcgill.ca/~gary/rtmidi/) >= 4.0
+* [RtMidi](https://www.music.mcgill.ca/~gary/rtmidi/) >= 6.0.0
 * [pugixml](https://pugixml.org/)
 * [minizip](https://github.com/madler/zlib)
 * [doctest](https://github.com/onqtam/doctest)

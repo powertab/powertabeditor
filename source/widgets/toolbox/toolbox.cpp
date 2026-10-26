@@ -97,10 +97,13 @@ ToolBox::ToolBox(Command *keySignatureCommand,
                  Command *textCommand,
                  Command *directionCommand,
                  QWidget *parent,
-                 int iconsPerRow) :
+                 int iconSize) :
     QWidget(parent),
     ui(new Ui::ToolBox),
-    myIconsPerRow(iconsPerRow > 0 ? iconsPerRow : DEFAULT_ICONS_PER_ROW),
+    myIconsPerRow(DEFAULT_ICONS_PER_ROW),
+    myIconSize(iconSize >= SMALL_ICON_SIZE && iconSize <= LARGE_ICON_SIZE
+                   ? iconSize
+                   : DEFAULT_ICON_SIZE),
     myScrollArea(nullptr),
     myLastWidth(-1),
     myLastHeight(-1)
@@ -285,36 +288,34 @@ ToolBox::~ToolBox()
     delete ui;
 }
 
-int ToolBox::getIconsPerRow() const
+int ToolBox::buttonEdgeSize() const
 {
-    return myIconsPerRow;
+    return 32 + myIconSize * 8;
 }
 
-void ToolBox::setIconsPerRow(int count)
+void ToolBox::setIconSize(int size)
 {
-    if (count <= 0) {
-        count = 1;
-    }
-    if (myIconsPerRow != count) {
-        myIconsPerRow = count;
-        reorganizeGrid();
-        updateButtonSizes(true);
-    }
+    if (size < SMALL_ICON_SIZE || size > EXTRA_LARGE_ICON_SIZE)
+        size = DEFAULT_ICON_SIZE;
+
+    if (myIconSize == size)
+        return;
+
+    myIconSize = size;
+    updateButtonSizes(true);
+    updateGeometry();
 }
 
 QSize ToolBox::sizeHint() const
 {
-    int iconWidth = width() > 0 ? std::max(16, width() / myIconsPerRow) : 34;
-    int w = iconWidth * myIconsPerRow;
-    int numRows = (static_cast<int>(myButtons.size()) + myIconsPerRow - 1) / myIconsPerRow;
-    int h = iconWidth * numRows;
-    return QSize(w, h);
+    const int buttonSize = buttonEdgeSize();
+    return QSize(buttonSize * DEFAULT_ICONS_PER_ROW, buttonSize * 2);
 }
 
 QSize ToolBox::minimumSizeHint() const
 {
-    int minIconWidth = 16;
-    return QSize(minIconWidth * myIconsPerRow, minIconWidth * 2);
+    const int buttonSize = buttonEdgeSize();
+    return QSize(buttonSize, buttonSize * 2);
 }
 
 void ToolBox::resizeEvent(QResizeEvent *event)
@@ -344,7 +345,7 @@ void ToolBox::reorganizeGrid()
     QGridLayout *grid = new QGridLayout(ui->gridLayoutWidget);
     grid->setContentsMargins(0, 0, 0, 0);
     grid->setSpacing(0);
-    grid->setAlignment(Qt::AlignTop | Qt::AlignHCenter);
+    grid->setAlignment(Qt::AlignTop | Qt::AlignLeft);
 
     for (size_t i = 0; i < myButtons.size(); ++i) {
         int row = static_cast<int>(i) / myIconsPerRow;
@@ -357,69 +358,53 @@ void ToolBox::reorganizeGrid()
 
 void ToolBox::updateButtonSizes(bool force)
 {
-    int w = width();
-    int h = height();
-    if (w <= 0) {
+    int w = myScrollArea ? myScrollArea->viewport()->width() : width();
+    int h = myScrollArea ? myScrollArea->viewport()->height() : height();
+    if (w <= 0)
         w = 272;
-    }
-    if (h <= 0) {
+    if (h <= 0)
         h = 500;
-    }
 
     if (!force && w == myLastWidth && h == myLastHeight) {
         return;
     }
+
+    const int buttonSize = buttonEdgeSize();
+    auto columnsForWidth = [buttonSize](int width) {
+        return std::max(1, width / buttonSize);
+    };
+    const int columnsWithoutScrollBar = columnsForWidth(w);
+    const int rowsWithoutScrollBar =
+        (static_cast<int>(myButtons.size()) + columnsWithoutScrollBar - 1) /
+        columnsWithoutScrollBar;
+    const bool needsScrollBar = rowsWithoutScrollBar * buttonSize > h;
+
+    if (myScrollArea) {
+        myScrollArea->setVerticalScrollBarPolicy(
+            needsScrollBar ? Qt::ScrollBarAlwaysOn : Qt::ScrollBarAlwaysOff);
+        w = myScrollArea->viewport()->width();
+        h = myScrollArea->viewport()->height();
+    }
+
+    const int iconsPerRow = columnsForWidth(w);
+    if (myIconsPerRow != iconsPerRow) {
+        myIconsPerRow = iconsPerRow;
+        reorganizeGrid();
+    }
+
     myLastWidth = w;
     myLastHeight = h;
 
-    int scrollBarWidth = 16;
-    if (myScrollArea && myScrollArea->style()) {
-        int extent = myScrollArea->style()->pixelMetric(
-            QStyle::PM_ScrollBarExtent, nullptr, myScrollArea->verticalScrollBar());
-        if (extent > 0) {
-            scrollBarWidth = extent;
-        }
-    }
-
-    int numRows = (static_cast<int>(myButtons.size()) + myIconsPerRow - 1) / myIconsPerRow;
-
-    int iconWidth1 = std::max(16, w / myIconsPerRow);
-    int totalHeight1 = numRows * iconWidth1;
-
-    int iconWidth2 = std::max(16, (w - scrollBarWidth) / myIconsPerRow);
-    int totalHeight2 = numRows * iconWidth2;
-
-    int chosenIconWidth;
-    if (totalHeight1 <= h) {
-        if (myScrollArea) {
-            myScrollArea->setVerticalScrollBarPolicy(Qt::ScrollBarAlwaysOff);
-        }
-        chosenIconWidth = iconWidth1;
-    } else if (totalHeight2 <= h) {
-        if (myScrollArea) {
-            myScrollArea->setVerticalScrollBarPolicy(Qt::ScrollBarAlwaysOff);
-        }
-        chosenIconWidth = iconWidth2;
-    } else {
-        if (myScrollArea) {
-            myScrollArea->setVerticalScrollBarPolicy(Qt::ScrollBarAlwaysOn);
-        }
-        chosenIconWidth = iconWidth2;
-    }
-
-    int padding = std::max(4, chosenIconWidth / 6);
-    if (padding % 2 != 0) {
-        ++padding;
-    }
-    int innerIconSize = std::max(12, chosenIconWidth - padding);
-
-    QSize btnSize(chosenIconWidth, chosenIconWidth);
-    QSize iconSize(innerIconSize, innerIconSize);
-
-    for (QToolButton *btn : myButtons) {
+    const int cellWidth = w / myIconsPerRow;
+    const int extraWidth = w % myIconsPerRow;
+    for (size_t i = 0; i < myButtons.size(); ++i) {
+        QToolButton *btn = myButtons[i];
         if (btn) {
-            btn->setFixedSize(btnSize);
-            btn->setIconSize(iconSize);
+            const int col = static_cast<int>(i) % myIconsPerRow;
+            const int buttonWidth = cellWidth + (col < extraWidth ? 1 : 0);
+            const int iconSize = std::min(buttonSize - 8, buttonWidth - 8);
+            btn->setFixedSize(buttonWidth, buttonSize);
+            btn->setIconSize(QSize(iconSize, iconSize));
         }
     }
 }

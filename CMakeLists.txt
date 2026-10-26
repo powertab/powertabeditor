@@ -1,4 +1,4 @@
-cmake_minimum_required( VERSION 3.12 )
+cmake_minimum_required( VERSION 3.24 )
 
 # Target OS X 15.0 and above. This must be set before the first project() call.
 if ( APPLE )

@@ -317,47 +317,38 @@
              <widget class="QCheckBox" name="drawSystemOutlineCheckBox"/>
             </item>
             <item row="4" column="0">
-             <widget class="QLabel" name="toolboxIconsPerRowLabel">
+             <widget class="QLabel" name="toolboxIconSizeLabel">
               <property name="text">
-               <string>Toolbox Icons Per Row:</string>
+               <string>Toolbox Icon Size:</string>
               </property>
              </widget>
             </item>
             <item row="4" column="1">
-             <layout class="QHBoxLayout" name="toolboxIconsPerRowLayout">
+             <widget class="QComboBox" name="toolboxIconSizeComboBox">
               <item>
-               <widget class="QSlider" name="toolboxIconsPerRowSlider">
-                <property name="minimum">
-                 <number>4</number>
-                </property>
-                <property name="maximum">
-                 <number>8</number>
-                </property>
-                <property name="pageStep">
-                 <number>1</number>
-                </property>
-                <property name="value">
-                 <number>8</number>
-                </property>
-                <property name="orientation">
-                 <enum>Qt::Orientation::Horizontal</enum>
-                </property>
-                <property name="tickPosition">
-                 <enum>QSlider::TickPosition::TicksBelow</enum>
-                </property>
-                <property name="tickInterval">
-                 <number>1</number>
-                </property>
-               </widget>
+               <property name="text">
+                <string>Small</string>
+               </property>
               </item>
               <item>
-               <widget class="QLabel" name="toolboxIconsPerRowValueLabel">
-                <property name="text">
-                 <string>8</string>
-                </property>
-               </widget>
+               <property name="text">
+                <string>Medium</string>
+               </property>
               </item>
-             </layout>
+              <item>
+               <property name="text">
+                <string>Large</string>
+               </property>
+              </item>
+              <item>
+               <property name="text">
+                <string>Extra Large</string>
+               </property>
+              </item>
+              <property name="currentIndex">
+               <number>1</number>
+              </property>
+             </widget>
             </item>
            </layout>
           </item>

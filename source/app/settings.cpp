@@ -44,11 +44,8 @@ const Setting<bool> DrawSystemOutline("app/draw_system_outline", true);
 
 const Setting<int> SystemSpacing("app/system_spacing", 50);
 
-const Setting<int> ToolboxIconsPerRow("app/toolbox_icons_per_row",
-                                      ToolBox::DEFAULT_ICONS_PER_ROW);
-
-const Setting<int> ToolboxWidthPercentage("app/toolbox_width_percentage",
-                                       ToolBox::DEFAULT_WIDTH_PERCENTAGE);
+const Setting<int> ToolboxIconSize("app/toolbox_icon_size",
+                                   ToolBox::DEFAULT_ICON_SIZE);
 
 const Setting<ScoreTheme> Theme("app/score_theme", ScoreTheme::SystemDefault);
 
