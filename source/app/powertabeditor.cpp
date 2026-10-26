@@ -226,6 +226,11 @@ PowerTabEditor::PowerTabEditor()
     restoreState(settings->get(Settings::WindowState));
 
     setCentralWidget(myPlaybackArea);
+
+    // Explicitly draw the separator between dock widgets and the central
+    // area, since the native one can be invisible (e.g. on macOS).
+    setStyleSheet("QMainWindow::separator { background: palette(mid); "
+                  "width: 1px; height: 1px; }");
     setMinimumSize(800, 600);
     setWindowState(Qt::WindowMaximized);
     setWindowTitle(getApplicationName());
@@ -2185,8 +2190,6 @@ void PowerTabEditor::resizeToolBoxToWindow()
         return;
 
     const int targetWidth = width() * 15 / 100;
-    myToolBoxDockWidget->setMinimumWidth(targetWidth);
-    myToolBoxDockWidget->setMaximumWidth(targetWidth);
     resizeDocks({myToolBoxDockWidget}, {targetWidth}, Qt::Horizontal);
 }
 
