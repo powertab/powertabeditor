@@ -34,8 +34,12 @@ class ToolBox : public QWidget
     Q_OBJECT
 
 public:
+    static constexpr int SMALL_ICON_SIZE = 0;
+    static constexpr int MEDIUM_ICON_SIZE = 1;
+    static constexpr int LARGE_ICON_SIZE = 2;
+    static constexpr int EXTRA_LARGE_ICON_SIZE = 3;
+    static constexpr int DEFAULT_ICON_SIZE = MEDIUM_ICON_SIZE;
     static constexpr int DEFAULT_ICONS_PER_ROW = 8;
-    static constexpr int DEFAULT_WIDTH_PERCENTAGE = 25;
 
     explicit ToolBox(Command *keySignatureCommand,
                      Command *timeSignatureCommand,
@@ -101,11 +105,10 @@ public:
                      Command *textCommand,
                      Command *directionCommand,
                      QWidget *parent = nullptr,
-                     int iconsPerRow = DEFAULT_ICONS_PER_ROW);
+                     int iconSize = DEFAULT_ICON_SIZE);
     ~ToolBox() override;
 
-    int getIconsPerRow() const;
-    void setIconsPerRow(int count);
+    void setIconSize(int size);
 
     QSize sizeHint() const override;
     QSize minimumSizeHint() const override;
@@ -120,9 +123,11 @@ private:
     void initButton(QToolButton *button, Command *command);
     void reorganizeGrid();
     void updateButtonSizes(bool force = false);
+    int buttonEdgeSize() const;
 
     Ui::ToolBox *ui;
     int myIconsPerRow;
+    int myIconSize;
     QScrollArea *myScrollArea;
     std::vector<QToolButton *> myButtons;
     int myLastWidth;
