@@ -137,6 +137,9 @@ private:
     boost::signals2::scoped_connection mySettingsListener;
 
     std::unique_ptr<MidiOutputDevice> myDevice;
+    /// The MIDI API and port that myDevice was initialized with.
+    std::string myDeviceApi;
+    std::string myDevicePort;
     std::atomic<bool> myMetronomeEnabled = false;
 
     /// Flag used to terminate playback.

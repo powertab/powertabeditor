@@ -86,6 +86,11 @@ MidiPlayer::updateDeviceSettings()
         port = settings->get(Settings::MidiPortName);
     }
 
+    // Settings unrelated to the MIDI device (e.g. the theme) also trigger this
+    // update, so avoid needlessly tearing down and re-creating the device.
+    if (myDevice && api == myDeviceApi && port == myDevicePort)
+        return;
+
     // Initialize RtMidi and set the port.
     myDevice = std::make_unique<MidiOutputDevice>();
     if (!myDevice->initialize(api, port))
@@ -111,6 +116,9 @@ MidiPlayer::updateDeviceSettings()
         emit error(msg);
         return;
     }
+
+    myDeviceApi = api;
+    myDevicePort = port;
 }
 
 void

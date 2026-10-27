@@ -12,18 +12,17 @@ on:
 jobs:
   build-ubuntu:
 
-    runs-on: ubuntu-22.04
+    runs-on: ubuntu-24.04
 
     steps:
     - uses: actions/checkout@v7
     - name: Install Apt Dependencies
-      run: sudo apt update && sudo apt install ninja-build qt6-base-dev libglx-dev libgl1-mesa-dev qt6-tools-dev qt6-tools-dev-tools qt6-l10n-tools libboost-dev libboost-date-time-dev libboost-iostreams-dev nlohmann-json3-dev libasound2-dev librtmidi-dev libpugixml-dev libminizip-dev doctest-dev
+      run: sudo apt update && sudo apt install ninja-build qt6-base-dev libglx-dev libgl1-mesa-dev qt6-tools-dev qt6-tools-dev-tools qt6-l10n-tools libboost-dev libboost-date-time-dev libboost-iostreams-dev nlohmann-json3-dev libasound2-dev libpugixml-dev libminizip-dev doctest-dev
     - name: Create Build Directory
       run: cmake -E make_directory ${{runner.workspace}}/build
     - name: Generate Project
       working-directory: ${{runner.workspace}}/build
-      # We could use the -S and -B options, but we only have CMake 3.12 here.
-      run: cmake ${GITHUB_WORKSPACE} -G Ninja -DCMAKE_TOOLCHAIN_FILE="${VCPKG_INSTALLATION_ROOT}/scripts/buildsystems/vcpkg.cmake"
+      run: cmake ${GITHUB_WORKSPACE} -G Ninja -DCMAKE_TOOLCHAIN_FILE="${VCPKG_INSTALLATION_ROOT}/scripts/buildsystems/vcpkg.cmake" -DFETCH_RTMIDI=ON
     - name: Build
       run: ninja -C ${{runner.workspace}}/build
     - name: Test

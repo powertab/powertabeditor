@@ -128,8 +128,14 @@ void PreferencesDialog::loadCurrentSettings()
 
     ui->countInVolumeSpinBox->setValue(settings->get(Settings::CountInVolume));
 
-    ui->scoreThemeComboBox->setCurrentIndex(
-        static_cast<int>(settings->get(Settings::Theme)));
+    myOriginalTheme = settings->get(Settings::Theme);
+    ui->scoreThemeComboBox->setCurrentIndex(static_cast<int>(myOriginalTheme));
+
+    // Preview the selected theme immediately; it is reverted if the dialog is
+    // cancelled.
+    connect(ui->scoreThemeComboBox, &QComboBox::currentIndexChanged, this,
+            [this](int index)
+            { setTheme(static_cast<ScoreTheme>(index)); });
 
     ui->openInNewWindowCheckBox->setChecked(
         settings->get(Settings::OpenFilesInNewWindow));
@@ -221,6 +227,17 @@ void PreferencesDialog::accept()
     settings->set(Settings::DefaultTuning, myDefaultTuning);
 
     done(Accepted);
+}
+
+void PreferencesDialog::reject()
+{
+    setTheme(myOriginalTheme);
+    QDialog::reject();
+}
+
+void PreferencesDialog::setTheme(ScoreTheme theme)
+{
+    mySettingsManager.getWriteHandle()->set(Settings::Theme, theme);
 }
 
 void PreferencesDialog::editTuning()
