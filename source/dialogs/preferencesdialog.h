@@ -19,6 +19,7 @@
 #define DIALOGS_PREFERENCESDIALOG_H
 
 #include <QDialog>
+#include <app/settings.h>
 #include <score/tuning.h>
 
 namespace Ui {
@@ -41,6 +42,7 @@ public:
 
 private slots:
     virtual void accept() override;
+    virtual void reject() override;
     void editTuning();
 
 private:
@@ -48,10 +50,14 @@ private:
     /// values.
     void loadCurrentSettings();
 
+    /// Applies the theme immediately, to preview it while the dialog is open.
+    void setTheme(ScoreTheme theme);
+
     Ui::PreferencesDialog *ui;
     SettingsManager &mySettingsManager;
     const TuningDictionary &myDictionary;
     Tuning myDefaultTuning;
+    ScoreTheme myOriginalTheme = ScoreTheme::SystemDefault;
 };
 
 #endif

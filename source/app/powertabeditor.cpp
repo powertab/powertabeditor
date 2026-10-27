@@ -133,6 +133,7 @@
 #include <QDockWidget>
 #include <QFileDialog>
 #include <QFontDatabase>
+#include <QGuiApplication>
 #include <QKeyEvent>
 #include <QMenuBar>
 #include <QMessageBox>
@@ -142,6 +143,7 @@
 #include <QPrintPreviewDialog>
 #include <QRegularExpression>
 #include <QScrollArea>
+#include <QStyleHints>
 #include <QTabBar>
 #include <QUrl>
 #include <QVBoxLayout>
@@ -157,6 +159,33 @@
 #include <widgets/mixer/mixer.h>
 #include <widgets/playback/playbackwidget.h>
 #include <widgets/toolbox/toolbox.h>
+
+/// Forces the whole application to use a light / dark color scheme if
+/// requested by the theme preference, instead of always following the OS.
+static void
+applyColorScheme(const SettingsManager &settings_manager)
+{
+#if QT_VERSION >= QT_VERSION_CHECK(6, 8, 0)
+    Qt::ColorScheme scheme = Qt::ColorScheme::Unknown;
+
+    switch (settings_manager.getReadHandle()->get(Settings::Theme))
+    {
+        case ScoreTheme::Light:
+            scheme = Qt::ColorScheme::Light;
+            break;
+        case ScoreTheme::Dark:
+            scheme = Qt::ColorScheme::Dark;
+            break;
+        case ScoreTheme::SystemDefault:
+            break;
+    }
+
+    // Unknown restores the default behaviour of following the system.
+    QGuiApplication::styleHints()->setColorScheme(scheme);
+#else
+    Q_UNUSED(settings_manager);
+#endif
+}
 
 PowerTabEditor::PowerTabEditor()
     : QMainWindow(nullptr),
@@ -199,6 +228,11 @@ PowerTabEditor::PowerTabEditor()
 
     myTuningDictionary->loadInBackground();
     mySettingsManager->load(Paths::getConfigDir());
+
+    // Apply the theme before creating any widgets, and keep it up to date.
+    applyColorScheme(*mySettingsManager);
+    mySettingsManager->subscribeToChanges(
+        [this]() { applyColorScheme(*mySettingsManager); });
 
     createMidiThread();
 

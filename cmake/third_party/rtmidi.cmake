@@ -8,8 +8,9 @@ if ( FETCH_RTMIDI )
 
     FetchContent_Declare( rtmidi_src
         GIT_REPOSITORY https://github.com/thestk/rtmidi.git
-        GIT_TAG 4.0.0
+        GIT_TAG 6.0.0
     )
+    set( RTMIDI_BUILD_TESTING OFF )
     FetchContent_MakeAvailable( rtmidi_src )
 
     add_library( rtmidi::rtmidi INTERFACE IMPORTED )
@@ -17,7 +18,7 @@ if ( FETCH_RTMIDI )
     target_include_directories( rtmidi::rtmidi INTERFACE ${rtmidi_src_SOURCE_DIR} )
 
 else ()
-    find_package( rtmidi 4.0 REQUIRED )
+    find_package( rtmidi 6.0.0 REQUIRED )
 
     add_library( rtmidi::rtmidi IMPORTED SHARED )
     target_include_directories( rtmidi::rtmidi INTERFACE ${rtmidi_INCLUDE_DIRS} )
