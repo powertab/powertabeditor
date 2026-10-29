@@ -25,15 +25,12 @@
 // third parameter is the new value (0-127)
 **/
 
-#include <array>
 #include <cstdint>
 #include <memory>
 #include <string>
 #include <string_view>
 #include <vector>
 #include <score/generalmidi.h>
-
-class RtMidiOut;
 
 class MidiOutputDevice
 {
@@ -94,12 +91,8 @@ public:
 private:
     bool sendMidiMessage(unsigned char a, unsigned char b, unsigned char c);
 
-    std::vector<std::unique_ptr<RtMidiOut>> myMidiOuts;
-    RtMidiOut *myMidiOut;
-    /// Maximum volume for each channel (as set in the mixer).
-    std::array<uint8_t, Midi::NUM_MIDI_CHANNELS_PER_PORT> myMaxVolumes;
-    /// Volume of last active dynamic for each channel.
-    std::array<uint8_t, Midi::NUM_MIDI_CHANNELS_PER_PORT> myActiveVolumes;
+    struct Impl;
+    std::unique_ptr<Impl> myImpl;
 };
 
 #endif
