@@ -20,6 +20,10 @@
 #include <audio/midioutputdevice.h>
 #include <RtMidi.h>
 
+#if RTMIDI_VERSION_MAJOR >= 6 && RTMIDI_VERSION_MINOR >= 1
+using namespace rt::midi;
+#endif
+
 TEST_CASE("Audio/MidiOutputDevice/Basic")
 {
     MidiOutputDevice device;
