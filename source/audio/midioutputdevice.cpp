@@ -18,16 +18,33 @@
 #include "midioutputdevice.h"
 
 #include <RtMidi.h>
+
+#include <array>
+#include <cassert>
 #include <exception>
+#include <memory>
 #include <score/dynamic.h>
 #include <score/generalmidi.h>
-#include <cassert>
 
 #ifdef __APPLE__
 #include "midisoftwaresynth.h"
 #endif
 
-MidiOutputDevice::MidiOutputDevice() : myMidiOut(nullptr)
+#if RTMIDI_VERSION_MAJOR >= 6 && RTMIDI_VERSION_MINOR >= 1
+using namespace rt::midi;
+#endif
+
+struct MidiOutputDevice::Impl
+{
+    std::vector<std::unique_ptr<RtMidiOut>> myMidiOuts;
+    RtMidiOut *myMidiOut = nullptr;
+    /// Maximum volume for each channel (as set in the mixer).
+    std::array<uint8_t, Midi::NUM_MIDI_CHANNELS_PER_PORT> myMaxVolumes;
+    /// Volume of last active dynamic for each channel.
+    std::array<uint8_t, Midi::NUM_MIDI_CHANNELS_PER_PORT> myActiveVolumes;
+};
+
+MidiOutputDevice::MidiOutputDevice() : myImpl(std::make_unique<Impl>())
 {
     // Initialize the OSX software synth.
 #ifdef __APPLE__
@@ -42,8 +59,8 @@ MidiOutputDevice::MidiOutputDevice() : myMidiOut(nullptr)
     };
 #endif
 
-    myMaxVolumes.fill(Midi::MAX_MIDI_CHANNEL_VOLUME);
-    myActiveVolumes.fill(static_cast<uint8_t>(VolumeLevel::fff));
+    myImpl->myMaxVolumes.fill(Midi::MAX_MIDI_CHANNEL_VOLUME);
+    myImpl->myActiveVolumes.fill(static_cast<uint8_t>(VolumeLevel::fff));
 
     // Create all MIDI APIs supported on this platform.
     std::vector<RtMidi::Api> apis;
@@ -53,7 +70,7 @@ MidiOutputDevice::MidiOutputDevice() : myMidiOut(nullptr)
     {
         try
         {
-            myMidiOuts.emplace_back(std::make_unique<RtMidiOut>(api));
+            myImpl->myMidiOuts.emplace_back(std::make_unique<RtMidiOut>(api));
         }
         catch (RtMidiError &e)
         {
@@ -66,7 +83,7 @@ MidiOutputDevice::MidiOutputDevice() : myMidiOut(nullptr)
 MidiOutputDevice::~MidiOutputDevice()
 {
     // Make sure there aren't any lingering notes.
-    if (myMidiOut)
+    if (myImpl->myMidiOut)
         stopAllNotes();
 }
 
@@ -86,7 +103,7 @@ MidiOutputDevice::stopAllNotes()
 void
 MidiOutputDevice::sendMessage(const std::vector<uint8_t> &data)
 {
-    myMidiOut->sendMessage(&data);
+    myImpl->myMidiOut->sendMessage(&data);
 }
 
 bool MidiOutputDevice::sendMidiMessage(unsigned char a, unsigned char b,
@@ -104,7 +121,7 @@ bool MidiOutputDevice::sendMidiMessage(unsigned char a, unsigned char b,
 
     try
     {
-        myMidiOut->sendMessage(&message);
+        myImpl->myMidiOut->sendMessage(&message);
     }
     catch (RtMidiError &e)
     {
@@ -119,13 +136,13 @@ bool
 MidiOutputDevice::initialize(const std::string_view &preferred_api,
                              const std::string_view &preferred_port)
 {
-    if (myMidiOut)
-        myMidiOut->closePort(); // Close any open ports.
+    if (myImpl->myMidiOut)
+        myImpl->myMidiOut->closePort(); // Close any open ports.
 
-    myMidiOut = nullptr;
+    myImpl->myMidiOut = nullptr;
     unsigned int port = 0;
 
-    for (auto &&midi_out : myMidiOuts)
+    for (auto &&midi_out : myImpl->myMidiOuts)
     {
         if (RtMidi::getApiName(midi_out->getCurrentApi()) != preferred_api)
             continue;
@@ -134,7 +151,7 @@ MidiOutputDevice::initialize(const std::string_view &preferred_api,
         {
             if (midi_out->getPortName(i) == preferred_port)
             {
-                myMidiOut = midi_out.get();
+                myImpl->myMidiOut = midi_out.get();
                 port = i;
                 break;
             }
@@ -142,18 +159,18 @@ MidiOutputDevice::initialize(const std::string_view &preferred_api,
     }
 
     // If there isn't an existing preference, just use the first port.
-    if (!myMidiOut && (preferred_api.empty() && preferred_port.empty()) &&
-        !myMidiOuts.empty() && myMidiOuts[0]->getPortCount())
+    if (!myImpl->myMidiOut && (preferred_api.empty() && preferred_port.empty()) &&
+        !myImpl->myMidiOuts.empty() && myImpl->myMidiOuts[0]->getPortCount())
     {
-        myMidiOut = myMidiOuts[0].get();
+        myImpl->myMidiOut = myImpl->myMidiOuts[0].get();
     }
 
-    if (!myMidiOut)
+    if (!myImpl->myMidiOut)
         return false;
 
     try
     {
-        myMidiOut->openPort(port);
+        myImpl->myMidiOut->openPort(port);
     }
     catch (RtMidiError &e)
     {
@@ -166,25 +183,25 @@ MidiOutputDevice::initialize(const std::string_view &preferred_api,
 
 size_t MidiOutputDevice::getApiCount()
 {
-    return myMidiOuts.size();
+    return myImpl->myMidiOuts.size();
 }
 
 std::string
 MidiOutputDevice::getApiName(size_t api)
 {
-    return RtMidi::getApiName(myMidiOuts[api]->getCurrentApi());
+    return RtMidi::getApiName(myImpl->myMidiOuts[api]->getCurrentApi());
 }
 
 unsigned int MidiOutputDevice::getPortCount(size_t api)
 {
-    assert(api < myMidiOuts.size() && "Programming error, api doesn't exist");
-    return myMidiOuts[api]->getPortCount();
+    assert(api < myImpl->myMidiOuts.size() && "Programming error, api doesn't exist");
+    return myImpl->myMidiOuts[api]->getPortCount();
 }
 
 std::string MidiOutputDevice::getPortName(size_t api, unsigned int port)
 {
-    assert(api < myMidiOuts.size() && "Programming error, api doesn't exist");
-    return myMidiOuts[api]->getPortName(port);
+    assert(api < myImpl->myMidiOuts.size() && "Programming error, api doesn't exist");
+    return myImpl->myMidiOuts[api]->getPortName(port);
 }
 
 bool MidiOutputDevice::setPatch(int channel, uint8_t patch)
@@ -205,11 +222,11 @@ bool MidiOutputDevice::setVolume (int channel, uint8_t volume)
 {
     assert(volume <= 127);
 
-    myActiveVolumes[channel] = volume;
+    myImpl->myActiveVolumes[channel] = volume;
 
     return sendMidiMessage(
         ControlChange + channel, ChannelVolume,
-        static_cast<int>((volume / 127.0) * myMaxVolumes[channel]));
+        static_cast<int>((volume / 127.0) * myImpl->myMaxVolumes[channel]));
 }
 
 bool MidiOutputDevice::setPan(int channel, uint8_t pan)
@@ -294,10 +311,10 @@ void MidiOutputDevice::setChannelMaxVolume(int channel, uint8_t newMaxVolume)
 {
     assert(newMaxVolume <= 127);
 
-    const bool maxVolumeChanged = myMaxVolumes[channel] != newMaxVolume;
-    myMaxVolumes[channel] = newMaxVolume;
+    const bool maxVolumeChanged = myImpl->myMaxVolumes[channel] != newMaxVolume;
+    myImpl->myMaxVolumes[channel] = newMaxVolume;
 
     // If the new volume is different from the existing volume, send out a MIDI message
     if (maxVolumeChanged)
-        setVolume(channel, myActiveVolumes[channel]);
+        setVolume(channel, myImpl->myActiveVolumes[channel]);
 }
