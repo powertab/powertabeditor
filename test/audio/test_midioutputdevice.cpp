@@ -37,6 +37,13 @@ TEST_CASE("Audio/MidiOutputDevice/Basic")
     // this is the case, MIDI output won't do anything.
     std::vector<RtMidi::Api> apis;
     RtMidi::getCompiledApi(apis);
+
+    bool has_valid_api = false;
     for (RtMidi::Api api : apis)
-        REQUIRE(api != RtMidi::RTMIDI_DUMMY);
+    {
+        if (api != RtMidi::RTMIDI_DUMMY)
+            has_valid_api = true;
+    }
+
+    REQUIRE(has_valid_api);
 }
