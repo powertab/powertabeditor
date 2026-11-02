@@ -132,6 +132,15 @@ You'll have to update the variables for your specific paths to `$vcpkg_exe_path`
 * Install dependencies:
   * `brew install boost cmake doctest minizip ninja nlohmann-json pugixml qt6 pugixml rtmidi`
   * Note that the Qt package from homebrew [does not currently work for building the installer|https://github.com/Homebrew/brew/issues/15354]. Installing via https://github.com/miurahr/aqtinstall is an alternative.
+* For Apple Silicon, use native ARM64 dependencies and configure CMake explicitly for `arm64`:
+  ```sh
+  cmake -S . -B build-arm64 -G Ninja -DCMAKE_BUILD_TYPE=Release -DCMAKE_OSX_ARCHITECTURES=arm64 -DCMAKE_PREFIX_PATH="$(brew --prefix qt6)"
+  cmake --build build-arm64 --parallel
+  ctest --test-dir build-arm64 --output-on-failure
+  open "build-arm64/bin/Power Tab Editor.app"
+  ```
+* To build a downloadable Apple Silicon DMG on GitHub, open **Actions → Apple Silicon DMG → Run workflow**. The workflow uses a native ARM64 runner, builds and tests the application, bundles its dependencies, and verifies ARM64 support and code signatures before uploading the `powertabeditor-macos-arm64` artifact. It runs only when requested and does not require release signing secrets.
+* The manual DMG targets macOS 15 or later and uses an ad-hoc signature without Apple notarization. On first launch, macOS may require [Open Anyway in System Settings → Privacy & Security](https://support.apple.com/guide/mac-help/open-a-mac-app-from-an-unknown-developer-mh40616/mac).
 * Build with ninja or Xcode:
   * `mkdir build && cd build`
   * Ninja
