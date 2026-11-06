@@ -38,4 +38,7 @@ else ()
             IMPORTED_LOCATION ${rtmidi_LIBRARIES}
         )
     endif ()
+
+    # Ensure that rtmidi versions >= 6.1 only use the rt::midi namespace, not the global scope.
+    target_compile_definitions(rtmidi::rtmidi INTERFACE RTMIDI_USE_NAMESPACE )
 endif ()

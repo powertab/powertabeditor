@@ -20,6 +20,10 @@
 #include <audio/midioutputdevice.h>
 #include <RtMidi.h>
 
+#if RTMIDI_VERSION_MAJOR >= 6 && RTMIDI_VERSION_MINOR >= 1
+using namespace rt::midi;
+#endif
+
 TEST_CASE("Audio/MidiOutputDevice/Basic")
 {
     MidiOutputDevice device;
@@ -33,6 +37,13 @@ TEST_CASE("Audio/MidiOutputDevice/Basic")
     // this is the case, MIDI output won't do anything.
     std::vector<RtMidi::Api> apis;
     RtMidi::getCompiledApi(apis);
+
+    bool has_valid_api = false;
     for (RtMidi::Api api : apis)
-        REQUIRE(api != RtMidi::RTMIDI_DUMMY);
+    {
+        if (api != RtMidi::RTMIDI_DUMMY)
+            has_valid_api = true;
+    }
+
+    REQUIRE(has_valid_api);
 }
