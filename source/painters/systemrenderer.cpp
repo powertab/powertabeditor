@@ -180,7 +180,7 @@ QGraphicsItem *SystemRenderer::operator()(const System &system,
         ++i;
     }
 
-    myParentSystem->setRect(0, 0, LayoutInfo::STAFF_WIDTH, height);
+    myParentSystem->setRect(0, 0, LayoutInfo::STAFF_WIDTH, height + 2.0);
     return myParentSystem;
 }
 
